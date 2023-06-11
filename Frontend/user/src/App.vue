@@ -16,4 +16,4 @@ import BaseFooter from './components/BaseFooter/BaseFooter.vue';
   </footer>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss"></style>

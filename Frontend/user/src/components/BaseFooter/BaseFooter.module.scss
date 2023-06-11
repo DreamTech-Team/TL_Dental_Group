@@ -1,3 +1,8 @@
+@import "@/styles/base";
+@import "@/styles/responsive";
+
 .footer {
-  background-color: cadetblue;
+  color: $color_highlight;
+  background-color: #fff;
+  font-size: $text-6xl;
 }

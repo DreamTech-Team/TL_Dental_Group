@@ -3,6 +3,6 @@
   <div :class="$style.header">Header</div>
 </template>
 
-<style module>
+<style module scoped lang="scss">
 @import './BaseHeader.module.scss';
 </style>

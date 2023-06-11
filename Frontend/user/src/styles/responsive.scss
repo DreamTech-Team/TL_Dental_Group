@@ -1,0 +1,21 @@
+$res_pc : "only screen and (min-width: 1024px)";
+$res_tablet : "only screen and (min-width: 740px) and (max-width: 1023px)";
+$res_mobile : "only screen and (max-width: 739px)";
+
+@mixin responsive_pc() {
+  @media #{$res_pc} {
+    @content;
+  }
+}
+
+@mixin responsive_tablet() {
+  @media #{$res_tablet} {
+    @content;
+  }
+}
+
+@mixin responsive_mobile() {
+  @media #{$res_mobile} {
+    @content;
+  }
+}
