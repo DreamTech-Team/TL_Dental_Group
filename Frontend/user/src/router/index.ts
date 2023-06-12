@@ -7,16 +7,16 @@ const NotFound = () => import('@/pages/NotFound/NotFound.vue');
 const routes = [
   {
     path: '/',
-    name: 'home',
+    name: 'trangchu',
     component: HomePage
   },
   {
-    path: '/home',
+    path: '/trangchu',
     redirect: { path: '/' }
   },
   {
-    path: '/about',
-    name: 'about',
+    path: '/gioithieu',
+    name: 'gioithieu',
     component: AboutPage
   },
   {
