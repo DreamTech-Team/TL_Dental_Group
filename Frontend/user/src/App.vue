@@ -5,15 +5,11 @@ import BaseFooter from './components/BaseFooter/BaseFooter.vue';
 </script>
 
 <template>
-  <header>
-    <BaseHeader />
-  </header>
+  <BaseHeader />
 
   <RouterView />
 
-  <footer>
-    <BaseFooter />
-  </footer>
+  <BaseFooter />
 </template>
 
 <style scoped lang="scss"></style>

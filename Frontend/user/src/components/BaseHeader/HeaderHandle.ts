@@ -28,7 +28,7 @@ export const pages = [
 export const categories = [
   {
     slug: 'vat-lieu-chinh-nha-abc',
-    name: 'Vật liệu chỉnh nha ABC',
+    name: 'Vật liệu chỉnh nha ABCá sfsfsd sdfsdfsdf',
     list: [
       {
         slug: 'kem-chinh-nha',

@@ -12,7 +12,7 @@ const props = defineProps({
 const cate1Hover = ref('');
 
 const heightCate1 = computed(() => {
-  return props.pageHover === 'sanpham' ? Math.min(categories.length * 39 + 2, 300) : 0;
+  return props.pageHover === 'sanpham' ? 100 : 0;
 });
 </script>
 <template>
@@ -22,7 +22,7 @@ const heightCate1 = computed(() => {
         $style['header-category'],
         $style[props.pageHover === 'sanpham' ? 'header-category-show' : '']
       ]"
-      :style="{ height: heightCate1 + 'px' }"
+      :style="{ maxHeight: heightCate1 + 'vh' }"
     >
       <li
         v-for="item1 in categories"

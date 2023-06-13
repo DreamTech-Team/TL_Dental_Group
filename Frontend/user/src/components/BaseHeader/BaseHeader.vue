@@ -5,8 +5,8 @@ import HeaderNav from './HeaderNav.vue';
 <template>
   <div :class="$style.header">
     <HeaderContact />
-    <HeaderNav />
   </div>
+  <HeaderNav />
 </template>
 
 <style module scoped lang="scss">

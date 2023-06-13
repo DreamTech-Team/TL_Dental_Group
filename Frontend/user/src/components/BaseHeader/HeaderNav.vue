@@ -57,7 +57,7 @@ const pageHover = ref('none');
             ]
           ]"
         ></span>
-        <!-- <header-category v-if="item.slug === 'sanpham'" :page-hover="pageHover" /> -->
+        <header-category v-if="item.slug === 'sanpham'" :page-hover="pageHover" />
       </div>
     </div>
   </div>
