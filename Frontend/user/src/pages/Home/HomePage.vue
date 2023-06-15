@@ -11,6 +11,12 @@ import HomeActivity from './HomeActivity/HomeActivity.vue';
     <HomeBanner />
     <HomeCategory />
     <HomeCompany />
+    <div :class="$style.home__trend">
+      <div :class="$style['home__trend-title']">
+        <h3>SẢN PHẨM BÁN CHẠY</h3>
+        <div :class="$style['home__trend-line']"></div>
+      </div>
+    </div>
     <HomeReason />
     <HomeFBack />
     <HomeActivity />

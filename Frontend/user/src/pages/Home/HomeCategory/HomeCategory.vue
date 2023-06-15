@@ -1,53 +1,104 @@
-<script setup lang="ts">
-import DCNK2 from '@/assets/imgs/Home/DCNK2.png';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-</script>
 <template>
   <div :class="$style.home__category">
     <h3>DANH MỤC NỔI BẬT</h3>
-    <div :class="$style['home__category-list']">
-      <div :class="[$style['home__category-item'], $style['category-item1']]">
-        <span>DỤNG CỤ CHỈNH NHA ABC</span>
-        <div :class="$style['home__category-ctn']">
-          <div :class="$style['home__category-img']">
-            <img :src="DCNK2" alt="DCNK2" />
+    <div :class="$style['home__category-wrapper']">
+      <div :class="$style['home__category-list']" id="category-list">
+        <div
+          v-for="(item, index) in items"
+          :key="index"
+          :class="$style['home__category-item']"
+          :style="{ background: getCategoryColor(index) }"
+        >
+          <span>{{ item.title }}</span>
+          <div :class="$style['home__category-ctn']">
+            <div :class="$style['home__category-img']">
+              <img :src="item.src" :alt="item.title" />
+            </div>
           </div>
         </div>
       </div>
-      <div :class="[$style['home__category-item'], $style['category-item2']]">
-        <span>DỤNG CỤ CHỈNH NHA XYZ</span>
-        <div :class="$style['home__category-ctn']">
-          <div :class="$style['home__category-img']">
-            <img :src="DCNK2" alt="DCNK2" />
-          </div>
-        </div>
-      </div>
-      <div :class="[$style['home__category-item'], $style['category-item3']]">
-        <span>VẬT LIỆU CHỈNH NHA ABC</span>
-        <div :class="$style['home__category-ctn']">
-          <div :class="$style['home__category-img']">
-            <img :src="DCNK2" alt="DCNK2" />
-          </div>
-        </div>
-      </div>
-      <div :class="[$style['home__category-item'], $style['category-item4']]">
-        <span>MẪU HÀM TƯ VẤN XYZ</span>
-        <div :class="$style['home__category-ctn']">
-          <div :class="$style['home__category-img']">
-            <img :src="DCNK2" alt="DCNK2" />
-          </div>
-        </div>
-      </div>
-      <button :class="$style['home__category-left']">
+      <button :class="$style['home__category-left']" @click="scrollLeft">
         <font-awesome-icon :icon="faChevronLeft" :class="$style['home__category-ic']" />
       </button>
-      <button :class="$style['home__category-right']">
+      <button :class="$style['home__category-right']" @click="scrollRight">
         <font-awesome-icon :icon="faChevronRight" :class="$style['home__category-ic']" />
       </button>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import DCNK2 from '@/assets/imgs/Home/DCNK2.png';
+
+const items = ref([
+  {
+    title: 'DỤNG CỤ CHỈNH NHA ABC',
+    src: DCNK2
+  },
+  {
+    title: 'DỤNG CỤ CHỈNH NHA XYZ',
+    src: DCNK2
+  },
+  {
+    title: 'VẬT LIỆU CHỈNH NHA ABC',
+    src: DCNK2
+  },
+  {
+    title: 'MẪU HÀM TƯ VẤN XYZ1',
+    src: DCNK2
+  },
+  {
+    title: 'MẪU HÀM TƯ VẤN XYZ2',
+    src: DCNK2
+  },
+  {
+    title: 'MẪU HÀM TƯ VẤN XYZ3',
+    src: DCNK2
+  },
+  {
+    title: 'MẪU HÀM TƯ VẤN XYZ4',
+    src: DCNK2
+  }
+]);
+
+const colors = [
+  // eslint-disable-next-line max-len
+  `linear-gradient(143.33deg, #A300F0 24.48%, rgba(246, 76, 218, 0.547363) 78.16%, rgba(173, 0, 255, 0.74) 103.49%)`,
+  // eslint-disable-next-line max-len
+  `linear-gradient(119.43deg, #0168C8 28.13%, rgba(69, 108, 245, 0.547363) 80.05%, rgba(0, 194, 255, 0.74) 104.55%)`,
+  // eslint-disable-next-line max-len
+  `linear-gradient(148.87deg, #0085FF 26.28%, rgba(0, 200, 188, 0.547363) 78.26%, rgba(5, 223, 92, 0.74) 126.07%)`,
+  // eslint-disable-next-line max-len
+  `linear-gradient(143.33deg, #0168C8 24.48%, rgba(246, 76, 218, 0.547363) 78.16%, rgba(173, 0, 255, 0.74) 103.49%)`
+];
+
+function scrollLeft(): void {
+  const container = document.getElementById('category-list');
+  if (container) {
+    container.scrollLeft -= container.offsetWidth;
+  }
+}
+
+function scrollRight(): void {
+  const container = document.getElementById('category-list');
+  if (container) {
+    const scrollAmount = container.offsetWidth;
+    container.scrollLeft += scrollAmount;
+
+    // Test if end of list
+    if (container.scrollLeft + container.offsetWidth >= container.scrollWidth - 100) {
+      container.scrollLeft = 0; // Reverse Scroll
+    }
+  }
+}
+
+function getCategoryColor(index: number): string {
+  return colors[index % colors.length];
+}
+</script>
 
 <style module scoped lang="scss">
 @import '../HomePage.module.scss';
