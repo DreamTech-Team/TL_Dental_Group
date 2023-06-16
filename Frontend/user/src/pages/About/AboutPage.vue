@@ -1,4 +1,4 @@
 <script setup lang="ts"></script>
-<template>ABOUT</template>
+<template>ABOUT PAGE Test</template>
 
 <style scoped lang="scss"></style>
