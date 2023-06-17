@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import HomePage from '@/pages/Home/HomePage.vue';
 const AboutPage = () => import('@/pages/About/AboutPage.vue');
+const ProductPage = () => import('@/pages/Product/ProductPage.vue');
 const NotFound = () => import('@/pages/NotFound/NotFound.vue');
 
 const routes = [
@@ -18,6 +19,11 @@ const routes = [
     path: '/gioithieu',
     name: 'gioithieu',
     component: AboutPage
+  },
+  {
+    path: '/sanpham',
+    name: 'sanpham',
+    component: ProductPage
   },
   {
     path: '/:catchAll(.*)*',
