@@ -92,8 +92,39 @@
                 width: 154%;
                 border-radius: 50%;
                 
-                animation: rotateParent 1s forwards;
+                animation: rotateParent 0.8s forwards;
                 transform-origin: bottom center;
+                z-index: 1;
+
+                &-elipse1, &-elipse2, &-elipse3, &-elipse4{
+                    position: absolute;
+                    display: grid;
+                    width: 25%;
+                    aspect-ratio: 1/1;
+                    border-radius: 50%;
+                    z-index: 0;
+                    transform: translate(50%, 50%);
+                }
+
+                &-elipse1{
+                    top: -5%;
+                    left: 50%;
+                }
+
+                &-elipse2{
+                    bottom: 20%;
+                    right: 23%;
+                }
+
+                &-elipse3{
+                    bottom: 15%;
+                    right: 85%;
+                }
+
+                &-elipse4 {
+                    top: -5%;
+                    left: -10%;
+                }
 
                 .home__banner-radial{
                     display: flex;
