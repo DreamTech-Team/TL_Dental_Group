@@ -35,6 +35,11 @@
     align-items: center;
   }
 
+  &-type6 {
+    display: flex;
+    align-items: center;
+  }
+
   &-icon {
     text-align: -webkit-center;
 
@@ -58,6 +63,12 @@
           width: 58%;
           height: auto;
         }
+      }
+
+      &-type6 {
+        width: 2.5rem;
+        height: 2.5rem;
+        margin-right: 1rem;
       }
     }
   }
@@ -103,6 +114,13 @@
         font-size: $text-3xl;
         font-weight: 400;
         color: $text_800;
+      }
+    }
+
+    &-type6 {
+      h3 {
+        font-size: $text-sm;
+        font-weight: 400;
       }
     }
   }

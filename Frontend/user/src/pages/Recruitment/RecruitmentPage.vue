@@ -165,10 +165,17 @@ import {
           <input type="text" name="filter" id="" placeholder="Tìm kiếm" />
         </div>
       </div>
-      <div class="">
-        <div class="" v-for="item in recruitWorkItems" :key="item.id">
+      <div :class="$style['container__work-staff']">
+        <div
+          :class="$style['container__work-staff-item']"
+          v-for="item in recruitWorkItems"
+          :key="item.id"
+        >
           <recruitment-card-work :infor="item" />
         </div>
+      </div>
+      <div :class="$style['container__work-btn']">
+        <p>Xem thêm</p>
       </div>
     </div>
   </div>
