@@ -1,0 +1,51 @@
+@import "@/styles/base";
+
+.container__poster-block-card-item {
+    width: 25%;
+
+    &-icon {
+        text-align: -webkit-center;
+
+        &-block {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 5.2rem;
+            height: 5.2rem;
+            border-radius: 1rem;
+
+            img { 
+                width: auto;
+                height: 60%;
+            }
+        }
+    }
+
+    &-title {
+        margin: 1rem;
+        h3 {
+            color: white;
+            font-size: $text-2xl;
+            font-weight: 500;
+        }
+    }
+
+    &-content {
+        color: white;
+
+        p {
+        }
+    }
+}
+
+.color-icon1{
+    background-color: $complimentary_500;
+}
+
+.color-icon2{
+    background-color: $analogous_700;
+}
+
+.color-icon3{
+    background-color: $triadic_500;
+}

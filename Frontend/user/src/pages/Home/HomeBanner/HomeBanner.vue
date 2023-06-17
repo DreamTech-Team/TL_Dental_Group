@@ -12,7 +12,7 @@
         >
           <img :src="item.src" :alt="item.alt" :width="item.width" :height="item.height" />
         </div>
-        <div :class="$style['line']" :style="{ transform: lineTransform }"></div>
+        <div id="line_active" :class="$style['line']" :style="{ transform: lineTransform }"></div>
       </div>
     </div>
     <div :class="$style['home__banner-right']">
@@ -53,8 +53,31 @@ const activeIndex = ref(0);
 const activeBanner = ref(bannerItems[0]);
 const showBannerBg = ref(true);
 const bannerItemSpacing = ref(32);
+const lineWidth = ref(0);
+let resizeListener: () => void;
 
 onMounted(() => {
+  const lineActive = document.getElementById('line_active');
+  if (lineActive) {
+    lineWidth.value = lineActive.offsetWidth;
+  }
+
+  resizeListener = function () {
+    const lineActive = document.getElementById('line_active');
+    if (lineActive) {
+      activeIndex.value = 0;
+      lineWidth.value = lineActive.offsetWidth;
+    }
+
+    const bannerListElement = document.getElementById('bannerList');
+    if (bannerListElement instanceof HTMLElement) {
+      const computedStyle = getComputedStyle(bannerListElement);
+      bannerItemSpacing.value = (parseInt(computedStyle.width) - 437) / 3; //height 4 brands
+    }
+  };
+
+  window.addEventListener('resize', resizeListener);
+
   const bannerListElement = document.getElementById('bannerList');
   if (bannerListElement instanceof HTMLElement) {
     const computedStyle = getComputedStyle(bannerListElement);
@@ -68,7 +91,7 @@ const lineTransform = computed(() => {
     const itemWidth = Number(bannerItems[i].width) + bannerItemSpacing.value;
     selectedItemLeft += itemWidth;
   }
-  selectedItemLeft += (Number(bannerItems[activeIndex.value].width) - 73) / 2;
+  selectedItemLeft += (Number(bannerItems[activeIndex.value].width) - lineWidth.value) / 2;
   return `translateX(${selectedItemLeft}px)`;
 });
 
