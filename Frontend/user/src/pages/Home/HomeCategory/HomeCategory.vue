@@ -1,39 +1,10 @@
-<template>
-  <div :class="$style.home__category">
-    <h3>DANH MỤC NỔI BẬT</h3>
-    <div :class="$style['home__category-wrapper']">
-      <div :class="$style['home__category-list']" id="category-list">
-        <div
-          v-for="(item, index) in items"
-          :key="index"
-          :class="$style['home__category-item']"
-          :style="{ background: getCategoryColor(index) }"
-        >
-          <span>{{ item.title }}</span>
-          <div :class="$style['home__category-ctn']">
-            <div :class="$style['home__category-img']">
-              <img :src="item.src" :alt="item.title" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <button :class="$style['home__category-left']" @click="scrollLeft">
-        <font-awesome-icon :icon="faChevronLeft" :class="$style['home__category-ic']" />
-      </button>
-      <button :class="$style['home__category-right']" @click="scrollRight">
-        <font-awesome-icon :icon="faChevronRight" :class="$style['home__category-ic']" />
-      </button>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, computed, onUnmounted } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import DCNK2 from '@/assets/imgs/Home/DCNK2.png';
 
-const items = ref([
+const categories = ref([
   {
     title: 'DỤNG CỤ CHỈNH NHA ABC',
     src: DCNK2
@@ -75,30 +46,90 @@ const colors = [
   `linear-gradient(143.33deg, #0168C8 24.48%, rgba(246, 76, 218, 0.547363) 78.16%, rgba(173, 0, 255, 0.74) 103.49%)`
 ];
 
-function scrollLeft(): void {
-  const container = document.getElementById('category-list');
-  if (container) {
-    container.scrollLeft -= container.offsetWidth;
+const wItem = ref(0);
+const tranfX = ref(0);
+let resizeListener: () => void;
+
+const widthComputed = computed(() => {
+  return wItem.value * categories.value.length + 'px';
+});
+
+const widthItemComputed = computed(() => {
+  return wItem.value + 'px';
+});
+
+const scrollLeft = () => {
+  if (tranfX.value < 0) tranfX.value += wItem.value;
+};
+
+const scrollRight = () => {
+  if (-tranfX.value + wItem.value * 4 < wItem.value * categories.value.length) {
+    tranfX.value -= wItem.value;
+  } else {
+    tranfX.value = 0;
   }
-}
+};
 
-function scrollRight(): void {
-  const container = document.getElementById('category-list');
-  if (container) {
-    const scrollAmount = container.offsetWidth;
-    container.scrollLeft += scrollAmount;
-
-    // Test if end of list
-    if (container.scrollLeft + container.offsetWidth >= container.scrollWidth - 100) {
-      container.scrollLeft = 0; // Reverse Scroll
-    }
-  }
-}
-
-function getCategoryColor(index: number): string {
+const getCategoryColor = (index: number) => {
   return colors[index % colors.length];
-}
+};
+
+onMounted(() => {
+  const container = document.getElementById('category-wrapper');
+  if (container) {
+    wItem.value = container.offsetWidth / 4;
+  }
+
+  resizeListener = function () {
+    const container = document.getElementById('category-wrapper');
+    if (container) {
+      wItem.value = container.offsetWidth / 4;
+      tranfX.value = 0;
+    }
+  };
+
+  window.addEventListener('resize', resizeListener);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', resizeListener);
+});
 </script>
+
+<template>
+  <div :class="$style.home__category">
+    <h3>DANH MỤC NỔI BẬT</h3>
+    <div :class="$style['home__category-ctn']">
+      <div :class="$style['home__category-wrapper']" id="category-wrapper">
+        <div
+          :class="$style['home__category-list']"
+          id="category-list"
+          :style="{ width: widthComputed, transform: 'translateX(' + tranfX + 'px)' }"
+        >
+          <div
+            v-for="(item, index) in categories"
+            :key="index"
+            :class="$style['home__category-item']"
+            :style="{ background: getCategoryColor(index), width: widthItemComputed }"
+          >
+            <span>{{ item.title }}</span>
+            <div :class="$style['home__category-ctn']">
+              <div :class="$style['home__category-img']">
+                <img :src="item.src" :alt="item.title" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <button :class="$style['home__category-left']" @click="scrollLeft">
+          <font-awesome-icon :icon="faChevronLeft" :class="$style['home__category-ic']" />
+        </button>
+        <button :class="$style['home__category-right']" @click="scrollRight">
+          <font-awesome-icon :icon="faChevronRight" :class="$style['home__category-ic']" />
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style module scoped lang="scss">
 @import '../HomePage.module.scss';

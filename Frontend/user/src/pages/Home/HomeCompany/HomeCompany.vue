@@ -1,20 +1,3 @@
-<template>
-  <div :class="$style.home__company">
-    <h3>NHÃN HÀNG HỢP TÁC</h3>
-    <div :class="[$style['home__company-ctn'], 'logos']">
-      <div :class="[$style['home__company-list'], 'logos-slide']" ref="companyList">
-        <div
-          :class="$style['home__company-item']"
-          v-for="(company, index) in companies"
-          :key="index"
-        >
-          <img :src="company.image" :alt="company.name" />
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref } from 'vue';
 import Capgemini from '@/assets/imgs/Home/Capgemini.png';
@@ -35,6 +18,32 @@ const companies = ref<Company[]>([
   { id: 4, name: 'DELL', image: DELL }
 ]);
 </script>
+
+<template>
+  <div :class="$style.home__company">
+    <h3>NHÃN HÀNG HỢP TÁC</h3>
+    <div :class="[$style['home__company-ctn'], 'logos']">
+      <div :class="[$style['home__company-list'], 'logos-slide']" ref="companyList">
+        <div
+          :class="$style['home__company-item']"
+          v-for="(company, index) in companies"
+          :key="index"
+        >
+          <img :src="company.image" :alt="company.name" />
+        </div>
+      </div>
+      <div :class="[$style['home__company-list'], 'logos-slide']" ref="companyList">
+        <div
+          :class="$style['home__company-item']"
+          v-for="(company, index) in companies"
+          :key="index"
+        >
+          <img :src="company.image" :alt="company.name" />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style module scoped lang="scss">
 @import '../HomePage.module.scss';
