@@ -5,8 +5,8 @@ import BGItem from '@/assets/imgs/News/NewsItem.png';
 </script>
 <template>
   <div :class="$style.news">
-    <Banner />
-    <Control />
+    <banner />
+    <control />
     <div :class="$style.news__context">
       <div :class="$style['news__context-left']">
         <div :class="$style['news__context-item']">
