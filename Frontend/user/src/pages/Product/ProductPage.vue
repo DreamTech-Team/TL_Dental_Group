@@ -3,6 +3,49 @@ import ProductBanner from './ProductBanner/ProductBanner.vue';
 import ProductCard from './ProductCard/ProductCard.vue';
 import ProductCategory from './ProductCategory/ProductCategory.vue';
 import ProductNavigation from './ProductNavigation/ProductNavigation.vue';
+const products = [
+  {
+    nameProduct:
+      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép) Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép)',
+    price: '4.000.000đ',
+    description:
+      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO THÔNG TIN SẢN PHẨM - Kẹp gắp đầu cong để gắp mắc cài R6,7 và button. - Kẹp…',
+    tag: 'Vật liệu chỉnh nha',
+    company: 'TL Group'
+  },
+  {
+    nameProduct: 'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép)',
+    price: '4.000.000đ',
+    description:
+      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO THÔNG TIN SẢN PHẨM - Kẹp gắp đầu cong để gắp mắc cài R6,7 và button. - Kẹp…',
+    tag: 'Vật liệu chỉnh nha',
+    company: 'TL Group'
+  },
+  {
+    nameProduct: 'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép)',
+    price: '4.000.000đ',
+    description:
+      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO THÔNG TIN SẢN PHẨM - Kẹp gắp đầu cong để gắp mắc cài R6,7 và button. - Kẹp…',
+    tag: 'Vật liệu chỉnh nha',
+    company: 'TL Group'
+  },
+  {
+    nameProduct: 'ABC Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO',
+    price: '3.000.000đ',
+    description:
+      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO THÔNG TIN SẢN PHẨM - Kẹp gắp đầu cong để gắp mắc cài R6,7 và button. - Kẹp…',
+    tag: 'Vật liệu chỉnh nha',
+    company: 'TL Group'
+  },
+  {
+    nameProduct: 'ADC Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO',
+    price: '2.000.000đ',
+    description:
+      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO THÔNG TIN SẢN PHẨM - Kẹp gắp đầu cong để gắp mắc cài R6,7 và button. - Kẹp…',
+    tag: 'Vật liệu chỉnh nha',
+    company: 'TL Group'
+  }
+];
 </script>
 <template>
   <div>
@@ -15,11 +58,12 @@ import ProductNavigation from './ProductNavigation/ProductNavigation.vue';
       <div :class="$style['product__content-wrap']">
         <div :class="$style['product__content-sort']"></div>
         <div :class="$style['product__content-container']">
-          <product-card :class="$style['product__content-container--card']" />
-          <product-card :class="$style['product__content-container--card']" />
-          <product-card :class="$style['product__content-container--card']" />
-          <product-card :class="$style['product__content-container--card']" />
-          <product-card :class="$style['product__content-container--card']" />
+          <product-card
+            v-for="(item, index) in products"
+            :key="index"
+            :product="item"
+            :class="$style['product__content-container--card']"
+          />
         </div>
       </div>
     </div>
