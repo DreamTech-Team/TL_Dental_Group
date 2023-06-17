@@ -234,27 +234,3 @@ export const recruitWorkItems = [
     location: 'Hồ Chí Minh'
   }
 ];
-
-// export const locationItem = [
-//   {
-//     icon: { link: ic_location, style: 'type6' },
-//     title: { content: 'Hồ Chí Minh', style: 'type6' },
-//     content: { content: '', style: '' },
-//     image: { link: '', style: '' }
-//   }
-// ];
-
-// export const contentRecruit = [
-//   {
-//     icon: { link: ic_hourglass, style: 'type6' },
-//     title: { content: '', style: 'type6' },
-//     content: { content: '', style: '' },
-//     image: { link: '', style: '' }
-//   },
-//   {
-//     icon: { link: ic_bag, style: 'type6' },
-//     title: { content: '', style: 'type6' },
-//     content: { content: '', style: '' },
-//     image: { link: '', style: '' }
-//   }
-// ];
