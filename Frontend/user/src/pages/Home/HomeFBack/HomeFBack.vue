@@ -69,17 +69,17 @@ const widthItemComputed = computed(() => {
   return wItem.value + 'px';
 });
 
-function scrollLeft(): void {
+const scrollLeft = () => {
   if (tranfX.value < 0) tranfX.value += wItem.value;
-}
+};
 
-function scrollRight(): void {
+const scrollRight = () => {
   if (-tranfX.value + wItem.value * 3 < wItem.value * feedbacks.value.length) {
     tranfX.value -= wItem.value;
   } else {
     tranfX.value = 0;
   }
-}
+};
 
 onMounted(() => {
   const container = document.getElementById('feedback-wrapper');

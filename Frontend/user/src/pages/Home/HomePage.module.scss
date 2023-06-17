@@ -321,21 +321,26 @@
             padding: 60px 0;
             position: relative;
             margin-top: 40px;
-            width: 100%;
+            width: 200%;    
             overflow: hidden;
             white-space: nowrap;
 
             .home__company-list{
-                position: absolute;
-                top: 0;
                 display: flex;
-                width: 65%;
+                width: 32.5%;
                 height: 100%;
                 align-items: center;
                 justify-content: space-between;
                 flex-wrap: nowrap;
                 gap: 80px;
-                animation: 40s slide infinite linear;
+                padding-right: 50%;
+                animation: 20s slide infinite linear;
+            
+                overflow: hidden;
+
+                &:first-child{
+                    margin-left: 2000px;
+                }
     
                 .home__company-item{
                     display: flex;
@@ -349,28 +354,28 @@
                         height: 100%;
                     }
                 }
-    
-                &:hover{
-                    animation-play-state: paused;
-                }
+                
+            }
+            &:hover{
+                animation-play-state: paused;
             }
 
             &::before, &::after{
                 position: absolute;
                 top: 0;
-                width: 400px;
+                width: 200px;
                 height: 100%;
                 content: "";
                 z-index: 2;
             }
 
             &::before{
-                left: 0;
+                left: 25%;
                 background: linear-gradient(to left, rgba(255, 255, 255, 0), white);
             }
 
             &::after{
-                right: 0;
+                right: 25%;
                 background: linear-gradient(to right, rgba(255, 255, 255, 0), white);
             }
         }
