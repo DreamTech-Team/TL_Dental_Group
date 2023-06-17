@@ -39,7 +39,7 @@ const props = defineProps({
           :items="[
             {
               icon: { link: ic_location, style: 'type6' },
-              title: { content: props.infor.location, style: 'type6' },
+              // title: { content: props.infor.location, style: 'type6' },
               content: { content: '', style: '' },
               image: { link: '', style: '' }
             }
@@ -49,7 +49,7 @@ const props = defineProps({
       </div>
     </div>
     <div class="">
-      <div class=""><recruitment-card :items="locationItem" :style="'type6'" /></div>
+      <!-- <div class=""><recruitment-card :items="locationItem" :style="'type6'" /></div> -->
       <div class="">
         <p>Ứng tuyển ngay</p>
       </div>
