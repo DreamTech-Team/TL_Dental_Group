@@ -1,50 +1,5 @@
-<template>
-  <div :class="$style.home__feedback">
-    <h3>ĐÁNH GIÁ CỦA KHÁCH HÀNG</h3>
-    <button>XEM TẤT CẢ</button>
-    <div :class="$style['home__feedback-wrapper']">
-      <div :class="$style['home__feedback-list']" id="feedback-list">
-        <div
-          v-for="feedback in feedbacks"
-          :key="feedback.name"
-          :class="$style['home__feedback-item']"
-        >
-          <div :class="$style['home__feedback-img']">
-            <img :src="feedback.src" alt="doctor" />
-          </div>
-          <div :class="$style['home__feedback-speech']">
-            {{ feedback.speech }}
-          </div>
-          <div :class="$style['home__feedback-infor']">
-            <strong>{{ feedback.name }}</strong>
-            <span>{{ feedback.pos }}</span>
-            <div :class="$style['home__feedback-rate']">
-              <font-awesome-icon
-                v-for="i in 5"
-                :key="i"
-                :icon="faStar"
-                :class="[
-                  $style['home__feedback-star'],
-                  i <= feedback.rate ? $style['star-active'] : ''
-                ]"
-              />
-            </div>
-          </div>
-          <div :class="$style['home__feedback-icon']"></div>
-        </div>
-      </div>
-      <button :class="$style['home__feedback-left']" @click="scrollLeft">
-        <font-awesome-icon :icon="faChevronLeft" :class="$style['home__feedback-ic']" />
-      </button>
-      <button :class="$style['home__feedback-right']" @click="scrollRight">
-        <font-awesome-icon :icon="faChevronRight" :class="$style['home__feedback-ic']" />
-      </button>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, computed, onUnmounted } from 'vue';
 import Doctor from '@/assets/imgs/Home/Doctor.png';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faStar, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
@@ -102,26 +57,103 @@ const feedbacks = ref([
   }
 ]);
 
-function scrollLeft(): void {
-  const container = document.getElementById('feedback-list');
-  if (container) {
-    container.scrollLeft -= container.offsetWidth;
+const wItem = ref(0);
+const tranfX = ref(0);
+let resizeListener: () => void;
+
+const widthComputed = computed(() => {
+  return wItem.value * feedbacks.value.length + 'px';
+});
+
+const widthItemComputed = computed(() => {
+  return wItem.value + 'px';
+});
+
+const scrollLeft = () => {
+  if (tranfX.value < 0) tranfX.value += wItem.value;
+};
+
+const scrollRight = () => {
+  if (-tranfX.value + wItem.value * 3 < wItem.value * feedbacks.value.length) {
+    tranfX.value -= wItem.value;
+  } else {
+    tranfX.value = 0;
   }
-}
+};
 
-function scrollRight(): void {
-  const container = document.getElementById('feedback-list');
+onMounted(() => {
+  const container = document.getElementById('feedback-wrapper');
   if (container) {
-    const scrollAmount = container.offsetWidth;
-    container.scrollLeft += scrollAmount;
+    wItem.value = container.offsetWidth / 3;
+  }
 
-    // Test if end of list
-    if (container.scrollLeft + container.offsetWidth >= container.scrollWidth - 100) {
-      container.scrollLeft = 0; // Reverse Scroll
+  resizeListener = function () {
+    const container = document.getElementById('feedback-wrapper');
+    if (container) {
+      wItem.value = container.offsetWidth / 3;
+      tranfX.value = 0;
     }
-  }
-}
+  };
+
+  window.addEventListener('resize', resizeListener);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', resizeListener);
+});
 </script>
+
+<template>
+  <div :class="$style.home__feedback">
+    <h3>ĐÁNH GIÁ CỦA KHÁCH HÀNG</h3>
+    <button>XEM TẤT CẢ</button>
+    <div :class="$style['home__feedback-ctn']">
+      <div :class="$style['home__feedback-wrapper']" id="feedback-wrapper">
+        <div
+          :class="$style['home__feedback-list']"
+          id="feedback-list"
+          :style="{ width: widthComputed, transform: 'translateX(' + tranfX + 'px)' }"
+        >
+          <div
+            v-for="feedback in feedbacks"
+            :key="feedback.name"
+            :class="$style['home__feedback-item']"
+            :style="{ width: widthItemComputed }"
+          >
+            <div :class="$style['home__feedback-img']">
+              <img :src="feedback.src" alt="doctor" />
+            </div>
+            <div :class="$style['home__feedback-speech']">
+              {{ feedback.speech }}
+            </div>
+            <div :class="$style['home__feedback-infor']">
+              <strong>{{ feedback.name }}</strong>
+              <span>{{ feedback.pos }}</span>
+              <div :class="$style['home__feedback-rate']">
+                <font-awesome-icon
+                  v-for="i in 5"
+                  :key="i"
+                  :icon="faStar"
+                  :class="[
+                    $style['home__feedback-star'],
+                    i <= feedback.rate ? $style['star-active'] : ''
+                  ]"
+                />
+              </div>
+            </div>
+            <div :class="$style['home__feedback-icon']"></div>
+          </div>
+        </div>
+        <button :class="$style['home__feedback-left']" @click="scrollLeft">
+          <font-awesome-icon :icon="faChevronLeft" :class="$style['home__feedback-ic']" />
+        </button>
+        <button :class="$style['home__feedback-right']" @click="scrollRight">
+          <font-awesome-icon :icon="faChevronRight" :class="$style['home__feedback-ic']" />
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style module scoped lang="scss">
 @import '../HomePage.module.scss';
