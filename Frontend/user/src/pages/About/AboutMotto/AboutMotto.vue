@@ -61,7 +61,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight, faL } from '@fortawesome/free-solid-svg-icons';
 import { ref } from 'vue';
 
-const indexCard = ref(0);
+const indexCard = ref(1);
 const count = ref(3);
 const move = ref(0);
 const isDisableLeft = ref(false);
@@ -108,18 +108,22 @@ function handleClickLeft(): void {
     indexCard.value--;
     count.value = indexCard.value + 3;
   }
+
+  console.log('left:' + indexCard.value);
 }
 
 function handleClickRight(): void {
   isDisableLeft.value = false;
 
-  if (indexCard.value > mottoItems.length - 4)
+  if (indexCard.value > mottoItems.length - 3)
     (indexCard.value = mottoItems.length - 3), (move.value -= 571), (isDisableRight.value = true);
   else {
     move.value -= 571;
     indexCard.value++;
     count.value = indexCard.value + 3;
   }
+
+  console.log('right:' + indexCard.value);
 }
 </script>
 
