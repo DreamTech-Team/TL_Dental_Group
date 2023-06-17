@@ -27,6 +27,11 @@ const routes = [
     component: ProductPage
   },
   {
+    path: '/tuyendung',
+    name: 'tuyendung',
+    component: RecruimentPage
+  },
+  {
     path: '/:catchAll(.*)*',
     component: NotFound
   }
