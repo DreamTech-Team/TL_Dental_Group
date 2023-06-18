@@ -64,12 +64,58 @@ const selectedItem = computed(() => {
 
 const bannerBgColor = computed(() => {
   const colors = [
-    `radial-gradient(50% 50% at 50% 50%, rgba(135, 255, 126, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-    `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-    `radial-gradient(50% 50% at 50% 50%, rgba(255, 126, 126, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
+    `radial-gradient(50% 50% at 50% 50%, rgba(135, 255, 126, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`,
+    `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`,
+    `radial-gradient(50% 50% at 50% 50%, rgba(255, 126, 126, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`,
+    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`
   ];
   return colors[activeIndex.value];
+});
+
+const elipseColor = computed(() => {
+  const elcolors = [
+    [
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`
+    ],
+    [
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`
+    ],
+    [
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`
+    ],
+    [
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`
+    ]
+  ];
+  return elcolors[activeIndex.value];
 });
 
 const moveLine = (index: number) => {
@@ -118,6 +164,22 @@ onUnmounted(() => {
           </div>
           <p>Trụ Implant Highness Hàn Quốc</p>
         </div>
+        <div
+          :class="$style['home__banner-bg-elipse1']"
+          :style="{ background: elipseColor[0] }"
+        ></div>
+        <div
+          :class="$style['home__banner-bg-elipse2']"
+          :style="{ background: elipseColor[1] }"
+        ></div>
+        <div
+          :class="$style['home__banner-bg-elipse3']"
+          :style="{ background: elipseColor[2] }"
+        ></div>
+        <div
+          :class="$style['home__banner-bg-elipse4']"
+          :style="{ background: elipseColor[3] }"
+        ></div>
       </div>
     </div>
   </div>

@@ -77,18 +77,6 @@ export const categories = [
       {
         slug: 'thun-chinh-nha',
         name: 'Thun chỉnh nha'
-      },
-      {
-        slug: 'thun-chinh-nha',
-        name: 'Thun chỉnh nha'
-      },
-      {
-        slug: 'thun-chinh-nha',
-        name: 'Thun chỉnh nha'
-      },
-      {
-        slug: 'thun-chinh-nha',
-        name: 'Thun chỉnh nha'
       }
     ]
   },
@@ -99,6 +87,28 @@ export const categories = [
       {
         slug: 'kem-chinh-nha',
         name: 'Kềm chỉnh nha'
+      },
+      {
+        slug: 'thun-chinh-nha',
+        name: 'Thun chỉnh nha'
+      }
+    ]
+  },
+  {
+    slug: 'vat-lieu-chinh-nha-xyz',
+    name: 'Vật liệu chỉnh nha XYZ',
+    list: [
+      {
+        slug: 'kem-chinh-nha',
+        name: 'Kềm chỉnh nha'
+      },
+      {
+        slug: 'thun-chinh-nha',
+        name: 'Thun chỉnh nha'
+      },
+      {
+        slug: 'thun-chinh-nha',
+        name: 'Thun chỉnh nha'
       },
       {
         slug: 'thun-chinh-nha',

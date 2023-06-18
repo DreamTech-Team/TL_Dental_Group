@@ -1,0 +1,22 @@
+@import '@/styles/base';
+
+.header-search {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 50px;
+  background-color: rgba($color: $text_50, $alpha: 0.5);
+  box-shadow: inset -3px -2px 9px $text_200;
+
+  &__icon {
+    color: $text_500;
+    padding: 0 6px;
+  }
+
+  &__input {
+    border: none;
+    padding: 4px 6px;
+    font-size: $text-sm;
+    background-color: transparent;
+  }
+}
