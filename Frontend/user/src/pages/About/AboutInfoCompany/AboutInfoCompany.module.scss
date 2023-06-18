@@ -1,0 +1,37 @@
+@import "@/styles/base";
+
+.about__infocompany{
+    padding: 12rem 12rem 9rem 12rem;
+    background-color:#F4F8FF;
+
+
+    &-title{
+        font-size: $text-4xl;
+        font-weight: 500;
+        line-height: 3.5rem;
+        color: $primary_900;
+        text-align: center;
+        margin-bottom: 6rem;
+    }
+
+    &-content{
+
+        div{
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+            gap: 3rem;
+
+            img{
+                width: 50%;
+            }
+
+            p{  
+                width: 50%;
+                font-size: $text-base;
+                line-height: 3.5rem;
+                color: #000000;
+            }
+        }
+    }
+}

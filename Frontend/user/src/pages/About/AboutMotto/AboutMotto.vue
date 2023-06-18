@@ -1,3 +1,83 @@
+<script setup lang="ts">
+import Motto from '@/assets/imgs/About/Motto.png';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faChevronLeft, faChevronRight, faL } from '@fortawesome/free-solid-svg-icons';
+import { ref } from 'vue';
+
+const mottoItems = [
+  {
+    title: 'Sự đổi mới sáng tạo 1',
+    content:
+      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
+    img: Motto
+  },
+  {
+    title: 'Sự đổi mới sáng tạo 2',
+    content:
+      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
+    img: Motto
+  },
+  {
+    title: 'Sự đổi mới sáng tạo 3',
+    content:
+      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
+    img: Motto
+  },
+  {
+    title: 'Sự đổi mới sáng tạo 4',
+    content:
+      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
+    img: Motto
+  },
+  {
+    title: 'Sự đổi mới sáng tạo 5',
+    content:
+      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
+    img: Motto
+  },
+  {
+    title: 'Sự đổi mới sáng tạo 6',
+    content:
+      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
+    img: Motto
+  },
+  {
+    title: 'Sự đổi mới sáng tạo 7',
+    content:
+      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
+    img: Motto
+  },
+  {
+    title: 'Sự đổi mới sáng tạo 8',
+    content:
+      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
+    img: Motto
+  }
+];
+
+const move = ref(0);
+const isDisableLeft = ref(false);
+const isDisableRight = ref(false);
+
+const handleClickLeft = () => {
+  isDisableRight.value = false;
+  if (move.value === 0) (move.value = 566), (isDisableLeft.value = true);
+  else {
+    move.value += 566;
+  }
+};
+
+const handleClickRight = () => {
+  isDisableLeft.value = false;
+
+  if (move.value === (3 - mottoItems.length) * 566)
+    (move.value -= 566), (isDisableRight.value = true);
+  else {
+    move.value -= 566;
+  }
+};
+</script>
+
 <template>
   <div :class="$style.about__motto">
     <p :class="$style['about__motto-title']">PHƯƠNG CHÂM - GIÁ TRỊ</p>
@@ -55,78 +135,6 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import Motto from '@/assets/imgs/About/Motto.png';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faChevronLeft, faChevronRight, faL } from '@fortawesome/free-solid-svg-icons';
-import { ref } from 'vue';
-
-const indexCard = ref(1);
-const count = ref(3);
-const move = ref(0);
-const isDisableLeft = ref(false);
-const isDisableRight = ref(false);
-
-const mottoItems = [
-  {
-    title: 'Sự đổi mới sáng tạo 1',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 2',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 3',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 4',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 5',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  }
-];
-
-function handleClickLeft(): void {
-  isDisableRight.value = false;
-  if (indexCard.value <= 0) (indexCard.value = 0), (move.value = 571), (isDisableLeft.value = true);
-  else {
-    move.value += 571;
-    indexCard.value--;
-    count.value = indexCard.value + 3;
-  }
-
-  console.log('left:' + indexCard.value);
-}
-
-function handleClickRight(): void {
-  isDisableLeft.value = false;
-
-  if (indexCard.value > mottoItems.length - 3)
-    (indexCard.value = mottoItems.length - 3), (move.value -= 571), (isDisableRight.value = true);
-  else {
-    move.value -= 571;
-    indexCard.value++;
-    count.value = indexCard.value + 3;
-  }
-
-  console.log('right:' + indexCard.value);
-}
-</script>
-
 <style module scoped lang="scss">
-@import '../AboutPage.module.scss';
+@import './AboutMotto.module.scss';
 </style>

@@ -1,0 +1,109 @@
+@import "@/styles/base";
+.about__thanks{
+    position: relative;
+    height: 60rem;
+
+    p{
+        font-weight: 500;
+        font-size: $text-4xl;
+        line-height: 3.5rem;
+        text-align: center;
+        color: $primary_900;
+        margin-top: 8rem;
+    }
+
+    &-wrapper{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        .about__thanks-mail{
+            width: 30rem;
+            height: 20rem;
+            background-color: #0c455e;
+            border-bottom-left-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+            position: relative;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            
+            .about__thanks-cover::before{
+                content: '';
+                font-size: $text-base;
+                position: absolute;
+                top: 0;
+                left: 0;
+                border-left: 15rem solid transparent;
+                border-right: 15rem solid transparent;
+                border-top: 10rem solid #004968;
+                border-bottom: 10rem solid transparent;
+                z-index: 6;
+                transform-origin: top;
+                transform: rotateX(0deg);
+                transition: all 1s 1s ease;
+            }
+
+            .about__thanks-letter{
+                position: absolute;
+                z-index: 3;
+                top: 0;
+                left: 1rem;
+                background-color: #dedede;
+                width: 28rem;
+                height: 18rem;
+                border-radius: 2rem;
+                transition: all 1s ease;
+            }
+
+            .about__thanks-letter h1{
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 8rem;
+                color: #798992;
+                font-weight: 900;
+            }
+        }
+
+        .about__thanks-mail:hover .about__thanks-cover::before{
+            transform: rotateX(180deg);
+            transition: all 1s ease;
+            z-index: 1;
+        }
+
+        .about__thanks-mail:hover .about__thanks-letter{
+            top: -80px;
+            transition: all 1s 1s ease;
+        }
+
+        .about__thanks-mail::before{
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            border-left: 15rem solid transparent;
+            border-right: 15rem solid rgb(1, 129, 231);
+            border-top: 10rem solid transparent;
+            border-bottom: 10rem solid rgb(1, 129, 231);
+            border-bottom-left-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+            z-index: 4;
+        }
+
+        .about__thanks-mail::after{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-left: 15rem solid rgb(70, 170, 251);
+            border-right: 15rem solid transparent;
+            border-top: 10rem solid transparent;
+            border-bottom: 10rem solid rgb(70, 170, 251);
+            border-bottom-left-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+            z-index: 5;
+        }
+    }
+}
