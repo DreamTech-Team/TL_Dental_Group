@@ -76,43 +76,43 @@ const elipseColor = computed(() => {
   const elcolors = [
     [
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
     ],
     [
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
     ],
     [
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
     ],
     [
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
     ]
   ];
   return elcolors[activeIndex.value];
@@ -133,6 +133,7 @@ onUnmounted(() => {
 });
 </script>
 
+<!-- :style="{ background: elipseColor[0] }" -->
 <template>
   <div :class="$style.home__banner">
     <div :class="$style['home__banner-left']">
@@ -165,24 +166,12 @@ onUnmounted(() => {
           </div>
           <p>Trụ Implant Highness Hàn Quốc</p>
         </div>
-        <div
-          :class="$style['home__banner-bg-elipse1']"
-          :style="{ background: elipseColor[0] }"
-        ></div>
-        <div
-          :class="$style['home__banner-bg-elipse2']"
-          :style="{ background: elipseColor[1] }"
-        ></div>
-        <div
-          :class="$style['home__banner-bg-elipse3']"
-          :style="{ background: elipseColor[2] }"
-        ></div>
-        <div
-          :class="$style['home__banner-bg-elipse4']"
-          :style="{ background: elipseColor[3] }"
-        ></div>
       </div>
     </div>
+    <div :class="$style['home__banner-elipse1']" :style="{ background: elipseColor[0] }"></div>
+    <div :class="$style['home__banner-elipse2']" :style="{ background: elipseColor[1] }"></div>
+    <div :class="$style['home__banner-elipse3']" :style="{ background: elipseColor[2] }"></div>
+    <div :class="$style['home__banner-elipse4']" :style="{ background: elipseColor[3] }"></div>
   </div>
 </template>
 

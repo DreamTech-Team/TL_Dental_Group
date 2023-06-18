@@ -2,7 +2,7 @@
 import Banner from '@/assets/imgs/News/NewsBg.png';
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
 
-const pathBC = 'sanpham/tintuc/keo-chinh-nha';
+const pathBC = 'tintuc';
 </script>
 <template>
   <div :class="$style.news__banner">

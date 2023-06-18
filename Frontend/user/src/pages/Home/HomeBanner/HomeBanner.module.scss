@@ -2,12 +2,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
 
 .home__banner {
+  position: relative;
   overflow: hidden;
   display: flex;
   width: 100%;
   height: 670px;
-  background-color: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(40px);
+  z-index: 1;
 
   &-left {
     padding-left: 100px;
@@ -91,40 +93,7 @@
       animation: rotateParent 0.8s forwards;
 
       transform-origin: bottom center;
-      z-index: 1;
-
-      &-elipse1,
-      &-elipse2,
-      &-elipse3,
-      &-elipse4 {
-        position: absolute;
-        display: grid;
-        width: 25%;
-        aspect-ratio: 1/1;
-        border-radius: 50%;
-        z-index: 0;
-        transform: translate(50%, 50%);
-      }
-
-      &-elipse1 {
-        top: -5%;
-        left: 50%;
-      }
-
-      &-elipse2 {
-        bottom: 20%;
-        right: 23%;
-      }
-
-      &-elipse3 {
-        bottom: 15%;
-        right: 85%;
-      }
-
-      &-elipse4 {
-        top: -5%;
-        left: -10%;
-      }
+      z-index: 2;
 
       .home__banner-radial {
         display: flex;
@@ -177,4 +146,39 @@
       }
     }
   }
+
+  &-elipse1,
+      &-elipse2,
+      &-elipse3,
+      &-elipse4 {
+        position: absolute;
+        display: grid;
+        width: 16%;
+        aspect-ratio: 1/1;
+        border-radius: 50%;
+        z-index: 0;
+        transform: translate(50%, 50%);
+        background-color: black;
+      }
+
+      &-elipse1 {
+        top: -40%;
+        left: 40%;
+      }
+
+      &-elipse2 {
+        top: -40%;
+        right: 5%;
+      }
+
+      &-elipse3 {
+        bottom: 0%;
+        right: 5%;
+      }
+
+      &-elipse4 {
+        bottom: 0%;
+        left: 40%;
+      }
+
 }
