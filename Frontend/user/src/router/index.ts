@@ -6,7 +6,7 @@ const ProductPage = () => import('@/pages/Product/ProductPage.vue');
 const NewsPage = () => import('@/pages/News/NewsPage.vue');
 const NotFound = () => import('@/pages/NotFound/NotFound.vue');
 const RecruimentPage = () => import('@/pages/Recruitment/RecruitmentPage.vue');
-
+const SearchPage = () => import('@/pages/Search/SearchPage.vue');
 const routes = [
   {
     path: '/',
@@ -31,6 +31,11 @@ const routes = [
     path: '/tuyendung',
     name: 'tuyendung',
     component: RecruimentPage
+  },
+  {
+    path: '/timkiem',
+    name: 'timkiem',
+    component: SearchPage
   },
   {
     path: '/tintuc',

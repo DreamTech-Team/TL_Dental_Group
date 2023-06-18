@@ -2,25 +2,28 @@
 import IcDownCategory from '@/assets/icons/IcSortDown.svg';
 </script>
 <template>
-  <div :class="$style['product__content-category']">
-    <div :class="$style['product__content-category--title']">Danh mục</div>
-    <div :class="$style['product__content-category--first']">
+  <div :class="$style.category">
+    <!-- <div :class="$style['category__sticky']"></div> -->
+    <div :class="$style['category__title']">Danh mục</div>
+    <div :class="$style['category__first']">
       <p>Vật liệu chỉnh nha ABC</p>
       <img :src="IcDownCategory" alt="sort down" />
     </div>
     <div>
-      <div :class="$style['product__content-category--firstX']">
+      <div :class="$style['category__firstX']">
         <p>Vật liệu chỉnh nha ABC</p>
         <img :src="IcDownCategory" alt="sort down" />
       </div>
-      <div :class="$style['product__content-category--second']">Lò xo chỉnh nha</div>
-      <div :class="$style['product__content-category--second']">Thun chỉnh nha</div>
-      <div :class="$style['product__content-category--second']">Chỉ nha khoa</div>
-      <div :class="$style['product__content-category--secondX']">Kẹp gấp mắc cài</div>
-      <div :class="$style['product__content-category--second']">Răng sứ các loại</div>
-      <div :class="$style['product__content-category--second']">Máy cứng silicon</div>
+      <div>
+        <div :class="$style['category__second']">Lò xo chỉnh nha</div>
+        <div :class="$style['category__second']">Thun chỉnh nha</div>
+        <div :class="$style['category__second']">Chỉ nha khoa</div>
+        <div :class="$style['category__secondX']">Kẹp gấp mắc cài</div>
+        <div :class="$style['category__second']">Răng sứ các loại</div>
+        <div :class="$style['category__second']">Máy cứng silicon</div>
+      </div>
     </div>
-    <div :class="$style['product__content-category--first']">
+    <div :class="$style['category__first']">
       <p>Vật liệu chỉnh nha ABC</p>
       <img :src="IcDownCategory" alt="sort down" />
     </div>
@@ -28,5 +31,6 @@ import IcDownCategory from '@/assets/icons/IcSortDown.svg';
 </template>
 
 <style module scoped lang="scss">
-@import '../ProductPage.module.scss';
+// @import '../ProductPage.module.scss';
+@import '../ProductCategory/ProductCategory.module.scss';
 </style>
