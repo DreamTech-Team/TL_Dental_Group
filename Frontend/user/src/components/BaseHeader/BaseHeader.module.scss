@@ -90,6 +90,7 @@
     &-list {
       height: 100%;
       display: flex;
+      flex: 1;
     }
 
     &-item {
@@ -129,83 +130,5 @@
         color: $primary_900;
       }
     }
-  }
-}
-
-.header-category {
-  position: absolute;
-  left: 0;
-  top: 100%;
-  width: auto;
-
-  background-color: #fff;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-  box-shadow: 0px 0px 8px -3px rgba(0, 0, 0, 0.2);
-
-  &:hover {
-    overflow: visible;
-  }
-
-  /* width */
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  /* Track */
-  &::-webkit-scrollbar-track {
-    background: #F5F5F5;
-  }
-
-  /* Handle */
-  &::-webkit-scrollbar-thumb {
-    background: #dfe0e0;
-    border-radius: 4px;
-  }
-
-  /* Handle on hover */
-  &::-webkit-scrollbar-thumb:hover {
-    background: #ccc;
-    cursor: pointer;
-  }
-
-  &-show {
-    border-top: 2px solid $primary_900;
-  }
-
-  &__item {
-    border-bottom: 1px solid #ddd;
-    position: relative;
-    list-style: none;
-
-    &-link {
-      padding: 10px;
-      font-size: $text-sm;
-      line-height: 1.8rem;
-      font-weight: 400;
-      min-width: 200px;
-      margin-right: 3px;
-      color: $text_600;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      p {
-        padding-right: 6px;
-      }
-
-      &:hover {
-        transform: translateX(3px);
-        margin: 0;
-        transition: all linear 0.2s;
-      }
-    }
-  }
-
-  &-sub {
-    left: 100%;
-    top: -2px;
-    overflow-y: scroll;
   }
 }

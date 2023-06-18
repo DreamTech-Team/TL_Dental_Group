@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import Facility from '@/assets/imgs/About/Facility.png';
+import Location from '@/assets/imgs/About/Location.png';
+import Telephone from '@/assets/imgs/About/Telephone.png';
+import Message from '@/assets/imgs/About/Message.png';
+import Facebook from '@/assets/imgs/About/Facebook.png';
+import Signpost from '@/assets/imgs/About/Signpost.png';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 </script>
@@ -12,27 +17,27 @@ import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
         <h4>Cơ sở TP HCM</h4>
 
         <div>
-          <font-awesome-icon :icon="faChevronRight" :class="$style['about__facility-ic']" />
+          <img :src="Location" :class="$style['about__facility-ic']" />
           <p>bootdey Technologies Inc. 2694 Queen City Rainbow Drive Florida 99161</p>
         </div>
 
         <div>
-          <font-awesome-icon :icon="faChevronRight" :class="$style['about__facility-ic']" />
+          <img :src="Telephone" :class="$style['about__facility-ic']" />
           <p>+01 234 567 89</p>
         </div>
 
         <div>
-          <font-awesome-icon :icon="faChevronRight" :class="$style['about__facility-ic']" />
+          <img :src="Message" :class="$style['about__facility-ic']" />
           <p>abc@gmail.com</p>
         </div>
 
         <div>
-          <font-awesome-icon :icon="faChevronRight" :class="$style['about__facility-ic']" />
+          <img :src="Facebook" :class="$style['about__facility-ic']" />
           <p>https://www.facebook.com/BiomeawTLG</p>
         </div>
 
         <button :class="$style['about__facility-button']">
-          <font-awesome-icon :icon="faChevronRight" :class="$style['about__facility-button-ic']" />
+          <img :src="Signpost" :class="$style['about__facility-button-ic']" />
           <p>Đường đi</p>
         </button>
       </div>
@@ -42,5 +47,5 @@ import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 </template>
 
 <style module scoped lang="scss">
-@import '../AboutPage.module.scss';
+@import './AboutFacility.module.scss';
 </style>

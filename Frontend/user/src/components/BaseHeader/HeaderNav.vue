@@ -5,7 +5,8 @@ import { RouterLink, useRoute } from 'vue-router';
 import { ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import HeaderCategory from './HeaderCategory.vue';
+import HeaderCategory from './HeaderCategory/HeaderCategory.vue';
+import HeaderSearch from './HeaderSearch/HeaderSearch.vue';
 import { pages } from './HeaderHandle';
 
 const path = useRoute();
@@ -60,6 +61,7 @@ const pageHover = ref('none');
         <header-category v-if="item.slug === 'sanpham'" :page-hover="pageHover" />
       </div>
     </div>
+    <header-search />
   </div>
 </template>
 

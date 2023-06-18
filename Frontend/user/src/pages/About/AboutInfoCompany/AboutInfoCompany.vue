@@ -39,5 +39,5 @@ import InfoCompany from '@/assets/imgs/About/InfoCompany.png';
 </template>
 
 <style module scoped lang="scss">
-@import '../AboutPage.module.scss';
+@import './AboutInfoCompany.module.scss';
 </style>

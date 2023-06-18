@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Intro from '@/assets/imgs/About/Intro.png';
+import Policy from '@/assets/imgs/About/Policy.png';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 </script>
@@ -9,7 +9,8 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 
     <div :class="$style['about__policy-list']">
       <div :class="$style['about__policy-items']">
-        <font-awesome-icon :icon="faChevronLeft" :class="$style['about__policy-ic']" />
+        <!-- <font-awesome-icon :icon="faChevronLeft" :class="$style['about__policy-ic']" /> -->
+        <img :src="Policy" alt="" :class="$style['about__policy-ic']" />
 
         <p :class="$style['about__policy-items-title']">Chính sách bảo mật</p>
         <p :class="$style['about__policy-items-content']">
@@ -23,7 +24,8 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
       </div>
 
       <div :class="$style['about__policy-items']">
-        <font-awesome-icon :icon="faChevronLeft" :class="$style['about__policy-ic']" />
+        <!-- <font-awesome-icon :icon="faChevronLeft" :class="$style['about__policy-ic']" /> -->
+        <img :src="Policy" alt="" :class="$style['about__policy-ic']" />
 
         <p :class="$style['about__policy-items-title']">Chính sách bảo mật</p>
         <p :class="$style['about__policy-items-content']">
@@ -37,7 +39,8 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
       </div>
 
       <div :class="$style['about__policy-items']">
-        <font-awesome-icon :icon="faChevronLeft" :class="$style['about__policy-ic']" />
+        <!-- <font-awesome-icon :icon="faChevronLeft" :class="$style['about__policy-ic']" /> -->
+        <img :src="Policy" alt="" :class="$style['about__policy-ic']" />
 
         <p :class="$style['about__policy-items-title']">Chính sách bảo mật</p>
         <p :class="$style['about__policy-items-content']">
@@ -51,7 +54,8 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
       </div>
 
       <div :class="$style['about__policy-items']">
-        <font-awesome-icon :icon="faChevronLeft" :class="$style['about__policy-ic']" />
+        <!-- <font-awesome-icon :icon="faChevronLeft" :class="$style['about__policy-ic']" /> -->
+        <img :src="Policy" alt="" :class="$style['about__policy-ic']" />
 
         <p :class="$style['about__policy-items-title']">Chính sách bảo mật</p>
         <p :class="$style['about__policy-items-content']">
@@ -65,7 +69,8 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
       </div>
 
       <div :class="$style['about__policy-items']">
-        <font-awesome-icon :icon="faChevronLeft" :class="$style['about__policy-ic']" />
+        <!-- <font-awesome-icon :icon="faChevronLeft" :class="$style['about__policy-ic']" /> -->
+        <img :src="Policy" alt="" :class="$style['about__policy-ic']" />
 
         <p :class="$style['about__policy-items-title']">Chính sách bảo mật</p>
         <p :class="$style['about__policy-items-content']">
@@ -79,7 +84,8 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
       </div>
 
       <div :class="$style['about__policy-items']">
-        <font-awesome-icon :icon="faChevronLeft" :class="$style['about__policy-ic']" />
+        <!-- <font-awesome-icon :icon="faChevronLeft" :class="$style['about__policy-ic']" /> -->
+        <img :src="Policy" alt="" :class="$style['about__policy-ic']" />
 
         <p :class="$style['about__policy-items-title']">Chính sách bảo mật</p>
         <p :class="$style['about__policy-items-content']">
@@ -93,7 +99,8 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
       </div>
 
       <div :class="$style['about__policy-items']">
-        <font-awesome-icon :icon="faChevronLeft" :class="$style['about__policy-ic']" />
+        <!-- <font-awesome-icon :icon="faChevronLeft" :class="$style['about__policy-ic']" /> -->
+        <img :src="Policy" alt="" :class="$style['about__policy-ic']" />
 
         <p :class="$style['about__policy-items-title']">Chính sách bảo mật</p>
         <p :class="$style['about__policy-items-content']">
@@ -107,7 +114,8 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
       </div>
 
       <div :class="$style['about__policy-items']">
-        <font-awesome-icon :icon="faChevronLeft" :class="$style['about__policy-ic']" />
+        <!-- <font-awesome-icon :icon="faChevronLeft" :class="$style['about__policy-ic']" /> -->
+        <img :src="Policy" alt="" :class="$style['about__policy-ic']" />
 
         <p :class="$style['about__policy-items-title']">Chính sách bảo mật</p>
         <p :class="$style['about__policy-items-content']">
@@ -124,5 +132,5 @@ import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons
 </template>
 
 <style module scoped lang="scss">
-@import '../AboutPage.module.scss';
+@import './AboutPolicy.module.scss';
 </style>

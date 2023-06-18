@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomePage from '@/pages/Home/HomePage.vue';
 const AboutPage = () => import('@/pages/About/AboutPage.vue');
 const ProductPage = () => import('@/pages/Product/ProductPage.vue');
+const NewsPage = () => import('@/pages/News/NewsPage.vue');
 const NotFound = () => import('@/pages/NotFound/NotFound.vue');
 const RecruimentPage = () => import('@/pages/Recruitment/RecruitmentPage.vue');
 const SearchPage = () => import('@/pages/Search/SearchPage.vue');
@@ -35,6 +36,11 @@ const routes = [
     path: '/timkiem',
     name: 'timkiem',
     component: SearchPage
+  },
+  {
+    path: '/tintuc',
+    name: 'tintuc',
+    component: NewsPage
   },
   {
     path: '/:catchAll(.*)*',

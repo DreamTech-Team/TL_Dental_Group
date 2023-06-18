@@ -3,10 +3,17 @@
 </script>
 <template>
   <div :class="$style.about__thanks">
-    <p>Lời cảm ơn</p>
+    <p>LỜI CẢM ƠN</p>
+
+    <div :class="$style['about__thanks-wrapper']">
+      <div :class="$style['about__thanks-mail']">
+        <div :class="$style['about__thanks-cover']"></div>
+        <div :class="$style['about__thanks-letter']"><h1>@</h1></div>
+      </div>
+    </div>
   </div>
 </template>
 
 <style module scoped lang="scss">
-@import '../AboutPage.module.scss';
+@import './AboutThanks.module.scss';
 </style>

@@ -64,18 +64,65 @@ const selectedItem = computed(() => {
 
 const bannerBgColor = computed(() => {
   const colors = [
-    `radial-gradient(50% 50% at 50% 50%, rgba(135, 255, 126, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-    `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-    `radial-gradient(50% 50% at 50% 50%, rgba(255, 126, 126, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
+    `radial-gradient(50% 50% at 50% 50%, rgba(135, 255, 126, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`,
+    `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`,
+    `radial-gradient(50% 50% at 50% 50%, rgba(255, 126, 126, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`,
+    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`
   ];
   return colors[activeIndex.value];
+});
+
+const elipseColor = computed(() => {
+  const elcolors = [
+    [
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
+    ],
+    [
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
+    ],
+    [
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
+    ],
+    [
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
+      // eslint-disable-next-line max-len
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
+    ]
+  ];
+  return elcolors[activeIndex.value];
 });
 
 const moveLine = (index: number) => {
   activeIndex.value = index;
   activeBanner.value = bannerItems[index];
   showBannerBg.value = false;
+
   setTimeout(() => {
     showBannerBg.value = true;
   }, 100);
@@ -86,6 +133,7 @@ onUnmounted(() => {
 });
 </script>
 
+<!-- :style="{ background: elipseColor[0] }" -->
 <template>
   <div :class="$style.home__banner">
     <div :class="$style['home__banner-left']">
@@ -120,9 +168,13 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
+    <div :class="$style['home__banner-elipse1']" :style="{ background: elipseColor[0] }"></div>
+    <div :class="$style['home__banner-elipse2']" :style="{ background: elipseColor[1] }"></div>
+    <div :class="$style['home__banner-elipse3']" :style="{ background: elipseColor[2] }"></div>
+    <div :class="$style['home__banner-elipse4']" :style="{ background: elipseColor[3] }"></div>
   </div>
 </template>
 
 <style module scoped lang="scss">
-@import '../HomePage.module.scss';
+@import './HomeBanner.module.scss';
 </style>
