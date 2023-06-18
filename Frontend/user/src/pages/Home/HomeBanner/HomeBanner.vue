@@ -122,6 +122,7 @@ const moveLine = (index: number) => {
   activeIndex.value = index;
   activeBanner.value = bannerItems[index];
   showBannerBg.value = false;
+
   setTimeout(() => {
     showBannerBg.value = true;
   }, 100);
@@ -186,5 +187,5 @@ onUnmounted(() => {
 </template>
 
 <style module scoped lang="scss">
-@import '../HomePage.module.scss';
+@import './HomeBanner.module.scss';
 </style>

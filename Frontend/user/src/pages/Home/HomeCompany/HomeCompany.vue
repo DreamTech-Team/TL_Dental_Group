@@ -46,5 +46,5 @@ const companies = ref<Company[]>([
 </template>
 
 <style module scoped lang="scss">
-@import '../HomePage.module.scss';
+@import './HomeCompany.module.scss';
 </style>

@@ -1,5 +1,49 @@
 <script setup lang="ts">
 import Act from '@/assets/imgs/Home/Activiy.png';
+
+const activities = [
+  {
+    title: 'TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước',
+    description:
+      'Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh nha'
+  },
+  {
+    title: 'TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước',
+    description:
+      'Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh nha'
+  },
+  {
+    title: 'TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước',
+    description:
+      'Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh nha'
+  },
+  {
+    title: 'TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước',
+    description:
+      'Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh nha'
+  },
+  {
+    title: 'TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước',
+    description:
+      'Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh nha'
+  },
+  {
+    title: 'TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước',
+    description:
+      'Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh nha'
+  },
+  {
+    title: 'TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước',
+    description:
+      'Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh nha'
+  },
+  {
+    title: 'TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước',
+    description:
+      'Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh nha'
+  }
+  // Thêm các hoạt động khác vào đây
+];
 </script>
 <template>
   <div :class="$style.home__activities">
@@ -12,84 +56,15 @@ import Act from '@/assets/imgs/Home/Activiy.png';
       <button>Hội nghị tháng 3</button>
     </div>
     <div :class="$style['home__activities-grid']">
-      <div :class="$style['home__activities-item']">
+      <div
+        v-for="(activity, index) in activities"
+        :key="index"
+        :class="$style['home__activities-item']"
+      >
         <img :src="Act" alt="activity" />
         <div :class="$style['home__activities-hover']">
-          <h4>TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước</h4>
-          <span
-            >Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh
-            nha</span
-          >
-        </div>
-      </div>
-      <div :class="$style['home__activities-item']">
-        <img :src="Act" alt="activity" />
-        <div :class="$style['home__activities-hover']">
-          <h4>TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước</h4>
-          <span
-            >Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh
-            nha</span
-          >
-        </div>
-      </div>
-      <div :class="$style['home__activities-item']">
-        <img :src="Act" alt="activity" />
-        <div :class="$style['home__activities-hover']">
-          <h4>TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước</h4>
-          <span
-            >Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh
-            nha</span
-          >
-        </div>
-      </div>
-      <div :class="$style['home__activities-item']">
-        <img :src="Act" alt="activity" />
-        <div :class="$style['home__activities-hover']">
-          <h4>TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước</h4>
-          <span
-            >Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh
-            nha</span
-          >
-        </div>
-      </div>
-      <div :class="$style['home__activities-item']">
-        <img :src="Act" alt="activity" />
-        <div :class="$style['home__activities-hover']">
-          <h4>TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước</h4>
-          <span
-            >Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh
-            nha</span
-          >
-        </div>
-      </div>
-      <div :class="$style['home__activities-item']">
-        <img :src="Act" alt="activity" />
-        <div :class="$style['home__activities-hover']">
-          <h4>TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước</h4>
-          <span
-            >Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh
-            nha</span
-          >
-        </div>
-      </div>
-      <div :class="$style['home__activities-item']">
-        <img :src="Act" alt="activity" />
-        <div :class="$style['home__activities-hover']">
-          <h4>TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước</h4>
-          <span
-            >Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh
-            nha</span
-          >
-        </div>
-      </div>
-      <div :class="$style['home__activities-item']">
-        <img :src="Act" alt="activity" />
-        <div :class="$style['home__activities-hover']">
-          <h4>TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước</h4>
-          <span
-            >Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh
-            nha</span
-          >
+          <h4>{{ activity.title }}</h4>
+          <span>{{ activity.description }}</span>
         </div>
       </div>
     </div>
@@ -97,5 +72,5 @@ import Act from '@/assets/imgs/Home/Activiy.png';
 </template>
 
 <style module scoped lang="scss">
-@import '../HomePage.module.scss';
+@import './HomeActivity.module.scss';
 </style>

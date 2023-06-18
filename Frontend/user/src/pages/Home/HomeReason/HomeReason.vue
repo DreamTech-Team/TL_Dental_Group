@@ -103,5 +103,5 @@ import Logo from '@/assets/imgs/logo_nobg.png';
 </template>
 
 <style module scoped lang="scss">
-@import '../HomePage.module.scss';
+@import './HomeReason.module.scss';
 </style>
