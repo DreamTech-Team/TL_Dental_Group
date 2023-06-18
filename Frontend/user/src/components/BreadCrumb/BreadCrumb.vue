@@ -3,12 +3,66 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faHome, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { defineProps } from 'vue';
 
-defineProps({
+const pathAD = defineProps({
   tags: {
-    type: Array as () => string[],
+    type: String,
     required: true
   }
 });
+
+const predefinedItems = [
+  {
+    slug: 'tintuc',
+    name: 'Tin tức'
+  },
+  {
+    slug: 'gioithieu',
+    name: 'Giới thiệu'
+  },
+  {
+    slug: 'chinhsach',
+    name: 'Chính sách'
+  },
+  {
+    slug: 'sanpham',
+    name: 'Sản phẩm'
+  },
+  {
+    slug: 'hoat-dong-chong-tinh-nguyen',
+    name: 'Hoạt động chống dịch tình nguyện'
+  },
+  {
+    slug: 'dungcu',
+    name: 'Dụng cụ nha khoa'
+  },
+  {
+    slug: 'lienhe',
+    name: 'Liên hệ'
+  },
+  {
+    slug: 'chinh-sach-bao-mat',
+    name: 'Chính sách bảo mật'
+  },
+  {
+    slug: 'chinh-sach-bao-mat',
+    name: 'Chính sách bảo mật'
+  },
+  {
+    slug: 'kem-chinh-nha-abc',
+    name: 'Kem chỉnh nha ABC'
+  },
+  {
+    slug: 'keo-chinh-nha',
+    name: 'Kẹp chỉnh nha'
+  }
+];
+
+const pathSegments = pathAD.tags.split('/').filter((segment) => segment !== '');
+const breadcrumbItems = pathSegments.map((segment) => {
+  const predefinedItem = predefinedItems.find((item) => item.slug === segment);
+  return predefinedItem ? predefinedItem.name : segment;
+});
+console.log(breadcrumbItems);
 </script>
 <template>
   <div :class="$style.news__breadcrum">
@@ -16,9 +70,9 @@ defineProps({
       <font-awesome-icon :icon="faHome" :class="$style['news__breadcrum-ic']" />
       <span>Home</span>
     </div>
-    <div :class="$style['news__breadcrum-tag']" v-for="tag in tags" :key="tag">
+    <div :class="$style['news__breadcrum-tag']" v-for="item in breadcrumbItems" :key="item">
       <font-awesome-icon :icon="faChevronRight" :class="$style['news__breadcrum-ic']" />
-      <span>{{ tag }}</span>
+      <span>{{ item }}</span>
     </div>
   </div>
 </template>
