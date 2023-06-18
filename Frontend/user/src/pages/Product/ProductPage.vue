@@ -3,6 +3,7 @@ import ProductBanner from './ProductBanner/ProductBanner.vue';
 import ProductCard from './ProductCard/ProductCard.vue';
 import ProductCategory from './ProductCategory/ProductCategory.vue';
 import ProductNavigation from './ProductNavigation/ProductNavigation.vue';
+import ServiceQuality from '@/components/ServiceQuality/ServiceQuality.vue';
 import { products } from '../Product/ProductHandle';
 import IcSortDown from '@/assets/icons/IcSortDown.svg';
 </script>
@@ -33,6 +34,9 @@ import IcSortDown from '@/assets/icons/IcSortDown.svg';
           />
         </div>
       </div>
+    </div>
+    <div>
+      <ServiceQuality />
     </div>
   </div>
 </template>
