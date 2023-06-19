@@ -2,6 +2,7 @@
 import RecruitmentCard from '.././RecruitmentCard/RecruitmentCard.vue';
 import { ic_bag, ic_hourglass, ic_location } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 import { type PropType } from 'vue';
+import { RouterLink } from 'vue-router';
 
 export type FormartCardWork = {
   title: string;
@@ -51,9 +52,9 @@ const contentRecruit = [
       <div :class="$style['container__card-right-item']">
         <recruitment-card :items="locationItem" :style="'type6'" />
       </div>
-      <div :class="$style['container__card-right-btn']">
+      <router-link :to="`/tuyendung/${infor.title}`" :class="$style['container__card-right-btn']">
         <p>Ứng tuyển ngay</p>
-      </div>
+      </router-link>
     </div>
   </div>
 </template>
