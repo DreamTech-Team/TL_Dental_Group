@@ -25,5 +25,5 @@ import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 </template>
 
 <style module scoped lang="scss">
-@import '../AboutPage.module.scss';
+@import './AboutHeader.module.scss';
 </style>

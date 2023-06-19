@@ -15,43 +15,33 @@ const bannerItems = [
 const activeIndex = ref(0);
 const activeBanner = ref(bannerItems[0]);
 const showBannerBg = ref(true);
-const bannerItemSpacing = ref(32);
 const lineWidth = ref(0);
 let resizeListener: () => void;
 
 onMounted(() => {
+  //Find active and set width for line
   const lineActive = document.getElementById('line_active');
   if (lineActive) {
     lineWidth.value = lineActive.offsetWidth;
   }
 
+  //Resize Screen
   resizeListener = function () {
     const lineActive = document.getElementById('line_active');
     if (lineActive) {
       activeIndex.value = 0;
       lineWidth.value = lineActive.offsetWidth;
     }
-
-    const bannerListElement = document.getElementById('bannerList');
-    if (bannerListElement instanceof HTMLElement) {
-      const computedStyle = getComputedStyle(bannerListElement);
-      bannerItemSpacing.value = (parseInt(computedStyle.width) - 437) / 3; //height 4 brands
-    }
   };
 
   window.addEventListener('resize', resizeListener);
-
-  const bannerListElement = document.getElementById('bannerList');
-  if (bannerListElement instanceof HTMLElement) {
-    const computedStyle = getComputedStyle(bannerListElement);
-    bannerItemSpacing.value = (parseInt(computedStyle.width) - 437) / 3; //height 4 brands
-  }
 });
 
+//Transform line active
 const lineTransform = computed(() => {
   let selectedItemLeft = 0;
   for (let i = 0; i < activeIndex.value; i++) {
-    const itemWidth = Number(bannerItems[i].width) + bannerItemSpacing.value;
+    const itemWidth = Number(bannerItems[i].width) + 30;
     selectedItemLeft += itemWidth;
   }
   selectedItemLeft += (Number(bannerItems[activeIndex.value].width) - lineWidth.value) / 2;
@@ -62,6 +52,7 @@ const selectedItem = computed(() => {
   return bannerItems[activeIndex.value];
 });
 
+//Set background for banner
 const bannerBgColor = computed(() => {
   const colors = [
     `radial-gradient(50% 50% at 50% 50%, rgba(135, 255, 126, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`,
@@ -72,56 +63,59 @@ const bannerBgColor = computed(() => {
   return colors[activeIndex.value];
 });
 
+//Set 4 ellipse color
 const elipseColor = computed(() => {
   const elcolors = [
     [
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
     ],
     [
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
     ],
     [
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
     ],
     [
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`,
+      `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
       // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.4) 0%, rgba(242, 255, 255, 0) 100%)`
+      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
     ]
   ];
   return elcolors[activeIndex.value];
 });
 
+//To do when moveline
 const moveLine = (index: number) => {
   activeIndex.value = index;
   activeBanner.value = bannerItems[index];
   showBannerBg.value = false;
+
   setTimeout(() => {
     showBannerBg.value = true;
   }, 100);
@@ -141,7 +135,7 @@ onUnmounted(() => {
         <div
           v-for="(item, index) in bannerItems"
           :key="index"
-          :class="{ 'home__banner-item': true, active: activeIndex === index }"
+          :class="[$style['home__banner-item'], { active: activeIndex === index }]"
           @click="moveLine(index)"
         >
           <img :src="item.src" :alt="item.alt" :width="item.width" :height="item.height" />
@@ -164,27 +158,15 @@ onUnmounted(() => {
           </div>
           <p>Trụ Implant Highness Hàn Quốc</p>
         </div>
-        <div
-          :class="$style['home__banner-bg-elipse1']"
-          :style="{ background: elipseColor[0] }"
-        ></div>
-        <div
-          :class="$style['home__banner-bg-elipse2']"
-          :style="{ background: elipseColor[1] }"
-        ></div>
-        <div
-          :class="$style['home__banner-bg-elipse3']"
-          :style="{ background: elipseColor[2] }"
-        ></div>
-        <div
-          :class="$style['home__banner-bg-elipse4']"
-          :style="{ background: elipseColor[3] }"
-        ></div>
       </div>
     </div>
+    <div :class="$style['home__banner-elipse1']" :style="{ background: elipseColor[0] }"></div>
+    <div :class="$style['home__banner-elipse2']" :style="{ background: elipseColor[1] }"></div>
+    <div :class="$style['home__banner-elipse3']" :style="{ background: elipseColor[2] }"></div>
+    <div :class="$style['home__banner-elipse4']" :style="{ background: elipseColor[3] }"></div>
   </div>
 </template>
 
 <style module scoped lang="scss">
-@import '../HomePage.module.scss';
+@import './HomeBanner.module.scss';
 </style>

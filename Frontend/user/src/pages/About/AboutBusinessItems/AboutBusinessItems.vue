@@ -1,25 +1,3 @@
-<template>
-  <div :class="$style.about__businessitems">
-    <h3>MẶT HÀNG KINH DOANH</h3>
-    <div :class="$style['about__businessitems-wrapper']">
-      <div :class="$style['about__businessitems-list']" id="business-item">
-        <div
-          v-for="(item, index) in items"
-          :key="index"
-          :class="$style['about__businessitems-item']"
-          :style="{ background: getCategoryColor(index) }"
-        >
-          <span>{{ item.title }}</span>
-          <div :class="$style['about__businessitems-ctn']">
-            <div :class="$style['about__businessitems-img']">
-              <img :src="item.src" :alt="item.title" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
 <script setup lang="ts">
 import { ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -73,6 +51,32 @@ function getCategoryColor(index: number): string {
 }
 </script>
 
+<template>
+  <div :class="$style.about__businessitems">
+    <h3>MẶT HÀNG KINH DOANH</h3>
+
+    <div :class="$style['about__businessitems-ctn']">
+      <div :class="$style['about__businessitems-wrapper']" id="category-wrapper">
+        <div :class="$style['about__businessitems-list']" id="category-list">
+          <div
+            v-for="(item, index) in items.slice(0, 4)"
+            :key="index"
+            :class="$style['about__businessitems-item']"
+            :style="{ background: getCategoryColor(index), width: widthItemComputed }"
+          >
+            <span>{{ item.title }}</span>
+            <div :class="$style['about__businessitems-ctn']">
+              <div :class="$style['about__businessitems-img']">
+                <img :src="item.src" :alt="item.title" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
 <style module scoped lang="scss">
-@import '../AboutPage.module.scss';
+@import './AboutBusinessItems.module.scss';
 </style>

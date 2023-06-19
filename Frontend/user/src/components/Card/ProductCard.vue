@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import LogoNoBg from '../../assets/imgs/logo_nobg.png';
-import ProductPic from '../../assets/imgs/Product/product.png';
-import LogoCompany from '../../assets/imgs/Product/logoCompany.png';
-import OkSticker from '../..//assets/imgs/Product/GroupOk.svg';
-import Insurance from '../../assets/imgs/Product/GroupInsurance.svg';
-import SupportSticker from '../../assets/imgs/Product/GroupSupport.svg';
+import LogoNoBg from '@/assets/imgs/logo_nobg.png';
+import ProductPic from '@/assets/imgs/Product/product.png';
+import LogoCompany from '@/assets/imgs/Product/logoCompany.png';
+import OkSticker from '@/assets/imgs/Product/GroupOk.svg';
+import Insurance from '@/assets/imgs/Product/GroupInsurance.svg';
+import SupportSticker from '@/assets/imgs/Product/GroupSupport.svg';
 import { type PropType } from 'vue';
 
 export interface Product {
@@ -15,7 +15,7 @@ export interface Product {
   company: string;
 }
 
-const props = defineProps({
+defineProps({
   product: {
     type: Object as PropType<Product>,
     required: true
@@ -23,55 +23,64 @@ const props = defineProps({
 });
 </script>
 <template>
-  <div :class="$style['product__content-container--card']">
-    <div :class="$style['cart__show--info']">
-      <p :class="$style['cart__show--info-text']">{{ product.description }}</p>
-      <div :class="$style['cart__show--info-button']">Xem chi tiết</div>
+  <div :class="$style.card">
+    <div :class="$style.card__show">
+      <p :class="$style['card__show--info']">{{ product.description }}</p>
+      <div :class="$style['card__show--button']">Xem chi tiết</div>
     </div>
-    <div :class="$style['product__card--header']">
-      <div :class="$style['product__card--container']">
+    <div :class="$style.card__header">
+      <div :class="$style['card__header--container']">
         <div>
-          <div :class="$style['product__sticker--cf-ok']">
-            <img :class="$style['product__sticker--ok']" :src="OkSticker" alt="sticker" />
-            <p :class="$style['product__sticker--cf-text']">100% chính hãng</p>
+          <div :class="$style['card__header--genuine']">
+            <img :class="$style['card__header--genuine-sticker']" :src="OkSticker" alt="sticker" />
+            <p :class="$style['card__header--genuine-text']">100% chính hãng</p>
           </div>
-          <div :class="$style['product__sticker--cf-insurance']">
-            <img :class="$style['product__sticker--insurance']" :src="Insurance" alt="sticker" />
-            <p :class="$style['product__sticker--insurance-text']">Bảo hành 12 tháng</p>
+          <div :class="$style['card__header--insurance']">
+            <img
+              :class="$style['card__header--insurance-sticker']"
+              :src="Insurance"
+              alt="sticker"
+            />
+            <p :class="$style['card__header--insurance-text']">Bảo hành 12 tháng</p>
           </div>
-          <div :class="$style['product__sticker--cf-support']">
-            <img :class="$style['product__sticker--support']" :src="SupportSticker" alt="sticker" />
-            <p :class="$style['product__sticker--support-text']">Hỗ trợ đổi trả</p>
+          <div :class="$style['card__header--support']">
+            <img
+              :class="$style['card__header--insurance-sticker']"
+              :src="SupportSticker"
+              alt="sticker"
+            />
+            <p :class="$style['card__header--insurance-text']">Hỗ trợ đổi trả</p>
           </div>
-          <div :class="$style['product__card--genuine-wrap']">
-            <div :class="$style['product__card--genuine']"></div>
+          <div :class="$style['card__header--wgenuine']">
+            <div :class="$style['card__header--wgenuine-confirm']"></div>
             <!-- <div :class="$style['product__card--triangle']"></div> -->
           </div>
-          <p :class="$style['product__card--text-genuine']">Chính hãng</p>
+          <p :class="$style['card__header--txtconfirm']">Chính hãng</p>
         </div>
-        <div :class="$style['product__card--title']">
-          <img :class="$style['product__card--logo']" :src="LogoNoBg" alt="logononbg" />
-          <div :class="$style['product__cart--content']">
+        <div :class="$style['card__header--title']">
+          <img :class="$style['card__header--title-logo']" :src="LogoNoBg" alt="logononbg" />
+          <div :class="$style['card__header--title-content']">
             {{ product.tag }} {{ product.company }}
           </div>
         </div>
         <div>
-          <img :class="$style['product__card--picture']" :src="ProductPic" alt="product" />
+          <img :class="$style['card__header--picture']" :src="ProductPic" alt="product" />
         </div>
       </div>
     </div>
-    <div :class="$style['product__card--body']">
-      <p :class="$style['product__card--name']">
+    <div :class="$style.card__body">
+      <p :class="$style['card__body--name']">
         {{ product.nameProduct }}
       </p>
-      <div :class="$style['product__card--info']">
-        <img :class="$style['product__card--info-company']" :src="LogoCompany" alt="Logo company" />
-        <p :class="$style['product__card--info-price']">{{ product.price }}</p>
+      <div :class="$style['card__body--info']">
+        <img :class="$style['card__body--info-company']" :src="LogoCompany" alt="Logo company" />
+        <p :class="$style['card__body--info-price']">{{ product.price }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <style module scoped lang="scss">
-@import '../../pages/Product/ProductPage.module.scss';
+// @import '../ProductPage.module.scss';
+@import './ProductCard.module.scss';
 </style>
