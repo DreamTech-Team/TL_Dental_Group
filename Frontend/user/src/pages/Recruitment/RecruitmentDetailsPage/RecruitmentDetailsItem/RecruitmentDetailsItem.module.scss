@@ -1,0 +1,18 @@
+@import '@/styles/base';
+
+.container {
+  margin-top: 3rem;
+
+  &__title {
+    margin: 1rem 0rem;
+    font-size: $text-xl;
+    font-weight: 450;
+    color: $text_800;
+  }
+
+  &__content {
+    font-size: $text-base;
+    color: $text_900;
+    font-weight: 400;
+  }
+}

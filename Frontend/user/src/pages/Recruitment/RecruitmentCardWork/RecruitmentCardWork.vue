@@ -3,8 +3,7 @@ import RecruitmentCard from '.././RecruitmentCard/RecruitmentCard.vue';
 import { ic_bag, ic_hourglass, ic_location } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 import { type PropType } from 'vue';
 
-type FormartCardWork = {
-  id: number;
+export type FormartCardWork = {
   title: string;
   typeWork: string;
   time: string;
