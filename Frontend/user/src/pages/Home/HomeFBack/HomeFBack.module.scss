@@ -52,10 +52,12 @@
         .home__feedback-item {
           margin-left: 20px;
           margin-right: 20px;
+          margin-bottom: 5px;
           position: relative;
           display: block;
           height: auto;
           padding: 15px 25px 30px 25px;
+          transition: all 0.3s ease;
           background: linear-gradient(
             154.62deg,
             rgba(255, 253, 253, 0.4) 3.67%,
@@ -63,6 +65,11 @@
           );
           border: 1px solid #e8dbdb;
           border-radius: 20px;
+
+          &:hover {
+            box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
+              rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+          }
 
           .home__feedback-img {
             display: flex;

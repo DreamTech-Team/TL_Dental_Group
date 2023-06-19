@@ -34,7 +34,8 @@
     .home__banner-list {
       margin-top: 100px;
       display: flex;
-      width: 75%;
+      // width: 75%;
+      width: max-content;
       height: 60px;
       align-items: center;
       justify-content: space-between;
@@ -46,6 +47,8 @@
         align-items: center;
         justify-content: center;
         height: 100%;
+        cursor: pointer;
+        padding-right: 30px;
       }
 
       .line {
