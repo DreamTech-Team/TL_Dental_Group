@@ -10,15 +10,6 @@
     line-height: 33px;
   }
 
-  button {
-    margin-top: 25px;
-    outline: none;
-    border: none;
-    color: #0cbbc7;
-    font-size: $text-sm;
-    background-color: white;
-  }
-
   &-ctn {
     display: flex;
     align-items: center;
@@ -42,7 +33,7 @@
         height: 100%;
         left: 0;
         margin-top: 40px;
-        transition: all 0.5s linear;
+        transition: all 0.5s ease-in-out;
 
         align-items: center;
         justify-content: flex-start;
@@ -52,10 +43,12 @@
         .home__feedback-item {
           margin-left: 20px;
           margin-right: 20px;
+          margin-bottom: 5px;
           position: relative;
           display: block;
           height: auto;
           padding: 15px 25px 30px 25px;
+          transition: all 0.3s ease;
           background: linear-gradient(
             154.62deg,
             rgba(255, 253, 253, 0.4) 3.67%,
@@ -63,6 +56,11 @@
           );
           border: 1px solid #e8dbdb;
           border-radius: 20px;
+
+          &:hover {
+            box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
+              rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+          }
 
           .home__feedback-img {
             display: flex;
@@ -151,11 +149,12 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.25);
+      box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.2);
       position: absolute;
       top: calc(50% - 40px);
       left: 8%;
       transition: all 0.3s ease;
+      border: none;
 
       &:hover {
         transform: translateY(-0.3em);
@@ -169,11 +168,12 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.25);
+      box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.2);
       position: absolute;
       top: calc(50% - 40px);
       right: 8%;
       transition: all 0.3s ease;
+      border: none;
 
       &:hover {
         transform: translateY(-0.3em);

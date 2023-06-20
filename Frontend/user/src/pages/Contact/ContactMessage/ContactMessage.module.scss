@@ -1,0 +1,63 @@
+.contact__message{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    margin-right: 2rem;
+    margin-bottom: 2rem;
+    z-index: 1;
+    
+    &-circle{
+        border: 6px solid #00AAFF;
+        border-radius: 50%;
+        padding: 2.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #fff;
+        cursor: pointer;
+
+        img{
+            width: 5rem;
+            height: 5rem;
+            transition: all 1s ease-in-out;
+        }
+        img.show {
+            // transform: scale(1.1);
+            // transform: matrix(0, 1, 1, 0, 0, 0);
+            transform: rotate(90deg);
+          }
+    }
+
+    .contact__close{
+        position: absolute;
+        right: -12px;  
+        margin-right: 2rem;
+        margin-bottom: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: -1;
+    
+    
+        &-circle-social{
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            border: 10px solid #00AAFF;
+            border-radius: 50%;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            cursor: pointer;
+            margin-bottom: 0.6rem;
+           transition: all 1s ease-in-out;
+    
+            img{
+                width: 3rem;
+                height: 3rem;
+            }
+        }
+    }
+}

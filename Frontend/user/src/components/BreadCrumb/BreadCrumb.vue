@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faHome, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { defineProps } from 'vue';
 
 const pathAD = defineProps({
   tags: {
@@ -62,7 +61,6 @@ const breadcrumbItems = pathSegments.map((segment) => {
   const predefinedItem = predefinedItems.find((item) => item.slug === segment);
   return predefinedItem ? predefinedItem.name : segment;
 });
-console.log(breadcrumbItems);
 </script>
 <template>
   <div :class="$style.news__breadcrum">

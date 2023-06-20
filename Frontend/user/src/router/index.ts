@@ -6,7 +6,10 @@ const ProductPage = () => import('@/pages/Product/ProductPage.vue');
 const NewsPage = () => import('@/pages/News/NewsPage.vue');
 const NotFound = () => import('@/pages/NotFound/NotFound.vue');
 const RecruimentPage = () => import('@/pages/Recruitment/RecruitmentPage.vue');
+const RecruitmentDetailsPage = () =>
+  import('@/pages/Recruitment/RecruitmentDetailsPage/RecruitmentDetailsPage.vue');
 const SearchPage = () => import('@/pages/Search/SearchPage.vue');
+const ContactPage = () => import('@/pages/Contact/ContactPage.vue');
 const routes = [
   {
     path: '/',
@@ -33,6 +36,11 @@ const routes = [
     component: RecruimentPage
   },
   {
+    path: '/tuyendung/:catchAll(.*)*',
+    name: 'chitiettuyendung',
+    component: RecruitmentDetailsPage
+  },
+  {
     path: '/timkiem',
     name: 'timkiem',
     component: SearchPage
@@ -41,6 +49,11 @@ const routes = [
     path: '/tintuc',
     name: 'tintuc',
     component: NewsPage
+  },
+  {
+    path: '/lienhe',
+    name: 'lienhe',
+    component: ContactPage
   },
   {
     path: '/:catchAll(.*)*',

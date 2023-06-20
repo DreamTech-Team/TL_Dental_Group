@@ -168,8 +168,8 @@ import {
       <div :class="$style['container__work-staff']">
         <div
           :class="$style['container__work-staff-item']"
-          v-for="item in recruitWorkItems"
-          :key="item.id"
+          v-for="(item, index) in recruitWorkItems"
+          :key="index"
         >
           <recruitment-card-work :infor="item" />
         </div>

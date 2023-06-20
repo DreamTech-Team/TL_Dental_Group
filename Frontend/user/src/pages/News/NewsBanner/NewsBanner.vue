@@ -12,5 +12,5 @@ const pathBC = 'tintuc';
 </template>
 
 <style module scoped lang="scss">
-@import '../NewsPage.module.scss';
+@import './NewsBanner.module.scss';
 </style>
