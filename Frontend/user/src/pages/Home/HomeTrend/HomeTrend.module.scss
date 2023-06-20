@@ -54,7 +54,7 @@
 
       .home__trend-list {
         display: flex;
-        transition: all 0.5s linear;
+        transition: all 0.5s ease-in-out;
         margin: auto;
         justify-content: flex-start;
         flex-wrap: nowrap;

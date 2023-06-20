@@ -10,15 +10,6 @@
     line-height: 33px;
   }
 
-  button {
-    margin-top: 25px;
-    outline: none;
-    border: none;
-    color: #0cbbc7;
-    font-size: $text-sm;
-    background-color: white;
-  }
-
   &-ctn {
     display: flex;
     align-items: center;
@@ -42,7 +33,7 @@
         height: 100%;
         left: 0;
         margin-top: 40px;
-        transition: all 0.5s linear;
+        transition: all 0.5s ease-in-out;
 
         align-items: center;
         justify-content: flex-start;
@@ -158,11 +149,12 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.25);
+      box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.2);
       position: absolute;
       top: calc(50% - 40px);
       left: 8%;
       transition: all 0.3s ease;
+      border: none;
 
       &:hover {
         transform: translateY(-0.3em);
@@ -176,11 +168,12 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.25);
+      box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.2);
       position: absolute;
       top: calc(50% - 40px);
       right: 8%;
       transition: all 0.3s ease;
+      border: none;
 
       &:hover {
         transform: translateY(-0.3em);

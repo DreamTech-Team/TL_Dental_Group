@@ -106,7 +106,6 @@ onUnmounted(() => {
 <template>
   <div :class="$style.home__feedback">
     <h3>ĐÁNH GIÁ CỦA KHÁCH HÀNG</h3>
-    <button>XEM TẤT CẢ</button>
     <div :class="$style['home__feedback-ctn']">
       <div :class="$style['home__feedback-wrapper']" id="feedback-wrapper">
         <div
