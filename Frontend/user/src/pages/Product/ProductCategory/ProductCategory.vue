@@ -5,41 +5,41 @@ import IcDownCategory from '@/assets/icons/IcSortDown.svg';
 import { type PropType } from 'vue';
 import { defineComponent } from 'vue';
 
-interface DataItem {
-  name: string;
-}
+// interface DataItem {
+//   name: string;
+// }
 
-interface MyComponentProps {
-  dataArray: {
-    title: string;
-    data: DataItem[];
-  }[];
-}
-export defineComponent({
-  defineProps<MyComponentProps>()
-});
+// interface MyComponentProps {
+//   dataArray: {
+//     title: string;
+//     data: DataItem[];
+//   }[];
+// }
+// export defineComponent({
+//   defineProps<MyComponentProps>()
+// });
 // export defineComponent({
 //   props: defineProps<MyComponentProps>(),
 // });
 
-// interface Item {
-//   name: string;
-// }
+interface Item {
+  name: string;
+}
 
-// interface Category {
-//   tilte: string;
-//   data: {
-//     name: string;
-//   };
-// }
+interface Category {
+  tilte: string;
+  data: {
+    name: string;
+  };
+}
 
-// defineProps({
-//   // category: {
-//   //   type: Array as PropType<Category>,
-//   //   required: true
-//   // },
-//   IcDownCategory: Object // Định nghĩa props IcDownCategory
-// });
+defineProps({
+  // category: {
+  //   type: Array as PropType<Category>,
+  //   required: true
+  // },
+  IcDownCategory: Object // Định nghĩa props IcDownCategory
+});
 const isAnimationVisible = ref(false);
 
 const toggleAnimation = () => {
