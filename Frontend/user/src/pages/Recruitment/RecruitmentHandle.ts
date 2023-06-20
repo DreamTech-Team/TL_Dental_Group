@@ -206,28 +206,24 @@ export const recStepItems = [
 
 export const recruitWorkItems = [
   {
-    id: 1,
     title: 'VHG – Tuyển Thực Tập Sinh Marketing',
     typeWork: 'Kinh doanh/Marketing',
     time: 'Part-time',
     location: 'Hồ Chí Minh'
   },
   {
-    id: 2,
     title: 'VHG – Tuyển Thực Tập Sinh Marketing',
     typeWork: 'Kinh doanh/Marketing',
     time: 'Part-time',
     location: 'Hồ Chí Minh'
   },
   {
-    id: 3,
     title: 'VHG – Tuyển Thực Tập Sinh Marketing',
     typeWork: 'Kinh doanh/Marketing',
     time: 'Part-time',
     location: 'Hồ Chí Minh'
   },
   {
-    id: 4,
     title: 'VHG – Tuyển Thực Tập Sinh Marketing',
     typeWork: 'Kinh doanh/Marketing',
     time: 'Part-time',
