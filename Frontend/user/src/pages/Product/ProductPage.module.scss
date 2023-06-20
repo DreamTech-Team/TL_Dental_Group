@@ -32,6 +32,7 @@
       justify-content: space-between;
       border-bottom: 1px solid #e2e2e2;
       padding-bottom: 1rem;
+      position: relative;
 
       &--info {
         margin: auto 0;
@@ -52,9 +53,33 @@
         align-items: center;
         justify-content: space-around;
         font-size: $text-lg;
+        cursor: pointer;
 
         img {
           margin-left: 2rem;
+        }
+      }
+      &--content {
+        position: absolute;
+        top: 85%;
+        background-color: #fff;
+        border: 1px solid #e2e2e2;
+        right: 0;
+        z-index: 3;
+        width: 21rem;
+      }
+      .dropdown-list {
+        list-style-type: none;
+        align-items: center;
+
+        .dropdown-item {
+          display: flex;
+          justify-content: center; /* Căn giữa ngang */
+          align-items: center; /* Căn giữa dọc */
+          border-bottom: 1px solid $text_200;
+          padding: 1rem;
+          font-size: $text-lg;
+          cursor: pointer;
         }
       }
     }
