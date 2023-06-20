@@ -22,7 +22,9 @@
             transition: all 1s ease-in-out;
         }
         img.show {
-            transform: scale(1.1);
+            // transform: scale(1.1);
+            // transform: matrix(0, 1, 1, 0, 0, 0);
+            transform: rotate(90deg);
           }
     }
 
