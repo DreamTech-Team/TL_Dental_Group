@@ -89,23 +89,40 @@ const scrollLeft = () => {
 };
 
 const scrollRight = () => {
-  if (-tranfX.value + wItem.value * 4 < wItem.value * products.length) {
-    tranfX.value -= wItem.value;
+  if (window.innerWidth < 739) {
+    if (-tranfX.value + wItem.value * 2 < wItem.value * products.length) {
+      tranfX.value -= wItem.value;
+    } else {
+      tranfX.value = 0;
+    }
   } else {
-    tranfX.value = 0;
+    if (-tranfX.value + wItem.value * 4 < wItem.value * products.length) {
+      tranfX.value -= wItem.value;
+    } else {
+      tranfX.value = 0;
+    }
   }
 };
 
 onMounted(() => {
   const container = document.getElementById('trend-wrapper');
   if (container) {
-    wItem.value = container.offsetWidth / 4;
+    if (window.innerWidth < 739) {
+      wItem.value = container.offsetWidth / 2;
+    } else {
+      wItem.value = container.offsetWidth / 4;
+    }
   }
 
   resizeListener = function () {
     const container = document.getElementById('trend-wrapper');
     if (container) {
-      wItem.value = container.offsetWidth / 4;
+      if (window.innerWidth < 739) {
+        wItem.value = container.offsetWidth / 2;
+      } else {
+        wItem.value = container.offsetWidth / 4;
+      }
+
       tranfX.value = 0;
     }
   };
@@ -149,5 +166,5 @@ onUnmounted(() => {
 </template>
 
 <style module scoped lang="scss">
-@import '../HomePage.module.scss';
+@import './HomeTrend.module.scss';
 </style>

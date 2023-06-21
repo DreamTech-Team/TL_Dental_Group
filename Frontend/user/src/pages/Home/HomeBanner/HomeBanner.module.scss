@@ -1,4 +1,5 @@
 @import '@/styles/base';
+@import '@/styles/responsive';
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
 
 .home__banner {
@@ -184,4 +185,160 @@
         left: 40%;
       }
 
+}
+
+
+@include responsive_mobile() {
+  .home__banner {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  width: 100%;
+  height: max-content;
+  background: rgba(255, 255, 255, 1);
+  backdrop-filter: blur(30px);
+  z-index: 1;
+
+  &-left {
+    padding-left: 2.5rem;
+    padding-top: 4rem;
+    padding-bottom: 5rem;
+    background-color: transparent;
+
+    h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: $text-4xl-mobile;
+      width: 95%;
+      color: #262e5d;
+    }
+
+    p {
+      margin-top: 20px;
+      font-size: $text-lg-mobile;
+      color: $text_500;
+      width: 100%;
+    }
+
+    .home__banner-list {
+      display: none;
+    }
+  }
+
+  &-right {
+    flex: 1;
+    position: relative;
+    padding-right: 10px;
+    padding-top: 10px;
+
+    .home__banner-bg {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      z-index: 2;
+      animation: none;
+      position: static;
+      background-color: transparent;
+
+      .home__banner-radial {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        transform: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        .home__banner-circle {
+          overflow: hidden;
+          cursor: pointer;
+          display: grid;
+          width: 83%;
+          aspect-ratio: 1/1;
+          border-radius: 50%;
+          background-color: rgb(255, 255, 255);
+          position: relative;
+          box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+
+          .home__banner-logo {
+            position: absolute;
+            top: 12%;
+            left: 50%;
+            transform: translateX(-50%);
+
+            img {
+              height: 100%;
+            }
+          }
+
+          .home__banner-product {
+            background-image: url('@/assets/imgs/Home/DCNK.png');
+            display: block;
+            margin: auto;
+            width: 100%;
+            height: 70%;
+            margin-top: 25px;
+            background-size: contain;
+            background-position: center center;
+            background-repeat: no-repeat;
+          }
+        }
+
+        p {
+          width: 90%;
+          margin-top: 10px;
+          text-align: center;
+          font-size: $text-sm-mobile;
+          color: $primary_900;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  &-elipse1, &-elipse2, &-elipse3, &-elipse4 {
+    display: none;
+  }
+
+  &-elipse5,
+      &-elipse6,
+      &-elipse7,
+      &-elipse8 {
+        position: absolute;
+        display: block;
+        width: 40%;
+        aspect-ratio: 1/1;
+        border-radius: 50%;
+        z-index: 0;
+        transform: translate(50%, 50%);
+      }
+
+      &-elipse5 {
+        width: 20%;
+        top: 0;
+        left: 40%;
+        background: radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.5) 0%, rgba(242, 255, 255, 0) 100%);
+      }
+
+      &-elipse6 {
+        top: 25%;
+        right: 10%;
+        background: radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.2) 0%, rgba(242, 255, 255, 0) 100%);
+      }
+
+      &-elipse7 {
+        bottom: 25%;
+        right: 10%;
+        background: radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%);
+      }
+
+      &-elipse8 {
+        bottom: 25%;
+        left: 10%;
+        background: radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%);
+      }
+
+}
 }

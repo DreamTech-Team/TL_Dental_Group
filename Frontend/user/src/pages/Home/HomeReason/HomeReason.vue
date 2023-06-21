@@ -71,6 +71,7 @@ import Logo from '@/assets/imgs/logo_nobg.png';
       </span>
     </div>
     <div :class="$style['home__motto-right']">
+      <h4 :class="$style['home__motto-title']">PHƯƠNG CHÂM</h4>
       <img :src="Meeting" alt="meeting" />
     </div>
   </div>
