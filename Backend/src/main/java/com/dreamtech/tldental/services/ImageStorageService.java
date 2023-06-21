@@ -60,6 +60,17 @@ public class ImageStorageService implements IStorageService {
         }
     }
 
+    @Override
+    public boolean deleteFile(String url) {
+        String publicId = extractPublicIdFromUrl(url);
+        try {
+            this.cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+            return true;
+        } catch (IOException exception) {
+            throw new RuntimeException("Failed to delete file", exception);
+        }
+    }
+
 //    @Override
 //    public Stream<Path> loadAll() {
 //        try {
@@ -97,4 +108,14 @@ public class ImageStorageService implements IStorageService {
 //    public void deleteAllFiles() {
 //
 //    }
+
+    private static String extractPublicIdFromUrl(String imageUrl) {
+        String[] parts = imageUrl.split("/");
+        String filename = parts[parts.length - 1];
+        int extensionIndex = filename.lastIndexOf(".");
+        if (extensionIndex != -1) {
+            return filename.substring(0, extensionIndex);
+        }
+        return filename;
+    }
 }

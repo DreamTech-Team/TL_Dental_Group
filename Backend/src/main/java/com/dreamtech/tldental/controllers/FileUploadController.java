@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
@@ -27,6 +25,21 @@ public class FileUploadController {
 
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Upload file successfully", generatedFileName)
+            );
+        }catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", exception.getMessage(), "")
+            );
+        }
+    }
+
+    @DeleteMapping("")
+    public ResponseEntity<ResponseObject> deleteFile(@RequestBody String url) {
+        try {
+            boolean isDeleted = storageService.deleteFile(url);
+
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Delete file successfully", isDeleted)
             );
         }catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.OK).body(
