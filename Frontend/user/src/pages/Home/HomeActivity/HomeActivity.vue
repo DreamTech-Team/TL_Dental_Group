@@ -63,8 +63,10 @@ const activities = [
       >
         <img :src="Act" alt="activity" />
         <div :class="$style['home__activities-hover']">
-          <h4>{{ activity.title }}</h4>
-          <span>{{ activity.description }}</span>
+          <div :class="$style['home__activities-text']">
+            <h4>{{ activity.title }}</h4>
+            <span>{{ activity.description }}</span>
+          </div>
         </div>
       </div>
     </div>

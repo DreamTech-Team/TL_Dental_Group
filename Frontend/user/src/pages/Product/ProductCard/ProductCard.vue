@@ -15,7 +15,7 @@ export interface Product {
   company: string;
 }
 
-const props = defineProps({
+defineProps({
   product: {
     type: Object as PropType<Product>,
     required: true
@@ -82,5 +82,5 @@ const props = defineProps({
 
 <style module scoped lang="scss">
 // @import '../ProductPage.module.scss';
-@import '../ProductCard/ProductCard.modelu.scss';
+@import '../ProductCard/ProductCard.module.scss';
 </style>

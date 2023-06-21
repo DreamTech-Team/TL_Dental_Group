@@ -149,5 +149,5 @@ onUnmounted(() => {
 </template>
 
 <style module scoped lang="scss">
-@import './HomeTrend.module.scss';
+@import '../HomePage.module.scss';
 </style>
