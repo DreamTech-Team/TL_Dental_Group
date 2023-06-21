@@ -16,17 +16,17 @@ import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
         <div>
           <img :src="Location" :class="$style['about__facility-ic']" />
-          <p>bootdey Technologies Inc. 2694 Queen City Rainbow Drive Florida 99161</p>
+          <p>45 Thạch Thị Thanh, phường Tân Định, Quận 1, TP Hồ Chí Minh</p>
         </div>
 
         <div>
           <img :src="Telephone" :class="$style['about__facility-ic']" />
-          <p>+01 234 567 89</p>
+          <p>070 404 2234</p>
         </div>
 
         <div>
           <img :src="Message" :class="$style['about__facility-ic']" />
-          <p>abc@gmail.com</p>
+          <p>ceo.tldental.group@gmail.com</p>
         </div>
 
         <div>

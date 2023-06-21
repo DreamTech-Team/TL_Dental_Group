@@ -1,7 +1,7 @@
 @import "@/styles/base";
 
 .about__policy{
-    margin-top: 20rem;
+    margin-top: 6rem;
 
     h3{
         font-weight: 500;
@@ -17,6 +17,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        cursor: pointer;
 
         .about__policy-items{
             display: flex;
@@ -53,18 +54,19 @@
             div{
                 display: flex;
                 align-items: center;
-                margin-bottom: 0.5rem;
 
                 .about__policy-items-more{
                     font-weight: 900;
                     font-size: 1rem;
-                    line-height: 2rem;  
+                    line-height: 2rem;
+                    color: $primary_700;
                 }
 
                 .about__policy-ic-right{
                     font-size: 1rem;
                     line-height: 2rem;
                     margin-left: 0.8rem;
+                    color: $primary_700;
                 }
             }
         }
