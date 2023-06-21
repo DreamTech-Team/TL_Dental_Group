@@ -33,7 +33,7 @@ import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
         <div>
           <img :src="Facebook" :class="$style['about__facility-ic']" />
-          <p>https://www.facebook.com/BiomeawTLG</p>
+          <a href="">https://www.facebook.com/BiomeawTLG</a>
         </div>
 
         <button :class="$style['about__facility-button']">

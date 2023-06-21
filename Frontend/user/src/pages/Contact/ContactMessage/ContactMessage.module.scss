@@ -9,7 +9,7 @@
     &-circle{
         border: 6px solid #00AAFF;
         border-radius: 50%;
-        padding: 2.2rem;
+        padding: 1.6rem;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -17,9 +17,9 @@
         cursor: pointer;
 
         img{
-            width: 5rem;
-            height: 5rem;
-            transition: all 1s ease-in-out;
+            width: 3rem;
+            height: 3rem;
+            transition: all 0.3s ease-in-out;
         }
         img.show {
             // transform: scale(1.1);
@@ -30,7 +30,7 @@
 
     .contact__close{
         position: absolute;
-        right: -12px;  
+        right: -16px;  
         margin-right: 2rem;
         margin-bottom: 2rem;
         display: flex;
@@ -43,16 +43,16 @@
             position: absolute;
             bottom: 0;
             right: 0;
-            border: 10px solid #00AAFF;
+            border: 8px solid #00AAFF;
             border-radius: 50%;
-            padding: 2rem;
+            padding: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: #fff;
             cursor: pointer;
             margin-bottom: 0.6rem;
-           transition: all 1s ease-in-out;
+           transition: all 0.3s ease-in-out;
     
             img{
                 width: 3rem;

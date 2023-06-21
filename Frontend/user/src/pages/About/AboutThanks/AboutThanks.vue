@@ -3,8 +3,16 @@
 import { ref } from 'vue';
 
 const isOpen = ref(false);
+let b = 0;
 
 const handleOpen = () => {
+  if (b !== 0) {
+    const a = document.getElementById('haha');
+
+    console.log(a.offsetHeight);
+  }
+  b++;
+
   isOpen.value = !isOpen.value;
 };
 </script>
@@ -13,9 +21,9 @@ const handleOpen = () => {
     <span>LỜI CẢM ƠN</span>
 
     <div :class="$style['about__thanks-wrapper']" @mouseover="handleOpen" @mouseleave="handleOpen">
-      <div :class="[$style['about__thanks-mail'], { active: isOpen }]">
+      <div :class="$style['about__thanks-mail']">
         <div :class="$style['about__thanks-cover']"></div>
-        <div :class="$style['about__thanks-letter']">
+        <div :class="$style['about__thanks-letter']" id="haha">
           <h1>LỜI CẢM ƠN</h1>
 
           <h2>

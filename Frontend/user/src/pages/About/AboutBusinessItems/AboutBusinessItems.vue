@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, computed, onUnmounted } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import DCNK2 from '@/assets/imgs/Home/DCNK2.png';
 
-const items = ref([
+const categories = ref([
   {
     title: 'DỤNG CỤ CHỈNH NHA ABC',
     src: DCNK2
@@ -46,9 +46,54 @@ const colors = [
   `linear-gradient(143.33deg, #0168C8 24.48%, rgba(246, 76, 218, 0.547363) 78.16%, rgba(173, 0, 255, 0.74) 103.49%)`
 ];
 
-function getCategoryColor(index: number): string {
+const wItem = ref(0);
+const tranfX = ref(0);
+let resizeListener: () => void;
+
+const widthComputed = computed(() => {
+  return wItem.value * categories.value.length + 'px';
+});
+
+const widthItemComputed = computed(() => {
+  return wItem.value + 'px';
+});
+
+const scrollLeft = () => {
+  if (tranfX.value < 0) tranfX.value += wItem.value;
+};
+
+const scrollRight = () => {
+  if (-tranfX.value + wItem.value * 4 < wItem.value * categories.value.length) {
+    tranfX.value -= wItem.value;
+  } else {
+    tranfX.value = 0;
+  }
+};
+
+const getCategoryColor = (index: number) => {
   return colors[index % colors.length];
-}
+};
+
+onMounted(() => {
+  const container = document.getElementById('category-wrapper');
+  if (container) {
+    wItem.value = container.offsetWidth / 4;
+  }
+
+  resizeListener = function () {
+    const container = document.getElementById('category-wrapper');
+    if (container) {
+      wItem.value = container.offsetWidth / 4;
+      tranfX.value = 0;
+    }
+  };
+
+  window.addEventListener('resize', resizeListener);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', resizeListener);
+});
 </script>
 
 <template>
@@ -57,9 +102,13 @@ function getCategoryColor(index: number): string {
 
     <div :class="$style['about__businessitems-ctn']">
       <div :class="$style['about__businessitems-wrapper']" id="category-wrapper">
-        <div :class="$style['about__businessitems-list']" id="category-list">
+        <div
+          :class="$style['about__businessitems-list']"
+          id="category-list"
+          :style="{ width: widthComputed, transform: 'translateX(' + tranfX + 'px)' }"
+        >
           <div
-            v-for="(item, index) in items.slice(0, 4)"
+            v-for="(item, index) in categories"
             :key="index"
             :class="$style['about__businessitems-item']"
             :style="{ background: getCategoryColor(index), width: widthItemComputed }"
@@ -72,6 +121,12 @@ function getCategoryColor(index: number): string {
             </div>
           </div>
         </div>
+        <button :class="$style['about__businessitems-left']" @click="scrollLeft">
+          <font-awesome-icon :icon="faChevronLeft" :class="$style['about__businessitems-ic']" />
+        </button>
+        <button :class="$style['about__businessitems-right']" @click="scrollRight">
+          <font-awesome-icon :icon="faChevronRight" :class="$style['about__businessitems-ic']" />
+        </button>
       </div>
     </div>
   </div>

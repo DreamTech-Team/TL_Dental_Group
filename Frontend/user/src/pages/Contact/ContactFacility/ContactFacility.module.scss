@@ -6,9 +6,8 @@
         display: flex;
         justify-content: center;
         border-radius: 3.5rem;
-        margin: 4rem 0;
-        // padding: 6rem 12rem;
-
+        margin: 4rem 4rem 0 4rem;
+        
         .about__facility-left{
             width: 50%;
             margin-right: 10rem;
@@ -33,17 +32,17 @@
                 }
 
                 p{
-                    font-size: $text-2xl;
+                    font-size: $text-xl;
                     line-height: 2.8rem;
-                    color: $primary_900;
-                    font-weight: 600;
+                    color: #000;
+                    font-weight: 500;
                 }
                 a{
-                    font-size: $text-2xl;
+                    font-size: $text-xl;
                     line-height: 2.8rem;
                     color: $primary_900;
                     text-decoration: underline;
-                    font-weight: 600;
+                    font-weight: 500;
                 }
             }
 

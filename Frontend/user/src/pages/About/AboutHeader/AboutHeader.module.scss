@@ -35,7 +35,8 @@
             color: #fff;
             background-color: rgba($color: #000000, $alpha: 0.5);
             position: absolute;
-            top: 35%;
+            top: 50%;
+            transform: translateY(-50%);
             left: 0;
         }
     }

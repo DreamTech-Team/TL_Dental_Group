@@ -4,14 +4,15 @@
     margin: 4rem 8rem;
     border: 4px solid #D0D0D0;
     border-radius: 20px;
-    padding: 4rem;
+    padding: 2rem 4rem;
 
 
     h1{
         font-weight: 600;
-        font-size: $text-6xl;
+        font-size: $text-5xl;
         line-height: 7.5rem;
-        margin: 0 8rem;
+        margin-left: 4rem;
+        margin-top: 1.2rem;
     }
 
     &-position{
@@ -28,6 +29,7 @@
                 flex-direction: column;
                 align-items: center;
                 padding: 0 12rem;
+                margin-bottom: 4rem;
     
     
                 &-title{
@@ -86,57 +88,54 @@
     
             .contact__form-content{
                 width: 50%;
-                padding: 0 6rem 0 8rem;
+                padding: 0 6rem 0 10rem;
                 border-left: 1px solid #000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
     
                 form{
+                    width: 75%;
                     div{
-                        margin-bottom: 2rem;
+                        margin-bottom: 1rem;
     
                         p{
                             color: #005281;
                             font-weight: 500;
-                            font-size: $text-2xl;
+                            font-size: $text-xl;
                             line-height: 3.2rem;
+                            margin-bottom: 0.6rem;
+                            margin-left: 0.6rem;
                         }
     
                         input{
                             width: 100%;
-                            font-size: $text-xl;
-                            padding: 1.2rem 2rem;
+                            font-size: $text-base;
+                            padding: 0.8rem 1.4rem;
                             padding-right: 20px;
-                            border-radius: 20px;
-                            border: 3px solid #15A7F9;
-                        }
-    
-                        select{
-                            width: 100%;
-                            padding: 1.2rem 2rem;
-                            border-radius: 20px;
-                            border: 3px solid #15A7F9;
-                            outline: none;
-                            font-size: $text-xl;
+                            border-radius: 10px;
+                            border: 2px solid #15A7F9;
                         }
     
                         textarea{
                             width: 100%;
-                            height: 18rem;
+                            height: 12rem;
                             padding: 1.2rem;
                             border-radius: 20px;
-                            border: 3px solid #15A7F9;
+                            border: 2px solid #15A7F9;
                             outline: none;
-                            font-size: $text-xl;
+                            font-size: $text-base;
                         }
                     }
     
                     button{
                         color: #fff;
-                        background-color: #0085FF;
-                        padding: 1rem 2rem;
+                        background-color: $primary_600;
+                        padding: 0.2rem 2.4rem;
                         border: none;
                         border-radius: 15px;
                         font-weight: 600;
-                        font-size: $text-2xl;
+                        font-size: $text-lg;
                         line-height: 3.5rem;
                         float: right;
                     }
@@ -146,9 +145,9 @@
             
         .contact__form-info{
             width: 50%;
-            padding-left: 8rem;
-            transition: all 1s ease;
-            height: 604px;
+            padding-left: 10rem;
+            transition: all 0.5s ease;
+            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -157,40 +156,44 @@
             right: -1px;
             background-color: #fff;
     
-    
             &-row{
                 display: flex;
                 align-items: center;
-                margin-bottom: 4rem;
+                margin-bottom: 2rem;
     
                 .contact__form-info-img{
-                    padding: 1.6rem;
+                    // padding: 1.6rem;
                     border-radius: 50%;
-                    background-color: #0091D6;
+                    background-color: $primary_700;
                     margin-right: 1.4rem;
+                    min-width: 6rem;
+                    height: 6rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
     
                     &-ic{
-                        width: 3rem;
-                        height: 3rem;
+                        // width: 2rem;
+                        // height: 2rem;
                     }
                 }
     
                 p{
-                    font-size: $text-2xl;
+                    font-size: $text-xl;
                     line-height: 2.8rem;
-                    font-weight: 700;
+                    font-weight: 500;
                 }
             }
     
             button{
-                background: #0587FF;
-                border: 3px solid #4E7ECD;
+                background: $primary_700;
+                border: 2px solid #4E7ECD;
                 border-radius: 4rem;
-                margin: 4rem 12rem 0 8rem;
-                padding: 1.8rem 5.2rem;
+                margin: 2rem 20rem 0 4rem;
+                padding: 1.4rem 4.2rem;
                 border: none;
                 border: 1px solid #0587FF;
-                transition: all 0.5s ease-in-out;
+                transition: all 0.2s ease-in-out;
     
                 p{
                     font-size: $text-xl;
@@ -200,13 +203,12 @@
                 }
             }
             button:hover{
-                background-color: #fff;
-                transition: all 0.5s ease-in-out;
-                // border: 1px solid #0587FF;
+                transition: all 0.2s ease-in-out;
+                background-color: rgba($color: $primary_700, $alpha: 0.5);
     
-                p{
-                    color: #0587FF;
-                }
+                // p{
+                //     color: #0587FF;
+                // }
             }
         }
     }

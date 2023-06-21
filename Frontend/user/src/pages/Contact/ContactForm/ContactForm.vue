@@ -54,10 +54,8 @@ const handleClick = () => {
             </div>
 
             <div>
-              <p>Quốc gia</p>
-              <select name="country" id="">
-                <option value="">Việt Nam</option>
-              </select>
+              <p>Số điện thoại*</p>
+              <input type="text" name="sdt" />
             </div>
 
             <div>
@@ -78,21 +76,21 @@ const handleClick = () => {
           <div :class="$style['contact__form-info-img']">
             <img :src="Telephone" :class="$style['contact__form-info-img-ic']" />
           </div>
-          <p>+01 234 567 89</p>
+          <p>070 404 2234</p>
         </div>
 
         <div :class="$style['contact__form-info-row']">
           <div :class="$style['contact__form-info-img']">
             <img :src="Message" :class="$style['contact__form-info-img-ic']" />
           </div>
-          <p>abc@gmail.com</p>
+          <p>ceo.tldental.group@gmail.com</p>
         </div>
 
         <div :class="$style['contact__form-info-row']">
           <div :class="$style['contact__form-info-img']">
             <img :src="Location" :class="$style['contact__form-info-img-ic']" />
           </div>
-          <p>bootdey Technologies Inc. 2694 Queen City Rainbow Drive Florida 99161</p>
+          <p>45 Thạch Thị Thanh, phường Tân Định, Quận 1, TP Hồ Chí Minh</p>
         </div>
 
         <button :class="$style['contact__form-info-button']" @click="handleClick">

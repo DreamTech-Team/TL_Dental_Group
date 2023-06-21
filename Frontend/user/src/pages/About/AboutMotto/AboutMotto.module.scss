@@ -8,8 +8,8 @@
         line-height: 3.5rem;
         color: $primary_900;
         text-align: center;
-        margin-bottom: 10rem;
-        margin-top: 14rem;
+        margin-bottom: 6rem;
+        margin-top: 6rem;
     }
 
     div{
@@ -19,7 +19,6 @@
             display: flex;
             gap: 12.5rem;
             transition: transform 150ms ease-out;
-            transform: translatex(0px);
             width: 100%;
             
             &-item{
@@ -27,14 +26,17 @@
                 padding: 6rem 3rem;
                 border-radius: 2rem;
                 width: 33.33%;
+                height: 100%;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
 
                 img{
+                    // width: 100%;
                 }
     
                 p{
+                    width: 100%;
                     text-align: center;
                 }
 
@@ -72,10 +74,11 @@
             position: absolute;
             top: 0;
             width: 100%;
+            height: 100%;
 
             &-left{
                 width: 30%;
-                height: 53.3rem;
+                height: 100%;
                 border-radius: 2rem;
                 background-color: rgba($color: #fff, $alpha: 0.5);
             }
@@ -85,6 +88,7 @@
                 display: flex;
                 justify-content: center;
                 z-index: 1;
+                gap: 52rem;
 
                 &-left{
                     display: flex;
@@ -94,7 +98,7 @@
                     border-radius: 50%;
                     border: none;
                     box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.25);
-                    margin-right: 26rem;
+                    // margin-right: 26rem;
                     transition: all 0.3s ease;
     
                     &:hover{
@@ -109,7 +113,7 @@
                     padding: 2rem 2.2rem;
                     border-radius: 50%;
                     box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.25);
-                    margin-left: 26rem;
+                    // margin-left: 26rem;
                     transition: all 0.3s ease;
                     border: none;
 
@@ -121,8 +125,8 @@
 
             &-right{
                 width: 30%;
+                height: 100%;
                 // width: 44.1rem;
-                height: 53.3rem;
                 border-radius: 20px;
                 background-color: rgba($color: #fff, $alpha: 0.5);
             }
