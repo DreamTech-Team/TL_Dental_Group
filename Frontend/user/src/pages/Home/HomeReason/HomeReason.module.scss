@@ -359,17 +359,11 @@
                 font-size: $text-xl-mobile;
                 line-height: 26px;
                 color: black;
-                margin-bottom: 0;
+                margin-bottom: 15px;
               }
   
               p {
-                margin-top: 13px;
-                font-style: normal;
-                font-weight: 400;
-                font-size: $text-xl-mobile;
-                line-height: 26px;
-                color: black;
-                width: auto;
+                display: none;
               }
             }
           }
