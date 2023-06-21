@@ -23,6 +23,7 @@ import BGItem from '@/assets/imgs/News/NewsItem.png';
           <div :class="$style['news__item-footage']">
             <div :class="$style['news__footage-line']"></div>
             <span>HOẠT ĐỘNG</span>
+            <div :class="$style['news__footage-line--mb']"></div>
           </div>
         </div>
       </div>
@@ -45,6 +46,7 @@ import BGItem from '@/assets/imgs/News/NewsItem.png';
           <div :class="$style['news__item-footage']">
             <div :class="$style['news__footage-line']"></div>
             <span>HOẠT ĐỘNG</span>
+            <div :class="$style['news__footage-line--mb']"></div>
           </div>
         </div>
       </div>
@@ -67,6 +69,7 @@ import BGItem from '@/assets/imgs/News/NewsItem.png';
           <div :class="$style['news__item-footage']">
             <div :class="$style['news__footage-line']"></div>
             <span>HOẠT ĐỘNG</span>
+            <div :class="$style['news__footage-line--mb']"></div>
           </div>
         </div>
       </div>

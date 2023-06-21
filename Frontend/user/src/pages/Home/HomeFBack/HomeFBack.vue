@@ -84,13 +84,21 @@ const scrollRight = () => {
 onMounted(() => {
   const container = document.getElementById('feedback-wrapper');
   if (container) {
-    wItem.value = container.offsetWidth / 3;
+    if (window.innerWidth < 739) {
+      wItem.value = container.offsetWidth;
+    } else {
+      wItem.value = container.offsetWidth / 3;
+    }
   }
 
   resizeListener = function () {
     const container = document.getElementById('feedback-wrapper');
     if (container) {
-      wItem.value = container.offsetWidth / 3;
+      if (window.innerWidth < 739) {
+        wItem.value = container.offsetWidth;
+      } else {
+        wItem.value = container.offsetWidth / 3;
+      }
       tranfX.value = 0;
     }
   };

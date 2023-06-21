@@ -30,33 +30,26 @@ defineProps({
     </div>
     <div :class="$style.card__header">
       <div :class="$style['card__header--container']">
-        <div>
-          <div :class="$style['card__header--genuine']">
-            <img :class="$style['card__header--genuine-sticker']" :src="OkSticker" alt="sticker" />
-            <p :class="$style['card__header--genuine-text']">100% chính hãng</p>
-          </div>
-          <div :class="$style['card__header--insurance']">
-            <img
-              :class="$style['card__header--insurance-sticker']"
-              :src="Insurance"
-              alt="sticker"
-            />
-            <p :class="$style['card__header--insurance-text']">Bảo hành 12 tháng</p>
-          </div>
-          <div :class="$style['card__header--support']">
-            <img
-              :class="$style['card__header--insurance-sticker']"
-              :src="SupportSticker"
-              alt="sticker"
-            />
-            <p :class="$style['card__header--insurance-text']">Hỗ trợ đổi trả</p>
-          </div>
-          <div :class="$style['card__header--wgenuine']">
-            <div :class="$style['card__header--wgenuine-confirm']"></div>
-            <!-- <div :class="$style['product__card--triangle']"></div> -->
-          </div>
-          <p :class="$style['card__header--txtconfirm']">Chính hãng</p>
+        <div :class="$style['card__header--genuine']">
+          <img :class="$style['card__header--genuine-sticker']" :src="OkSticker" alt="sticker" />
+          <p :class="$style['card__header--genuine-text']">100% chính hãng</p>
         </div>
+        <div :class="$style['card__header--insurance']">
+          <img :class="$style['card__header--insurance-sticker']" :src="Insurance" alt="sticker" />
+          <p :class="$style['card__header--insurance-text']">Bảo hành 12 tháng</p>
+        </div>
+        <div :class="$style['card__header--support']">
+          <img
+            :class="$style['card__header--insurance-sticker']"
+            :src="SupportSticker"
+            alt="sticker"
+          />
+          <p :class="$style['card__header--insurance-text']">Hỗ trợ đổi trả</p>
+        </div>
+        <div :class="$style['card__header--wgenuine']">
+          <div :class="$style['card__header--wgenuine-confirm']"></div>
+        </div>
+        <p :class="$style['card__header--txtconfirm']">Chính hãng</p>
         <div :class="$style['card__header--title']">
           <img :class="$style['card__header--title-logo']" :src="LogoNoBg" alt="logononbg" />
           <div :class="$style['card__header--title-content']">
