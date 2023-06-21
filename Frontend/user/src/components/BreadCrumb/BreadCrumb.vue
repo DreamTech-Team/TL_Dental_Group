@@ -53,6 +53,10 @@ const predefinedItems = [
   {
     slug: 'keo-chinh-nha',
     name: 'Kẹp chỉnh nha'
+  },
+  {
+    slug: 'timkiem',
+    name: 'Kết quả tìm kiếm'
   }
 ];
 
