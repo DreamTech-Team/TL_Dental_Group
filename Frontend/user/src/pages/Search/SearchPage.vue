@@ -4,6 +4,7 @@ import { ref, onMounted, computed, onUnmounted } from 'vue';
 import { products } from '../Product/ProductHandle';
 import { bestsale } from '../Search/BestSale';
 import ProductCard from '../Product/ProductCard/ProductCard.vue';
+// import ProductCard from '@/components/Card/ProductCard.vue';
 import ProductCategory from '../Product/ProductCategory/ProductCategory.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import NotFounds from '@/assets/imgs/Product/notfound.svg';
@@ -152,28 +153,6 @@ defineExpose({
           >
             <product-card
               v-for="(item, index) in bestsale"
-              :key="index"
-              :product="item"
-              :class="$style['home__trend-item']"
-              :style="{ width: widthItemComputed }"
-            />
-          </div>
-        </div>
-        <button :class="$style['trend__title--ctn-left']" @click="scrollLeft">
-          <font-awesome-icon :icon="faChevronLeft" :class="$style['trend__title--ctn-ic']" />
-        </button>
-        <button :class="$style['trend__title--ctn-right']" @click="scrollRight">
-          <font-awesome-icon :icon="faChevronRight" :class="$style['trend__title--ctn-ic']" />
-        </button>
-      </div>
-      <div :class="$style['trend__title--ctn']">
-        <div :class="$style['trend__title--ctn-wrapper']" id="trend-wrapper">
-          <div
-            :class="$style['home__trend-list']"
-            :style="{ width: widthComputed, transform: 'translateX(' + tranfX + 'px)' }"
-          >
-            <product-card
-              v-for="(item, index) in products"
               :key="index"
               :product="item"
               :class="$style['home__trend-item']"

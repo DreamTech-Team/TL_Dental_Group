@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import ProductBanner from './ProductBanner/ProductBanner.vue';
 import ProductCard from './ProductCard/ProductCard.vue';
-import ProductCategory from './ProductCategory/ProductCategory.vue';
+// import ProductCategory from './ProductCategory/ProductCategory.vue';
+import ProductCategory from '@/components/Category/Category.vue';
 import ProductNavigation from './ProductNavigation/ProductNavigation.vue';
 import ServiceQuality from '@/components/ServiceQuality/ServiceQuality.vue';
 import BasePagination from '@/components/Pagination/BasePagination.vue';
@@ -99,7 +100,7 @@ defineExpose({
       <product-navigation :class="$style['product__header-navigation']" />
     </div>
     <div :class="$style['product__content']">
-      <product-category :dataArray="categories" />
+      <product-category />
       <!-- <product-category /> -->
       <div :class="$style['product__content-wrap']">
         <div :class="$style['product__content-sort']">
