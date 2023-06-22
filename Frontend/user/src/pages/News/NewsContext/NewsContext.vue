@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BGItem from '@/assets/imgs/News/NewsItem.png';
+import Category from '@/components/Category/BaseCategory.vue';
 </script>
 <template>
   <div :class="$style.news__context">
@@ -74,7 +75,9 @@ import BGItem from '@/assets/imgs/News/NewsItem.png';
         </div>
       </div>
     </div>
-    <div :class="$style['news__context-right']"></div>
+    <div :class="$style['news__context-right']">
+      <category :class="$style['news__context-right-category']" style="margin-top: 0" />
+    </div>
   </div>
 </template>
 

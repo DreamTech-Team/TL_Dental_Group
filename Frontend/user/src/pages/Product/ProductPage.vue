@@ -2,7 +2,7 @@
 import ProductBanner from './ProductBanner/ProductBanner.vue';
 import ProductCard from './ProductCard/ProductCard.vue';
 // import ProductCategory from './ProductCategory/ProductCategory.vue';
-import ProductCategory from '@/components/Category/Category.vue';
+import ProductCategory from '@/components/Category/BaseCategory.vue';
 import ProductNavigation from './ProductNavigation/ProductNavigation.vue';
 import ServiceQuality from '@/components/ServiceQuality/ServiceQuality.vue';
 import BasePagination from '@/components/Pagination/BasePagination.vue';

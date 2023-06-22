@@ -12,12 +12,52 @@ const bannerItems = [
   { src: DELL, alt: 'dell', width: '82.42', height: '25' }
 ];
 
+//MOBILE
+const tranfX = ref(0);
+const widthItemMB = ref(0);
 const mobilestatus = ref(true);
+
+//WEB
 const activeIndex = ref(0);
 const activeBanner = ref(bannerItems[0]);
 const showBannerBg = ref(true);
 const lineWidth = ref(0);
 let resizeListener: () => void;
+
+const widthComputed = computed(() => {
+  return widthItemMB.value * bannerItems.length + 'px';
+});
+
+const widthItemComputed = computed(() => {
+  return widthItemMB.value + 'px';
+});
+
+// setInterval(() => {
+//   if (-tranfX.value + widthItemMB.value < widthItemMB.value * bannerItems.length) {
+//     tranfX.value -= widthItemMB.value;
+//   } else {
+//     tranfX.value = 0;
+//   }
+// }, 5000);
+
+const scrollTest = () => {
+  const container = document.getElementById('list_item');
+  if (container) {
+    const containerWidth = container.offsetWidth;
+    const itemWidth = container.offsetWidth;
+
+    const maxScrollLeft = container.scrollWidth - containerWidth;
+
+    const currentScrollLeft = container.scrollLeft;
+    const targetScrollLeft = currentScrollLeft + itemWidth + 10;
+
+    if (targetScrollLeft > maxScrollLeft) {
+      container.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+      container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
+    }
+  }
+};
 
 onMounted(() => {
   //Find active and set width for line
@@ -28,6 +68,30 @@ onMounted(() => {
 
   mobilestatus.value = false;
 
+  //Find width slider
+  widthItemMB.value = window.innerWidth;
+
+  //Auto scroll
+  const container = document.getElementById('list_item');
+
+  // setInterval(() => {
+  //   if (container) {
+  //     const containerWidth = container.offsetWidth;
+  //     const itemWidth = container.offsetWidth;
+
+  //     const maxScrollLeft = container.scrollWidth - containerWidth;
+
+  //     const currentScrollLeft = container.scrollLeft;
+  //     const targetScrollLeft = currentScrollLeft + itemWidth + 10;
+
+  //     if (targetScrollLeft > maxScrollLeft) {
+  //       container.scrollTo({ left: 0, behavior: 'smooth' });
+  //     } else {
+  //       container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
+  //     }
+  //   }
+  // }, 8000);
+
   //Resize Screen
   resizeListener = function () {
     const lineActive = document.getElementById('line_active');
@@ -36,8 +100,14 @@ onMounted(() => {
       lineWidth.value = lineActive.offsetWidth;
     }
 
+    if (container) {
+      container.scrollTo({ left: 0, behavior: 'smooth' });
+    }
+
     if (window.innerWidth < 739) {
       mobilestatus.value = true;
+      widthItemMB.value = window.innerWidth;
+      tranfX.value = 0;
     }
   };
 
@@ -118,51 +188,48 @@ const elipseColor = computed(() => {
 });
 
 //Set 4 ellipse color for mobile
-const elipseColorMB = computed(() => {
-  const elcolorsMB = [
-    [
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.5) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`
-    ],
-    [
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
-    ],
-    [
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
-    ],
-    [
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
-    ]
-  ];
-  return elcolorsMB[activeIndex.value];
-});
+const elipseColorMB = [
+  [
+    // eslint-disable-next-line max-len
+    `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
+    // eslint-disable-next-line max-len
+    `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
+    // eslint-disable-next-line max-len
+    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
+    // eslint-disable-next-line max-len
+    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`
+  ],
+  [
+    // eslint-disable-next-line max-len
+    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
+    // eslint-disable-next-line max-len
+    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
+    // eslint-disable-next-line max-len
+    `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
+    // eslint-disable-next-line max-len
+    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`
+  ],
+  [
+    // eslint-disable-next-line max-len
+    `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
+    // eslint-disable-next-line max-len
+    `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
+    // eslint-disable-next-line max-len
+    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
+    // eslint-disable-next-line max-len
+    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`
+  ],
+  [
+    // eslint-disable-next-line max-len
+    `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
+    // eslint-disable-next-line max-len
+    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
+    // eslint-disable-next-line max-len
+    `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
+    // eslint-disable-next-line max-len
+    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`
+  ]
+];
 
 //To do when moveline
 const moveLine = (index: number) => {
@@ -218,10 +285,55 @@ onUnmounted(() => {
     <div :class="$style['home__banner-elipse2']" :style="{ background: elipseColor[1] }"></div>
     <div :class="$style['home__banner-elipse3']" :style="{ background: elipseColor[2] }"></div>
     <div :class="$style['home__banner-elipse4']" :style="{ background: elipseColor[3] }"></div>
-    <div :class="$style['home__banner-elipse5']" :style="{ background: elipseColorMB[0] }"></div>
-    <div :class="$style['home__banner-elipse6']" :style="{ background: elipseColorMB[1] }"></div>
-    <div :class="$style['home__banner-elipse7']" :style="{ background: elipseColorMB[2] }"></div>
-    <div :class="$style['home__banner-elipse8']" :style="{ background: elipseColorMB[3] }"></div>
+  </div>
+  <div :class="$style.home__bannerMB">
+    <div
+      id="list_item"
+      :class="$style['home__bannerMB-list']"
+      :style="{ width: widthComputed, transform: 'translateX(' + tranfX + 'px)' }"
+    >
+      <div
+        :class="$style['home__bannerMB-item']"
+        v-for="(item, index) in bannerItems"
+        :key="index"
+        :style="{ width: widthItemComputed }"
+        @click="scrollTest"
+      >
+        <div :class="$style['home__bannerMB-left']">
+          <h2>TL Dental Group</h2>
+          <p>Nhà cung cấp thiết bị y tế chính hãng, uy tín hàng đầu Việt Nam.</p>
+        </div>
+        <div :class="$style['home__bannerMB-right']">
+          <div v-if="showBannerBg" :class="$style['home__bannerMB-bg']">
+            <div :class="$style['home__bannerMB-radial']">
+              <div :class="$style['home__bannerMB-circle']">
+                <div :class="$style['home__bannerMB-logo']">
+                  <img :src="item.src" :alt="item.alt" width="60" height="30" />
+                </div>
+                <div :class="$style['home__bannerMB-product']"></div>
+              </div>
+              <p>Trụ Implant Highness Hàn Quốc</p>
+            </div>
+          </div>
+        </div>
+        <div
+          :class="$style['home__bannerMB-item-elipse5']"
+          :style="{ background: elipseColorMB[index][0] }"
+        ></div>
+        <div
+          :class="$style['home__bannerMB-item-elipse6']"
+          :style="{ background: elipseColorMB[index][1] }"
+        ></div>
+        <div
+          :class="$style['home__bannerMB-item-elipse7']"
+          :style="{ background: elipseColorMB[index][2] }"
+        ></div>
+        <div
+          :class="$style['home__bannerMB-item-elipse8']"
+          :style="{ background: elipseColorMB[index][3] }"
+        ></div>
+      </div>
+    </div>
   </div>
 </template>
 

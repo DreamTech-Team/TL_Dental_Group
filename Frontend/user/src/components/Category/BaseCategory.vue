@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue';
-// import { defineProps, defineExpose } from 'vue';
 import IcDownCategory from '@/assets/icons/IcsortDown.svg';
 import { category } from '../Category/Category';
 
@@ -13,10 +12,19 @@ const toggleAnimation = (index: number) => {
   if (isAnimationVisible.value) {
     nextTick(() => {
       const animationContainer = document.getElementById(`id-${index}`);
-      console.log(animationContainer);
+      const dropdownContainer = document.getElementById('dropdown-container');
 
-      if (animationContainer) {
-        animationContainer.scrollIntoView({ behavior: 'smooth' });
+      if (animationContainer && dropdownContainer) {
+        const dropdownContainerRect = dropdownContainer.getBoundingClientRect();
+        const animationContainerRect = animationContainer.getBoundingClientRect();
+
+        if (
+          animationContainerRect.top < dropdownContainerRect.top ||
+          animationContainerRect.bottom > dropdownContainerRect.bottom
+        ) {
+          const scrollPosition = animationContainer.offsetTop - dropdownContainer.offsetTop;
+          dropdownContainer.scrollTop = scrollPosition;
+        }
       }
     });
   }
@@ -24,11 +32,6 @@ const toggleAnimation = (index: number) => {
 
 const idDefine = (index: number) => {
   return `id-${index}`;
-};
-const isActive = ref(false);
-
-const toggleActive = () => {
-  isActive.value = !isActive.value;
 };
 
 // Xuất biến và hàm
@@ -38,7 +41,7 @@ defineExpose({
 });
 </script>
 <template>
-  <div :class="$style.category">
+  <div id="dropdown-container" :class="$style.category">
     <div :class="$style['category__title']">Danh mục</div>
 
     <div :class="[$style['category__firstX']]" v-for="(item, index) in category" :key="index">

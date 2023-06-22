@@ -245,6 +245,10 @@
   
     &-right {
       display: none;
+
+      &-category {
+        display: none;
+      }
     }
   }
 }

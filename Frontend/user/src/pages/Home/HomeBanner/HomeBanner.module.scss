@@ -152,193 +152,212 @@
   }
 
   &-elipse1,
-      &-elipse2,
-      &-elipse3,
-      &-elipse4 {
-        position: absolute;
-        display: grid;
-        width: 16%;
-        aspect-ratio: 1/1;
-        border-radius: 50%;
-        z-index: 0;
-        transform: translate(50%, 50%);
-        background-color: black;
-      }
+  &-elipse2,
+  &-elipse3,
+  &-elipse4 {
+    position: absolute;
+    display: grid;
+    width: 16%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    z-index: 0;
+    transform: translate(50%, 50%);
+    background-color: black;
+  }
 
-      &-elipse1 {
-        top: -40%;
-        left: 40%;
-      }
+  &-elipse1 {
+    top: -40%;
+    left: 40%;
+  }
 
-      &-elipse2 {
-        top: -40%;
-        right: 5%;
-      }
+  &-elipse2 {
+    top: -40%;
+    right: 5%;
+  }
 
-      &-elipse3 {
-        bottom: 0%;
-        right: 5%;
-      }
+  &-elipse3 {
+    bottom: 0%;
+    right: 5%;
+  }
 
-      &-elipse4 {
-        bottom: 0%;
-        left: 40%;
-      }
-
+  &-elipse4 {
+    bottom: 0%;
+    left: 40%;
+  }
 }
 
+.home__bannerMB {
+  display: none;
+}
 
 @include responsive_mobile() {
   .home__banner {
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  width: 100%;
-  height: max-content;
-  background: rgba(255, 255, 255, 1);
-  backdrop-filter: blur(30px);
-  z-index: 1;
-
-  &-left {
-    padding-left: 2.5rem;
-    padding-top: 4rem;
-    padding-bottom: 5rem;
-    background-color: transparent;
-
-    h2 {
-      font-family: 'Poppins', sans-serif;
-      font-size: $text-4xl-mobile;
-      width: 95%;
-      color: #262e5d;
-    }
-
-    p {
-      margin-top: 20px;
-      font-size: $text-lg-mobile;
-      color: $text_500;
-      width: 100%;
-    }
-
-    .home__banner-list {
-      display: none;
-    }
-  }
-
-  &-right {
-    flex: 1;
-    position: relative;
-    padding-right: 10px;
-    padding-top: 10px;
-
-    .home__banner-bg {
-      display: flex;
-      width: 100%;
-      height: 100%;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      z-index: 2;
-      animation: none;
-      position: static;
-      background-color: transparent;
-
-      .home__banner-radial {
-        display: flex;
-        width: 100%;
-        height: 100%;
-        transform: none;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-
-        .home__banner-circle {
-          overflow: hidden;
-          cursor: pointer;
-          display: grid;
-          width: 83%;
-          aspect-ratio: 1/1;
-          border-radius: 50%;
-          background-color: rgb(255, 255, 255);
-          position: relative;
-          box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-
-          .home__banner-logo {
-            position: absolute;
-            top: 12%;
-            left: 50%;
-            transform: translateX(-50%);
-
-            img {
-              height: 100%;
-            }
-          }
-
-          .home__banner-product {
-            background-image: url('@/assets/imgs/Home/DCNK.png');
-            display: block;
-            margin: auto;
-            width: 100%;
-            height: 70%;
-            margin-top: 25px;
-            background-size: contain;
-            background-position: center center;
-            background-repeat: no-repeat;
-          }
-        }
-
-        p {
-          width: 90%;
-          margin-top: 10px;
-          text-align: center;
-          font-size: $text-sm-mobile;
-          color: $primary_900;
-          font-weight: 500;
-        }
-      }
-    }
-  }
-
-  &-elipse1, &-elipse2, &-elipse3, &-elipse4 {
     display: none;
   }
 
-  &-elipse5,
-      &-elipse6,
-      &-elipse7,
-      &-elipse8 {
-        position: absolute;
-        display: block;
-        width: 40%;
-        aspect-ratio: 1/1;
-        border-radius: 50%;
-        z-index: 0;
-        transform: translate(50%, 50%);
-      }
+  .home__bannerMB {
+    display: flex;
+    height: max-content;
+    width: 100%;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
 
-      &-elipse5 {
-        width: 20%;
-        top: 0;
-        left: 40%;
-        background: radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.5) 0%, rgba(242, 255, 255, 0) 100%);
-      }
+    &-list {
+      display: flex;
+      height: 100%;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: nowrap;
+      overflow-y: hidden;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      left: 0;
+      transition: all 0.5s ease-in-out;
 
-      &-elipse6 {
-        top: 25%;
-        right: 10%;
-        background: radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.2) 0%, rgba(242, 255, 255, 0) 100%);
-      }
+      .home__bannerMB-item {
+        align-self: center;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        height: max-content;
+        background: rgba(255, 255, 255, 1);
+        backdrop-filter: blur(30px);
+        z-index: 1;
+        flex: 0 0 100%;
+        margin-right: 5px;
+        margin-left: 5px;
 
-      &-elipse7 {
-        bottom: 25%;
-        right: 10%;
-        background: radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%);
-      }
+        .home__bannerMB-left {
+          flex: 1;
+          padding-left: 2.5rem;
+          padding-top: 4rem;
+          padding-bottom: 5rem;
+          background-color: transparent;
 
-      &-elipse8 {
-        bottom: 25%;
-        left: 10%;
-        background: radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%);
-      }
+          h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: $text-4xl-mobile;
+            width: 95%;
+            color: #262e5d;
+          }
 
-}
+          p {
+            margin-top: 20px;
+            font-size: $text-lg-mobile;
+            color: $text_500;
+            width: 100%;
+          }
+        }
+
+        .home__bannerMB-right {
+          flex: 1;
+          position: relative;
+          padding-right: 10px;
+          padding-top: 10px;
+
+          .home__bannerMB-bg {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            z-index: 2;
+            animation: none;
+            position: static;
+            background-color: transparent;
+
+            .home__bannerMB-radial {
+              display: flex;
+              width: 100%;
+              height: 100%;
+              transform: none;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+
+              .home__bannerMB-circle {
+                z-index: 1;
+                overflow: hidden;
+                cursor: pointer;
+                display: grid;
+                width: 83%;
+                aspect-ratio: 1/1;
+                border-radius: 50%;
+                background-color: rgb(255, 255, 255);
+                position: relative;
+                box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+
+                .home__bannerMB-logo {
+                  position: absolute;
+                  top: 12%;
+                  left: 50%;
+                  transform: translateX(-50%);
+
+                  img {
+                    height: 100%;
+                  }
+                }
+
+                .home__bannerMB-product {
+                  background-image: url('@/assets/imgs/Home/DCNK.png');
+                  display: block;
+                  margin: auto;
+                  width: 100%;
+                  height: 70%;
+                  margin-top: 25px;
+                  background-size: contain;
+                  background-position: center center;
+                  background-repeat: no-repeat;
+                }
+              }
+
+              p {
+                width: 90%;
+                margin-top: 10px;
+                text-align: center;
+                font-size: $text-sm-mobile;
+                color: $primary_900;
+                font-weight: 500;
+              }
+            }
+          }
+        }
+
+        &-elipse5,
+        &-elipse6,
+        &-elipse7,
+        &-elipse8 {
+          position: absolute;
+          display: block;
+          width: 40%;
+          aspect-ratio: 1/1;
+          border-radius: 50%;
+          z-index: 0;
+          transform: translate(50%, 50%);
+        }
+
+        &-elipse5 {
+          width: 20%;
+          top: 0;
+          left: 40%;
+        }
+
+        &-elipse6 {
+          top: -25%;
+          right: 10%;
+        }
+
+        &-elipse7 {
+          bottom: 25%;
+          right: 10%;
+        }
+
+        &-elipse8 {
+          bottom: 25%;
+          left: 20%;
+        }
+      }
+    }
+  }
 }
