@@ -3,41 +3,178 @@
 .container__card {
   &-type1 {
     width: 25%;
+
+    &-title {
+      margin: 1rem;
+      color: white;
+
+      h3 {
+        font-size: $text-2xl;
+        font-weight: 500;
+      }
+    }
+
+    &-content {
+      word-spacing: 0.1rem;
+      line-height: 1.4;
+      font-size: $text-base;
+      color: white;
+
+      ul {
+        list-style: none;
+
+        li {
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+    }
   }
 
   &-type2 {
-    width: 80%;
+    // width: 80%;
+
+    &-title {
+      margin-bottom: 2rem;
+      margin-top: 3rem;
+      color: $complimentary_700;
+      font-size: $text-2xl;
+    }
+
+    &-content {
+      word-spacing: 0.6rem;
+      line-height: 1.2;
+      font-size: $text-base;
+      color: $text_900;
+    }
   }
 
   &-type3 {
+    position: relative;
     text-align: center;
-    background-color: $text_50;
-    padding: 1rem 3rem;
+    padding: 1.5rem 3rem;
     margin-bottom: 2.5rem;
     width: 45%;
-    border-left: 0.5rem solid $triadic_600;
+
+    &-bg1 {
+      top: 0;
+      left: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: $text_50;
+    }
+
+    &-bg2 {
+      top: 0;
+      left: 0;
+      position: absolute;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      background-color: $triadic_600;
+      clip-path: polygon(0 0, 2% 0, 2% 100%, 0% 100%);
+      transition: clip-path 300ms;
+      padding: 1.5rem 3rem;
+      margin-bottom: 2.5rem;
+
+      &-title {
+        margin-bottom: 1rem;
+
+        h3 {
+          font-size: $text-lg;
+          color: white;
+        }
+      }
+
+      &-content {
+        font-size: $text-sm;
+        color: white;
+      }
+    }
+
+    &-block {
+      position: relative;
+      z-index: 2;
+    }
+
+    &-title {
+      margin-bottom: 1rem;
+
+      h3 {
+        font-size: $text-lg;
+        color: $text_800;
+      }
+    }
+
+    &-content {
+      font-size: $text-sm;
+      color: $text_700;
+    }
   }
 
-  //   &-type3::before {
-  //     background-color: $triadic_600;
-  //     transition: transform 0.5s;
-  //     transform-origin: left;
-  //     transform: scale(0);
-  //   }
-
-  &-type3:hover {
+  &-type3:hover &-type3-bg2 {
     cursor: pointer;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  &-type3:hover &-type3-block {
+    z-index: 0;
   }
 
   &-type4 {
     display: flex;
     margin-bottom: 3rem;
     align-items: center;
+
+    &-title {
+      h3 {
+        font-size: $text-xl;
+        color: $text_800;
+        font-weight: 500;
+      }
+    }
+  }
+
+  &-type5 {
+    width: 100vw;
+    padding-left: 40vw;
+    padding-top: 8rem;
+
+    &-title {
+      margin-bottom: 2rem;
+      h3 {
+        font-size: $text-3xl;
+        font-weight: 400;
+        color: $text_800;
+      }
+    }
+
+    &-content {
+      width: 60%;
+      padding: 1.5rem 2rem 1.5rem 1rem;
+      margin-bottom: 3rem;
+      border-left: 0.3rem solid $complimentary_500;
+      font-size: $text-base;
+      color: $text_800;
+    }
+  }
+
+  &-type4:hover {
+    cursor: pointer;
   }
 
   &-type6 {
     display: flex;
     align-items: center;
+
+    &-title {
+      h3 {
+        font-size: $text-sm;
+        font-weight: 400;
+        color: $text_800;
+      }
+    }
   }
 
   &-icon {
@@ -73,100 +210,8 @@
     }
   }
 
-  &-title {
-    &-type1 {
-      margin: 1rem;
-      color: white;
-
-      h3 {
-        font-size: $text-2xl;
-        font-weight: 500;
-      }
-    }
-
-    &-type2 {
-      margin-bottom: 2rem;
-      margin-top: 3rem;
-      color: $complimentary_700;
-      font-size: $text-2xl;
-    }
-
-    &-type3 {
-      margin-bottom: 1rem;
-
-      h3 {
-        font-size: $text-lg;
-        color: $text_800;
-      }
-    }
-
-    &-type4 {
-      h3 {
-        font-size: $text-xl;
-        color: $text_800;
-        font-weight: 500;
-      }
-    }
-
-    &-type5 {
-      margin-bottom: 2rem;
-      h3 {
-        font-size: $text-3xl;
-        font-weight: 400;
-        color: $text_800;
-      }
-    }
-
-    &-type6 {
-      h3 {
-        font-size: $text-sm;
-        font-weight: 400;
-        color: $text_800;
-      }
-    }
-  }
-
-  &-content {
-    &-type1 {
-      word-spacing: 0.6rem;
-      line-height: 1.3;
-      font-size: $text-base;
-      color: white;
-
-      ul {
-        list-style: none;
-
-        li {
-          display: flex;
-          justify-content: space-between;
-        }
-      }
-    }
-
-    &-type2 {
-      word-spacing: 0.6rem;
-      line-height: 1.2;
-      font-size: $text-base;
-      color: $text_900;
-    }
-
-    &-type3 {
-      font-size: $text-sm;
-      color: $text_700;
-    }
-
-    &-type5 {
-      width: 80%;
-      padding: 1.5rem 2rem;
-      margin-bottom: 4rem;
-      border-left: 0.3rem solid $complimentary_500;
-      font-size: $text-base;
-      color: $text_800;
-    }
-  }
-
   &-image {
-    margin-bottom: 5rem;
+    padding-bottom: 8rem;
   }
 }
 
@@ -184,4 +229,19 @@
 
 .type4 {
   background-color: $analogous_500;
+}
+
+.type5-color-background-2 {
+  background-color: rgba($color: $primary_100, $alpha: 0.2);
+}
+.type5-color-background-1 {
+  // background-color: rgba($color: $complimentary_100, $alpha: 0.2);
+  background-color: white;
+}
+.type5-color-background-3 {
+  background-color: rgba($color: $complimentary_100, $alpha: 0.2);
+  // background-color: rgba($color: $analogous_100, $alpha: 0.1);
+}
+.type5-color-background-4 {
+  background-color: rgba($color: $triadic_100, $alpha: 0.2);
 }

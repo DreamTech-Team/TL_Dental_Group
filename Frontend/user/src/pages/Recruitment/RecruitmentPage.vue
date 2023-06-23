@@ -20,9 +20,26 @@ import {
   recStepItems,
   recruitWorkItems
 } from './RecruitmentHandle';
-// import { ref } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 
-// const propItems = ref(items);
+// const containerRecruit = document.getElementById('container-recruit');
+
+let onStickyElement: () => boolean;
+const addStickyElement = ref(false);
+const containerRecruit = ref(null);
+
+onMounted(() => {
+  // const element = containerRecruit.value;
+  // const rect = element.getBoundingClientRect();
+  // console.log(rect.top);
+  // if (rect === 0) addStickyElement.value = true;
+});
+
+const customClass = computed(() => {
+  return {
+    'sticky-container': addStickyElement
+  };
+});
 </script>
 <template>
   <div :class="$style.container">
@@ -144,8 +161,8 @@ import {
         </div>
       </div>
     </div>
-    <div :class="$style.container__recruit">
-      <div :class="$style['container__recruit-left']">
+    <div :class="$style.container__recruit" ref="containerRecruit">
+      <div :class="[$style['container__recruit-left'], $style['sticky-container']]">
         <div :class="$style['container__recruit-left-title']">
           <span>Tuyển dụng TL Dental Group</span>
           <h2>Quy Trình Tuyển Dụng</h2>

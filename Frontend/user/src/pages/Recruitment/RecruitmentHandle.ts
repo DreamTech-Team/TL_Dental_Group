@@ -171,37 +171,37 @@ export const recStepItems = [
       style: 'type5'
     },
     image: { link: rec_img1, style: 'type1' }
+  },
+  {
+    icon: '',
+    title: { content: 'Sơ Loại Hồ Sơ Ứng Viên', style: 'type5' },
+    content: {
+      content: `HR đánh giá và lựa chọn hồ sơ ứng viên trong vòng
+    01- 03 ngày và chuyển bộ phận chuyên môn đánh giá và lên lịch phỏng vấn`,
+      style: 'type5'
+    },
+    image: { link: rec_img2, style: 'type1' }
+  },
+  {
+    icon: '',
+    title: { content: 'Tham Gia Phỏng Vấn', style: 'type5' },
+    content: {
+      content: `Bộ phận nhân sự TL Dental Group gửi lời mời phỏng vấn
+     chuyên môn cùng HR/Trưởng Đơn vị nghiệp vụ và tham gia bài kiểm tra test (nếu có).`,
+      style: 'type5'
+    },
+    image: { link: rec_img3, style: 'type1' }
+  },
+  {
+    icon: '',
+    title: { content: 'Nhận Lời Mời Làm Việc', style: 'type5' },
+    content: {
+      content: `Phòng nhân sự sẽ gửi thư mời nhận việc đến ứng
+    viên đạt yêu cầu trong vòng 6-7 ngày kể từ ngày phỏng vấn.`,
+      style: 'type5'
+    },
+    image: { link: rec_img4, style: 'type1' }
   }
-  // {
-  //   icon: '',
-  //   title: { content: 'Sơ Loại Hồ Sơ Ứng Viên', style: 'type5' },
-  //   content: {
-  //     content: `HR đánh giá và lựa chọn hồ sơ ứng viên trong vòng
-  //   01- 03 ngày và chuyển bộ phận chuyên môn đánh giá và lên lịch phỏng vấn`,
-  //     style: 'type5'
-  //   },
-  //   image: { link: rec_img2, style: 'type1' }
-  // },
-  // {
-  //   icon: '',
-  //   title: { content: 'Tham Gia Phỏng Vấn', style: 'type5' },
-  //   content: {
-  //     content: `Bộ phận nhân sự TL Dental Group gửi lời mời phỏng vấn
-  //    chuyên môn cùng HR/Trưởng Đơn vị nghiệp vụ và tham gia bài kiểm tra test (nếu có).`,
-  //     style: 'type5'
-  //   },
-  //   image: { link: rec_img3, style: 'type1' }
-  // },
-  // {
-  //   icon: '',
-  //   title: { content: 'Nhận Lời Mời Làm Việc', style: 'type5' },
-  //   content: {
-  //     content: `Phòng nhân sự sẽ gửi thư mời nhận việc đến ứng
-  //   viên đạt yêu cầu trong vòng 6-7 ngày kể từ ngày phỏng vấn.`,
-  //     style: 'type5'
-  //   },
-  //   image: { link: rec_img4, style: 'type1' }
-  // }
 ];
 
 export const recruitWorkItems = [
