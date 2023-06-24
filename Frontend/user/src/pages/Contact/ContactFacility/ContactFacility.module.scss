@@ -50,11 +50,12 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                background: #FCFCFC;
-                border: 3px solid #4E7ECD;
+                background: #fff;
+                border: 3px solid $primary_700;
                 border-radius: 4rem;
                 margin: 4rem 0 0 4rem;
                 padding: 1.2rem 2.4rem;
+                transition: all 0.5s ease;
 
                 .about__facility-button-ic{
                     // font-size: $text-2xl;
@@ -68,12 +69,26 @@
                     line-height: 2.8rem;
                 }
             }
+
+            button:hover{
+                // transition: all 0.5s ease;
+                background: $primary_700;
+
+                p{
+                    color: #fff;
+                }
+                
+                .about__facility-button-ic{
+                    color: #fff;
+                }
+            }
         }
 
         img{
             // width: 50%;
             width: 47.5rem;
             height: 38.2rem;
+            color: #fff;
         }
     }
 }

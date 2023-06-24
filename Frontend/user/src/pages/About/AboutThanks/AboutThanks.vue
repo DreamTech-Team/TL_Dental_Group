@@ -1,26 +1,49 @@
 <script setup lang="ts">
 // import Intro from '@/assets/imgs/About/Intro.png';
-import { ref } from 'vue';
+import { ref, Transition } from 'vue';
 
 const isOpen = ref(false);
 let b = 0;
 
 const handleOpen = () => {
-  if (b !== 0) {
-    const a = document.getElementById('haha');
+  // if (b !== 0) {
+  //   const a = document.getElementById('haha');
+  //   console.log(a.offsetHeight);
+  // }
+  // b++;
+  // isOpen.value = !isOpen.value;
 
-    console.log(a.offsetHeight);
+  if (b == 0) {
+    const mobileElement = document.getElementById('haha');
+
+    if (mobileElement) {
+      window.scrollTo({
+        top: mobileElement.offsetHeight,
+        behavior: 'smooth'
+      });
+    }
   }
   b++;
+};
 
-  isOpen.value = !isOpen.value;
+const handleB = () => {
+  b = 0;
+
+  const mobileElement = document.getElementById('haha');
+
+  if (mobileElement) {
+    window.scrollTo({
+      top: mobileElement.offsetWidth,
+      behavior: 'smooth'
+    });
+  }
 };
 </script>
 <template>
   <div :class="$style.about__thanks">
     <span>LỜI CẢM ƠN</span>
 
-    <div :class="$style['about__thanks-wrapper']" @mouseover="handleOpen" @mouseleave="handleOpen">
+    <div :class="$style['about__thanks-wrapper']" @mouseover="handleOpen" @mouseleave="handleB">
       <div :class="$style['about__thanks-mail']">
         <div :class="$style['about__thanks-cover']"></div>
         <div :class="$style['about__thanks-letter']" id="haha">

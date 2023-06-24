@@ -24,7 +24,7 @@ const routes = [
   {
     path: '/gioithieu',
     name: 'gioithieu',
-    component: NewsDetailPage
+    component: AboutPage
   },
   {
     path: '/sanpham',
@@ -50,6 +50,11 @@ const routes = [
     path: '/tintuc',
     name: 'tintuc',
     component: NewsPage
+  },
+  {
+    path: '/tintuc/:catchAll(.*)*',
+    name: 'chitiettintuc',
+    component: NewsDetailPage
   },
   {
     path: '/lienhe',

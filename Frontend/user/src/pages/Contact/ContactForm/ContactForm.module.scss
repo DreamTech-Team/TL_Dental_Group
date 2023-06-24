@@ -48,6 +48,7 @@
                     margin-bottom: 3rem;
                     border: none;
                     border-radius: 5px;
+                    transition: all 0.5s ease;
     
                     &-ic{
                         font-size: $text-4xl;
@@ -61,6 +62,11 @@
                         margin: 0 auto;
                     }
                 }
+
+                &-button-facebook:hover{
+                    transition: all 0.5s ease;
+                    background-color: rgba($color: #4267B2, $alpha: 0.85);
+                }
     
                 &-button-zalo{
                     width: 100%;
@@ -71,6 +77,7 @@
                     background-color: #3C7CFF;
                     border: none;
                     border-radius: 5px;
+                    transition: all 0.5s ease;
     
                     &-ic{
                         font-size: $text-4xl;
@@ -83,6 +90,10 @@
                         line-height: 2.4rem;
                         margin: 0 auto;
                     }
+                }
+                &-button-zalo:hover{
+                    transition: all 0.5s ease;
+                    background-color: rgba($color: #3C7CFF, $alpha: 0.85);
                 }
             }
     
@@ -186,14 +197,18 @@
             }
     
             button{
-                background: $primary_700;
-                border: 2px solid #4E7ECD;
+                // background: $primary_700;
+                border: 2px solid #184A7F;
                 border-radius: 4rem;
                 margin: 2rem 20rem 0 4rem;
                 padding: 1.4rem 4.2rem;
                 border: none;
                 border: 1px solid #0587FF;
-                transition: all 0.2s ease-in-out;
+                transition: all 0.5s ease-in-out;
+
+                background-image: linear-gradient(to left,white, #184A7F);
+                background-size: 300% 100%;
+                transition: all 1s ease;
     
                 p{
                     font-size: $text-xl;
@@ -203,13 +218,16 @@
                 }
             }
             button:hover{
-                transition: all 0.2s ease-in-out;
-                background-color: rgba($color: $primary_700, $alpha: 0.5);
-    
-                // p{
-                //     color: #0587FF;
-                // }
-            }
+                transition: all 1s ease;
+                opacity: 0.9;
+                background: white;
+                background-size: 0 0;
+                cursor: pointer;
+
+                p{
+                    color: #184A7F;
+                }
+           }
         }
     }
 }
