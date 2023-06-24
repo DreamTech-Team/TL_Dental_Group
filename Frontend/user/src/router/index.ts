@@ -10,7 +10,11 @@ const RecruitmentDetailsPage = () =>
   import('@/pages/Recruitment/RecruitmentDetailsPage/RecruitmentDetailsPage.vue');
 const SearchPage = () => import('@/pages/Search/SearchPage.vue');
 const ContactPage = () => import('@/pages/Contact/ContactPage.vue');
+<<<<<<< HEAD
 const PolicyPage = () => import('@/pages/Policy/PolicyPage.vue');
+=======
+const NewsDetailPage = () => import('@/pages/NewsDetail/NewsDetail.vue');
+>>>>>>> 503ad1f6da1c1d9702deaa874374792873ae961b
 const routes = [
   {
     path: '/',
@@ -55,6 +59,11 @@ const routes = [
     path: '/tintuc',
     name: 'tintuc',
     component: NewsPage
+  },
+  {
+    path: '/tintuc/:catchAll(.*)*',
+    name: 'chitiettintuc',
+    component: NewsDetailPage
   },
   {
     path: '/lienhe',
