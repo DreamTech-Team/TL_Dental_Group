@@ -10,6 +10,7 @@ const RecruitmentDetailsPage = () =>
   import('@/pages/Recruitment/RecruitmentDetailsPage/RecruitmentDetailsPage.vue');
 const SearchPage = () => import('@/pages/Search/SearchPage.vue');
 const ContactPage = () => import('@/pages/Contact/ContactPage.vue');
+const PolicyPage = () => import('@/pages/Policy/PolicyPage.vue');
 const routes = [
   {
     path: '/',
@@ -39,6 +40,11 @@ const routes = [
     path: '/tuyendung/:catchAll(.*)*',
     name: 'chitiettuyendung',
     component: RecruitmentDetailsPage
+  },
+  {
+    path: '/chinhsach',
+    name: 'chinhsach',
+    component: PolicyPage
   },
   {
     path: '/timkiem',
