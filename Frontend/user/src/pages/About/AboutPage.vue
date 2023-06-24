@@ -6,9 +6,13 @@ import AboutMotto from './AboutMotto/AboutMotto.vue';
 import AboutBusinessItems from './AboutBusinessItems/AboutBusinessItems.vue';
 import AboutPolicy from './AboutPolicy/AboutPolicy.vue';
 import AboutFacility from './AboutFacility/AboutFacility.vue';
+import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
+
+const pathAbout = 'tintuc';
 </script>
 <template>
   <div :class="$style.about">
+    <BreadCrumb :tags="pathAbout" />
     <AboutHeader />
     <AboutThanks />
     <AboutInfoCompany />

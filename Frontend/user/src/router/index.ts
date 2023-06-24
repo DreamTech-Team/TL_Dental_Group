@@ -10,6 +10,7 @@ const RecruitmentDetailsPage = () =>
   import('@/pages/Recruitment/RecruitmentDetailsPage/RecruitmentDetailsPage.vue');
 const SearchPage = () => import('@/pages/Search/SearchPage.vue');
 const ContactPage = () => import('@/pages/Contact/ContactPage.vue');
+const NewsDetailPage = () => import('@/pages/NewsDetail/NewsDetail.vue');
 const routes = [
   {
     path: '/',
@@ -23,7 +24,7 @@ const routes = [
   {
     path: '/gioithieu',
     name: 'gioithieu',
-    component: AboutPage
+    component: NewsDetailPage
   },
   {
     path: '/sanpham',

@@ -9,10 +9,15 @@ import MessageV2 from '@/assets/imgs/Contact/MessageV2.png';
 import Close from '@/assets/imgs/Contact/Close.png';
 import { ref } from 'vue';
 
+import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
+
+const pathContact = 'lienhe';
+
 const isOpen = ref(false);
 </script>
 <template>
   <div :class="$style.contact">
+    <BreadCrumb :tags="pathContact" :class="$style.contact__breadcrumb" />
     <ContactForm />
     <ContactMaps />
     <ContactFacility />
