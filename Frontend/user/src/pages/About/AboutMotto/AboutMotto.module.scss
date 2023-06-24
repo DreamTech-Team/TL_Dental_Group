@@ -17,7 +17,7 @@
 
         .about__motto-slider{
             display: flex;
-            gap: 12.5rem;
+            gap: 15rem;
             transition: transform 150ms ease-out;
             width: 100%;
             
@@ -25,14 +25,13 @@
                 background-color: #D7FFFA;
                 padding: 6rem 3rem;
                 border-radius: 2rem;
-                width: 33.33%;
                 height: 100%;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
 
                 img{
-                    // width: 100%;
+                    width: calc(100vw*0.3333 - 15rem - 1.3rem);
                 }
     
                 p{
@@ -56,10 +55,10 @@
                 }
             }
 
-            &-item:first-child{
-                margin: 0;
-                margin-left: -4.8rem;
-            }
+            // &-item:first-child{
+            //     margin: 0;
+            //     margin-left: -4.8rem;
+            // }
 
             // &-item:last-child{
             //     margin: 0;
@@ -88,7 +87,7 @@
                 display: flex;
                 justify-content: center;
                 z-index: 1;
-                gap: 52rem;
+                gap: 51rem;
 
                 &-left{
                     display: flex;
