@@ -200,7 +200,8 @@
                 // background: $primary_700;
                 border: 2px solid #184A7F;
                 border-radius: 4rem;
-                margin: 2rem 20rem 0 4rem;
+                margin: 2rem 0rem 0 4rem;
+                width: fit-content;
                 padding: 1.4rem 4.2rem;
                 border: none;
                 border: 1px solid #0587FF;
@@ -209,6 +210,9 @@
                 background-image: linear-gradient(to left,white, #184A7F);
                 background-size: 300% 100%;
                 transition: all 1s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
     
                 p{
                     font-size: $text-xl;

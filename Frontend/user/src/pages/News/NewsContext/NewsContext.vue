@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import BGItem from '@/assets/imgs/News/NewsItem.png';
 import Category from '@/components/Category/BaseCategory.vue';
+import router from '@/router/index';
+
+const linkDetail = () => {
+  router.push('/tintuc/a');
+};
 </script>
 <template>
   <div :class="$style.news__context">
     <div :class="$style['news__context-left']">
-      <div :class="$style['news__context-item']">
+      <div :class="$style['news__context-item']" @click="linkDetail()">
         <div :class="$style['news__item-left']">
           <img :src="BGItem" alt="BGItem" />
         </div>
@@ -28,7 +33,7 @@ import Category from '@/components/Category/BaseCategory.vue';
           </div>
         </div>
       </div>
-      <div :class="$style['news__context-item']">
+      <div :class="$style['news__context-item']" @click="linkDetail()">
         <div :class="$style['news__item-left']">
           <img :src="BGItem" alt="BGItem" />
         </div>
@@ -51,7 +56,7 @@ import Category from '@/components/Category/BaseCategory.vue';
           </div>
         </div>
       </div>
-      <div :class="$style['news__context-item']">
+      <div :class="$style['news__context-item']" @click="linkDetail()">
         <div :class="$style['news__item-left']">
           <img :src="BGItem" alt="BGItem" />
         </div>

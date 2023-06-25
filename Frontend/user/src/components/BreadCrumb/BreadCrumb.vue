@@ -27,7 +27,7 @@ const predefinedItems = [
     name: 'Sản phẩm'
   },
   {
-    slug: 'hoat-dong-chong-tinh-nguyen',
+    slug: 'hoat-dong-chong-dich-tinh-nguyen',
     name: 'Hoạt động chống dịch tình nguyện'
   },
   {

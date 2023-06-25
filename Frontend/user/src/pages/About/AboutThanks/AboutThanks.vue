@@ -2,23 +2,16 @@
 // import Intro from '@/assets/imgs/About/Intro.png';
 import { ref, Transition } from 'vue';
 
-const isOpen = ref(false);
 let b = 0;
 
 const handleOpen = () => {
-  // if (b !== 0) {
-  //   const a = document.getElementById('haha');
-  //   console.log(a.offsetHeight);
-  // }
-  // b++;
-  // isOpen.value = !isOpen.value;
-
   if (b == 0) {
     const mobileElement = document.getElementById('haha');
+    console.log(mobileElement.offsetHeight);
 
     if (mobileElement) {
       window.scrollTo({
-        top: mobileElement.offsetHeight,
+        top: mobileElement.offsetHeight / 1.7,
         behavior: 'smooth'
       });
     }
@@ -28,12 +21,11 @@ const handleOpen = () => {
 
 const handleB = () => {
   b = 0;
-
   const mobileElement = document.getElementById('haha');
 
   if (mobileElement) {
     window.scrollTo({
-      top: mobileElement.offsetWidth,
+      top: mobileElement.offsetHeight,
       behavior: 'smooth'
     });
   }
