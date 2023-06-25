@@ -7,14 +7,14 @@ import {
   faCircleCheck
 } from '@fortawesome/free-solid-svg-icons';
 import { RouterLink } from 'vue-router';
-import logo from '../../assets/imgs/logo.png';
+import qr from '../../assets/imgs/QR.png';
 </script>
 <template>
   <div :class="$style.footer">
     <div :class="$style.footer__info">
       <div :class="$style['footer__info-item']">
-        <img :src="logo" alt="logo" width="50" />
-        <span>TL DENTAL GROUP</span>
+        <p>TL DENTAL GROUP</p>
+        <img :src="qr" alt="logo" width="100" />
       </div>
       <div :class="$style['footer__info-item']">
         <h4 :class="$style['footer__info-item--title']">Sản phẩm</h4>
@@ -28,8 +28,8 @@ import logo from '../../assets/imgs/logo.png';
       <div :class="$style['footer__info-item']">
         <h4 :class="$style['footer__info-item--title']">Công ty</h4>
         <ul :class="$style['footer__info-item--list']">
-          <li><router-link to="">Giới thiệu công ty</router-link></li>
-          <li><router-link to="">Tuyển dụng</router-link></li>
+          <li><router-link to="/gioithieu">Giới thiệu công ty</router-link></li>
+          <li><router-link to="/tuyendung">Tuyển dụng</router-link></li>
         </ul>
       </div>
       <div :class="$style['footer__info-item']">
@@ -46,15 +46,19 @@ import logo from '../../assets/imgs/logo.png';
         <ul :class="$style['footer__info-item--list']">
           <li>
             <font-awesome-icon :icon="faLocationDot" />
-            <p>45 Thạch Thị Thanh, phường Tân Định, Quận 1, Ho Chi Minh City, Vietnam</p>
+            <p>
+              <router-link to="/lienhe"
+                >45 Thạch Thị Thanh, phường Tân Định, Quận 1, Ho Chi Minh City, Vietnam</router-link
+              >
+            </p>
           </li>
           <li>
             <font-awesome-icon :icon="faEnvelope" />
-            <p>ceo.tldental.group@gmail.com</p>
+            <p><router-link to="/lienhe">ceo.tldental.group@gmail.com</router-link></p>
           </li>
           <li>
             <font-awesome-icon :icon="faPhoneVolume" />
-            <p>078 404 3456</p>
+            <p><a href="tel:+1234567890">078 404 3456</a></p>
           </li>
         </ul>
       </div>
@@ -69,7 +73,7 @@ import logo from '../../assets/imgs/logo.png';
           </ul>
         </div>
         <div :class="$style['footer__info-contact--item']">
-          <button>Giới thiệu chi tiết</button>
+          <router-link to="/gioithieu">Giới thiệu chi tiết</router-link>
         </div>
       </div>
     </div>

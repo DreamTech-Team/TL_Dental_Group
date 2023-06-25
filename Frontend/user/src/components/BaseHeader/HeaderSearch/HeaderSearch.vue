@@ -1,25 +1,30 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faRemove } from '@fortawesome/free-solid-svg-icons';
 
 const isFocus = ref(false);
 const focusComputed = computed(() => {
-  return isFocus.value ? '#e1f5fd' : '';
+  return isFocus.value ? 'calc(100vw - 100px)' : '0px';
 });
 </script>
 <template>
-  <form :class="$style['header-search']" :style="{ backgroundColor: focusComputed }">
-    <font-awesome-icon :icon="faSearch" :class="$style['header-search__icon']" />
-    <input
-      type="text"
-      name="search"
-      placeholder="Tìm kiếm"
-      :class="$style['header-search__input']"
-      v-on:focus="isFocus = true"
-      v-on:blur="isFocus = false"
-    />
-  </form>
+  <div :class="$style['header-search']">
+    <div :class="$style['header-search__icon']" v-on:click="isFocus = true">
+      <font-awesome-icon :class="$style['header-search__icon-svg']" :icon="faSearch" />
+    </div>
+
+    <div :class="$style['header-search__wrapper']" :style="{ width: focusComputed }">
+      <form :class="$style['header-search__input']">
+        <input type="text" name="search" placeholder="Tìm kiếm" />
+        <font-awesome-icon
+          :class="$style['header-search__input-icon']"
+          :icon="faRemove"
+          v-on:click="isFocus = false"
+        />
+      </form>
+    </div>
+  </div>
 </template>
 
 <style scoped module lang="scss">
