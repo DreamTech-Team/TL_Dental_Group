@@ -2,6 +2,8 @@
 import { ref, nextTick } from 'vue';
 import IcDownCategory from '@/assets/icons/IcsortDown.svg';
 import { category } from '../Category/Category';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 
 const isAnimationVisible = ref(false);
 const selectedItem = ref(-1);
@@ -33,12 +35,6 @@ const toggleAnimation = (index: number) => {
 const idDefine = (index: number) => {
   return `id-${index}`;
 };
-
-// Xuất biến và hàm
-defineExpose({
-  isAnimationVisible,
-  toggleAnimation
-});
 </script>
 <template>
   <div id="dropdown-container" :class="$style.category">
@@ -53,13 +49,8 @@ defineExpose({
         ]"
       >
         <p>{{ item.title }}</p>
-        <img
-          :class="$style['category__firstX--choose-icon']"
-          :src="IcDownCategory"
-          alt="sort down"
-        />
+        <font-awesome-icon :class="$style['category__firstX--choose-icon']" :icon="faCaretDown" />
       </div>
-
       <div
         :id="idDefine(index)"
         :class="[

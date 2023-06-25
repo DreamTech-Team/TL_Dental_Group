@@ -1,45 +1,7 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue';
-// import { defineProps, defineExpose } from 'vue';
 import IcDownCategory from '@/assets/icons/IcSortDown.svg';
-import { type PropType } from 'vue';
-import { defineComponent } from 'vue';
 
-// interface DataItem {
-//   name: string;
-// }
-
-// interface MyComponentProps {
-//   dataArray: {
-//     title: string;
-//     data: DataItem[];
-//   }[];
-// }
-// export defineComponent({
-//   defineProps<MyComponentProps>()
-// });
-// export defineComponent({
-//   props: defineProps<MyComponentProps>(),
-// });
-
-interface Item {
-  name: string;
-}
-
-interface Category {
-  tilte: string;
-  data: {
-    name: string;
-  };
-}
-
-defineProps({
-  // category: {
-  //   type: Array as PropType<Category>,
-  //   required: true
-  // },
-  IcDownCategory: Object // Định nghĩa props IcDownCategory
-});
 const isAnimationVisible = ref(false);
 
 const toggleAnimation = () => {
@@ -59,16 +21,9 @@ const isActive = ref(false);
 const toggleActive = () => {
   isActive.value = !isActive.value;
 };
-
-// Xuất biến và hàm
-defineExpose({
-  isAnimationVisible,
-  toggleAnimation
-});
 </script>
 <template>
   <div :class="$style.category">
-    <!-- <div :class="$style['category__sticky']"></div> -->
     <div :class="$style['category__title']">Danh mục</div>
     <div :class="$style['category__firstX']">
       <div
