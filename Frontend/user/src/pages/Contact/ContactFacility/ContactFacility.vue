@@ -6,7 +6,7 @@ import Message from '@/assets/imgs/About/Message.png';
 import Facebook from '@/assets/imgs/About/Facebook.png';
 import Signpost from '@/assets/imgs/About/Signpost.png';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight, faDiamondTurnRight } from '@fortawesome/free-solid-svg-icons';
 </script>
 <template>
   <div :class="$style.about__facility">
@@ -35,7 +35,11 @@ import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
         </div>
 
         <button :class="$style['about__facility-button']">
-          <img :src="Signpost" :class="$style['about__facility-button-ic']" />
+          <font-awesome-icon
+            :icon="faDiamondTurnRight"
+            :class="$style['about__facility-button-ic']"
+          />
+          <!-- <img :src="Signpost" :class="$style['about__facility-button-ic']" /> -->
           <p>Đường đi</p>
         </button>
       </div>

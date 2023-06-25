@@ -6,16 +6,20 @@ import AboutMotto from './AboutMotto/AboutMotto.vue';
 import AboutBusinessItems from './AboutBusinessItems/AboutBusinessItems.vue';
 import AboutPolicy from './AboutPolicy/AboutPolicy.vue';
 import AboutFacility from './AboutFacility/AboutFacility.vue';
+import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
+
+const pathAbout = 'lienhe';
 </script>
 <template>
   <div :class="$style.about">
-    <AboutHeader />
-    <AboutThanks />
-    <AboutInfoCompany />
-    <AboutMotto />
-    <AboutBusinessItems />
-    <AboutPolicy />
-    <AboutFacility />
+    <bread-crumb :tags="pathAbout" />
+    <about-header />
+    <about-thanks />
+    <about-infoCompany />
+    <about-motto />
+    <about-businessItems />
+    <about-policy />
+    <about-facility />
   </div>
 </template>
 

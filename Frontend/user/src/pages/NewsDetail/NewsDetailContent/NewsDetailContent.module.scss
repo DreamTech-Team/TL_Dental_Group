@@ -1,0 +1,124 @@
+@import "@/styles/base";
+
+.newsdetail__content{
+    width: 75%;
+    padding-right: 2rem;
+
+    h1{
+        font-size: 4rem;
+        color: $primary_900;
+    }
+
+    &-time{
+        display: flex;
+        align-items: center;
+        margin: 2rem 0;
+
+        p{
+            font-size: $text-2xl;
+            margin-left: 2rem;
+            font-weight: 300;
+        }
+
+    }
+
+    &-main{
+
+        &-header{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 4rem;
+
+            p{
+                font-size: $text-2xl;
+                line-height: 3rem;
+                margin-bottom: 3rem;
+            }
+        }
+
+        &-body{
+            margin-bottom: 4rem;
+
+            h3{
+                font-size: $text-2xl;
+                line-height: 3rem;
+                margin-bottom: 2rem;
+                color: $primary_900; 
+            }
+
+            div{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                p{
+                    font-size: $text-base;
+                    line-height: 2.4rem;
+                    margin-bottom: 1rem;
+                    
+                }
+                
+                img{
+                }
+            }
+        }
+
+        &-footer{
+            display: flex;
+            justify-content: space-between;
+
+            &-button-left{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                outline: none;
+                border: 2px solid $primary_900;
+                border-radius: 5px;
+                background: #fff;
+                padding: 1rem;
+                max-width: 50rem;
+
+                p{
+                    text-align: start;
+                    font-size: $text-sm;
+                    line-height: 2rem;
+                    color: $primary_900;
+                }
+    
+                &-ic{
+                    margin-right: 2rem;
+                    color: $primary_900;
+                }
+            }
+
+            &-button-right{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                outline: none;
+                border: 2px solid $primary_900;
+                border-radius: 5px;
+                background: #fff;
+                padding: 1rem 1.4rem;
+                max-width: 50rem;
+
+                p{
+                    text-align: start;
+                    font-size: $text-sm;
+                    line-height: 2rem;
+                    text-align: right;
+                    color: $primary_900;
+                }
+    
+                &-ic{
+                    margin-left: 2rem;
+                    color: $primary_900;
+                }
+            }
+
+            
+        }
+    }
+}

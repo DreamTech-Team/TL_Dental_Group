@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import logo from '@/assets/imgs/logo.png';
+import logo from '@/assets/imgs/logo_nobg.png';
 import shield from '@/assets/imgs/shield.png';
 import { RouterLink, useRoute } from 'vue-router';
 import { ref } from 'vue';

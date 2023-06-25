@@ -11,6 +11,8 @@ const RecruitmentDetailsPage = () =>
   import('@/pages/Recruitment/RecruitmentDetailsPage/RecruitmentDetailsPage.vue');
 const SearchPage = () => import('@/pages/Search/SearchPage.vue');
 const ContactPage = () => import('@/pages/Contact/ContactPage.vue');
+const PolicyPage = () => import('@/pages/Policy/PolicyPage.vue');
+const NewsDetailPage = () => import('@/pages/NewsDetail/NewsDetail.vue');
 const routes = [
   {
     path: '/',
@@ -47,6 +49,11 @@ const routes = [
     component: RecruitmentDetailsPage
   },
   {
+    path: '/chinhsach',
+    name: 'chinhsach',
+    component: PolicyPage
+  },
+  {
     path: '/timkiem',
     name: 'timkiem',
     component: SearchPage
@@ -55,6 +62,11 @@ const routes = [
     path: '/tintuc',
     name: 'tintuc',
     component: NewsPage
+  },
+  {
+    path: '/tintuc/:catchAll(.*)*',
+    name: 'chitiettintuc',
+    component: NewsDetailPage
   },
   {
     path: '/lienhe',
@@ -70,6 +82,10 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
+});
+
+router.afterEach(() => {
+  window.scrollTo(0, 0);
 });
 
 export default router;
