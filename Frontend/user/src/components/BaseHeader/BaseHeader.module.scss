@@ -93,7 +93,7 @@
       display: flex;
       flex: 1;
     }
-    &-list-mobile {
+    &-mobile {
       display: none;
     }
 
@@ -183,7 +183,7 @@
       &-list {
         display: none;
       }
-      &-list-mobile {
+      &-mobile {
         height: 100%;
         display: flex;
         align-items: center;
@@ -267,7 +267,7 @@
       &-list {
         display: none;
       }
-      &-list-mobile {
+      &-mobile {
         height: 100%;
         display: flex;
         align-items: center;
@@ -331,9 +331,11 @@
         }
   
         h4 {
+          font-size: $text-xl-mobile;
         }
   
         p {
+          font-size: $text-sm-mobile;
         }
       }
   
@@ -353,7 +355,7 @@
       &-list {
         display: none;
       }
-      &-list-mobile {
+      &-mobile {
         height: 100%;
         display: flex;
         align-items: center;

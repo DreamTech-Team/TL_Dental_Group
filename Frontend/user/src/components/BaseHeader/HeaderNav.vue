@@ -62,10 +62,12 @@ const pageHover = ref('none');
       </div>
     </div>
     <header-search />
-    <div :class="$style['header__nav-list-mobile']">
-      <div :class="$style['header__nav-list-mobile--btn']">
+    <div :class="$style['header__nav-mobile']">
+      <div :class="$style['header__nav-mobile--btn']">
         <font-awesome-icon :icon="faBars" size="xl" />
       </div>
+
+      <div :class="$style['header__nav-mobile-list']"></div>
     </div>
   </div>
 </template>
