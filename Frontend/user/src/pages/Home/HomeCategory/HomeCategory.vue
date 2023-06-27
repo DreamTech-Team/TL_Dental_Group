@@ -46,6 +46,12 @@ const colors = [
   `linear-gradient(143.33deg, #0168C8 24.48%, rgba(246, 76, 218, 0.547363) 78.16%, rgba(173, 0, 255, 0.74) 103.49%)`
 ];
 
+//Handle Scroll
+const MIN_SWIPE_DISTANCE_CM = 3;
+const TOUCH_SENSITIVITY = 10;
+const touchstartX = ref(0);
+const touchendX = ref(0);
+
 const wItem = ref(0);
 const tranfX = ref(0);
 let resizeListener: () => void;
@@ -80,6 +86,30 @@ const scrollRight = () => {
 
 const getCategoryColor = (index: number) => {
   return colors[index % colors.length];
+};
+
+//Handle scroll list
+const checkDirection = () => {
+  const distanceX = Math.abs(touchendX.value - touchstartX.value);
+  const distanceInCm = distanceX / TOUCH_SENSITIVITY;
+
+  if (distanceInCm >= MIN_SWIPE_DISTANCE_CM) {
+    if (touchendX.value < touchstartX.value) {
+      scrollRight();
+    }
+    if (touchstartX.value < touchendX.value) {
+      scrollLeft();
+    }
+  }
+};
+
+const handleTouchstart = (e: TouchEvent) => {
+  touchstartX.value = e.changedTouches[0].screenX;
+};
+
+const handleTouchend = (e: TouchEvent) => {
+  touchendX.value = e.changedTouches[0].screenX;
+  checkDirection();
 };
 
 onMounted(() => {
@@ -118,6 +148,8 @@ onUnmounted(() => {
     <div :class="$style['home__category-ctn']">
       <div :class="$style['home__category-wrapper']" id="category-wrapper">
         <div
+          @touchstart="handleTouchstart"
+          @touchend="handleTouchend"
           :class="$style['home__category-list']"
           id="category-list"
           :style="{ width: widthComputed, transform: 'translateX(' + tranfX + 'px)' }"
