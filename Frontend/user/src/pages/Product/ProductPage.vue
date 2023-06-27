@@ -2,10 +2,11 @@
 import ProductBanner from './ProductBanner/ProductBanner.vue';
 import ProductCard from './ProductCard/ProductCard.vue';
 // import ProductCategory from './ProductCategory/ProductCategory.vue';
-import ProductCategory from '@/components/Category/BaseCategory.vue';
+import BaseCategory from '@/components/Category/BaseCategory.vue';
 import ProductNavigation from './ProductNavigation/ProductNavigation.vue';
 import ServiceQuality from '@/components/ServiceQuality/ServiceQuality.vue';
 import BasePagination from '@/components/Pagination/BasePagination.vue';
+import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
 import { products } from '../Product/ProductHandle';
 import { category } from './ProductCategory/ProductCategory';
 import IcSortDown from '@/assets/icons/IcSortDown.svg';
@@ -85,7 +86,7 @@ const toggleDropdown = () => {
 const closeDropdown = () => {
   isDropdownOpen.value = false;
 };
-
+const pathBC = 'sanpham';
 // Expose reactive properties and methods
 defineExpose({
   isDropdownOpen,
@@ -97,11 +98,11 @@ defineExpose({
   <div>
     <div :class="$style['product__header']">
       <product-banner :class="$style['product__header-banner']" />
-      <product-navigation :class="$style['product__header-navigation']" />
+      <!-- <product-navigation :class="$style['product__header-navigation']" /> -->
+      <bread-crumb :tags="pathBC" />
     </div>
     <div :class="$style['product__content']">
-      <product-category />
-      <!-- <product-category /> -->
+      <base-category />
       <div :class="$style['product__content-wrap']">
         <div :class="$style['product__content-sort']">
           <p :class="$style['product__content-sort--info']">

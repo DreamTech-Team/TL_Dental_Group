@@ -27,6 +27,18 @@ const predefinedItems = [
     name: 'Sản phẩm'
   },
   {
+    slug: 'kep-gap-mac-cai-R6,7-kep-gap-Tube-PMC-ORTHOR',
+    name: 'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO'
+  },
+  {
+    slug: 'dung-cu-nha-khoa',
+    name: 'Dụng cụ nha khoa'
+  },
+  {
+    slug: 'kep-chinh-nha',
+    name: 'Kẹp chỉnh nha'
+  },
+  {
     slug: 'hoat-dong-chong-dich-tinh-nguyen',
     name: 'Hoạt động chống dịch tình nguyện'
   },

@@ -194,13 +194,16 @@
       justify-content: center;
       width: 100%;
       margin-top: 30px;
+      padding-left: 60px;
+      padding-right: 60px;
 
       &-wrapper {
         overflow-x: auto;
         scroll-behavior: smooth;
         display: flex;
-        align-items: center;
-        width: 95%;
+        // align-items: center;
+        // justify-content: center;
+        width: 100%;
         overflow-y: hidden;
         overflow-x: hidden;
         margin: auto;
@@ -208,16 +211,20 @@
         .home__trend-list {
           display: flex;
           transition: all 0.5s linear;
-          margin: auto;
+          width: max-content;
+          // align-items: center;
+          // margin: auto;
           justify-content: flex-start;
           flex-wrap: nowrap;
           scroll-behavior: smooth;
 
           .home__trend-item {
             display: block;
-            margin-left: 25px;
-            margin-right: 25px;
+            margin-left: 20px;
+            margin-right: 20px;
             height: auto;
+            // min-width: 270px;
+            min-width: 280px;
           }
         }
       }

@@ -60,36 +60,3 @@ export const category = [
     ]
   }
 ];
-
-// export const categorys = [
-//   {
-//     title: 'Vật liệu chỉnh nha ABC',
-//     data: [
-//       'Lò xo chỉnh nha',
-//       'Kềm chỉnh nha',
-//       'Thun chỉnh chỉnh nha',
-//       'Chỉ chỉnh nha',
-//       'Kẹp gấp mắc cài'
-//     ]
-//   },
-//   {
-//     title: 'Vật liệu chỉnh nha ADC',
-//     data: [
-//       'Lò xo chỉnh nha',
-//       'Kềm chỉnh nha',
-//       'Thun chỉnh chỉnh nha',
-//       'Chỉ chỉnh nha',
-//       'Kẹp gấp mắc cài'
-//     ]
-//   },
-//   {
-//     title: 'Vật liệu chỉnh nha XYZ',
-//     data: [
-//       'Lò xo chỉnh nha',
-//       'Kềm chỉnh nha',
-//       'Thun chỉnh chỉnh nha',
-//       'Chỉ chỉnh nha',
-//       'Kẹp gấp mắc cài'
-//     ]
-//   }
-// ];
