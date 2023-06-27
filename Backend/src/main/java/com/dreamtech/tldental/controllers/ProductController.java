@@ -28,7 +28,13 @@ public class ProductController {
     private IStorageService storageService;
 
     @GetMapping("")
-    ResponseEntity<ResponseObject> getAllProducts() {
+    ResponseEntity<ResponseObject> getAllProducts(@RequestParam("cate1") String cate1,
+                                                  @RequestParam("cate2") String cate2,
+                                                  @RequestParam("page") String page) {
+        System.out.println(cate1);
+        System.out.println(cate2);
+        // HANDLE FILTER
+
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject("ok", "Query product successfully", repository.findAll())
         );
