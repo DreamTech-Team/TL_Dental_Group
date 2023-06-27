@@ -23,37 +23,37 @@ const availableItems = ref<string[]>(['Hoạt động', 'Tin tức', 'Tư vấn'
 const selectedItems = ref<string[]>([]);
 
 //Change Status Select Box
-const SelectHandle = () => {
+const handleSelect = () => {
   activeBtn.value = 2;
   isCustomSelectListOpen.value = !isCustomSelectListOpen.value;
 };
 
 //Change Status Sort Box
-const SortHandle = () => {
+const handleSort = () => {
   activeBtn.value = 1;
   isCustomSelectListOpen1.value = !isCustomSelectListOpen1.value;
 };
 
 //Handle when click overlay behind
-const OverlayHandle = () => {
+const handleOverlay = () => {
   isCustomSelectListOpen.value = false;
   isCustomSelectListOpen1.value = false;
 };
 
-const SelectItem1 = (index: number) => {
+const selectItem1 = (index: number) => {
   activeSort.value = index;
   setTimeout(() => {
     isCustomSelectListOpen1.value = false;
   }, 250);
 };
 
-const SelectItem = (item: string) => {
+const selectItem = (item: string) => {
   selectedItems.value.push(item);
   availableItems.value = availableItems.value.filter((i) => i !== item);
   isCustomSelectListOpen.value = false; //Close Modal
 };
 
-const RemoveItem = (item: string) => {
+const removeItem = (item: string) => {
   selectedItems.value = selectedItems.value.filter((i) => i !== item);
   availableItems.value.push(item);
 };
@@ -137,7 +137,7 @@ onMounted(() => {
     <div :class="$style['news__control-right']">
       <div :class="$style['news__control-tag']">
         <h4>TAGS</h4>
-        <div :class="$style['custom-select']" v-on:click="SelectHandle">
+        <div :class="$style['custom-select']" v-on:click="handleSelect">
           <div :class="$style['custom-select-item']">Chọn</div>
           <font-awesome-icon :icon="faSortDown" :class="$style['select_ic']" />
           <div :class="$style['custom-select-list']" v-show="isCustomSelectListOpen">
@@ -145,7 +145,7 @@ onMounted(() => {
               <li
                 v-for="(item, index) in availableItems"
                 :key="index"
-                @click.stop="SelectItem(item)"
+                @click.stop="selectItem(item)"
               >
                 {{ item }}
               </li>
@@ -159,7 +159,7 @@ onMounted(() => {
             :key="index"
           >
             {{ item }}
-            <div :class="$style['news__item-cancel']" @click.stop="RemoveItem(item)">
+            <div :class="$style['news__item-cancel']" @click.stop="removeItem(item)">
               <font-awesome-icon :icon="faXmark" :class="$style['cancel_ic']" />
             </div>
           </div>
@@ -171,16 +171,17 @@ onMounted(() => {
           :style="
             isCustomSelectListOpen1 ? 'background-color: #0088CC; color: white; z-index: 5' : ''
           "
-          v-on:click="SortHandle"
+          v-on:click="handleSort"
         >
-          <font-awesome-icon :icon="faArrowDownZA" :class="$style['tag_ic']" /> Xếp theo
+          <font-awesome-icon :icon="faArrowDownZA" :class="$style['tag_ic']" />
+          {{ availableSorts[activeSort] }}
           <div :class="$style['custom-select-list']" v-show="isCustomSelectListOpen1">
             <ul>
               <li
                 v-for="(item, index) in availableSorts"
                 :key="index"
                 :style="activeSort === index ? 'background-color: #0088CC; color: white;' : ''"
-                @click.stop="SelectItem1(index)"
+                @click.stop="selectItem1(index)"
               >
                 {{ item }}
               </li>
@@ -192,7 +193,7 @@ onMounted(() => {
           :style="
             isCustomSelectListOpen ? 'background-color: #0088CC; color: white; z-index: 5' : ''
           "
-          v-on:click="SelectHandle"
+          v-on:click="handleSelect"
         >
           <font-awesome-icon :icon="faTags" :class="$style['tag_ic']" /> Tags
           <div :class="$style['custom-select-list']" v-show="isCustomSelectListOpen">
@@ -200,7 +201,7 @@ onMounted(() => {
               <li
                 v-for="(item, index) in availableItems"
                 :key="index"
-                @click.stop="SelectItem(item)"
+                @click.stop="selectItem(item)"
               >
                 {{ item }}
               </li>
@@ -218,7 +219,7 @@ onMounted(() => {
               :key="index"
             >
               {{ item }}
-              <div :class="$style['news__item-cancel']" @click.stop="RemoveItem(item)">
+              <div :class="$style['news__item-cancel']" @click.stop="removeItem(item)">
                 <font-awesome-icon :icon="faXmark" :class="$style['cancel_ic']" />
               </div>
             </div>
@@ -230,7 +231,7 @@ onMounted(() => {
   <div
     :class="$style['overlay']"
     v-show="isCustomSelectListOpen || isCustomSelectListOpen1"
-    v-on:click="OverlayHandle"
+    v-on:click="handleOverlay"
   ></div>
 </template>
 

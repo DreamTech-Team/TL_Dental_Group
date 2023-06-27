@@ -12,6 +12,11 @@ const bannerItems = [
   { src: DELL, alt: 'dell', width: '82.42', height: '25' }
 ];
 
+//SCROLL
+const touchstartX = ref(0);
+const touchendX = ref(0);
+const circleActive = ref(0);
+
 //MOBILE
 const tranfX = ref(0);
 const widthItemMB = ref(0);
@@ -32,15 +37,8 @@ const widthItemComputed = computed(() => {
   return widthItemMB.value + 'px';
 });
 
-// setInterval(() => {
-//   if (-tranfX.value + widthItemMB.value < widthItemMB.value * bannerItems.length) {
-//     tranfX.value -= widthItemMB.value;
-//   } else {
-//     tranfX.value = 0;
-//   }
-// }, 5000);
-
-const scrollTest = () => {
+//Scroll Handle
+const scrollRight = () => {
   const container = document.getElementById('list_item');
   if (container) {
     const containerWidth = container.offsetWidth;
@@ -53,10 +51,49 @@ const scrollTest = () => {
 
     if (targetScrollLeft > maxScrollLeft) {
       container.scrollTo({ left: 0, behavior: 'smooth' });
+      circleActive.value = 0;
     } else {
       container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
+      circleActive.value++;
     }
   }
+};
+
+const scrollLeft = () => {
+  const container = document.getElementById('list_item');
+  if (container) {
+    const itemWidth = container.offsetWidth;
+
+    const currentScrollLeft = container.scrollLeft;
+    const targetScrollLeft = currentScrollLeft - itemWidth - 10;
+
+    if (targetScrollLeft < 0) {
+      container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
+      circleActive.value = bannerItems.length - 1;
+    } else {
+      container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
+      circleActive.value--;
+    }
+  }
+};
+
+//Handle scroll list
+const checkDirection = () => {
+  if (touchendX.value < touchstartX.value) {
+    scrollRight();
+  }
+  if (touchstartX.value < touchendX.value) {
+    scrollLeft();
+  }
+};
+
+const handleTouchstart = (e: TouchEvent) => {
+  touchstartX.value = e.changedTouches[0].screenX;
+};
+
+const handleTouchend = (e: TouchEvent) => {
+  touchendX.value = e.changedTouches[0].screenX;
+  checkDirection();
 };
 
 onMounted(() => {
@@ -74,23 +111,14 @@ onMounted(() => {
   //Auto scroll
   const container = document.getElementById('list_item');
 
-  // setInterval(() => {
-  //   if (container) {
-  //     const containerWidth = container.offsetWidth;
-  //     const itemWidth = container.offsetWidth;
+  const startScroll = () => {
+    scrollRight();
+    setInterval(() => {
+      scrollRight();
+    }, 6000);
+  };
 
-  //     const maxScrollLeft = container.scrollWidth - containerWidth;
-
-  //     const currentScrollLeft = container.scrollLeft;
-  //     const targetScrollLeft = currentScrollLeft + itemWidth + 10;
-
-  //     if (targetScrollLeft > maxScrollLeft) {
-  //       container.scrollTo({ left: 0, behavior: 'smooth' });
-  //     } else {
-  //       container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
-  //     }
-  //   }
-  // }, 8000);
+  startScroll();
 
   //Resize Screen
   resizeListener = function () {
@@ -291,13 +319,14 @@ onUnmounted(() => {
       id="list_item"
       :class="$style['home__bannerMB-list']"
       :style="{ width: widthComputed, transform: 'translateX(' + tranfX + 'px)' }"
+      @touchstart="handleTouchstart"
+      @touchend="handleTouchend"
     >
       <div
         :class="$style['home__bannerMB-item']"
         v-for="(item, index) in bannerItems"
         :key="index"
         :style="{ width: widthItemComputed }"
-        @click="scrollTest"
       >
         <div :class="$style['home__bannerMB-left']">
           <h2>TL Dental Group</h2>
@@ -333,6 +362,14 @@ onUnmounted(() => {
           :style="{ background: elipseColorMB[index][3] }"
         ></div>
       </div>
+    </div>
+    <div :class="$style['home__bannerMB-active']">
+      <div
+        :class="$style['home__bannerMB-circle']"
+        v-for="index in bannerItems.length"
+        :key="index"
+        :style="{ backgroundColor: index - 1 === circleActive ? '#2696E9' : '' }"
+      ></div>
     </div>
   </div>
 </template>

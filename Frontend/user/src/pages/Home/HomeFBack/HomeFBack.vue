@@ -57,6 +57,8 @@ const feedbacks = ref([
   }
 ]);
 
+const touchstartX = ref(0);
+const touchendX = ref(0);
 const wItem = ref(0);
 const tranfX = ref(0);
 let resizeListener: () => void;
@@ -79,6 +81,25 @@ const scrollRight = () => {
   } else {
     tranfX.value = 0;
   }
+};
+
+//Handle scroll list
+const checkDirection = () => {
+  if (touchendX.value < touchstartX.value) {
+    scrollRight();
+  }
+  if (touchstartX.value < touchendX.value) {
+    scrollLeft();
+  }
+};
+
+const handleTouchstart = (e: TouchEvent) => {
+  touchstartX.value = e.changedTouches[0].screenX;
+};
+
+const handleTouchend = (e: TouchEvent) => {
+  touchendX.value = e.changedTouches[0].screenX;
+  checkDirection();
 };
 
 onMounted(() => {
@@ -120,6 +141,8 @@ onUnmounted(() => {
           :class="$style['home__feedback-list']"
           id="feedback-list"
           :style="{ width: widthComputed, transform: 'translateX(' + tranfX + 'px)' }"
+          @touchstart="handleTouchstart"
+          @touchend="handleTouchend"
         >
           <div
             v-for="feedback in feedbacks"
