@@ -5,6 +5,9 @@ import { faSearch, faRemove } from '@fortawesome/free-solid-svg-icons';
 
 const isFocus = ref(false);
 const focusComputed = computed(() => {
+  if (window.innerWidth < 1240) {
+    return isFocus.value ? '100%' : '0px';
+  }
   return isFocus.value ? 'calc(100vw - 100px)' : '0px';
 });
 </script>

@@ -11,7 +11,7 @@ import HomeTrend from './HomeTrend/HomeTrend.vue';
   <div :class="$style.home">
     <home-banner />
     <home-category />
-    <home-company />
+    <!-- <home-company /> -->
     <home-trend />
     <home-reason />
     <home-f-back />
