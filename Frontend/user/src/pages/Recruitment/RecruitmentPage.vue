@@ -22,23 +22,31 @@ import {
 } from './RecruitmentHandle';
 import { ref, onMounted, computed } from 'vue';
 
-// const containerRecruit = document.getElementById('container-recruit');
+const itemSeleted = ref(0);
+const hiddenElement = ref(false);
 
-let onStickyElement: () => boolean;
-const addStickyElement = ref(false);
-const containerRecruit = ref(null);
+const handleScroll = () => {
+  const element = document.getElementById('page');
+  const rect = element?.getBoundingClientRect();
+  const oneItemHeight = Number(element?.offsetHeight) / recStep.length;
+  const topParent = Number(rect?.top);
+  console.log(rect?.top, element?.offsetHeight);
+
+  if (topParent < 0) {
+    const index = Math.abs(topParent / oneItemHeight);
+    itemSeleted.value = Number(index.toFixed());
+    // console.log(itemSeleted.value);
+
+    const locationHidden = (recStep.length - 2 / 3) * oneItemHeight;
+
+    if (-topParent > locationHidden) hiddenElement.value = true;
+    else hiddenElement.value = false;
+    console.log(locationHidden, hiddenElement.value);
+  }
+};
 
 onMounted(() => {
-  // const element = containerRecruit.value;
-  // const rect = element.getBoundingClientRect();
-  // console.log(rect.top);
-  // if (rect === 0) addStickyElement.value = true;
-});
-
-const customClass = computed(() => {
-  return {
-    'sticky-container': addStickyElement
-  };
+  window.addEventListener('scroll', handleScroll);
 });
 </script>
 <template>
@@ -77,11 +85,13 @@ const customClass = computed(() => {
       </div>
     </div>
     <div :class="$style.container__vision">
-      <div :class="$style['container__vision-img1']">
-        <img :src="imgHand" alt="none" />
-      </div>
-      <div :class="$style['container__vision-img2']">
-        <img :src="ceo" alt="none" />
+      <div :class="$style['container__vision-block']">
+        <div :class="$style['container__vision-block-img1']">
+          <img :src="imgHand" alt="none" />
+        </div>
+        <div :class="$style['container__vision-block-img2']">
+          <img :src="ceo" alt="none" />
+        </div>
       </div>
       <div :class="$style['container__vision-content']">
         <recruitment-card :items="visionItems" :style="'type2'" />
@@ -161,17 +171,23 @@ const customClass = computed(() => {
         </div>
       </div>
     </div>
-    <div :class="$style.container__recruit" ref="containerRecruit">
-      <div :class="[$style['container__recruit-left'], $style['sticky-container']]">
+    <div :class="$style.container__recruit">
+      <div
+        :class="[
+          $style['container__recruit-left'],
+          $style['sticky-container'],
+          $style[hiddenElement ? 'display-none' : '']
+        ]"
+      >
         <div :class="$style['container__recruit-left-title']">
           <span>Tuyển dụng TL Dental Group</span>
           <h2>Quy Trình Tuyển Dụng</h2>
         </div>
         <div :class="$style['container__recruit-left-nav']">
-          <recruitment-card :items="recStep" :style="'type4'" />
+          <recruitment-card :items="recStep" :style="'type4'" :on-selected="itemSeleted" />
         </div>
       </div>
-      <div :class="$style['container__recruit-right']">
+      <div :class="$style['container__recruit-right']" id="page">
         <recruitment-card :items="recStepItems" :style="'type5'" />
       </div>
     </div>
