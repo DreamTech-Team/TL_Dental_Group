@@ -72,8 +72,12 @@ const products = [
   }
 ];
 
+//Scroll Properties
+const MIN_SWIPE_DISTANCE_CM = 3;
+const TOUCH_SENSITIVITY = 10;
 const touchstartX = ref(0);
 const touchendX = ref(0);
+
 const wItem = ref(0);
 const tranfX = ref(0);
 let resizeListener: () => void;
@@ -108,11 +112,16 @@ const scrollRight = () => {
 
 //Handle scroll list
 const checkDirection = () => {
-  if (touchendX.value < touchstartX.value) {
-    scrollRight();
-  }
-  if (touchstartX.value < touchendX.value) {
-    scrollLeft();
+  const distanceX = Math.abs(touchendX.value - touchstartX.value);
+  const distanceInCm = distanceX / TOUCH_SENSITIVITY;
+
+  if (distanceInCm >= MIN_SWIPE_DISTANCE_CM) {
+    if (touchendX.value < touchstartX.value) {
+      scrollRight();
+    }
+    if (touchstartX.value < touchendX.value) {
+      scrollLeft();
+    }
   }
 };
 

@@ -46,8 +46,12 @@ const colors = [
   `linear-gradient(143.33deg, #0168C8 24.48%, rgba(246, 76, 218, 0.547363) 78.16%, rgba(173, 0, 255, 0.74) 103.49%)`
 ];
 
+//Handle Scroll
+const MIN_SWIPE_DISTANCE_CM = 3;
+const TOUCH_SENSITIVITY = 10;
 const touchstartX = ref(0);
 const touchendX = ref(0);
+
 const wItem = ref(0);
 const tranfX = ref(0);
 let resizeListener: () => void;
@@ -86,11 +90,16 @@ const getCategoryColor = (index: number) => {
 
 //Handle scroll list
 const checkDirection = () => {
-  if (touchendX.value < touchstartX.value) {
-    scrollRight();
-  }
-  if (touchstartX.value < touchendX.value) {
-    scrollLeft();
+  const distanceX = Math.abs(touchendX.value - touchstartX.value);
+  const distanceInCm = distanceX / TOUCH_SENSITIVITY;
+
+  if (distanceInCm >= MIN_SWIPE_DISTANCE_CM) {
+    if (touchendX.value < touchstartX.value) {
+      scrollRight();
+    }
+    if (touchstartX.value < touchendX.value) {
+      scrollLeft();
+    }
   }
 };
 
