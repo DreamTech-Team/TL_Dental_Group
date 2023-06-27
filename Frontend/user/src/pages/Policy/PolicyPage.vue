@@ -2,7 +2,7 @@
 import background from '@/assets/imgs/Policy/bg.png';
 import { listPolicy } from './PolicyHandle';
 
-const selectedItem = 0;
+const selectedItem = 1;
 </script>
 <template>
   <div :class="$style.container">
