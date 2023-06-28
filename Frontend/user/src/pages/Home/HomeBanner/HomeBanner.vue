@@ -12,10 +12,9 @@ const bannerItems = [
   { src: DELL, alt: 'dell', width: '82.42', height: '25' }
 ];
 
-//SCROLL
 //Scroll Properties
 const MIN_SWIPE_DISTANCE_CM = 3.5;
-const TOUCH_SENSITIVITY = 10;
+const TOUCH_SENSITIVITY = 15;
 const touchstartX = ref(0);
 const touchendX = ref(0);
 const circleActive = ref(0);
@@ -52,12 +51,18 @@ const scrollRight = () => {
     const currentScrollLeft = container.scrollLeft;
     const targetScrollLeft = currentScrollLeft + itemWidth + 10;
 
+    console.log(circleActive.value);
+
     if (targetScrollLeft > maxScrollLeft) {
       container.scrollTo({ left: 0, behavior: 'smooth' });
-      circleActive.value = 0;
+      circleActive.value = 1;
     } else {
       container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
-      circleActive.value++;
+      if (circleActive.value == bannerItems.length - 1) {
+        circleActive.value = 0;
+      } else {
+        circleActive.value++;
+      }
     }
   }
 };
@@ -103,52 +108,6 @@ const handleTouchend = (e: TouchEvent) => {
   touchendX.value = e.changedTouches[0].screenX;
   checkDirection();
 };
-
-onMounted(() => {
-  //Find active and set width for line
-  const lineActive = document.getElementById('line_active');
-  if (lineActive) {
-    lineWidth.value = lineActive.offsetWidth;
-  }
-
-  mobilestatus.value = false;
-
-  //Find width slider
-  widthItemMB.value = window.innerWidth;
-
-  //Auto scroll
-  const container = document.getElementById('list_item');
-
-  const startScroll = () => {
-    scrollRight();
-    setInterval(() => {
-      scrollRight();
-    }, 6000);
-  };
-
-  startScroll();
-
-  //Resize Screen
-  resizeListener = function () {
-    const lineActive = document.getElementById('line_active');
-    if (lineActive) {
-      activeIndex.value = 0;
-      lineWidth.value = lineActive.offsetWidth;
-    }
-
-    if (container) {
-      container.scrollTo({ left: 0, behavior: 'smooth' });
-    }
-
-    if (window.innerWidth < 739) {
-      mobilestatus.value = true;
-      widthItemMB.value = window.innerWidth;
-      tranfX.value = 0;
-    }
-  };
-
-  window.addEventListener('resize', resizeListener);
-});
 
 //Transform line active
 const lineTransform = computed(() => {
@@ -278,6 +237,52 @@ const moveLine = (index: number) => {
   }, 100);
 };
 
+onMounted(() => {
+  //Find active and set width for line
+  const lineActive = document.getElementById('line_active');
+  if (lineActive) {
+    lineWidth.value = lineActive.offsetWidth;
+  }
+
+  mobilestatus.value = false;
+
+  //Find width slider
+  widthItemMB.value = window.innerWidth;
+
+  //Auto scroll
+  const container = document.getElementById('list_item');
+
+  const startScroll = () => {
+    scrollRight();
+    setInterval(() => {
+      scrollRight();
+    }, 6000);
+  };
+
+  startScroll();
+
+  //Resize Screen
+  resizeListener = function () {
+    const lineActive = document.getElementById('line_active');
+    if (lineActive) {
+      activeIndex.value = 0;
+      lineWidth.value = lineActive.offsetWidth;
+    }
+
+    if (container) {
+      container.scrollTo({ left: 0, behavior: 'smooth' });
+    }
+
+    if (window.innerWidth < 739) {
+      mobilestatus.value = true;
+      widthItemMB.value = window.innerWidth;
+      tranfX.value = 0;
+    }
+  };
+
+  window.addEventListener('resize', resizeListener);
+});
+
 onUnmounted(() => {
   window.removeEventListener('resize', resizeListener);
 });
@@ -376,7 +381,7 @@ onUnmounted(() => {
         :class="$style['home__bannerMB-circle']"
         v-for="index in bannerItems.length"
         :key="index"
-        :style="{ backgroundColor: index - 1 === circleActive ? '#2696E9' : '' }"
+        :style="{ backgroundColor: index === circleActive ? '#2696E9' : '' }"
       ></div>
     </div>
   </div>
