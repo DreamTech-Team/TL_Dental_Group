@@ -1,3 +1,59 @@
+@import "@/styles/base.scss";
+
 .header {
-  background-color: aqua;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  background-color: white;
+  padding-right: 40px;
+  height: 60px;
+  box-shadow: 0 3px 5px rgba(57, 63, 72, 0.3);
+  z-index: 9;
+
+  &__infor{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: max-content;
+    height: 100%;
+
+    &-item{
+      display: flex;
+      align-items: center;
+      margin-left: 25px;
+      height: 100%;
+      cursor: pointer;
+      position: relative;
+
+      .header__ic{
+        color: rgb(48, 47, 47);
+        margin-right: 5px;
+      }
+      
+      p{
+        flex: 1;
+        font-size: $text-sm;
+      }
+
+      img{
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+      }
+
+      .header__infor-item--active{
+        position: absolute;
+        display: block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #19DA2D;
+        bottom: 10px;
+        right: 2px;
+      }
+    }
+  }
 }

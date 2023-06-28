@@ -1,0 +1,187 @@
+@import '@/styles/base';
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+
+.home__banner {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  width: 100%;
+  height: 670px;
+  background: rgba(255, 255, 255, 1);
+  backdrop-filter: blur(50px);
+  z-index: 1;
+
+  &-left {
+    padding-left: 100px;
+    padding-top: 110px;
+    flex: 1;
+    background-color: transparent;
+
+    h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: $text-6xl;
+      width: 310px;
+      color: #262e5d;
+    }
+
+    p {
+      margin-top: 40px;
+      font-size: $text-2xl;
+      color: $text_500;
+      width: 408px;
+    }
+
+    .home__banner-list {
+      margin-top: 100px;
+      display: flex;
+      // width: 75%;
+      width: max-content;
+      height: 60px;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 4;
+
+      .home__banner-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        cursor: pointer;
+        padding-right: 30px;
+      }
+
+      .line {
+        display: block;
+        width: 13.64%;
+        height: 5px;
+        position: absolute;
+        bottom: 0;
+        left: 0px;
+        background: #46b5f3;
+        border-radius: 15px;
+        transition: transform 0.3s ease-in-out;
+      }
+    }
+  }
+
+  &-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    @keyframes rotateParent {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(-90deg);
+      }
+    }
+
+    .home__banner-bg {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      left: 40%;
+      top: -100%;
+      height: 147%;
+      width: 154%;
+      border-radius: 50%;
+
+      animation: rotateParent 0.8s forwards;
+
+      transform-origin: bottom center;
+      z-index: 2;
+
+      .home__banner-radial {
+        display: flex;
+        transform: rotate(90deg);
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        .home__banner-circle {
+          cursor: pointer;
+          display: grid;
+          width: 33.8%;
+          aspect-ratio: 1/1;
+          border-radius: 300px;
+          background-color: rgb(255, 255, 255);
+          position: relative;
+
+          .home__banner-logo {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+
+            img {
+              width: 100%;
+            }
+          }
+
+          .home__banner-product {
+            background-image: url('@/assets/imgs/Home/DCNK.png');
+            display: block;
+            margin: auto;
+            width: 75%;
+            height: 65%;
+            background-size: contain;
+            background-position: center center;
+            background-repeat: no-repeat;
+          }
+        }
+
+        p {
+          margin-top: 30px;
+          font-size: $text-2xl;
+          color: $primary_900;
+          font-weight: 500;
+          letter-spacing: 0.1em;
+        }
+      }
+    }
+  }
+
+  &-elipse1,
+  &-elipse2,
+  &-elipse3,
+  &-elipse4 {
+    position: absolute;
+    display: grid;
+    width: 16%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    z-index: 0;
+    transform: translate(50%, 50%);
+    background-color: black;
+  }
+
+  &-elipse1 {
+    top: -40%;
+    left: 40%;
+  }
+
+  &-elipse2 {
+    top: -40%;
+    right: 5%;
+  }
+
+  &-elipse3 {
+    bottom: 0%;
+    right: 5%;
+  }
+
+  &-elipse4 {
+    bottom: 0%;
+    left: 40%;
+  }
+}
+

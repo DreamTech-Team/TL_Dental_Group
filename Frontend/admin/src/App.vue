@@ -1,19 +1,17 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
 import BaseHeader from './components/BaseHeader/BaseHeader.vue';
-import BaseFooter from './components/BaseFooter/BaseFooter.vue';
+import BaseSidebar from './components/BaseSidebar/BaseSidebar.vue';
 </script>
 
 <template>
-  <header>
-    <BaseHeader />
-  </header>
+  <BaseHeader />
 
-  <RouterView />
+  <div style="width: calc(100% - 70px); margin-left: auto">
+    <RouterView />
+  </div>
 
-  <footer>
-    <BaseFooter />
-  </footer>
+  <BaseSidebar />
 </template>
 
 <style scoped></style>
