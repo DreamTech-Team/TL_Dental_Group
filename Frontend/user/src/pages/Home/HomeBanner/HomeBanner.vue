@@ -51,18 +51,17 @@ const scrollRight = () => {
     const currentScrollLeft = container.scrollLeft;
     const targetScrollLeft = currentScrollLeft + itemWidth + 10;
 
-    console.log(circleActive.value);
-
     if (targetScrollLeft > maxScrollLeft) {
+      circleActive.value = 0;
       container.scrollTo({ left: 0, behavior: 'smooth' });
-      circleActive.value = 1;
     } else {
-      container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
       if (circleActive.value == bannerItems.length - 1) {
         circleActive.value = 0;
       } else {
         circleActive.value++;
       }
+
+      container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
     }
   }
 };
@@ -76,11 +75,11 @@ const scrollLeft = () => {
     const targetScrollLeft = currentScrollLeft - itemWidth - 10;
 
     if (targetScrollLeft < 0) {
-      container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
       circleActive.value = bannerItems.length - 1;
+      container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
     } else {
-      container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
       circleActive.value--;
+      container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' });
     }
   }
 };
@@ -253,7 +252,6 @@ onMounted(() => {
   const container = document.getElementById('list_item');
 
   const startScroll = () => {
-    scrollRight();
     setInterval(() => {
       scrollRight();
     }, 6000);
@@ -380,8 +378,9 @@ onUnmounted(() => {
       <div
         :class="$style['home__bannerMB-circle']"
         v-for="index in bannerItems.length"
+        :id="index.toString()"
         :key="index"
-        :style="{ backgroundColor: index === circleActive ? '#2696E9' : '' }"
+        :style="{ backgroundColor: index - 1 === circleActive ? '#2696E9' : '' }"
       ></div>
     </div>
   </div>
