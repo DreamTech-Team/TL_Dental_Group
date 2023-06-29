@@ -3,14 +3,15 @@ import Comp from '@/assets/imgs/Home/ABComp.png';
 import Icon1 from '@/assets/imgs/Home/RSIcon1.png';
 import Icon2 from '@/assets/imgs/Home/RSIcon2.png';
 import Icon3 from '@/assets/imgs/Home/RSIcon3.png';
-import Meeting from '@/assets/imgs/Home/Meeting.png';
-import CEO from '@/assets/imgs/Home/CEO.png';
-import Logo from '@/assets/imgs/logo_nobg.png';
+import ICEdit from '@/assets/icons/Edit.png';
+import EditBtn from '@/components/EditBtn/EditBtn.vue';
+import CamBtn from '@/components/ImageBtn/ImageBtn.vue';
 </script>
 <template>
   <div :class="$style.home__reason">
     <div :class="$style['home__reason-left']">
       <img :src="Comp" alt="company" />
+      <CamBtn />
     </div>
     <div :class="$style['home__reason-right']">
       <h4 :class="$style['home__reason-title']">TẠI SAO NÊN LỰA CHỌN TL DENTAL GROUP</h4>
@@ -19,6 +20,9 @@ import Logo from '@/assets/imgs/logo_nobg.png';
         <div :class="$style['home__reason-item']">
           <div :class="$style['home__reason-icon']">
             <img :src="Icon1" alt="icon1" />
+            <button>
+              <img :src="ICEdit" alt="iconed" />
+            </button>
           </div>
           <div :class="$style['home__reason-description']">
             <h5>Sản phẩm chính hãng</h5>
@@ -31,6 +35,9 @@ import Logo from '@/assets/imgs/logo_nobg.png';
         <div :class="$style['home__reason-item']">
           <div :class="$style['home__reason-icon']">
             <img :src="Icon2" alt="icon2" />
+            <button>
+              <img :src="ICEdit" alt="iconed" />
+            </button>
           </div>
           <div :class="$style['home__reason-description']">
             <h5>Mức giá cạnh tranh</h5>
@@ -43,6 +50,9 @@ import Logo from '@/assets/imgs/logo_nobg.png';
         <div :class="$style['home__reason-item']">
           <div :class="$style['home__reason-icon']">
             <img :src="Icon3" alt="icon3" />
+            <button>
+              <img :src="ICEdit" alt="iconed" />
+            </button>
           </div>
           <div :class="$style['home__reason-description']">
             <h5>Chân thành, tin cậy và uy tín</h5>
@@ -54,52 +64,7 @@ import Logo from '@/assets/imgs/logo_nobg.png';
         </div>
       </div>
     </div>
-  </div>
-  <div :class="$style.home__motto">
-    <div :class="$style['home__motto-left']">
-      <h4>PHƯƠNG CHÂM</h4>
-      <span
-        >Lấy uy tín khách hàng là hàng đầu. <br />
-        <br />
-        Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. <br />
-        Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. <br />
-        Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản
-        người. An toàn và chất lượng. <br />
-        <br />
-        Trao sản phẩm và bảo hành trọn đời. Lấy uy tín khách hàng <br />
-        hàng đầu. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời.
-      </span>
-    </div>
-    <div :class="$style['home__motto-right']">
-      <h4 :class="$style['home__motto-title']">PHƯƠNG CHÂM</h4>
-      <img :src="Meeting" alt="meeting" />
-    </div>
-  </div>
-  <div :class="$style.home__intro">
-    <div :class="$style['home__intro-left']">
-      <h3>Lời ngỏ từ <strong>CEO NGUYEN HOANG</strong></h3>
-      <button :class="$style['home__intro-btn']">XEM CHI TIẾT</button>
-    </div>
-    <div :class="$style['home__intro-center']">
-      <img :src="CEO" alt="ceo" />
-      <div :class="$style['home__intro-description']">
-        <div :class="$style['home__intro-logo']">
-          <img :src="Logo" alt="logo" />
-          <h3>Group</h3>
-        </div>
-        <div :class="$style['home__intro-speach']">
-          <span
-            >"I used to have a bunch of different tools I had to pay for, with Circle you get
-            everything in one bundle."</span
-          >
-        </div>
-        <div :class="$style['home__intro-signature']">
-          <strong>Michel Dedrick</strong>
-          <span>Senior Conversion Optimizer</span>
-        </div>
-      </div>
-    </div>
-    <div :class="$style['home__intro-right']"></div>
+    <EditBtn />
   </div>
 </template>
 

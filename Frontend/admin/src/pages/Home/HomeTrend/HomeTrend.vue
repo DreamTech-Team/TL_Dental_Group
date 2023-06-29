@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, onUnmounted } from 'vue';
 import ProductCard from '@/components/Card/ProductCard.vue';
+import EditBtn from '@/components/EditBtn/EditBtn.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 const products = [
@@ -145,6 +146,7 @@ onUnmounted(() => {
         <font-awesome-icon :icon="faChevronRight" :class="$style['home__trend-ic']" />
       </button>
     </div>
+    <EditBtn style="top: 30px" />
   </div>
 </template>
 

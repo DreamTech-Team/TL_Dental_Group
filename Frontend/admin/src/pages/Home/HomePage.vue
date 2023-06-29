@@ -4,6 +4,8 @@ import HomeCategory from './HomeCategory/HomeCategory.vue';
 import HomeCompany from './HomeCompany/HomeCompany.vue';
 import HomeTrend from './HomeTrend/HomeTrend.vue';
 import HomeReason from './HomeReason/HomeReason.vue';
+import HomeMotto from './HomeMotto/HomeMotto.vue';
+import HomeIntro from './HomeIntro/HomeIntro.vue';
 import HomeFBack from './HomeFBack/HomeFBack.vue';
 import HomeActivity from './HomeActivity/HomeActivity.vue';
 </script>
@@ -14,6 +16,8 @@ import HomeActivity from './HomeActivity/HomeActivity.vue';
     <home-company />
     <home-trend />
     <home-reason />
+    <home-motto />
+    <home-intro />
     <home-f-back />
     <home-activity />
   </div>

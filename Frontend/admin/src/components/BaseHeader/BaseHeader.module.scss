@@ -44,7 +44,7 @@
         border-radius: 50%;
       }
 
-      .header__infor-item--active{
+      &--active{
         position: absolute;
         display: block;
         width: 12px;

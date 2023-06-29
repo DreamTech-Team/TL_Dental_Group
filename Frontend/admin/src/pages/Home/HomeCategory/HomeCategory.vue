@@ -2,6 +2,7 @@
 import { ref, onMounted, computed, onUnmounted } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import EditBtn from '@/components/EditBtn/EditBtn.vue';
 import DCNK2 from '@/assets/imgs/Home/DCNK2.png';
 
 const categories = ref([
@@ -128,6 +129,7 @@ onUnmounted(() => {
         </button>
       </div>
     </div>
+    <EditBtn style="top: -10px" />
   </div>
 </template>
 

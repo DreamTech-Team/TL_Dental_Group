@@ -1,0 +1,26 @@
+@import '@/styles/base';
+
+.editbtn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background-color: $primary_900;
+    z-index: 4;
+    cursor: pointer;
+    border: none;
+
+    img{
+        width: 25px;
+        height: 25px;
+    }
+
+    &:hover{
+        opacity: 0.9;
+    }
+}

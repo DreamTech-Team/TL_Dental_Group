@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Act from '@/assets/imgs/Home/Activiy.png';
 import { ref } from 'vue';
-import router from '@/router/index';
 
 const activities = [
   {
@@ -52,15 +51,11 @@ const selectedItem = ref(-1);
 const HandleClick = (index: number) => {
   selectedItem.value = index;
 };
-
-const SeeAll = () => {
-  router.push('/tintuc');
-};
 </script>
 <template>
   <div :class="$style.home__activities">
     <h3>CÁC HOẠT ĐỘNG CỦA CÔNG TY</h3>
-    <button :class="$style['home__activities-button']" @click="SeeAll">Xem tất cả</button>
+    <button :class="$style['home__activities-button']" @click.prevent>Xem tất cả</button>
     <div :class="$style['home__activities-list']">
       <button>Tất cả</button>
       <button>Hội nghị tháng 6</button>

@@ -4,6 +4,8 @@ import Capgemini from '@/assets/imgs/Home/Capgemini.png';
 import Yamaha from '@/assets/imgs/Home/Yamaha.png';
 import DELL from '@/assets/imgs/Home/DELL.png';
 import Biocon from '@/assets/imgs/Home/Biocon.png';
+import EditBtn from '@/components/EditBtn/EditBtn.vue';
+import CamBtn from '@/components/ImageBtn/ImageBtn.vue';
 
 const bannerItems = [
   { src: Capgemini, alt: 'capgemini', width: '127', height: '30' },
@@ -156,6 +158,7 @@ onUnmounted(() => {
               <img :src="selectedItem.src" :alt="selectedItem.alt" width="127" height="30" />
             </div>
             <div :class="$style['home__banner-product']"></div>
+            <CamBtn />
           </div>
           <p>Trụ Implant Highness Hàn Quốc</p>
         </div>
@@ -165,6 +168,7 @@ onUnmounted(() => {
     <div :class="$style['home__banner-elipse2']" :style="{ background: elipseColor[1] }"></div>
     <div :class="$style['home__banner-elipse3']" :style="{ background: elipseColor[2] }"></div>
     <div :class="$style['home__banner-elipse4']" :style="{ background: elipseColor[3] }"></div>
+    <EditBtn />
   </div>
 </template>
 
