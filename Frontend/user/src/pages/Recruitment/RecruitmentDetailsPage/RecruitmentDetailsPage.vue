@@ -46,12 +46,6 @@ const contentOrganite = [
       </div>
     </div>
     <div :class="$style.container__content">
-      <div :class="$style['container__content-left']">
-        <div :class="$style['container__content-left-title']">Đãi ngộ hấp dẫn</div>
-        <ul>
-          <li v-for="(item, index) in contentOrganite" :key="index">{{ item }}</li>
-        </ul>
-      </div>
       <div :class="$style['container__content-right']">
         <div :class="$style['container__content-right-title']">{{ data.title }}</div>
         <div :class="$style['container__content-right-type']">
@@ -64,6 +58,12 @@ const contentOrganite = [
         >
           <recruitment-details-item :items="item" />
         </div>
+      </div>
+      <div :class="$style['container__content-left']">
+        <div :class="$style['container__content-left-title']">Đãi ngộ hấp dẫn</div>
+        <ul>
+          <li v-for="(item, index) in contentOrganite" :key="index">{{ item }}</li>
+        </ul>
       </div>
     </div>
   </div>

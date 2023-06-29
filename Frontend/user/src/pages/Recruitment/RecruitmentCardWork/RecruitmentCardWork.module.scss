@@ -1,4 +1,5 @@
 @import '@/styles/base';
+@import '@/styles/responsive';
 
 .container__card {
   display: flex;
@@ -33,6 +34,27 @@
       background-color: $color_primary;
       color: white;
       cursor: pointer;
+    }
+  }
+}
+
+@include responsive_mobile() {
+  .container__card {
+    &-left {
+      &-title {
+        font-size: $text-lg-mobile;
+        margin-bottom: 1rem;
+      }
+    }
+
+    &-right {
+      &-btn {
+        margin-left: 1rem;
+        width: fit-content;
+        font-size: $text-base-mobile;
+        padding: 0.7rem 0.5rem;
+        border: 0.1rem solid $primary_700;
+      }
     }
   }
 }

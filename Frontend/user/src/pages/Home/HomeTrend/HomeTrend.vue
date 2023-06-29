@@ -74,7 +74,7 @@ const products = [
 
 //Scroll Properties
 const MIN_SWIPE_DISTANCE_CM = 3;
-const TOUCH_SENSITIVITY = 10;
+const TOUCH_SENSITIVITY = 20;
 const touchstartX = ref(0);
 const touchendX = ref(0);
 

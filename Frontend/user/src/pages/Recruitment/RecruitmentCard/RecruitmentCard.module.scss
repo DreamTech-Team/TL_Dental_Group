@@ -1,4 +1,5 @@
 @import '@/styles/base';
+@import '@/styles/responsive';
 
 .container__card {
   &-type1 {
@@ -128,16 +129,30 @@
     align-items: center;
 
     &-title {
+      .nav-recruit-enter-from {
+        transition: all 0.5s ease;
+        // opacity: 1;
+      }
+
       h3 {
         font-size: $text-xl;
         color: $text_800;
         font-weight: 500;
+      }
+
+      &-active {
+        h3 {
+          font-size: $text-2xl;
+          color: $text_800;
+          font-weight: 500;
+        }
       }
     }
   }
 
   &-type5 {
     width: 100vw;
+    height: 90vh;
     padding-left: 40vw;
     padding-top: 8rem;
 
@@ -244,4 +259,111 @@
 }
 .type5-color-background-4 {
   background-color: rgba($color: $triadic_100, $alpha: 0.2);
+}
+
+.display-none {
+  display: none;
+}
+
+@include responsive_mobile() {
+  .container__card {
+    &-type1 {
+      width: 90%;
+      padding-top: 1rem;
+      margin-bottom: 0.5rem;
+
+      &-title {
+        h3 {
+          font-size: $text-lg-mobile;
+          font-weight: 500;
+        }
+      }
+
+      &-content {
+        word-spacing: 0;
+        font-size: $text-base-mobile;
+        line-height: 1.7;
+        font-weight: 400;
+
+        ul {
+          width: 70%;
+        }
+      }
+    }
+
+    &-type2 {
+      // width: 80%;
+      padding-bottom: 1rem;
+
+      &-title {
+        margin-bottom: 1rem;
+        margin-top: 3rem;
+        font-size: $text-xl-mobile;
+      }
+
+      &-content {
+        padding: 0 2.5rem 0 2.5rem;
+        word-spacing: 0;
+        line-height: 1.7;
+        font-size: $text-base-mobile;
+      }
+    }
+
+    &-type3 {
+      padding: 1.5rem 1rem;
+      margin-bottom: 1rem;
+      width: 90%;
+
+      &-bg2 {
+        padding: 1.5rem 1rem;
+        margin-bottom: 2rem;
+
+        &-title {
+          margin-bottom: 0.5rem;
+
+          h3 {
+            font-size: $text-lg-mobile;
+          }
+        }
+
+        &-content {
+          font-size: $text-base-mobile;
+        }
+      }
+
+      &-title {
+        margin-bottom: 0.5rem;
+
+        h3 {
+          font-size: $text-lg-mobile;
+        }
+      }
+
+      &-content {
+        font-size: $text-base-mobile;
+      }
+    }
+
+    &-type6 {
+      &-title {
+        h3 {
+          font-size: $text-sm-mobile;
+        }
+      }
+    }
+
+    &-icon {
+      &-block {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.5rem;
+
+        &-type6 {
+          width: 2.5rem;
+          height: 2.5rem;
+          margin-right: 0.7rem;
+        }
+      }
+    }
+  }
 }

@@ -1,8 +1,16 @@
 <script setup lang="ts">
+import { type PropType } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+
+type FunctionScroll = (e: any) => void;
+
 const props = defineProps({
   items: Object,
-  style: String
+  style: String,
+  onSelected: Number
 });
+
+// onMounted(() => {});
 </script>
 
 <template>
@@ -23,9 +31,17 @@ const props = defineProps({
       </div>
     </div>
     <div :class="$style[`container__card-${style}-block`]">
-      <div :class="$style[`container__card-${style}-title`]">
-        <h3>{{ item.title.content }}</h3>
-      </div>
+      <transition name="nav-recruit">
+        <div
+          v-if="Number(index) === props.onSelected"
+          :class="[$style[`container__card-${style}-title-active`]]"
+        >
+          <h3>{{ item.title.content }}</h3>
+        </div>
+        <div v-else :class="$style[`container__card-${style}-title`]">
+          <h3>{{ item.title.content }}</h3>
+        </div>
+      </transition>
       <div>
         <div :class="$style[`container__card-${style}-content`]" v-if="item.content.content !== ''">
           {{ item.content.content }}

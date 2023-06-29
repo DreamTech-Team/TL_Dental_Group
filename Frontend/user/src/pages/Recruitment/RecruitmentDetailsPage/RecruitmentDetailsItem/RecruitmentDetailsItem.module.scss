@@ -1,4 +1,5 @@
 @import '@/styles/base';
+@import '@/styles/responsive';
 
 .container {
   margin-top: 3rem;
@@ -14,5 +15,18 @@
     font-size: $text-base;
     color: $text_900;
     font-weight: 400;
+  }
+}
+
+@include responsive_mobile() {
+  .container {
+    margin: 3rem 1.5rem 1.5rem 1.5rem;
+    &__title {
+      font-size: $text-xl-mobile;
+    }
+
+    &__content {
+      font-size: $text-base-mobile;
+    }
   }
 }

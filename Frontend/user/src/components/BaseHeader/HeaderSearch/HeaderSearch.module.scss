@@ -1,10 +1,13 @@
 @import '@/styles/base';
+@import "@/styles/responsive";
 
 .header-search {
   position: relative;
+  // flex: 1;
 
   &__icon {
     display: flex;
+    float: right;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
@@ -58,6 +61,91 @@
       color: $text_600;
       cursor: pointer;
       padding: 0 8px;
+    }
+  }
+}
+
+@include responsize_resolution() {
+  .header-search {
+    flex: 1;
+  
+    &__icon {
+      float: right;
+
+      &:hover {
+       
+      }
+  
+      &-svg {
+      }
+    }
+  
+    &__wrapper {
+    }
+  
+    &__input {
+      input {
+      }
+  
+      &-icon {
+      }
+    }
+  }
+}
+
+@include responsive_tablet() {
+  .header-search {
+    flex: 1;
+  
+    &__icon {
+      float: right;
+
+      &:hover {
+       
+      }
+  
+      &-svg {
+      }
+    }
+  
+    &__wrapper {
+    }
+  
+    &__input {
+      input {
+      }
+  
+      &-icon {
+      }
+    }
+  }
+}
+
+@include responsive_mobile() {
+  .header-search {
+    flex: 1;
+    display: none;
+  
+    &__icon {
+      float: right;
+
+      &:hover {
+       
+      }
+  
+      &-svg {
+      }
+    }
+  
+    &__wrapper {
+    }
+  
+    &__input {
+      input {
+      }
+  
+      &-icon {
+      }
     }
   }
 }
