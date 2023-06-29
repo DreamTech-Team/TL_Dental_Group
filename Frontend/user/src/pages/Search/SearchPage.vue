@@ -6,6 +6,7 @@ import { bestsale } from '../Search/BestSale';
 import ProductCard from '../Product/ProductCard/ProductCard.vue';
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
 import BaseCategory from '@/components/Category/BaseCategory.vue';
+import BasePagination from '@/components/Pagination/BasePagination.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import NotFounds from '@/assets/imgs/Product/notfound.svg';
 import styles from '../Search/SearchPage.module.scss';
@@ -15,10 +16,16 @@ const wItem = ref(0);
 const tranfX = ref(0);
 let resizeListener: () => void;
 const pathBC = 'timkiem';
+const currentPage = ref(1);
+const pageSize = ref(12);
 const sortTypeClasses = ref(styles['sort__type']);
 const sortContentClasses = ref(styles['sort__content']);
 const dropdownListClasses = ref(styles['dropdown-list']);
 const dropdownItemClasses = ref(styles['dropdown-item']);
+
+const handlePageChange = (page: number) => {
+  currentPage.value = page;
+};
 
 const widthComputed = computed(() => {
   return wItem.value * bestsale.length + 'px';
@@ -60,6 +67,12 @@ const selectOption = (option: string) => {
   isDropdownOpen.value = false;
 };
 
+const displayedProducts = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return products.slice(start, end);
+});
+
 onMounted(() => {
   const container = document.getElementById('trend-wrapper');
 
@@ -90,7 +103,8 @@ onUnmounted(() => {
         <bread-crumb :tags="pathBC" />
         <div :class="$style.sort">
           <p :class="$style['sort__info']">
-            Tìm thấy <strong>100</strong> kết quả với từ khóa là <strong>“kềm”</strong>
+            Tìm thấy <strong>{{ products.length }}</strong> kết quả với từ khóa là
+            <strong>“kềm”</strong>
           </p>
           <div :class="sortTypeClasses" @click="toggleDropdown">
             <p>{{ selectedOption }}</p>
@@ -111,7 +125,15 @@ onUnmounted(() => {
           </div>
         </div>
         <div :class="$style['product__container']">
-          <product-card v-for="(item, index) in products" :key="index" :product="item" />
+          <product-card v-for="(item, index) in displayedProducts" :key="index" :product="item" />
+        </div>
+        <div>
+          <base-pagination
+            :total="Math.ceil(products.length / pageSize)"
+            :current-page="currentPage"
+            :page-size="pageSize"
+            @current-change="handlePageChange"
+          />
         </div>
       </div>
       <div v-else>

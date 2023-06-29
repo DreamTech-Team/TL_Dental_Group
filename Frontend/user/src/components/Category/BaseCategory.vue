@@ -7,10 +7,16 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 
 const isAnimationVisible = ref(false);
 const selectedItem = ref(-1);
+const selectedCategoryItem = ref({ categoryIndex: -1, itemIndex: -1 });
 
 const toggleAnimation = (index: number) => {
-  selectedItem.value = index;
-  isAnimationVisible.value = !isAnimationVisible.value;
+  if (isAnimationVisible.value && selectedItem.value == index) {
+    isAnimationVisible.value = false;
+    selectedItem.value = -1;
+  } else {
+    isAnimationVisible.value = true;
+    selectedItem.value = index;
+  }
   if (isAnimationVisible.value) {
     nextTick(() => {
       const animationContainer = document.getElementById(`id-${index}`);
@@ -35,11 +41,22 @@ const toggleAnimation = (index: number) => {
 const idDefine = (index: number) => {
   return `id-${index}`;
 };
+
+const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
+  console.log(category[categoryIndex].data[itemIndex]);
+  selectedCategoryItem.value = { categoryIndex, itemIndex };
+};
+
+const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
+  return (
+    selectedCategoryItem.value.categoryIndex === categoryIndex &&
+    selectedCategoryItem.value.itemIndex === itemIndex
+  );
+};
 </script>
 <template>
   <div id="dropdown-container" :class="$style.category">
     <div :class="$style['category__title']">Danh mục</div>
-
     <div :class="[$style['category__firstX']]" v-for="(item, index) in category" :key="index">
       <div
         @click="toggleAnimation(index)"
@@ -62,7 +79,15 @@ const idDefine = (index: number) => {
         ]"
         ref="animationContainer"
       >
-        <div :class="$style['category__second']" v-for="(item1, idx) in item.data" :key="idx">
+        <div
+          @click="logAndSelectCategory(index, idx)"
+          :class="[
+            $style['category__second'],
+            { [$style['category__second--selected']]: isSelectedCategory(index, idx) }
+          ]"
+          v-for="(item1, idx) in item.data"
+          :key="idx"
+        >
           {{ item1.name }}
         </div>
       </div>
@@ -71,6 +96,5 @@ const idDefine = (index: number) => {
 </template>
 
 <style module scoped lang="scss">
-// @import '../ProductPage.module.scss';
 @import './Category.module.scss';
 </style>

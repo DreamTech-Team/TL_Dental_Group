@@ -82,7 +82,7 @@
     }
 
     &__right {
-      flex: 1.8;
+      flex: 1.5;
       padding: 14px 20px 5px 10px;
 
       .mbcard__right-title {
@@ -90,6 +90,11 @@
         font-size: 12px;
         font-family: 'Inter', sans-serif;
         font-weight: 500;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
       }
 
       p {
