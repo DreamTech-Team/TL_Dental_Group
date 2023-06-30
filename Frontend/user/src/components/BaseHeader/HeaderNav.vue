@@ -4,7 +4,7 @@ import shield from '@/assets/imgs/shield.png';
 import { RouterLink, useRoute } from 'vue-router';
 import { ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faBars } from '@fortawesome/free-solid-svg-icons';
 import HeaderCategory from './HeaderCategory/HeaderCategory.vue';
 import HeaderSearch from './HeaderSearch/HeaderSearch.vue';
 import { pages } from './HeaderHandle';
@@ -62,6 +62,13 @@ const pageHover = ref('none');
       </div>
     </div>
     <header-search />
+    <div :class="$style['header__nav-mobile']">
+      <div :class="$style['header__nav-mobile--btn']">
+        <font-awesome-icon :icon="faBars" size="xl" />
+      </div>
+
+      <div :class="$style['header__nav-mobile-list']"></div>
+    </div>
   </div>
 </template>
 

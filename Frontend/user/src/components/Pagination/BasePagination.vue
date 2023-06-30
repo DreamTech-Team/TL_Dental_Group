@@ -1,26 +1,34 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, defineProps, defineEmits } from 'vue';
 import { ElPagination } from 'element-plus'; // Import the specific component from element-plus
 import 'element-plus/dist/index.css';
 
-const total = ref(1000);
-const currentPage3 = ref(5);
-const pageSize3 = ref(100);
+const props = defineProps({
+  total: { type: Number, required: true },
+  currentPage: { type: Number, required: true },
+  pageSize: { type: Number, required: true }
+});
+
 const background = ref(true);
 const disabled = ref(false);
+const emit = defineEmits(['size-change', 'current-change']);
+const currentPageRef = ref(props.currentPage);
 
 const handleSizeChange = (val: number) => {
-  console.log(`${val} items per page`);
+  // Emit the size-change event to notify the parent component
+  emit('size-change', val);
 };
+
 const handleCurrentChange = (val: number) => {
-  console.log(`current page: ${val}`);
+  // Emit the current-change event to notify the parent component
+  emit('current-change', val);
+  console.log(props.total);
+  console.log(props.currentPage);
+  console.log(props.pageSize);
 };
 
 // Export the variable or function using defineExpose
 defineExpose({
-  total,
-  currentPage3,
-  pageSize3,
   handleSizeChange,
   handleCurrentChange
 });
@@ -31,15 +39,15 @@ defineExpose({
     <el-config-provider namespace="ep">
       <div class="demo-pagination-block">
         <el-pagination
-          :value="currentPage3"
-          @input="currentPage3 = $event"
-          :page-size="pageSize3"
+          :value="currentPage"
+          @input="currentPageRef = $event"
+          :page-size="pageSize"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :disabled="disabled"
           :background="background"
           layout="prev, pager, next, jumper"
-          :total="1000"
+          :total="39"
           :class="$style['custom-pagination']"
         />
       </div>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ProductBanner from './ProductBanner/ProductBanner.vue';
-import ProductCard from './ProductCard/ProductCard.vue';
-// import ProductCategory from './ProductCategory/ProductCategory.vue';
+import ProductCard from '@/components/Card/ProductCard.vue';
+import MobileCard from '@/components/MBCard/MobileCard.vue';
 import BaseCategory from '@/components/Category/BaseCategory.vue';
 import ProductNavigation from './ProductNavigation/ProductNavigation.vue';
 import ServiceQuality from '@/components/ServiceQuality/ServiceQuality.vue';
@@ -10,7 +10,7 @@ import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
 import { products } from '../Product/ProductHandle';
 import { category } from './ProductCategory/ProductCategory';
 import IcSortDown from '@/assets/icons/IcSortDown.svg';
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 const categories = [
   {
@@ -75,8 +75,21 @@ const categories = [
   }
 ];
 
+const currentPage = ref(1);
+const pageSize = ref(12);
+const pathBC = 'sanpham';
+const isDesktop = ref(true);
+
 // Define reactive properties
 const isDropdownOpen = ref(false);
+
+const checkScreenSize = () => {
+  if (window.innerWidth < 739) {
+    isDesktop.value = false;
+  } else {
+    isDesktop.value = true;
+  }
+};
 
 // Define methods
 const toggleDropdown = () => {
@@ -86,13 +99,24 @@ const toggleDropdown = () => {
 const closeDropdown = () => {
   isDropdownOpen.value = false;
 };
-const pathBC = 'sanpham';
-// Expose reactive properties and methods
-defineExpose({
-  isDropdownOpen,
-  toggleDropdown,
-  closeDropdown
+
+const handlePageChange = (page: number) => {
+  currentPage.value = page;
+};
+
+// Define computed property to calculate the total number of pages
+// const totalPages = computed(() => Math.ceil(products.length / pageSize.value));
+
+const displayedProducts = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return products.slice(start, end);
 });
+
+onMounted(() => {
+  checkScreenSize();
+});
+window.addEventListener('resize', checkScreenSize);
 </script>
 <template>
   <div>
@@ -102,11 +126,13 @@ defineExpose({
       <bread-crumb :tags="pathBC" />
     </div>
     <div :class="$style['product__content']">
-      <base-category />
+      <base-category v-if="isDesktop" />
       <div :class="$style['product__content-wrap']">
         <div :class="$style['product__content-sort']">
           <p :class="$style['product__content-sort--info']">
-            Hiển thị <strong>1 - 16</strong> trên <strong>100</strong> kết quả
+            Hiển thị <strong>{{ (currentPage - 1) * pageSize + 1 }}</strong> đến
+            <strong>{{ Math.min(currentPage * pageSize, products.length) }}</strong> trên
+            <strong>{{ Math.ceil(products.length) }}</strong> kết quả
           </p>
 
           <div :class="$style['product__content-sort--type']" @click="toggleDropdown">
@@ -127,16 +153,32 @@ defineExpose({
             </ul>
           </div>
         </div>
-        <div :class="$style['product__content-container']">
+        <div :class="$style['product__content-mbsort']">
+          <div :class="$style['product__content-mbsort--type']"></div>
+          <div :class="$style['product__content-mbsort--filter']"></div>
+        </div>
+        <div v-if="isDesktop" :class="$style['product__content-container']">
           <product-card
-            v-for="(item, index) in products"
+            v-for="(item, index) in displayedProducts"
             :key="index"
             :product="item"
             :class="$style['product__content-container--card']"
           />
         </div>
+        <div v-else :class="$style['product__content-mobile']">
+          <mobile-card
+            v-for="(item1, index1) in displayedProducts"
+            :key="index1"
+            :product="item1"
+          />
+        </div>
         <div>
-          <base-pagination />
+          <base-pagination
+            :total="Math.ceil(products.length / pageSize)"
+            :current-page="currentPage"
+            :page-size="pageSize"
+            @current-change="handlePageChange"
+          />
         </div>
       </div>
     </div>
