@@ -18,11 +18,14 @@
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/vue-fontawesome": "^3.0.3",
+    "@tinymce/tinymce-vue": "^5.1.0",
     "pinia": "^2.0.36",
     "postcss": "^8.4.23",
     "sass": "^1.62.1",
+    "sweetalert2": "^11.7.12",
     "vue": "^3.3.2",
-    "vue-router": "^4.2.0"
+    "vue-router": "^4.2.0",
+    "vuedraggable": "^2.24.3"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",

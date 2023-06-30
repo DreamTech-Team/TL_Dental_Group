@@ -4,6 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import EditBtn from '@/components/EditBtn/EditBtn.vue';
 import DCNK2 from '@/assets/imgs/Home/DCNK2.png';
+import ModalCategory from './ModalCategory.vue';
+
+const isOpen = ref(false);
 
 const categories = ref([
   {
@@ -47,10 +50,12 @@ const colors = [
   `linear-gradient(143.33deg, #0168C8 24.48%, rgba(246, 76, 218, 0.547363) 78.16%, rgba(173, 0, 255, 0.74) 103.49%)`
 ];
 
+//Properties
 const wItem = ref(0);
 const tranfX = ref(0);
 let resizeListener: () => void;
 
+//Render category
 const widthComputed = computed(() => {
   return wItem.value * categories.value.length + 'px';
 });
@@ -129,8 +134,9 @@ onUnmounted(() => {
         </button>
       </div>
     </div>
-    <EditBtn style="top: -10px" />
+    <EditBtn style="top: -10px" @click="isOpen = true" />
   </div>
+  <ModalCategory v-if="isOpen" @close="isOpen = false" />
 </template>
 
 <style module scoped lang="scss">

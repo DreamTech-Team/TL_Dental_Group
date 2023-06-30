@@ -4,6 +4,10 @@ import ProductCard from '@/components/Card/ProductCard.vue';
 import EditBtn from '@/components/EditBtn/EditBtn.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import ModalTrend from './ModalTrend.vue';
+
+const isOpen = ref(false);
+
 const products = [
   {
     nameProduct:
@@ -146,8 +150,9 @@ onUnmounted(() => {
         <font-awesome-icon :icon="faChevronRight" :class="$style['home__trend-ic']" />
       </button>
     </div>
-    <EditBtn style="top: 30px" />
+    <EditBtn style="top: 30px" @click="isOpen = true" />
   </div>
+  <ModalTrend v-if="isOpen" @close="isOpen = false" />
 </template>
 
 <style module scoped lang="scss">
