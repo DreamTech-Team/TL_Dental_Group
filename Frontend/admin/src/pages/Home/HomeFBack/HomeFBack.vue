@@ -3,10 +3,13 @@ import { ref, onMounted, computed, onUnmounted } from 'vue';
 import Doctor from '@/assets/imgs/Home/Doctor.png';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faStar, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import EditBtn from '@/components/EditBtn/EditBtn.vue';
+import ModalFBack from './ModalFBack.vue';
+
+const isOpen = ref(false);
 
 const feedbacks = ref([
   {
-    title: 'DỤNG CỤ CHỈNH NHA ABC',
     src: Doctor,
     speech:
       // eslint-disable-next-line max-len
@@ -16,7 +19,6 @@ const feedbacks = ref([
     rate: 4
   },
   {
-    title: 'DỤNG CỤ CHỈNH NHA ABC',
     src: Doctor,
     speech:
       // eslint-disable-next-line max-len
@@ -26,7 +28,6 @@ const feedbacks = ref([
     rate: 5
   },
   {
-    title: 'DỤNG CỤ CHỈNH NHA ABC',
     src: Doctor,
     speech:
       // eslint-disable-next-line max-len
@@ -36,7 +37,6 @@ const feedbacks = ref([
     rate: 2
   },
   {
-    title: 'DỤNG CỤ CHỈNH NHA ABC',
     src: Doctor,
     speech:
       // eslint-disable-next-line max-len
@@ -46,7 +46,6 @@ const feedbacks = ref([
     rate: 2
   },
   {
-    title: 'DỤNG CỤ CHỈNH NHA ABC',
     src: Doctor,
     speech:
       // eslint-disable-next-line max-len
@@ -151,7 +150,9 @@ onUnmounted(() => {
         </button>
       </div>
     </div>
+    <EditBtn style="top: -15px" @click="isOpen = true" />
   </div>
+  <ModalFBack v-if="isOpen" @close="isOpen = false" />
 </template>
 
 <style module scoped lang="scss">

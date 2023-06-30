@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Act from '@/assets/imgs/Home/Activiy.png';
 import { ref } from 'vue';
+import EditBtn from '@/components/EditBtn/EditBtn.vue';
 
 const activities = [
   {
@@ -82,6 +83,7 @@ const HandleClick = (index: number) => {
         </div>
       </div>
     </div>
+    <EditBtn style="top: -15px" />
   </div>
 </template>
 
