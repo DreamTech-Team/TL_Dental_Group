@@ -16,7 +16,7 @@ const pathNewsDetail = 'tintuc/hoat-dong-chong-dich-tinh-nguyen';
 
     <div :class="$style.newsdetail__wrapper">
       <NewsDetailContent />
-      <Categories />
+      <Categories :class="$style['newsdetail__wrapper-category']" />
     </div>
 
     <Activity :class="$style.newsdetail__activity" />

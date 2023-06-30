@@ -9,37 +9,37 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronRight, faDiamondTurnRight } from '@fortawesome/free-solid-svg-icons';
 </script>
 <template>
-  <div :class="$style.about__facility">
-    <div :class="$style['about__facility-wrap']">
-      <div :class="$style['about__facility-left']">
+  <div :class="$style.contact__facility">
+    <div :class="$style['contact__facility-wrap']">
+      <div :class="$style['contact__facility-left']">
         <h4>Cơ sở tại TP Hồ Chí Minh</h4>
 
         <div>
-          <img :src="Location" :class="$style['about__facility-ic']" />
+          <img :src="Location" :class="$style['contact__facility-ic']" />
           <p>45 Thạch Thị Thanh, phường Tân Định, Quận 1, TP Hồ Chí Minh</p>
         </div>
 
         <div>
-          <img :src="Telephone" :class="$style['about__facility-ic']" />
+          <img :src="Telephone" :class="$style['contact__facility-ic']" />
           <p>070 404 2234</p>
         </div>
 
         <div>
-          <img :src="Message" :class="$style['about__facility-ic']" />
+          <img :src="Message" :class="$style['contact__facility-ic']" />
           <p>ceo.tldental.group@gmail.com</p>
         </div>
 
         <div>
-          <img :src="Facebook" :class="$style['about__facility-ic']" />
+          <img :src="Facebook" :class="$style['contact__facility-ic']" />
           <a href="https://www.facebook.com/BiomeawTLG"> https://www.facebook.com/BiomeawTLG </a>
         </div>
 
-        <button :class="$style['about__facility-button']">
+        <button :class="$style['contact__facility-button']">
           <font-awesome-icon
             :icon="faDiamondTurnRight"
-            :class="$style['about__facility-button-ic']"
+            :class="$style['contact__facility-button-ic']"
           />
-          <!-- <img :src="Signpost" :class="$style['about__facility-button-ic']" /> -->
+          <!-- <img :src="Signpost" :class="$style['contact__facility-button-ic']" /> -->
           <p>Đường đi</p>
         </button>
       </div>

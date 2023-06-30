@@ -1,4 +1,6 @@
-.contact__message{
+@import '@/styles/responsive';
+
+.contact__message {
     position: fixed;
     right: 0;
     bottom: 0;
@@ -59,5 +61,12 @@
                 height: 3rem;
             }
         }
+    }
+}
+
+
+@include responsive_mobile() {
+    .contact__message{
+        display: none;
     }
 }
