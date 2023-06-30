@@ -45,7 +45,8 @@ public class Product {
 
 //    @ManyToOne
 //    @JoinColumn(nullable = false)
-//    private String pk_category;
+//    @Column(name = "pk_category")
+//    private String pkCategory;
 
     @PrePersist
     protected void onCreate() {
