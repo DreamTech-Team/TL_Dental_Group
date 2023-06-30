@@ -9,8 +9,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.dreamtech.tldental.models.ContentPage;
 import com.dreamtech.tldental.models.HomeSection1;
 import com.dreamtech.tldental.models.ResponseObject;
+import com.dreamtech.tldental.models.Review;
 import com.dreamtech.tldental.repositories.ContentPageRepository;
+import com.dreamtech.tldental.repositories.ReviewRepository;
 import com.dreamtech.tldental.services.IStorageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -32,7 +36,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/api/v1/home")
 public class HomePageController {
     @Autowired
-    private ContentPageRepository repository;
+    private ContentPageRepository contentPageRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @Autowired
     private IStorageService storageService;
@@ -40,14 +47,14 @@ public class HomePageController {
     @GetMapping("/header")
     ResponseEntity<ResponseObject> getHomeHeader() {
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Get Header Successfully", repository.findHomePageByTypeName("home::header"))
+                new ResponseObject("ok", "Get Header Successfully", contentPageRepository.findHomePageByTypeName("home::header"))
         );
     }
 
     @PostMapping(value="/header")
     public ResponseEntity<ResponseObject> addHomeHeader(@RequestBody ContentPage entity) {
         
-        Optional<ContentPage> foundContentPage = repository.findHomePageByTypeName("home::header");
+        Optional<ContentPage> foundContentPage = contentPageRepository.findHomePageByTypeName("home::header");
 
         if (foundContentPage.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
@@ -58,20 +65,20 @@ public class HomePageController {
         entity.setType("home::header");
 
         return ResponseEntity.status(HttpStatus.OK).body(
-            new ResponseObject("ok", "Add Header Successfully", repository.save(entity))
+            new ResponseObject("ok", "Add Header Successfully", contentPageRepository.save(entity))
         );
     }
 
     @PatchMapping(value="/content-page")
     public ResponseEntity<ResponseObject> updateContentPage(@RequestBody ContentPage entity) { 
-        Optional<ContentPage> foundContentPage = repository.findById(entity.getId());
+        Optional<ContentPage> foundContentPage = contentPageRepository.findById(entity.getId());
 
         if (foundContentPage.isPresent()) {
             ContentPage currentContentPage = foundContentPage.get();
             BeanUtils.copyProperties(entity, currentContentPage);
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Update Content Page Successfully", repository.save(currentContentPage))
+                new ResponseObject("ok", "Update Content Page Successfully", contentPageRepository.save(currentContentPage))
             );
         }
 
@@ -84,10 +91,10 @@ public class HomePageController {
 
     @GetMapping("/section1")
     ResponseEntity<ResponseObject> getSection1() {
-        Optional<ContentPage> section1Heading = repository.findHomePageByTypeName("home::section1_heading");
-        Optional<ContentPage> section1SubItem1 = repository.findHomePageByTypeName("home::section1_subitem1");
-        Optional<ContentPage> section1SubItem2 = repository.findHomePageByTypeName("home::section1_subitem2");
-        Optional<ContentPage> section1SubItem3 = repository.findHomePageByTypeName("home::section1_subitem3");
+        Optional<ContentPage> section1Heading = contentPageRepository.findHomePageByTypeName("home::section1_heading");
+        Optional<ContentPage> section1SubItem1 = contentPageRepository.findHomePageByTypeName("home::section1_subitem1");
+        Optional<ContentPage> section1SubItem2 = contentPageRepository.findHomePageByTypeName("home::section1_subitem2");
+        Optional<ContentPage> section1SubItem3 = contentPageRepository.findHomePageByTypeName("home::section1_subitem3");
 
         if (section1Heading.isPresent() && section1SubItem1.isPresent() && section1SubItem2.isPresent() && section1SubItem3.isPresent()) {
             HomeSection1 homeSection1 = new HomeSection1(section1Heading.get(), section1SubItem1.get(), section1SubItem2.get(), section1SubItem3.get());
@@ -105,10 +112,10 @@ public class HomePageController {
     @PostMapping(value="/section1")
     public ResponseEntity<ResponseObject> addSection1(@RequestParam("image") MultipartFile image, @RequestParam ("data") String data) throws JsonMappingException, JsonProcessingException {
 
-        Optional<ContentPage> Section1Heading = repository.findHomePageByTypeName("home::section1_heading");
-        Optional<ContentPage> Section1SubItem1 = repository.findHomePageByTypeName("home::section1_subitem1");
-        Optional<ContentPage> Section1SubItem2 = repository.findHomePageByTypeName("home::section1_subitem2");
-        Optional<ContentPage> Section1SubItem3 = repository.findHomePageByTypeName("home::section1_subitem3");
+        Optional<ContentPage> Section1Heading = contentPageRepository.findHomePageByTypeName("home::section1_heading");
+        Optional<ContentPage> Section1SubItem1 = contentPageRepository.findHomePageByTypeName("home::section1_subitem1");
+        Optional<ContentPage> Section1SubItem2 = contentPageRepository.findHomePageByTypeName("home::section1_subitem2");
+        Optional<ContentPage> Section1SubItem3 = contentPageRepository.findHomePageByTypeName("home::section1_subitem3");
         
         if (Section1Heading.isPresent() && Section1SubItem1.isPresent() && Section1SubItem2.isPresent() && Section1SubItem3.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
@@ -129,7 +136,7 @@ public class HomePageController {
         entity.getHeading().setImage(imageFile);
 
         return ResponseEntity.status(HttpStatus.OK).body(
-            new ResponseObject("ok", "Add Header Successfully", repository.saveAll(Arrays.asList(entity.getHeading(), entity.getSubItem1(), entity.getSubItem2(), entity.getSubItem3())))
+            new ResponseObject("ok", "Add Header Successfully", contentPageRepository.saveAll(Arrays.asList(entity.getHeading(), entity.getSubItem1(), entity.getSubItem2(), entity.getSubItem3())))
         );
     }
 
@@ -138,10 +145,10 @@ public class HomePageController {
         ObjectMapper objectMapper = new ObjectMapper();
         HomeSection1 entity = objectMapper.readValue(data, HomeSection1.class);
         
-        Optional<ContentPage> foundSection1Heading = repository.findById(entity.getHeading().getId());
-        Optional<ContentPage> foundSection1SubItem1 = repository.findById(entity.getSubItem1().getId());
-        Optional<ContentPage> foundSection1SubItem2 = repository.findById(entity.getSubItem2().getId());
-        Optional<ContentPage> foundSection1SubItem3 = repository.findById(entity.getSubItem3().getId());
+        Optional<ContentPage> foundSection1Heading = contentPageRepository.findById(entity.getHeading().getId());
+        Optional<ContentPage> foundSection1SubItem1 = contentPageRepository.findById(entity.getSubItem1().getId());
+        Optional<ContentPage> foundSection1SubItem2 = contentPageRepository.findById(entity.getSubItem2().getId());
+        Optional<ContentPage> foundSection1SubItem3 = contentPageRepository.findById(entity.getSubItem3().getId());
 
         if (foundSection1Heading.isPresent() && foundSection1SubItem1.isPresent() && foundSection1SubItem2.isPresent() && foundSection1SubItem3.isPresent()) {
             ContentPage section1Heading = foundSection1Heading.get();
@@ -165,7 +172,7 @@ public class HomePageController {
             }
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Update Content Page Successfully", repository.saveAll(Arrays.asList(section1Heading, section1SubItem1, section1SubItem2, section1SubItem3)))
+                new ResponseObject("ok", "Update Content Page Successfully", contentPageRepository.saveAll(Arrays.asList(section1Heading, section1SubItem1, section1SubItem2, section1SubItem3)))
             );
         }
 
@@ -176,7 +183,7 @@ public class HomePageController {
 
     @GetMapping(value="/section2")
     public ResponseEntity<ResponseObject> getSection2() {
-        Optional<ContentPage> section2 = repository.findHomePageByTypeName("home::section2");
+        Optional<ContentPage> section2 = contentPageRepository.findHomePageByTypeName("home::section2");
 
         if (section2.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -191,7 +198,7 @@ public class HomePageController {
 
     @PostMapping(value="/section2")
     public ResponseEntity<ResponseObject> addSection2(@RequestParam("data") String data, @RequestParam("image") MultipartFile image) throws JsonMappingException, JsonProcessingException {
-        Optional<ContentPage> section2 = repository.findHomePageByTypeName("home::section2");
+        Optional<ContentPage> section2 = contentPageRepository.findHomePageByTypeName("home::section2");
 
         if (section2.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
@@ -208,7 +215,7 @@ public class HomePageController {
         entity.setType("home::section2");
         
         return ResponseEntity.status(HttpStatus.OK).body(
-            new ResponseObject("ok", "Add section 2 successfully", repository.save(entity))
+            new ResponseObject("ok", "Add section 2 successfully", contentPageRepository.save(entity))
         );
     }
 
@@ -217,7 +224,7 @@ public class HomePageController {
         ObjectMapper objectMapper = new ObjectMapper();
         ContentPage entity = objectMapper.readValue(data, ContentPage.class);
         
-        Optional<ContentPage> foundSection2 = repository.findById(entity.getId());
+        Optional<ContentPage> foundSection2 = contentPageRepository.findById(entity.getId());
 
         if (foundSection2.isPresent()) {
 
@@ -233,7 +240,7 @@ public class HomePageController {
             section2.setType("home::section2");
             
             return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Update section 2 successfully", repository.save(section2))
+                new ResponseObject("ok", "Update section 2 successfully", contentPageRepository.save(section2))
             );
         }
 
@@ -244,7 +251,7 @@ public class HomePageController {
 
     @GetMapping(value="/section3")
     public ResponseEntity<ResponseObject> getSection3() {
-        Optional<ContentPage> section3 = repository.findHomePageByTypeName("home::section3");
+        Optional<ContentPage> section3 = contentPageRepository.findHomePageByTypeName("home::section3");
 
         if (section3.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -259,7 +266,7 @@ public class HomePageController {
 
     @PostMapping(value="/section3")
     public ResponseEntity<ResponseObject> addSection3(@RequestParam("data") String data, @RequestParam("image") MultipartFile image) throws JsonMappingException, JsonProcessingException {
-        Optional<ContentPage> section3 = repository.findHomePageByTypeName("home::section3");
+        Optional<ContentPage> section3 = contentPageRepository.findHomePageByTypeName("home::section3");
 
         if (section3.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
@@ -276,7 +283,7 @@ public class HomePageController {
         entity.setType("home::section3");
         
         return ResponseEntity.status(HttpStatus.OK).body(
-            new ResponseObject("ok", "Add section 3 successfully", repository.save(entity))
+            new ResponseObject("ok", "Add section 3 successfully", contentPageRepository.save(entity))
         );
     }
 
@@ -285,7 +292,7 @@ public class HomePageController {
         ObjectMapper objectMapper = new ObjectMapper();
         ContentPage entity = objectMapper.readValue(data, ContentPage.class);
         
-        Optional<ContentPage> foundSection3 = repository.findById(entity.getId());
+        Optional<ContentPage> foundSection3 = contentPageRepository.findById(entity.getId());
 
         if (foundSection3.isPresent()) {
 
@@ -301,7 +308,42 @@ public class HomePageController {
             section3.setType("home::section3");
             
             return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Update section 3 successfully", repository.save(section3))
+                new ResponseObject("ok", "Update section 3 successfully", contentPageRepository.save(section3))
+            );
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+            new ResponseObject("failed", "Cannot found your data", "")
+        );
+    }
+
+    @GetMapping(value="/reviews") ResponseEntity<ResponseObject> getReviews() {
+        return ResponseEntity.status(HttpStatus.OK).body(
+            new ResponseObject("ok", "Get Reviews Successfully", reviewRepository.findAll())
+        );
+    }
+
+    @PostMapping(value="/reviews") ResponseEntity<ResponseObject> addReviews(@RequestParam("data") String data, @RequestParam("image") MultipartFile image) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Review entity = objectMapper.readValue(data, Review.class);
+
+        String imageFile = storageService.storeFile(image);
+
+        entity.setImage(imageFile);
+        
+        return ResponseEntity.status(HttpStatus.OK).body(
+            new ResponseObject("ok", "Add review successfully", reviewRepository.save(entity))
+        );
+    }
+
+    @DeleteMapping(value = "/reviews/{id}") ResponseEntity<ResponseObject> deleteReview(@PathVariable("id") String id) {
+        Optional<Review> foundReview = reviewRepository.findById(id);
+
+        if (foundReview.isPresent()) {
+            reviewRepository.deleteById(id);
+
+            return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Delete review successfully", "")
             );
         }
 
