@@ -12,7 +12,7 @@ public class ContentPage {
     @Column(length = 200, unique = false)
     private String title;
 
-    @Column(length = 200, unique = false)
+    @Column(length = 1000000, unique = false)
     private String content;
 
     @Column(length = 200, unique = false)

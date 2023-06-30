@@ -6,6 +6,9 @@ public class HomeSection1 {
     ContentPage subItem2;
     ContentPage subItem3;
 
+    public HomeSection1() {
+    }
+
     public HomeSection1(ContentPage heading, ContentPage subItem1, ContentPage subItem2, ContentPage subItem3) {
         this.heading = heading;
         this.subItem1 = subItem1;

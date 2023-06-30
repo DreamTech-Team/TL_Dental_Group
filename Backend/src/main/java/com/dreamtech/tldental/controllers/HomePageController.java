@@ -1,6 +1,9 @@
 package com.dreamtech.tldental.controllers;
 
+import java.util.Arrays;
 import java.util.Optional;
+
+import javax.swing.text.html.Option;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +14,18 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.dreamtech.tldental.models.ContentPage;
 import com.dreamtech.tldental.models.HomeSection1;
 import com.dreamtech.tldental.models.ResponseObject;
 import com.dreamtech.tldental.repositories.ContentPageRepository;
+import com.dreamtech.tldental.services.IStorageService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @RestController 
@@ -24,6 +33,9 @@ import com.dreamtech.tldental.repositories.ContentPageRepository;
 public class HomePageController {
     @Autowired
     private ContentPageRepository repository;
+
+    @Autowired
+    private IStorageService storageService;
 
     @GetMapping("/header")
     ResponseEntity<ResponseObject> getHomeHeader() {
@@ -72,19 +84,16 @@ public class HomePageController {
 
     @GetMapping("/section1")
     ResponseEntity<ResponseObject> getSection1() {
-        Optional<ContentPage> Section1Heading = repository.findHomePageByTypeName("home::section1_heading");
-        Optional<ContentPage> Section1SubItem1 = repository.findHomePageByTypeName("home::section1_subitem1");
-        Optional<ContentPage> Section1SubItem2 = repository.findHomePageByTypeName("home::section1_subitem2");
-        Optional<ContentPage> Section1SubItem3 = repository.findHomePageByTypeName("home::section1_subitem3");
+        Optional<ContentPage> section1Heading = repository.findHomePageByTypeName("home::section1_heading");
+        Optional<ContentPage> section1SubItem1 = repository.findHomePageByTypeName("home::section1_subitem1");
+        Optional<ContentPage> section1SubItem2 = repository.findHomePageByTypeName("home::section1_subitem2");
+        Optional<ContentPage> section1SubItem3 = repository.findHomePageByTypeName("home::section1_subitem3");
 
-        if (Section1Heading.isPresent() && Section1SubItem1.isPresent() && Section1SubItem2.isPresent() && Section1SubItem3.isPresent()) {
+        if (section1Heading.isPresent() && section1SubItem1.isPresent() && section1SubItem2.isPresent() && section1SubItem3.isPresent()) {
+            HomeSection1 homeSection1 = new HomeSection1(section1Heading.get(), section1SubItem1.get(), section1SubItem2.get(), section1SubItem3.get());
+            
             return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Get Section 1 Successfully", new ContentPage[] {
-                    Section1Heading.get(),
-                    Section1SubItem1.get(),
-                    Section1SubItem2.get(),
-                    Section1SubItem3.get()
-                })
+                new ResponseObject("ok", "Get Section 1 Successfully", homeSection1)
             );
         }
 
@@ -94,7 +103,7 @@ public class HomePageController {
     }    
 
     @PostMapping(value="/section1")
-    public ResponseEntity<ResponseObject> addSection1(@RequestBody HomeSection1 entity) {
+    public ResponseEntity<ResponseObject> addSection1(@RequestParam("image") MultipartFile image, @RequestParam ("data") String data) throws JsonMappingException, JsonProcessingException {
 
         Optional<ContentPage> Section1Heading = repository.findHomePageByTypeName("home::section1_heading");
         Optional<ContentPage> Section1SubItem1 = repository.findHomePageByTypeName("home::section1_subitem1");
@@ -107,18 +116,197 @@ public class HomePageController {
             );
         }
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        HomeSection1 entity = objectMapper.readValue(data, HomeSection1.class);
+
         entity.getHeading().setType("home::section1_heading");
         entity.getSubItem1().setType("home::section1_subitem1");
         entity.getSubItem2().setType("home::section1_subitem2");
         entity.getSubItem3().setType("home::section1_subitem3");
 
-        repository.save(entity.getHeading());
-        repository.save(entity.getSubItem1());
-        repository.save(entity.getSubItem2());
-        repository.save(entity.getSubItem3());
+        String imageFile = storageService.storeFile(image);
+
+        entity.getHeading().setImage(imageFile);
 
         return ResponseEntity.status(HttpStatus.OK).body(
-            new ResponseObject("ok", "Add Header Successfully", entity)
+            new ResponseObject("ok", "Add Header Successfully", repository.saveAll(Arrays.asList(entity.getHeading(), entity.getSubItem1(), entity.getSubItem2(), entity.getSubItem3())))
+        );
+    }
+
+    @PatchMapping(value="/section1")
+    public ResponseEntity<ResponseObject> updateSection1(@RequestParam(name = "image", required = false) MultipartFile image, @RequestParam("data") String data) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        HomeSection1 entity = objectMapper.readValue(data, HomeSection1.class);
+        
+        Optional<ContentPage> foundSection1Heading = repository.findById(entity.getHeading().getId());
+        Optional<ContentPage> foundSection1SubItem1 = repository.findById(entity.getSubItem1().getId());
+        Optional<ContentPage> foundSection1SubItem2 = repository.findById(entity.getSubItem2().getId());
+        Optional<ContentPage> foundSection1SubItem3 = repository.findById(entity.getSubItem3().getId());
+
+        if (foundSection1Heading.isPresent() && foundSection1SubItem1.isPresent() && foundSection1SubItem2.isPresent() && foundSection1SubItem3.isPresent()) {
+            ContentPage section1Heading = foundSection1Heading.get();
+            ContentPage section1SubItem1 = foundSection1SubItem1.get();
+            ContentPage section1SubItem2 = foundSection1SubItem2.get();
+            ContentPage section1SubItem3 = foundSection1SubItem3.get();
+            
+            BeanUtils.copyProperties(entity.getHeading(), section1Heading);
+            BeanUtils.copyProperties(entity.getSubItem1(), section1SubItem1);
+            BeanUtils.copyProperties(entity.getSubItem2(), section1SubItem2);
+            BeanUtils.copyProperties(entity.getSubItem3(), section1SubItem3);
+
+            section1Heading.setType("home::section1_heading");
+            section1SubItem1.setType("home::section1_subitem1");
+            section1SubItem2.setType("home::section1_subitem2");
+            section1SubItem3.setType("home::section1_subitem3");
+
+            if (image != null) {
+                String imageFile = storageService.storeFile(image);
+                section1Heading.setImage(imageFile);
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Update Content Page Successfully", repository.saveAll(Arrays.asList(section1Heading, section1SubItem1, section1SubItem2, section1SubItem3)))
+            );
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+            new ResponseObject("failed", "Cannot found your data", "")
+        );
+    }
+
+    @GetMapping(value="/section2")
+    public ResponseEntity<ResponseObject> getSection2() {
+        Optional<ContentPage> section2 = repository.findHomePageByTypeName("home::section2");
+
+        if (section2.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Get Section 2 Successfully", section2.get())
+            );
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+            new ResponseObject("failed", "Cannot found your data", "")
+        );
+    }
+
+    @PostMapping(value="/section2")
+    public ResponseEntity<ResponseObject> addSection2(@RequestParam("data") String data, @RequestParam("image") MultipartFile image) throws JsonMappingException, JsonProcessingException {
+        Optional<ContentPage> section2 = repository.findHomePageByTypeName("home::section2");
+
+        if (section2.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                new ResponseObject("failed", "Type name already taken", "")
+            );
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ContentPage entity = objectMapper.readValue(data, ContentPage.class);
+
+        String imageFile = storageService.storeFile(image);
+
+        entity.setImage(imageFile);
+        entity.setType("home::section2");
+        
+        return ResponseEntity.status(HttpStatus.OK).body(
+            new ResponseObject("ok", "Add section 2 successfully", repository.save(entity))
+        );
+    }
+
+    @PatchMapping(value="/section2")
+    public ResponseEntity<ResponseObject> updateSection2(@RequestParam("data") String data, @RequestParam(name = "image", required = false) MultipartFile image) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ContentPage entity = objectMapper.readValue(data, ContentPage.class);
+        
+        Optional<ContentPage> foundSection2 = repository.findById(entity.getId());
+
+        if (foundSection2.isPresent()) {
+
+            ContentPage section2 = foundSection2.get();
+
+            BeanUtils.copyProperties(entity, section2);
+
+            if (image != null) {
+                String imageFile = storageService.storeFile(image);
+                section2.setImage(imageFile);
+            }
+            
+            section2.setType("home::section2");
+            
+            return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Update section 2 successfully", repository.save(section2))
+            );
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+            new ResponseObject("failed", "Cannot found your data", "")
+        );
+    }
+
+    @GetMapping(value="/section3")
+    public ResponseEntity<ResponseObject> getSection3() {
+        Optional<ContentPage> section3 = repository.findHomePageByTypeName("home::section3");
+
+        if (section3.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Get Section 3 Successfully", section3.get())
+            );
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+            new ResponseObject("failed", "Cannot found your data", "")
+        );
+    }
+
+    @PostMapping(value="/section3")
+    public ResponseEntity<ResponseObject> addSection3(@RequestParam("data") String data, @RequestParam("image") MultipartFile image) throws JsonMappingException, JsonProcessingException {
+        Optional<ContentPage> section3 = repository.findHomePageByTypeName("home::section3");
+
+        if (section3.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                new ResponseObject("failed", "Type name already taken", "")
+            );
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ContentPage entity = objectMapper.readValue(data, ContentPage.class);
+
+        String imageFile = storageService.storeFile(image);
+
+        entity.setImage(imageFile);
+        entity.setType("home::section3");
+        
+        return ResponseEntity.status(HttpStatus.OK).body(
+            new ResponseObject("ok", "Add section 3 successfully", repository.save(entity))
+        );
+    }
+
+    @PatchMapping(value="/section3")
+    public ResponseEntity<ResponseObject> updateSection3(@RequestParam("data") String data, @RequestParam(name = "image", required = false) MultipartFile image) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ContentPage entity = objectMapper.readValue(data, ContentPage.class);
+        
+        Optional<ContentPage> foundSection3 = repository.findById(entity.getId());
+
+        if (foundSection3.isPresent()) {
+
+            ContentPage section3 = foundSection3.get();
+
+            BeanUtils.copyProperties(entity, section3);
+
+            if (image != null) {
+                String imageFile = storageService.storeFile(image);
+                section3.setImage(imageFile);
+            }
+            
+            section3.setType("home::section3");
+            
+            return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Update section 3 successfully", repository.save(section3))
+            );
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+            new ResponseObject("failed", "Cannot found your data", "")
         );
     }
 }
