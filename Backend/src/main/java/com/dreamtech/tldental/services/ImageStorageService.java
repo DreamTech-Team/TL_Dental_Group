@@ -10,6 +10,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -28,12 +29,7 @@ public class ImageStorageService implements IStorageService {
                 "api_key", new String(Hex.decodeHex(apiKey)),
                 "api_secret", new String(Hex.decodeHex(apiSecret))));
     }
-    private boolean isImageFile(MultipartFile file) {
-        // Let install
-        String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
-        return Arrays.asList(new String[] {"png", "jpg", "jpeg", "bmp"})
-                .contains(fileExtension.trim().toLowerCase());
-    }
+
     @Override
     public String storeFile(MultipartFile file) {
         try {
@@ -71,43 +67,13 @@ public class ImageStorageService implements IStorageService {
         }
     }
 
-//    @Override
-//    public Stream<Path> loadAll() {
-//        try {
-//            //list all files in storageFolder
-//            //How to fix this ?
-//            return Files.walk(this.storageFolder, 1)
-//                    .filter(path -> !path.equals(this.storageFolder) && !path.toString().contains("._"))
-//                    .map(this.storageFolder::relativize);
-//        }
-//        catch (IOException e) {
-//            throw new RuntimeException("Failed to load stored files", e);
-//        }
-//    }
-//
-//    @Override
-//    public byte[] readFileContent(String fileName) {
-//        try {
-//            Path file = storageFolder.resolve(fileName);
-//            Resource resource = new UrlResource(file.toUri());
-//            if (resource.exists() || resource.isReadable()) {
-//                byte[] bytes = StreamUtils.copyToByteArray(resource.getInputStream());
-//                return bytes;
-//            }
-//            else {
-//                throw new RuntimeException(
-//                        "Could not read file: " + fileName);
-//            }
-//        }
-//        catch (IOException exception) {
-//            throw new RuntimeException("Could not read file: " + fileName, exception);
-//        }
-//    }
-//
-//    @Override
-//    public void deleteAllFiles() {
-//
-//    }
+
+    private boolean isImageFile(MultipartFile file) {
+        // Let install
+        String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
+        return Arrays.asList(new String[] {"png", "jpg", "jpeg", "bmp"})
+                .contains(fileExtension.trim().toLowerCase());
+    }
 
     private static String extractPublicIdFromUrl(String imageUrl) {
         String[] parts = imageUrl.split("/");

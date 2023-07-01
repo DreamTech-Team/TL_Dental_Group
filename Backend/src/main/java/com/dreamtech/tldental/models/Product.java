@@ -37,8 +37,9 @@ public class Product {
     @Column(name = "main_img", nullable = false)
     private String mainImg;
 
+    @Column(length = 1000)
     private String imgs;
-    private boolean highlight;
+    private int highlight;
 
     @Column(name = "create_at")
     private LocalDateTime createAt;
@@ -66,7 +67,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, int price, int priceSale, String summary, String description, String mainImg, String imgs, boolean highlight) {
+    public Product(String name, int price, int priceSale, String summary, String description, String mainImg, String imgs, int highlight) {
         this.name = name;
         this.price = price;
         this.priceSale = priceSale;
@@ -149,11 +150,11 @@ public class Product {
         this.imgs = imgs;
     }
 
-    public boolean isHighlight() {
+    public int getHighlight() {
         return highlight;
     }
 
-    public void setHighlight(boolean highlight) {
+    public void setHighlight(int highlight) {
         this.highlight = highlight;
     }
 
