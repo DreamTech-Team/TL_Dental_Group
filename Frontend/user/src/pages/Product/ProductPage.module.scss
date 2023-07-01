@@ -217,5 +217,16 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1;
+    animation: bg 0.1s ease;
+  }
+  @keyframes bg {
+    0% {
+      opacity: 0;
+      transform: translateY(0px);
+    }
+    100% {
+      opacity: 0.5;
+      transform: translateY(0);
+    }
   }
 }

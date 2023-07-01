@@ -11,6 +11,7 @@ import SimilarProduct from '@/components/SimilarProduct/SimilarProduct.vue';
 import BaseCategory from '@/components/Category/BaseCategory.vue';
 import BasePagination from '@/components/Pagination/BasePagination.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import NotFounds from '@/assets/imgs/Product/notfound.svg';
 import styles from '../Search/SearchPage.module.scss';
 import {
@@ -26,6 +27,11 @@ const pathBC = 'timkiem';
 const currentPage = ref(1);
 const pageSize = ref(12);
 const isDesktop = ref(true);
+const isActive = ref(false);
+const selectedOption = ref('Sắp xếp');
+const dropdownOptions = ['Mới nhất', 'Giá tăng dần', 'Giá giảm dần'];
+const isDropdownOpen = ref(false);
+
 //Scroll Properties
 const sortTypeClasses = ref(styles['sort__type']);
 const sortContentClasses = ref(styles['sort__content']);
@@ -49,48 +55,21 @@ const handlePageChange = (page: number) => {
   }
 };
 
-// const checkScreenSize = () => {
-//   if (window.innerWidth < 739) {
-//     isDesktop.value = false;
-//   } else {
-//     isDesktop.value = true;
-//   }
-// };
-
-// const widthComputed = computed(() => {
-//   return wItem.value * bestsale.length + 'px';
-// });
-
-// const widthItemComputed = computed(() => {
-//   return wItem.value + 'px';
-// });
-
-// const scrollLeft = () => {
-//   if (tranfX.value < 0) tranfX.value += wItem.value;
-// };
-
-// const scrollRight = () => {
-//   if (-tranfX.value + wItem.value * 4 < wItem.value * products.length) {
-//     tranfX.value -= wItem.value;
-//   } else {
-//     tranfX.value = 0;
-//   }
-// };
-
-// Define reactive properties
-const isDropdownOpen = ref(false);
-
 // Define methods
 const toggleDropdown = () => {
+  isActive.value = !isActive.value;
   isDropdownOpen.value = !isDropdownOpen.value;
 };
 
 const closeDropdown = () => {
+  isActive.value = false;
   isDropdownOpen.value = false;
 };
 
-const selectedOption = ref('Mới nhất');
-const dropdownOptions = ['Mới nhất', 'Giá tăng dần', 'Giá giảm dần'];
+function updateSelectedOption(option: string) {
+  selectedOption.value = option;
+  closeDropdown();
+}
 
 const selectOption = (option: string) => {
   selectedOption.value = option;
@@ -105,7 +84,7 @@ const displayedProducts = computed(() => {
 
 onMounted(() => {
   const container = document.getElementById('trend-wrapper');
-
+  updateSelectedOption('Sắp xếp');
   if (container) {
     if (window.innerWidth < 739) {
       wItem.value = container.offsetWidth / 2;
@@ -152,7 +131,7 @@ onUnmounted(() => {
           <div></div>
           <div :class="sortTypeClasses" @click="toggleDropdown">
             <p>{{ selectedOption }}</p>
-            <img :src="IcSortDown" alt="sort down" />
+            <font-awesome-icon :icon="faCaretDown" />
           </div>
 
           <div v-if="isDropdownOpen" @click="closeDropdown" :class="sortContentClasses">
@@ -168,25 +147,51 @@ onUnmounted(() => {
             </ul>
           </div>
         </div>
+        <!-- mobile sort -->
         <div v-else :class="$style.sorts">
           <p :class="$style['sorts__info']">
             Tìm thấy <strong>{{ products.length }}</strong> kết quả với từ khóa là
             <strong>“kềm”</strong>
           </p>
+
           <div :class="$style['mbsort']">
-            <div :class="$style['mbsort__type']">
+            <div
+              :class="[
+                $style['mbsort__type'],
+                {
+                  [$style['mbsort__active']]: isActive
+                }
+              ]"
+              @click="toggleDropdown"
+            >
               <font-awesome-icon
                 :class="$style['mbsort__type--icon']"
                 :icon="faArrowDownShortWide"
               />
-              <p :class="$style['mbsort__type--text']">Xếp theo</p>
+              <p :class="$style['mbsort__type--text']">{{ selectedOption }}</p>
+            </div>
+
+            <div v-if="isDropdownOpen" @click="closeDropdown" :class="$style['mbsort__contents']">
+              <!-- Nội dung dropdown -->
+              <ul :class="$style['dropdown-list']">
+                <li
+                  :class="$style['dropdown-item']"
+                  v-for="option in dropdownOptions"
+                  :key="option"
+                  @click="updateSelectedOption(option)"
+                >
+                  {{ option }}
+                </li>
+              </ul>
             </div>
           </div>
         </div>
-
+        <div v-if="isActive" :class="$style.overlay" @click="closeDropdown"></div>
         <div v-if="isDesktop" :class="$style['product__container']">
           <product-card v-for="(item, index) in displayedProducts" :key="index" :product="item" />
         </div>
+
+        <!-- mobile card -->
         <div v-else :class="$style['product__mbcontainer']">
           <mobile-card
             v-for="(item1, index1) in displayedProducts"
