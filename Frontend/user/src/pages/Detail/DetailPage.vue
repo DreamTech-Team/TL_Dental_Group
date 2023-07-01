@@ -6,20 +6,73 @@ import DetailImage from '@/assets/imgs/Product/Rectangle.png';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faRegistered } from '@fortawesome/free-solid-svg-icons';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import ZaloImg from '@/assets/imgs/Contact/Zalo.svg';
 import Product1 from '@/assets/imgs/Product/Rectangle2061.png';
 import Product2 from '@/assets/imgs/Product/Rectangle2062.png';
 import Product3 from '@/assets/imgs/Product/Rectangle2063.png';
 import Product4 from '@/assets/imgs/Product/Rectangle2064.png';
+import { ref, onMounted, onUnmounted } from 'vue';
 
 const pathBC = 'dung-cu-nha-khoa/kep-chinh-nha/kep-gap-mac-cai-R6,7-kep-gap-Tube-PMC-ORTHOR';
+
+//Scroll Properties
+const isDesktop = ref(false);
+
+const wItem = ref(0);
+const tranfX = ref(0);
+let resizeListener: () => void;
+onMounted(() => {
+  const container = document.getElementById('trend-wrapper');
+
+  if (container) {
+    if (window.innerWidth < 739) {
+      wItem.value = container.offsetWidth / 2;
+    } else {
+      wItem.value = container.offsetWidth / 4;
+    }
+  }
+
+  resizeListener = function () {
+    if (window.innerWidth < 739) {
+      isDesktop.value = false;
+    } else {
+      isDesktop.value = true;
+    }
+    const container = document.getElementById('trend-wrapper');
+    if (container) {
+      if (window.innerWidth < 739) {
+        wItem.value = container.offsetWidth / 2;
+      } else {
+        wItem.value = container.offsetWidth / 4;
+      }
+
+      tranfX.value = 0;
+    }
+  };
+
+  window.addEventListener('resize', resizeListener);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', resizeListener);
+});
 </script>
 <template>
   <div>
     <bread-crumb :tags="pathBC" />
     <div :class="$style.detail">
       <div :class="$style.detail__image">
-        <img :class="$style['detail__image--main']" :src="DetailImage" alt="Detail Product" />
+        <div :class="$style['detail__image--ctn']">
+          <img :class="$style['detail__image--ctn-main']" :src="DetailImage" alt="Detail Product" />
+          <button :class="$style['detail__image--ctn-left']">
+            <font-awesome-icon :icon="faChevronLeft" :class="$style['home__trend-ic']" />
+          </button>
+          <button :class="$style['detail__image--ctn-right']">
+            <font-awesome-icon :icon="faChevronRight" :class="$style['home__trend-ic']" />
+          </button>
+        </div>
+
         <div :class="$style['detail__image--multi']">
           <img :class="$style['detail__image--multi-product']" :src="Product1" alt="product1" />
           <img :class="$style['detail__image--multi-product']" :src="Product2" alt="product2" />
@@ -34,6 +87,9 @@ const pathBC = 'dung-cu-nha-khoa/kep-chinh-nha/kep-gap-mac-cai-R6,7-kep-gap-Tube
               <p>+3</p>
             </div>
           </div>
+        </div>
+        <div :class="$style['detail__image--count']">
+          <p>1/5</p>
         </div>
       </div>
       <div :class="$style.detail__content">

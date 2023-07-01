@@ -3,14 +3,21 @@ import IcSortDown from '@/assets/icons/IcSortDown.svg';
 import { ref, onMounted, computed, onUnmounted } from 'vue';
 import { products } from '../Product/ProductHandle';
 import { bestsale } from '../Search/BestSale';
-import ProductCard from '../Product/ProductCard/ProductCard.vue';
+import ProductCard from '@/components/Card/ProductCard.vue';
+import MobileCard from '@/components/MBCard/MobileCard.vue';
+import HomeTrend from '../Home/HomeTrend/HomeTrend.vue';
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
+import SimilarProduct from '@/components/SimilarProduct/SimilarProduct.vue';
 import BaseCategory from '@/components/Category/BaseCategory.vue';
 import BasePagination from '@/components/Pagination/BasePagination.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import NotFounds from '@/assets/imgs/Product/notfound.svg';
 import styles from '../Search/SearchPage.module.scss';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChevronLeft,
+  faChevronRight,
+  faArrowDownShortWide
+} from '@fortawesome/free-solid-svg-icons';
 
 const wItem = ref(0);
 const tranfX = ref(0);
@@ -18,34 +25,57 @@ let resizeListener: () => void;
 const pathBC = 'timkiem';
 const currentPage = ref(1);
 const pageSize = ref(12);
+const isDesktop = ref(true);
+//Scroll Properties
 const sortTypeClasses = ref(styles['sort__type']);
 const sortContentClasses = ref(styles['sort__content']);
 const dropdownListClasses = ref(styles['dropdown-list']);
 const dropdownItemClasses = ref(styles['dropdown-item']);
 
+const scrollToTop = (top: number) => {
+  window.scrollTo({
+    top: top,
+    behavior: 'smooth' // Tạo hiệu ứng cuộn mượt
+  });
+};
+
 const handlePageChange = (page: number) => {
   currentPage.value = page;
-};
-
-const widthComputed = computed(() => {
-  return wItem.value * bestsale.length + 'px';
-});
-
-const widthItemComputed = computed(() => {
-  return wItem.value + 'px';
-});
-
-const scrollLeft = () => {
-  if (tranfX.value < 0) tranfX.value += wItem.value;
-};
-
-const scrollRight = () => {
-  if (-tranfX.value + wItem.value * 4 < wItem.value * products.length) {
-    tranfX.value -= wItem.value;
+  if (window.innerWidth < 739) {
+    isDesktop.value = false;
+    scrollToTop(0);
   } else {
-    tranfX.value = 0;
+    scrollToTop(400);
   }
 };
+
+// const checkScreenSize = () => {
+//   if (window.innerWidth < 739) {
+//     isDesktop.value = false;
+//   } else {
+//     isDesktop.value = true;
+//   }
+// };
+
+// const widthComputed = computed(() => {
+//   return wItem.value * bestsale.length + 'px';
+// });
+
+// const widthItemComputed = computed(() => {
+//   return wItem.value + 'px';
+// });
+
+// const scrollLeft = () => {
+//   if (tranfX.value < 0) tranfX.value += wItem.value;
+// };
+
+// const scrollRight = () => {
+//   if (-tranfX.value + wItem.value * 4 < wItem.value * products.length) {
+//     tranfX.value -= wItem.value;
+//   } else {
+//     tranfX.value = 0;
+//   }
+// };
 
 // Define reactive properties
 const isDropdownOpen = ref(false);
@@ -77,14 +107,27 @@ onMounted(() => {
   const container = document.getElementById('trend-wrapper');
 
   if (container) {
-    console.log(container.offsetWidth);
-    wItem.value = container.offsetWidth / 4;
+    if (window.innerWidth < 739) {
+      wItem.value = container.offsetWidth / 2;
+    } else {
+      wItem.value = container.offsetWidth / 4;
+    }
   }
 
   resizeListener = function () {
+    if (window.innerWidth < 739) {
+      isDesktop.value = false;
+    } else {
+      isDesktop.value = true;
+    }
     const container = document.getElementById('trend-wrapper');
     if (container) {
-      wItem.value = container.offsetWidth / 4;
+      if (window.innerWidth < 739) {
+        wItem.value = container.offsetWidth / 2;
+      } else {
+        wItem.value = container.offsetWidth / 4;
+      }
+
       tranfX.value = 0;
     }
   };
@@ -101,11 +144,12 @@ onUnmounted(() => {
     <div>
       <div v-if="products.length > 0">
         <bread-crumb :tags="pathBC" />
-        <div :class="$style.sort">
+        <div v-if="isDesktop" :class="$style.sort">
           <p :class="$style['sort__info']">
             Tìm thấy <strong>{{ products.length }}</strong> kết quả với từ khóa là
             <strong>“kềm”</strong>
           </p>
+          <div></div>
           <div :class="sortTypeClasses" @click="toggleDropdown">
             <p>{{ selectedOption }}</p>
             <img :src="IcSortDown" alt="sort down" />
@@ -124,8 +168,31 @@ onUnmounted(() => {
             </ul>
           </div>
         </div>
-        <div :class="$style['product__container']">
+        <div v-else :class="$style.sorts">
+          <p :class="$style['sorts__info']">
+            Tìm thấy <strong>{{ products.length }}</strong> kết quả với từ khóa là
+            <strong>“kềm”</strong>
+          </p>
+          <div :class="$style['mbsort']">
+            <div :class="$style['mbsort__type']">
+              <font-awesome-icon
+                :class="$style['mbsort__type--icon']"
+                :icon="faArrowDownShortWide"
+              />
+              <p :class="$style['mbsort__type--text']">Xếp theo</p>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="isDesktop" :class="$style['product__container']">
           <product-card v-for="(item, index) in displayedProducts" :key="index" :product="item" />
+        </div>
+        <div v-else :class="$style['product__mbcontainer']">
+          <mobile-card
+            v-for="(item1, index1) in displayedProducts"
+            :key="index1"
+            :product="item1"
+          />
         </div>
         <div>
           <base-pagination
@@ -142,7 +209,7 @@ onUnmounted(() => {
           <div :class="$style['found__content']">
             <img :class="$style['found__content--image']" :src="NotFounds" alt="not found" />
             <p :class="$style['found__content--text']">
-              Rất tiếc chúng tôi không tìm thấy kết quả của “kềm”
+              Rất tiếc chúng tôi không tìm thấy kết quả của <strong>“kềm”</strong>
             </p>
             <div :class="$style['found__content--box']">
               <p><strong>Để tìm được kết quả chính xác hơn, xin vui lòng: </strong></p>
@@ -159,34 +226,8 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-    <div :class="$style.trend">
-      <div :class="$style['trend__title']">
-        <div :class="$style['trend__title--linef']"></div>
-        <h3>SẢN PHẨM NỔI BẬT</h3>
-        <div :class="$style['trend__title--line']"></div>
-      </div>
-      <div :class="$style['trend__title--ctn']">
-        <div :class="$style['trend__title--ctn-wrapper']" id="trend-wrapper">
-          <div
-            :class="$style['home__trend-list']"
-            :style="{ width: widthComputed, transform: 'translateX(' + tranfX + 'px)' }"
-          >
-            <product-card
-              v-for="(item, index) in bestsale"
-              :key="index"
-              :product="item"
-              :class="$style['home__trend-item']"
-              :style="{ width: widthItemComputed }"
-            />
-          </div>
-        </div>
-        <button :class="$style['trend__title--ctn-left']" @click="scrollLeft">
-          <font-awesome-icon :icon="faChevronLeft" :class="$style['trend__title--ctn-ic']" />
-        </button>
-        <button :class="$style['trend__title--ctn-right']" @click="scrollRight">
-          <font-awesome-icon :icon="faChevronRight" :class="$style['trend__title--ctn-ic']" />
-        </button>
-      </div>
+    <div>
+      <similar-product />
     </div>
   </div>
 </template>

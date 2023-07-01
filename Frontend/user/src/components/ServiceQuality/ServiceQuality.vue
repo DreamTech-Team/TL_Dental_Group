@@ -28,7 +28,7 @@ import Transit from '../../assets/icons/ServiceQuality/Transit.svg';
           <div :class="$style['service__container--content-text']">Kiểm thử miễn phí</div>
         </div>
       </div>
-      <div :class="$style['service__container2']">
+      <div :class="$style['service__container']">
         <img :class="$style['service__container--ic']" :src="Rollback" alt="protect" />
         <div :class="$style['service__container--content']">
           <div :class="$style['service__container--content-title']">Đổi trả</div>

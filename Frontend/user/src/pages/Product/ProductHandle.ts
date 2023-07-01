@@ -108,7 +108,6 @@ export const products = [
     tag: 'Vật liệu chỉnh nha',
     company: 'TL Group'
   },
-
   {
     nameProduct: '2Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép)',
     price: '4.000.000đ',
@@ -209,7 +208,6 @@ export const products = [
     tag: 'Vật liệu chỉnh nha',
     company: 'TL Group'
   },
-
   {
     nameProduct: '3Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép)',
     price: '4.000.000đ',

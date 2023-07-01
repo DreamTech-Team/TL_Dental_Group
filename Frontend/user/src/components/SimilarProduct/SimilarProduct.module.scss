@@ -1,3 +1,5 @@
+@import '@/styles/responsive';
+
 .trend {
   display: block;
   width: 100%;
@@ -112,6 +114,76 @@
         text-decoration: none;
         color: $text_500;
         font-size: $text-xl;
+      }
+    }
+  }
+}
+
+@include responsive_mobile() {
+  .trend {
+    padding-top: 2rem;
+    &__title {
+      h3 {
+        font-size: $text-base;
+        line-height: 27px;
+        /* identical to box height */
+        margin-left: 0;
+        padding-left: 2rem;
+        color: $primary_800;
+        margin-bottom: 0.8rem;
+      }
+
+      &--linef {
+        width: 12rem;
+        height: 0.4rem;
+        background: $primary_700;
+        margin-bottom: 1rem;
+        margin-left: 2rem;
+      }
+
+      &--line {
+        padding-left: 2rem;
+        display: block;
+        margin: auto;
+        margin-top: 10px;
+        height: 3.2px;
+        margin: 0 2rem;
+        border-bottom: 1px solid $text_200;
+      }
+
+      &--ctn {
+        &-wrapper {
+          .home__trend-list {
+            .home__trend-item {
+              display: block;
+              margin-left: 5px;
+              margin-right: 5px;
+              height: auto;
+            }
+          }
+        }
+        &-left {
+          width: 30px;
+          height: 30px;
+
+          &:hover {
+            transform: translateY(-0.3em);
+          }
+        }
+
+        &-right {
+          width: 30px;
+          height: 30px;
+          &:hover {
+            transform: translateY(-0.3em);
+          }
+        }
+
+        &-ic {
+          text-decoration: none;
+          color: $text_500;
+          font-size: $text-base;
+        }
       }
     }
   }

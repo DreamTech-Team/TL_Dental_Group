@@ -1,4 +1,5 @@
 @import '@/styles/base';
+@import '@/styles/responsive';
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&display=swap');
 
@@ -58,10 +59,56 @@
       }
     }
 
-    &--main {
+    &--ctn {
+      display: flex;
+      position: relative;
+      align-items: center;
+      justify-content: center;
       width: 100%;
-      height: 100%;
-      min-width: 30rem;
+
+      &-main {
+        width: 100%;
+        height: 100%;
+        min-width: 30rem;
+      }
+
+      &-left {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        border: none;
+        box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.3);
+        position: absolute;
+        top: calc(50% - 35px);
+        left: -2%;
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: none;
+        }
+      }
+
+      &-right {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.3);
+        position: absolute;
+        top: calc(50% - 35px);
+        right: -2%;
+        transition: all 0.3s ease;
+        border: none;
+
+        &:hover {
+          transform: none;
+        }
+      }
     }
   }
   &__content {
@@ -232,5 +279,190 @@
   }
   &__title {
     margin-bottom: 1.5rem;
+  }
+}
+
+@include responsive_mobile() {
+  .detail {
+    display: flex;
+    height: max-content;
+    flex-direction: column;
+    width: 100%;
+    margin: 0;
+
+    &__image {
+      margin: 0;
+      &--multi {
+        display: none;
+      }
+      &--count {
+        text-align: center;
+        color: $primary_700;
+        font-weight: 500;
+        margin-top: 0.5rem;
+        font-size: 14px;
+      }
+    }
+
+    &__content {
+      padding: 0 2rem;
+      margin: 0;
+      width: 100%;
+
+      &--name {
+        font-size: 2rem;
+        font-weight: 700;
+      }
+      &--price {
+        font-size: 2.2rem;
+        margin: 1.5rem 0;
+      }
+
+      &--object {
+        font-weight: 600;
+        font-size: 1.6rem;
+        margin-bottom: 1.5rem;
+      }
+
+      &--list {
+        padding-left: 1.5rem;
+        &-detail {
+          font-size: $text-sm;
+          font-weight: 400;
+          margin-bottom: 1.5rem;
+        }
+      }
+
+      &--brand {
+        display: flex;
+        margin-top: 3rem;
+        gap: 1rem;
+        justify-items: center;
+        align-items: center;
+        margin-bottom: 3rem;
+
+        &-icon {
+          width: 2rem;
+          height: 2rem;
+        }
+
+        &-text {
+          font-size: $text-sm;
+          font-weight: 400;
+        }
+
+        &-company {
+          font-size: $text-sm;
+          font-weight: 600;
+          color: $primary_700;
+        }
+      }
+
+      &--contact {
+        display: flex;
+        width: 100%;
+        flex-direction: row;
+        gap: 1;
+
+        &-btn1 {
+          flex: 1;
+          height: 4.6rem;
+          align-items: center;
+          display: flex;
+          background: #3c7cff;
+          border-radius: 1rem;
+          padding: 1rem;
+          margin: 0;
+          margin-right: 0.5rem;
+
+          &-text {
+            color: $primary_50;
+            font-size: $text-xs;
+            font-weight: 700;
+          }
+
+          .fb-logo {
+            width: 2.5rem;
+            height: 2.5rem;
+            color: #fff;
+          }
+          .zalo-logo {
+            height: 4rem;
+            background-color: #fff;
+            border-radius: 1rem;
+          }
+        }
+        &-btn2 {
+          flex: 1;
+          height: 4.6rem;
+          align-items: center;
+          display: flex;
+          background: #3c7cff;
+          border-radius: 1rem;
+          padding: 1rem;
+          margin: 0;
+          margin-left: 0.5rem;
+
+          &-text {
+            color: $primary_50;
+            font-size: $text-xs;
+            font-weight: 700;
+          }
+
+          .zalo-logo {
+            height: 2.5rem;
+            width: 2.5rem;
+            background-color: #fff;
+            border-radius: 1rem;
+          }
+        }
+      }
+    }
+  }
+
+  .description {
+    margin-left: 0;
+    padding-left: 2rem;
+    margin-top: 3rem;
+
+    &__title {
+      border-bottom: 0.7px solid $text_300;
+      &--line {
+        height: 0.4rem;
+        width: 12rem;
+        background-color: $primary_700;
+        margin-bottom: 1.2rem;
+      }
+      &--text {
+        font-size: $text-base;
+        font-weight: 700;
+        color: $primary_800;
+        padding-bottom: 1.2rem;
+      }
+    }
+
+    &__name {
+      color: $text_500;
+      margin-top: 2rem;
+      font-size: $text-base;
+      font-weight: 500;
+      margin-bottom: 2rem;
+    }
+  }
+
+  .list {
+    margin-top: 1rem;
+    font-size: $text-base;
+    margin-left: 0;
+
+    &__content {
+      color: #000;
+      font-size: $text-sm;
+      margin-left: 3rem;
+      margin-bottom: 1.5rem;
+    }
+    &__title {
+      margin-bottom: 1.5rem;
+    }
   }
 }

@@ -10,7 +10,15 @@ import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
 import { products } from '../Product/ProductHandle';
 import { category } from './ProductCategory/ProductCategory';
 import IcSortDown from '@/assets/icons/IcSortDown.svg';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { computed, onMounted, ref } from 'vue';
+import {
+  faArrowDownAZ,
+  faArrowDownShortWide,
+  faFilter,
+  faBars
+} from '@fortawesome/free-solid-svg-icons';
 
 const categories = [
   {
@@ -79,9 +87,28 @@ const currentPage = ref(1);
 const pageSize = ref(12);
 const pathBC = 'sanpham';
 const isDesktop = ref(true);
+const isActive = ref(false);
 
 // Define reactive properties
 const isDropdownOpen = ref(false);
+const selectedOption = ref('Sắp xếp');
+const options = ['Mới nhất', 'Giá tăng dần', 'Giá giảm dần'];
+
+// Define methods
+const toggleDropdown = () => {
+  isActive.value = !isActive.value;
+  isDropdownOpen.value = !isDropdownOpen.value;
+};
+
+const closeDropdown = () => {
+  isActive.value = false;
+  isDropdownOpen.value = false;
+};
+
+function updateSelectedOption(option: string) {
+  selectedOption.value = option;
+  closeDropdown();
+}
 
 const checkScreenSize = () => {
   if (window.innerWidth < 739) {
@@ -91,21 +118,22 @@ const checkScreenSize = () => {
   }
 };
 
-// Define methods
-const toggleDropdown = () => {
-  isDropdownOpen.value = !isDropdownOpen.value;
-};
-
-const closeDropdown = () => {
-  isDropdownOpen.value = false;
+const scrollToTop = (top: number) => {
+  window.scrollTo({
+    top: top,
+    behavior: 'smooth' // Tạo hiệu ứng cuộn mượt
+  });
 };
 
 const handlePageChange = (page: number) => {
   currentPage.value = page;
+  if (window.innerWidth < 739) {
+    isDesktop.value = false;
+    scrollToTop(0);
+  } else {
+    scrollToTop(400);
+  }
 };
-
-// Define computed property to calculate the total number of pages
-// const totalPages = computed(() => Math.ceil(products.length / pageSize.value));
 
 const displayedProducts = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
@@ -115,9 +143,11 @@ const displayedProducts = computed(() => {
 
 onMounted(() => {
   checkScreenSize();
+  updateSelectedOption('Sắp xếp');
 });
 window.addEventListener('resize', checkScreenSize);
 </script>
+
 <template>
   <div>
     <div :class="$style['product__header']">
@@ -136,8 +166,9 @@ window.addEventListener('resize', checkScreenSize);
           </p>
 
           <div :class="$style['product__content-sort--type']" @click="toggleDropdown">
-            <p>Mới nhất</p>
-            <img :src="IcSortDown" alt="sort down" />
+            <p>{{ selectedOption }}</p>
+            <!-- <img :src="IcSortDown" alt="sort down" /> -->
+            <font-awesome-icon :icon="faCaretDown" />
           </div>
 
           <div
@@ -147,16 +178,55 @@ window.addEventListener('resize', checkScreenSize);
           >
             <!-- Nội dung dropdown -->
             <ul :class="$style['dropdown-list']">
-              <li :class="$style['dropdown-item']">Mới nhất</li>
-              <li :class="$style['dropdown-item']">Giá tăng dần</li>
-              <li :class="$style['dropdown-item']">Giá giảm dần</li>
+              <li
+                :class="$style['dropdown-item']"
+                v-for="option in options"
+                :key="option"
+                @click="updateSelectedOption(option)"
+              >
+                {{ option }}
+              </li>
             </ul>
           </div>
         </div>
-        <div :class="$style['product__content-mbsort']">
-          <div :class="$style['product__content-mbsort--type']"></div>
-          <div :class="$style['product__content-mbsort--filter']"></div>
+
+        <!-- mobile sort-->
+        <div v-if="!isDesktop" :class="$style['product__content-mbsort']">
+          <div
+            :class="[
+              $style['product__content-mbsort--type'],
+              {
+                [$style['product__content-mbsort--active']]: isActive
+              }
+            ]"
+            @click="toggleDropdown"
+          >
+            <font-awesome-icon
+              :class="$style['product__content-mbsort--type--icon']"
+              :icon="faArrowDownShortWide"
+            />
+            <p :class="$style['product__content-mbsort--type--text']">{{ selectedOption }}</p>
+          </div>
+          <div
+            v-if="isDropdownOpen"
+            @click="closeDropdown"
+            :class="$style['product__content-mbsort--contents']"
+          >
+            <!-- Nội dung dropdown -->
+            <ul :class="$style['dropdown-list']">
+              <li
+                :class="$style['dropdown-item']"
+                v-for="option in options"
+                :key="option"
+                @click="updateSelectedOption(option)"
+              >
+                {{ option }}
+              </li>
+            </ul>
+          </div>
         </div>
+        <div v-if="isActive" :class="$style.overlay" @click="closeDropdown"></div>
+        <!-- mobile content -->
         <div v-if="isDesktop" :class="$style['product__content-container']">
           <product-card
             v-for="(item, index) in displayedProducts"
