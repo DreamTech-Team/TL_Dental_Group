@@ -85,6 +85,11 @@ const displayedProducts = computed(() => {
 onMounted(() => {
   const container = document.getElementById('trend-wrapper');
   updateSelectedOption('Sắp xếp');
+  if (window.innerWidth < 739) {
+    isDesktop.value = false;
+  } else {
+    isDesktop.value = true;
+  }
   if (container) {
     if (window.innerWidth < 739) {
       wItem.value = container.offsetWidth / 2;
