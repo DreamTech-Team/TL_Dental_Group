@@ -1,4 +1,5 @@
 @import "@/styles/base";
+@import "@/styles/responsive";
 
 .about__motto{
 
@@ -128,6 +129,75 @@
                 // width: 44.1rem;
                 border-radius: 20px;
                 background-color: rgba($color: #fff, $alpha: 0.5);
+            }
+        }
+    }
+}
+
+@include responsive_mobile() {
+    .about__motto{
+
+        &-title{
+            font-size: $text-lg-mobile;
+            font-weight: 500;
+            color: $primary_900;
+            text-align: center;
+            margin-bottom: 2rem;
+            margin-top: 2rem;
+        }
+    
+        div{
+            position: relative;
+    
+            .about__motto-slider{
+                display: flex;
+                gap: 2rem;
+                transition: transform 150ms ease-out;
+                width: 100%;
+                overflow-x: scroll;
+                
+                &-item{
+                    background-color: #D7FFFA;
+                    padding: 2rem;
+                    border-radius: 2rem;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+    
+                    img{
+                        width: calc(100vw*0.5);
+                    }
+        
+                    p{
+                        width: 100%;
+                        text-align: center;
+                    }
+    
+                    &-title{
+                        font-weight: 700;
+                        font-size: $text-sm-mobile;
+                    }
+    
+                    &-content{
+                        min-height: 3rem;
+                        font-weight: 700;
+                        font-size: $text-xs-mobile;
+                        color: #76768F;
+                    }
+                }
+    
+                &-item:first-child{
+                    margin: 0;
+                    // margin-left: -19.4rem;
+                }
+            }
+            .about__motto-slider::-webkit-scrollbar{
+                height: 0.4rem;
+            }
+    
+            .about__motto-curtain{
+                display: none;
             }
         }
     }

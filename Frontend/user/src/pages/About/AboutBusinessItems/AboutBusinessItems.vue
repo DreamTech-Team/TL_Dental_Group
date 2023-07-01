@@ -46,6 +46,12 @@ const colors = [
   `linear-gradient(143.33deg, #0168C8 24.48%, rgba(246, 76, 218, 0.547363) 78.16%, rgba(173, 0, 255, 0.74) 103.49%)`
 ];
 
+//Handle Scroll
+const MIN_SWIPE_DISTANCE_CM = 3;
+const TOUCH_SENSITIVITY = 10;
+const touchstartX = ref(0);
+const touchendX = ref(0);
+
 const wItem = ref(0);
 const tranfX = ref(0);
 let resizeListener: () => void;
@@ -63,10 +69,18 @@ const scrollLeft = () => {
 };
 
 const scrollRight = () => {
-  if (-tranfX.value + wItem.value * 4 < wItem.value * categories.value.length) {
-    tranfX.value -= wItem.value;
+  if (window.innerWidth < 739) {
+    if (-tranfX.value + wItem.value * 2 < wItem.value * categories.value.length) {
+      tranfX.value -= wItem.value;
+    } else {
+      tranfX.value = 0;
+    }
   } else {
-    tranfX.value = 0;
+    if (-tranfX.value + wItem.value * 4 < wItem.value * categories.value.length) {
+      tranfX.value -= wItem.value;
+    } else {
+      tranfX.value = 0;
+    }
   }
 };
 
@@ -74,16 +88,48 @@ const getCategoryColor = (index: number) => {
   return colors[index % colors.length];
 };
 
+//Handle scroll list
+const checkDirection = () => {
+  const distanceX = Math.abs(touchendX.value - touchstartX.value);
+  const distanceInCm = distanceX / TOUCH_SENSITIVITY;
+
+  if (distanceInCm >= MIN_SWIPE_DISTANCE_CM) {
+    if (touchendX.value < touchstartX.value) {
+      scrollRight();
+    }
+    if (touchstartX.value < touchendX.value) {
+      scrollLeft();
+    }
+  }
+};
+
+const handleTouchstart = (e: TouchEvent) => {
+  touchstartX.value = e.changedTouches[0].screenX;
+};
+
+const handleTouchend = (e: TouchEvent) => {
+  touchendX.value = e.changedTouches[0].screenX;
+  checkDirection();
+};
+
 onMounted(() => {
   const container = document.getElementById('category-wrapper');
   if (container) {
-    wItem.value = container.offsetWidth / 4;
+    if (window.innerWidth < 739) {
+      wItem.value = container.offsetWidth / 2;
+    } else {
+      wItem.value = container.offsetWidth / 4;
+    }
   }
 
   resizeListener = function () {
     const container = document.getElementById('category-wrapper');
     if (container) {
-      wItem.value = container.offsetWidth / 4;
+      if (window.innerWidth < 739) {
+        wItem.value = container.offsetWidth / 2;
+      } else {
+        wItem.value = container.offsetWidth / 4;
+      }
       tranfX.value = 0;
     }
   };
@@ -98,11 +144,12 @@ onUnmounted(() => {
 
 <template>
   <div :class="$style.about__businessitems">
-    <h3>MẶT HÀNG KINH DOANH</h3>
-
+    <h3>DANH MỤC NỔI BẬT</h3>
     <div :class="$style['about__businessitems-ctn']">
       <div :class="$style['about__businessitems-wrapper']" id="category-wrapper">
         <div
+          @touchstart="handleTouchstart"
+          @touchend="handleTouchend"
           :class="$style['about__businessitems-list']"
           id="category-list"
           :style="{ width: widthComputed, transform: 'translateX(' + tranfX + 'px)' }"

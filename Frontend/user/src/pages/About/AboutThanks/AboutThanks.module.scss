@@ -1,4 +1,6 @@
 @import "@/styles/base";
+@import '@/styles/responsive';
+
 .about__thanks{
     position: relative;
     height: 75rem;
@@ -136,3 +138,9 @@
         transform: translateX(-50%);
     }
 }
+
+@include responsive_mobile() {
+    .about__thanks{
+        display: none;
+    }
+} 
