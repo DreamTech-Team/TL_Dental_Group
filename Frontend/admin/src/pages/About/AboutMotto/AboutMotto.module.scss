@@ -1,0 +1,433 @@
+@import "@/styles/base";
+
+.about__motto{
+    position: relative;
+
+    &-title{
+        font-size: $text-4xl;
+        font-weight: 500;
+        line-height: 3.5rem;
+        color: $primary_900;
+        text-align: center;
+        margin-bottom: 6rem;
+        margin-top: 6rem;
+    }
+
+    &-position{
+        position: relative;
+
+        .about__motto-slider{
+            display: flex;
+            gap: 15rem;
+            transition: transform 150ms ease-out;
+            width: 100%;
+            
+            &-item{
+                background-color: #D7FFFA;
+                padding: 6rem 3rem;
+                border-radius: 2rem;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                img{
+                    width: calc(100vw*0.3333 - 15rem - 3.9rem);
+                }
+    
+                p{
+                    width: 100%;
+                    text-align: center;
+                }
+
+                &-title{
+                    font-weight: 700;
+                    font-size: $text-2xl;
+                    line-height: 5.5rem;
+                    letter-spacing: 0.02em;
+                }
+
+                &-content{
+                    font-weight: 700;
+                    font-size: $text-xs;
+                    line-height: 2.5rem;
+                    letter-spacing: 0.02em;
+                    color: #76768F;
+                }
+            }
+        }
+
+        .about__motto-curtain{
+            display: flex;
+            align-items: center;
+            margin: auto;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+
+            &-left{
+                width: 30%;
+                height: 100%;
+                border-radius: 2rem;
+                background-color: rgba($color: #fff, $alpha: 0.5);
+            }
+
+            &-button{
+                width: 40%;
+                display: flex;
+                justify-content: center;
+                z-index: 1;
+                gap: 51rem;
+
+                &-left{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 2rem 2.2rem;
+                    border-radius: 50%;
+                    border: none;
+                    box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.25);
+                    // margin-right: 26rem;
+                    transition: all 0.3s ease;
+    
+                    &:hover{
+                        transform: translateY(-0.3em);
+                    }
+                }
+
+                &-right{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 2rem 2.2rem;
+                    border-radius: 50%;
+                    box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.25);
+                    // margin-left: 26rem;
+                    transition: all 0.3s ease;
+                    border: none;
+
+                    &:hover{
+                        transform: translateY(-0.3em);
+                    }   
+                }
+            }
+
+            &-right{
+                width: 30%;
+                height: 100%;
+                // width: 44.1rem;
+                border-radius: 20px;
+                background-color: rgba($color: #fff, $alpha: 0.5);
+            }
+        }
+    }
+
+    &-wrapper{
+        display: flex;
+        justify-content: center;
+        padding-bottom: 8rem;
+
+        .about__motto-left{
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            div{
+                display: flex;
+                align-items: center;
+                // justify-content: center;    
+
+                .about__motto-left-button{
+                    z-index: 1;
+                    &-left{
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 2rem 2.2rem;
+                        border-radius: 50%;
+                        border: none;
+                        box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.25);
+                        // margin-right: 26rem;
+                        transition: all 0.3s ease;
+                        margin-right: -1rem;
+        
+                        &:hover{
+                            transform: translateY(-0.3em);
+                        }
+                    }
+    
+                    &-right{
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 2rem 2.2rem;
+                        border-radius: 50%;
+                        box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.25);
+                        transition: all 0.3s ease;
+                        border: none;
+                        margin-left: -1rem;
+        
+                        &:hover{
+                            transform: translateY(-0.3em);
+                        }   
+                    }
+                }
+    
+                .about__motto-slider1{
+                    display: flex;
+                    transition: transform 150ms ease-out;
+                    width: 38.4rem;
+                    overflow: hidden;
+                    
+                    &-item{
+                        background-color: #D7FFFA;
+                        padding: 6rem 3rem;
+                        border-radius: 2rem;
+                        height: 100%;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+    
+                        img{
+                            width: calc(100vw*0.3333 - 15rem - 3.9rem);
+                        }
+            
+                        p{
+                            width: 100%;
+                            text-align: center;
+                        }
+    
+                        &-title{
+                            font-weight: 700;
+                            font-size: $text-2xl;
+                            line-height: 5.5rem;
+                            letter-spacing: 0.02em;
+                        }
+    
+                        &-content{
+                            font-weight: 700;
+                            font-size: $text-xs;
+                            line-height: 2.5rem;
+                            letter-spacing: 0.02em;
+                            color: #76768F;
+                        }
+                    }
+                }
+            }
+
+            div{
+                margin-top: 2rem;
+
+                .about__motto-button-update{
+                    padding: 0.4rem 2rem;
+                    border: 1px solid $primary_600;
+                    background-color: #fff;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 1rem;
+                    margin-right: 1rem;
+
+                    &-ic{
+                        font-size: 2.5rem;
+                        color: $primary_600;
+                        margin-right: 1.4rem;
+                    }
+
+                    span{
+                        font-size: $text-base;
+                        color: $primary_600;
+                        font-weight: 500;
+                        line-height: 3.5rem;
+                    }
+                }
+
+                .about__motto-button-close{
+                    padding: 0.4rem 2rem;
+                    border: 1px solid red;
+                    background-color: #fff;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 1rem;
+
+                    &-ic{
+                        font-size: 2.5rem;
+                        color: red;
+                        margin-right: 1.4rem;
+                    }
+
+                    span{
+                        font-size: $text-base;
+                        color: red;
+                        font-weight: 500;
+                        line-height: 3.5rem;
+                    }
+                }
+            }
+        }
+
+        .about__motto-right{
+            width: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            &-solid{
+                padding: 21rem 7rem;
+                border: 1px solid $primary_600;
+                border-radius: 2rem;
+
+                &-button{
+                    border: 1px solid $primary_600;
+                    padding: 1rem 2rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+
+                    &-ic{
+                        font-size: 3rem;
+                        color: $primary_600;
+                        margin-right: 1.4rem;
+                    }
+                    span{
+                        font-size: $text-base;
+                        font-weight: 500;
+                        line-height: 3.5rem;
+                        color: $primary_600;
+                    }
+                }
+            }
+        }
+    }    
+
+
+
+
+    &-button-first{
+        padding: 0.4rem 2.4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background-color: $primary_600;
+        border: 1px solid $primary_600;
+        border-radius: 1rem;
+        position: absolute;
+        top: -6rem;
+        right: 0;
+        margin: 1.4rem;
+        transition: all 0.3s ease-in-out;
+
+        .about__motto-button-ic{
+            font-size: $text-2xl;
+            margin-right: 1.4rem;
+            color: #fff;
+        }
+
+        span{
+            font-size: $text-base;
+            font-weight: 500;
+            line-height: 3.5rem;
+            color: #fff;
+        }
+    }
+
+    &-button-first:hover{
+        background-color: #fff;
+
+        .about__motto-button-ic{
+            color: $primary_600;
+        }
+
+        span{
+            color: $primary_600;
+        }
+    }
+
+    &-button-left{
+        padding: 0.4rem 2.4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background-color: #000000;
+        border: 1px solid #000;
+        border-radius: 1rem;
+        position: absolute;
+        top: -6rem;
+        right: 16rem;
+        margin: 1.4rem;
+        transition: all 0.3s ease-in-out;
+
+        .about__motto-button-ic{
+            font-size: $text-2xl;
+            margin-right: 1.4rem;
+            color: #fff;
+        }
+
+        span{
+            font-size: $text-base;
+            font-weight: 500;
+            line-height: 3.5rem;
+            color: #fff;
+        }
+    }
+
+    &-button-left:hover{
+        background-color: #fff;
+
+        .about__motto-button-ic{
+            color: #000;
+        }
+
+        span{
+            color: #000;
+        }
+    }
+
+    &-button-right{
+        padding: 0.4rem 2.4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background-color: $primary_600;
+        border: 1px solid $primary_600;
+        border-radius: 1rem;
+        position: absolute;
+        top: -6rem;
+        right: 0;
+        margin: 1.4rem;
+        transition: all 0.3s ease-in-out;
+
+        .about__motto-button-ic{
+            font-size: $text-2xl;
+            margin-right: 1.4rem;
+            color: #fff;
+        }
+
+        span{
+            font-size: $text-base;
+            font-weight: 500;
+            line-height: 3.5rem;
+            color: #fff;
+        }
+    }
+
+    &-button-right:hover{
+        background-color: #fff;
+
+        .about__motto-button-ic{
+            color: $primary_600;
+        }
+
+        span{
+            color: $primary_600;
+        }
+    }
+}
