@@ -10,10 +10,6 @@ import {
   rec_img2,
   rec_img3,
   rec_img4,
-  ic_filter,
-  ic_bag,
-  ic_hourglass,
-  ic_location,
   ic_arrow
 } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 

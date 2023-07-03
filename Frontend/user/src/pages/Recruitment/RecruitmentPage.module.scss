@@ -133,6 +133,7 @@
 
     &-block {
       display: flex;
+      align-items: center;
 
       &-img1 {
         img {
@@ -290,8 +291,6 @@
     // display: flex;
 
     &-left {
-      position: absolute;
-
       width: 90%;
       &-title {
         position: absolute;
@@ -313,10 +312,6 @@
         position: absolute;
         top: 18rem;
       }
-    }
-
-    &-right {
-      // display: inline-block;
     }
 
     .sticky-container {
@@ -561,18 +556,18 @@
         &-title {
           &-main {
             &-1 {
-              font-size: $text-xl-mobile;
+              font-size: $text-3xl-mobile;
               padding: 0.4rem 0.7rem;
               margin-right: 0.5rem;
             }
 
             &-2 {
-              font-size: $text-xl-mobile;
+              font-size: $text-3xl-mobile;
             }
           }
 
           &-3 {
-            font-size: $text-2xl-mobile;
+            font-size: $text-4xl-mobile;
           }
         }
 
@@ -590,7 +585,7 @@
       padding: 2rem 2rem 3rem 2rem;
 
       &-title {
-        font-size: $text-xl-mobile;
+        font-size: $text-4xl-mobile;
       }
 
       &-block {
@@ -683,13 +678,13 @@
     }
 
     &__work {
-      margin: 1rem 2rem;
+      margin: 3rem 2rem;
 
       &-heading {
         display: block;
 
         &-title {
-          font-size: $text-xl-mobile;
+          font-size: $text-4xl-mobile;
         }
 
         &-filter {

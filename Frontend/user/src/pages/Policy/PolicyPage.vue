@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import background from '@/assets/imgs/Policy/bg.png';
 import { listPolicy } from './PolicyHandle';
+import { ref } from 'vue';
 
-const selectedItem = 1;
+const selectedItem = ref(0);
+
+const handleSelected = (index: any) => {
+  selectedItem.value = Number(index);
+  console.log(index);
+};
 </script>
 <template>
   <div :class="$style.container">
@@ -13,14 +19,15 @@ const selectedItem = 1;
       <div :class="$style['container__content-nav']">
         <div :class="$style['container__content-nav-title']"><h3>Chính sách</h3></div>
         <ul>
-          <li v-for="(item, index) in listPolicy" :key="index">
+          <li v-for="(item, index) in listPolicy" :key="index" @click="handleSelected(index)">
             <div
-              v-if="index === selectedItem"
-              :class="$style[`container__content-nav-item-active`]"
+              :class="[
+                $style[index === selectedItem ? `container__content-nav-item-active` : ''],
+                $style[`container__content-nav-item`]
+              ]"
             >
               {{ item.title }}
             </div>
-            <div v-else :class="$style[`container__content-nav-item`]">{{ item.title }}</div>
           </li>
         </ul>
       </div>

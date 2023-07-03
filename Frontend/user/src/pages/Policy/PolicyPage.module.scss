@@ -4,7 +4,7 @@
   margin-top: 3rem;
   &__bg {
     img {
-      height: 50vh;
+      height: auto;
       width: 100vw;
     }
   }
@@ -29,7 +29,6 @@
         border-bottom: 0.1rem solid $text_600;
         border-left: 0.1rem solid $text_600;
         border-right: 0.1rem solid $text_600;
-
         font-size: $text-base;
         color: black;
         font-weight: 410;
@@ -38,13 +37,7 @@
           //   border: 0.199rem solid $primary_900;
           //   border-left: 0.5rem solid $primary_900;
           background-color: $color_primary;
-          padding: 1rem 0rem 1rem 3rem;
-          border-bottom: 0.1rem solid $text_600;
-          border-left: 0.1rem solid $text_600;
-          border-right: 0.1rem solid $text_600;
-          font-size: $text-base;
           color: white;
-          font-weight: 410;
         }
 
         &-active {
