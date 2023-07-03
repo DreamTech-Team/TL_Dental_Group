@@ -1,0 +1,81 @@
+@import "@/styles/base";
+
+.about__header{
+
+    &-introduce{
+        position: relative;
+        
+        img{
+            width: 100%;
+            height: 100%;
+        }
+
+        &-bg{
+            position: absolute;
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-end;
+            top: -3px;
+            width: 100%;
+            height: 100%;
+            display: none;
+            transition: all 0.3s ease-in-out;
+
+            &-button{
+                padding: 1rem 2rem;
+                border-radius: 1rem;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: $primary_600;
+                border: none;
+                margin: 1.4rem;
+                transition: 0.3s all ease;
+
+                &-ic{
+                    margin-right: 0.6rem;
+                    font-size: $text-2xl;
+                    color: #fff;
+                }
+
+                span{
+                    font-size: $text-lg;
+                    font-weight: 500;
+                    color: #fff;
+                }
+            }
+
+            &-button:hover{
+                background-color: #fff;
+                transition: 0.3s all ease;
+
+                .about__header-introduce-bg-button-ic{
+                    color: $primary_600;
+                }
+
+                span{
+                    color: $primary_600;
+                }
+            }
+        }
+        &-bg:hover{
+            background-color: rgba($color: #000000, $alpha: 0.5);
+        }
+
+        p{
+            max-width: fit-content;
+            font-size: 5rem;
+            padding: 3rem 20rem 3rem 16rem;
+            color: #fff;
+            background-color: rgba($color: #000000, $alpha: 0.5);
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 0;
+        }
+    }
+}
+
+.about__header:hover .about__header-introduce-bg{
+    display: flex;
+}
