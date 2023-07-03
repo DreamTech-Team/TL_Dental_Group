@@ -46,13 +46,14 @@ const textareaInput = ref<TextAreaValue>({
     content: context.tags
   }
 });
+
 const updateTags = (content: TextAreaValue) => {
   textareaInput.value.level.content = content.level.content;
   valueTxtArea.value = content.level.content;
 };
 
 const submitForm = () => {
-  if (textareaInput.value.level.content.length < 35 || titleInput.value.level.content.length < 35) {
+  if (textareaInput.value.level.content.length < 35 || titleInput.value.level.content.length < 30) {
     Swal.fire({
       title: 'Vui lòng điền đủ thông tin',
       icon: 'error',
@@ -72,8 +73,6 @@ const submitForm = () => {
       }
     });
   }
-  console.log(textareaInput.value.level.content);
-  console.log(titleInput.value.level.content);
 };
 </script>
 
@@ -91,14 +90,14 @@ const submitForm = () => {
       <div :class="$style.intro__modal__body">
         <h4>Tiêu đề chính</h4>
         <editor
-          id="uuid"
+          id="uuid1"
           allowedEvents="onChange"
           :onchange="updateTitle"
           api-key="y70bvcufdhcs3t72wuylxllnf0jyum0u7nf31vzvgvdliy26"
           :initial-value="titleInput.level.content"
           :value="titleInput.level.content"
           :init="{
-            selector: 'textarea',
+            selector: 'textarea#uuid1',
             placeholder: 'Nhập tiêu đề',
             height: 140,
             menubar: false,
@@ -116,16 +115,16 @@ const submitForm = () => {
         <h4>Nội dung</h4>
         <div class="editor">
           <editor
-            id="uuid1"
+            id="uuid2"
             allowedEvents="onChange"
             :onchange="updateTags"
             api-key="y70bvcufdhcs3t72wuylxllnf0jyum0u7nf31vzvgvdliy26"
             :initial-value="textareaInput.level.content"
             :value="textareaInput.level.content"
             :init="{
-              selector: 'textarea',
+              selector: 'textarea#uuid2',
               placeholder: 'Nhập nội dung',
-              height: 170,
+              height: 180,
               menubar: false,
               plugins: [
                 'advlist autolink lists link image charmap print preview anchor',

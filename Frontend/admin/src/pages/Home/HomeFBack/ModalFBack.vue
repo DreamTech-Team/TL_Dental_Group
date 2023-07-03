@@ -45,11 +45,17 @@ const feedbacks = ref([
 ]);
 
 const selectedItem = ref(0);
+const currentItem = ref(-1);
 const rating = ref(feedbacks.value[selectedItem.value].rate);
 const hover = ref(0);
 const name = ref(feedbacks.value[selectedItem.value].name);
 const pos = ref(feedbacks.value[selectedItem.value].pos);
 const speech = ref(feedbacks.value[selectedItem.value].speech);
+const selectedImage = ref('');
+const emit = defineEmits(['inFocus', 'close']);
+
+//Adding new one
+const addStatus = ref(false);
 
 //Rating
 const setRating = (index: number) => {
@@ -61,12 +67,28 @@ const setHover = (index: number) => {
 };
 
 //Information
-const updateInfor = () => {
+const changeInfor = () => {
   name.value = feedbacks.value[selectedItem.value].name;
   pos.value = feedbacks.value[selectedItem.value].pos;
   speech.value = feedbacks.value[selectedItem.value].speech;
   setRating(feedbacks.value[selectedItem.value].rate);
   setHover(rating.value);
+};
+
+//Reset inputs
+const resetInfor = () => {
+  name.value = '';
+  pos.value = '';
+  speech.value = '';
+  setRating(0);
+  setHover(0);
+};
+
+//Cancel adding
+const cancelAdding = () => {
+  addStatus.value = false;
+  feedbacks.value.pop();
+  selectedItem.value = currentItem.value;
 };
 
 const scrollLeft = () => {
@@ -75,7 +97,7 @@ const scrollLeft = () => {
   } else {
     selectedItem.value--;
   }
-  updateInfor();
+  changeInfor();
 };
 
 const scrollRight = () => {
@@ -84,7 +106,22 @@ const scrollRight = () => {
   } else {
     selectedItem.value++;
   }
-  updateInfor();
+  changeInfor();
+};
+
+//Choose image
+const handleFileInputChange = (event: Event) => {
+  const inputElement = event.target as HTMLInputElement;
+  const file = inputElement.files?.[0];
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      selectedImage.value = reader.result as string;
+      feedbacks.value[selectedItem.value].src = selectedImage.value;
+    };
+    reader.readAsDataURL(file);
+  }
 };
 
 //Validate variables
@@ -95,6 +132,12 @@ const isCont = ref(false);
 const nameInput = ref<HTMLInputElement | null>(null);
 const posInput = ref<HTMLInputElement | null>(null);
 const speechInput = ref<HTMLInputElement | null>(null);
+const fileInput = ref<HTMLInputElement | null>(null);
+
+//Open file image
+const openFileInput = () => {
+  fileInput.value?.click();
+};
 
 const deleteItem = () => {
   Swal.fire({
@@ -113,6 +156,8 @@ const deleteItem = () => {
         selectedItem.value = 0;
       }
 
+      changeInfor();
+
       Swal.fire({
         title: 'Xóa thành công',
         icon: 'success',
@@ -127,10 +172,11 @@ const deleteItem = () => {
   });
 };
 
-const updateForm = () => {
+const validateInform = () => {
   if (nameInput.value && name.value.length <= 5) {
     nameInput.value.focus();
     isName.value = true;
+    return;
   } else {
     isName.value = false;
   }
@@ -138,6 +184,7 @@ const updateForm = () => {
   if (posInput.value && pos.value.length <= 3) {
     posInput.value.focus();
     isPos.value = true;
+    return;
   } else {
     isPos.value = false;
   }
@@ -145,27 +192,77 @@ const updateForm = () => {
   if (speechInput.value && speech.value.length <= 15) {
     speechInput.value.focus();
     isCont.value = true;
+    return;
   } else {
     isCont.value = false;
   }
-
-  //Action when right
 
   feedbacks.value[selectedItem.value].name = name.value;
   feedbacks.value[selectedItem.value].pos = pos.value;
   feedbacks.value[selectedItem.value].speech = speech.value;
   feedbacks.value[selectedItem.value].rate = rating.value;
+};
 
+const updateForm = () => {
+  validateInform();
+
+  if (!isName.value && !isCont.value && !isPos.value) {
+    if (!addStatus.value) {
+      Swal.fire({
+        title: 'Cập nhật thành công',
+        icon: 'success',
+        confirmButtonText: 'Hoàn tất',
+        width: '30rem'
+      });
+      emit('close');
+      setTimeout(function () {
+        Swal.close();
+      }, 1200);
+    } else {
+      Swal.fire({
+        title: 'Thêm thành công',
+        icon: 'success',
+        confirmButtonText: 'Hoàn tất',
+        width: '30rem'
+      });
+      addStatus.value = false;
+      setTimeout(function () {
+        Swal.close();
+      }, 1200);
+    }
+  }
+};
+
+const addItem = () => {
   Swal.fire({
-    title: 'Cập nhật thành công',
-    icon: 'success',
-    confirmButtonText: 'Hoàn tất',
-    width: '30rem'
+    title: 'Lưu dữ liệu hiện tại và thêm mới?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Thêm',
+    cancelButtonText: 'Hủy'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      currentItem.value = selectedItem.value;
+      validateInform();
+      if (!isName.value && !isCont.value && !isPos.value) {
+        addStatus.value = true;
+        const newItem = {
+          src: Doctor,
+          speech:
+            // eslint-disable-next-line max-len
+            'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
+          name: 'Bác sĩ ABC',
+          pos: 'Bác sĩ Nha khoa bệnh viện A',
+          rate: 0
+        };
+        feedbacks.value.push(newItem);
+        selectedItem.value = feedbacks.value.length - 1;
+        resetInfor();
+      }
+    }
   });
-
-  setTimeout(function () {
-    Swal.close();
-  }, 1200);
 };
 </script>
 
@@ -173,7 +270,8 @@ const updateForm = () => {
   <div :class="$style.feedback__overlay">
     <div :class="$style.feedback__modal">
       <div :class="$style.feedback__modal__heading">
-        CẬP NHẬT DANH MỤC NỔI BẬT
+        <template v-if="addStatus === false"> CHỈNH SỬA ĐÁNH GIÁ </template>
+        <template v-else> THÊM ĐÁNH GIÁ </template>
         <font-awesome-icon
           :icon="faXmark"
           :class="$style['feedback__modal-ic']"
@@ -187,9 +285,17 @@ const updateForm = () => {
             <div :class="$style['modal__feedback-item']">
               <div :class="$style['modal__feedback-img']">
                 <img :src="feedbacks[selectedItem].src" alt="doctor" />
-                <button :class="$style.modal_imagebtn">
-                  <img :src="IconCam" alt="icon" />
-                </button>
+                <div :class="$style.modal_imagebtn">
+                  <button style="border: none" @click="openFileInput">
+                    <input
+                      type="file"
+                      ref="fileInput"
+                      style="display: none"
+                      @change="handleFileInputChange"
+                    />
+                    <img :src="IconCam" alt="icon" />
+                  </button>
+                </div>
               </div>
               <div :class="$style['modal__feedback-speech']">
                 {{ feedbacks[selectedItem].speech }}
@@ -211,18 +317,18 @@ const updateForm = () => {
               </div>
               <div :class="$style['modal__feedback-icon']"></div>
             </div>
-            <button :class="$style['modal__feedback-left']" @click="scrollLeft">
+            <button v-if="!addStatus" :class="$style['modal__feedback-left']" @click="scrollLeft">
               <font-awesome-icon :icon="faChevronLeft" :class="$style['modal__feedback-ic']" />
             </button>
-            <button :class="$style['modal__feedback-right']" @click="scrollRight">
+            <button v-if="!addStatus" :class="$style['modal__feedback-right']" @click="scrollRight">
               <font-awesome-icon :icon="faChevronRight" :class="$style['modal__feedback-ic']" />
             </button>
           </div>
           <div :class="$style['modal__feedback-btns']">
-            <button @click="deleteItem">
+            <button v-if="!addStatus" @click="deleteItem">
               <font-awesome-icon :icon="faTrash" :class="$style['feedback__add-ic']" />
             </button>
-            <button>
+            <button v-if="!addStatus" @click="addItem">
               <font-awesome-icon :icon="faPlus" :class="$style['feedback__add-ic']" />
             </button>
           </div>
@@ -275,8 +381,10 @@ const updateForm = () => {
             </div>
           </div>
           <div :class="$style['modal__buttons']">
-            <button @click="$emit('close')">Hủy</button>
-            <button @click="updateForm">Cập nhật</button>
+            <button v-if="addStatus === false" @click="$emit('close')">Hủy</button>
+            <button v-if="addStatus === true" @click="cancelAdding">Hủy</button>
+            <button v-if="addStatus === false" @click="updateForm">Cập nhật</button>
+            <button v-if="addStatus === true" @click="updateForm">Thêm</button>
           </div>
         </div>
       </div>

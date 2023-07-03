@@ -5,7 +5,14 @@ import Yamaha from '@/assets/imgs/Home/Yamaha.png';
 import DELL from '@/assets/imgs/Home/DELL.png';
 import Biocon from '@/assets/imgs/Home/Biocon.png';
 import EditBtn from '@/components/EditBtn/EditBtn.vue';
-import CamBtn from '@/components/ImageBtn/ImageBtn.vue';
+import ModalBanner from './ModalBanner.vue';
+
+const isOpen = ref(false);
+
+const content = {
+  title: 'TL Dental Group',
+  context: 'Nhà cung cấp thiết bị y tế chính hãng, uy tín hàng đầu Việt Nam.'
+};
 
 const bannerItems = [
   { src: Capgemini, alt: 'capgemini', width: '127', height: '30' },
@@ -13,7 +20,6 @@ const bannerItems = [
   { src: Biocon, alt: 'biocon', width: '101', height: '40' },
   { src: DELL, alt: 'dell', width: '82.42', height: '25' }
 ];
-
 //WEB
 const activeIndex = ref(0);
 const activeBanner = ref(bannerItems[0]);
@@ -132,8 +138,8 @@ onUnmounted(() => {
 <template>
   <div :class="$style.home__banner">
     <div :class="$style['home__banner-left']">
-      <h2>TL Dental Group</h2>
-      <p>Nhà cung cấp thiết bị y tế chính hãng, uy tín hàng đầu Việt Nam.</p>
+      <h2>{{ content.title }}</h2>
+      <p>{{ content.context }}</p>
       <div id="bannerList" :class="$style['home__banner-list']">
         <div
           v-for="(item, index) in bannerItems"
@@ -158,7 +164,6 @@ onUnmounted(() => {
               <img :src="selectedItem.src" :alt="selectedItem.alt" width="127" height="30" />
             </div>
             <div :class="$style['home__banner-product']"></div>
-            <CamBtn />
           </div>
           <p>Trụ Implant Highness Hàn Quốc</p>
         </div>
@@ -168,8 +173,14 @@ onUnmounted(() => {
     <div :class="$style['home__banner-elipse2']" :style="{ background: elipseColor[1] }"></div>
     <div :class="$style['home__banner-elipse3']" :style="{ background: elipseColor[2] }"></div>
     <div :class="$style['home__banner-elipse4']" :style="{ background: elipseColor[3] }"></div>
-    <EditBtn />
+    <EditBtn @click="isOpen = true" />
   </div>
+  <ModalBanner
+    v-if="isOpen"
+    @close="isOpen = false"
+    :title="content.title"
+    :context="content.context"
+  />
 </template>
 
 <style module scoped lang="scss">
