@@ -91,20 +91,19 @@
             margin: 0;
             margin-top: 2rem;
             display: flex;
-            flex-wrap: nowrap;
+            // flex-wrap: nowrap;
             justify-content: space-between;
             cursor: pointer;
             overflow-x: scroll;
-            // overflow-x: scroll;
     
             .about__policy-items{
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                padding: 2rem 8rem;
+                padding: 2rem;
                 border: none;
-                border-right: 1px solid #ccc;
+                width: 50%;
     
                 p{
                     min-width: 18rem;
@@ -129,11 +128,12 @@
                     font-size: 1rem;
                     line-height: 2rem;
                     text-align: center;
-                    margin-bottom: 2rem;
+                    margin-bottom: 0;
                 }
     
                 div{
-                    display: flex;
+                    display: none;
+                    // display: flex;
                     align-items: center;
     
                     .about__policy-items-more{
