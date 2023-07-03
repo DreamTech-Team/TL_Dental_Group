@@ -5,6 +5,7 @@ import LogoCompany from '@/assets/imgs/Product/logoCompany.png';
 import OkSticker from '@/assets/imgs/Product/GroupOk.svg';
 import Insurance from '@/assets/imgs/Product/GroupInsurance.svg';
 import SupportSticker from '@/assets/imgs/Product/GroupSupport.svg';
+import { useRouter } from 'vue-router';
 import { type PropType } from 'vue';
 
 export interface Product {
@@ -15,6 +16,12 @@ export interface Product {
   company: string;
 }
 
+const router = useRouter();
+
+const goToDetailPage = () => {
+  router.push('/chitiet');
+};
+
 defineProps({
   product: {
     type: Object as PropType<Product>,
@@ -23,7 +30,7 @@ defineProps({
 });
 </script>
 <template>
-  <div :class="$style.card">
+  <div :class="$style.card" @click="goToDetailPage">
     <div :class="$style.card__show">
       <p :class="$style['card__show--info']">{{ product.description }}</p>
       <div :class="$style['card__show--button']">Xem chi tiết</div>
