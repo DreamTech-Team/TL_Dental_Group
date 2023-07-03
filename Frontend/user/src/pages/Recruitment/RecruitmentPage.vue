@@ -10,8 +10,6 @@ import {
   ceo,
   imgHand
 } from '@/assets/imgs/Recruitment/RecruitmentImgs';
-import RecruitmentCard from './RecruitmentCard/RecruitmentCard.vue';
-import RecruitmentCardWork from './RecruitmentCardWork/RecruitmentCardWork.vue';
 import {
   posterItems,
   visionItems,
@@ -20,29 +18,51 @@ import {
   recStepItems,
   recruitWorkItems
 } from './RecruitmentHandle';
-import { ref, onMounted, computed } from 'vue';
+import RecruitmentCard from './RecruitmentCard/RecruitmentCard.vue';
+import RecruitmentCardWork from './RecruitmentCardWork/RecruitmentCardWork.vue';
+import { ref, onMounted, computed, type PropType } from 'vue';
 
 const itemSeleted = ref(0);
 const hiddenElement = ref(false);
+const showMore = ref(false);
+const moreRecruitWorkItems = ref();
 
+//Hàm set animation của element tuyển dụng
 const handleScroll = () => {
   const element = document.getElementById('page');
   const rect = element?.getBoundingClientRect();
   const oneItemHeight = Number(element?.offsetHeight) / recStep.length;
   const topParent = Number(rect?.top);
-  console.log(rect?.top, element?.offsetHeight);
+  // console.log(rect?.top, element?.offsetHeight);
 
-  if (topParent < 0) {
+  if (topParent < 0 && screen.width > 739) {
     const index = Math.abs(topParent / oneItemHeight);
     itemSeleted.value = Number(index.toFixed());
     // console.log(itemSeleted.value);
 
-    const locationHidden = (recStep.length - 2 / 3) * oneItemHeight;
+    const locationHidden = (recStep.length - 19 / 20) * oneItemHeight;
 
     if (-topParent > locationHidden) hiddenElement.value = true;
     else hiddenElement.value = false;
-    console.log(locationHidden, hiddenElement.value);
+    // console.log(locationHidden, hiddenElement.value);
   }
+};
+
+//Hàm cập nhật item sau khi loading
+const showPageCompleted = () => {
+  showMore.value = false;
+
+  if (!moreRecruitWorkItems.value) {
+    moreRecruitWorkItems.value = [...recruitWorkItems];
+  } else recruitWorkItems.forEach((item) => moreRecruitWorkItems.value.push(item));
+
+  console.log(moreRecruitWorkItems.value, recruitWorkItems);
+};
+
+//Hàm loading
+const openLoading = () => {
+  showMore.value = true;
+  setTimeout(showPageCompleted, 3000);
 };
 
 onMounted(() => {
@@ -184,7 +204,12 @@ onMounted(() => {
           <h2>Quy Trình Tuyển Dụng</h2>
         </div>
         <div :class="$style['container__recruit-left-nav']">
-          <recruitment-card :items="recStep" :style="'type4'" :on-selected="itemSeleted" />
+          <recruitment-card
+            :items="recStep"
+            :content="recStepItems"
+            :style="'type4'"
+            :on-selected="itemSeleted"
+          />
         </div>
       </div>
       <div :class="$style['container__recruit-right']" id="page">
@@ -207,7 +232,17 @@ onMounted(() => {
           <recruitment-card-work :infor="item" />
         </div>
       </div>
-      <div :class="$style['container__work-btn']">
+      <div :class="[$style['container__work-staff'], $style['animate-bottom']]">
+        <div
+          :class="$style['container__work-staff-item']"
+          v-for="(item, index) in moreRecruitWorkItems"
+          :key="index"
+        >
+          <recruitment-card-work :infor="item" />
+        </div>
+      </div>
+      <div :id="$style.loader" v-if="showMore === true"></div>
+      <div :class="$style['container__work-btn']" v-else @click="openLoading">
         <p>Xem thêm</p>
       </div>
     </div>

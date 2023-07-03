@@ -49,10 +49,11 @@
 
     &-right {
       &-btn {
+        text-align: center;
         margin-left: 1rem;
-        width: fit-content;
+        width: 12rem;
         font-size: $text-base-mobile;
-        padding: 0.7rem 0.5rem;
+        padding: 0.7rem 0.2rem;
         border: 0.1rem solid $primary_700;
       }
     }
