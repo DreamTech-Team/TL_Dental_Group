@@ -42,6 +42,38 @@ const handleUpdateContent = () => {
   InfoCompanyContent.value.content1 = _content1.value;
   InfoCompanyContent.value.content2 = _content2.value;
 };
+
+const selectedImage = ref(null);
+
+const handleChangeImage = () => {
+  document.getElementById('input_file').click();
+};
+
+const handleChangeImage1 = () => {
+  document.getElementById('input_file1').click();
+};
+
+const handleFileInputChange = (event) => {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = (e) => {
+    selectedImage.value = e.target.result;
+  };
+
+  reader.readAsDataURL(file);
+};
+
+const handleFileInputChange1 = (event) => {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = (e) => {
+    selectedImage.value = e.target.result;
+  };
+
+  reader.readAsDataURL(file);
+};
 </script>
 <template>
   <div :class="$style.about__infocompany">
@@ -74,13 +106,22 @@ const handleUpdateContent = () => {
           }"
         />
         <div>
-          <img :src="InfoCompany" alt="" />
+          <img :src="selectedImage" alt="" v-if="selectedImage" />
+          <img :src="InfoCompany" alt="" v-else />
 
           <div v-if="isEdit">
-            <button :class="$style['about__infocompany-button']">
+            <button :class="$style['about__infocompany-button']" @click="handleChangeImage">
               <font-awesome-icon :icon="faRotate" :class="$style['about__infocompany-button-ic']" />
               <span>Đổi ảnh</span>
             </button>
+
+            <input
+              type="file"
+              style="display: none"
+              id="input_file"
+              accept="image/*"
+              @change="handleFileInputChange"
+            />
           </div>
         </div>
       </div>
@@ -90,10 +131,18 @@ const handleUpdateContent = () => {
           <img :src="InfoCompany" alt="" />
 
           <div v-if="isEdit">
-            <button :class="$style['about__infocompany-button']">
+            <button :class="$style['about__infocompany-button']" @click="handleChangeImage1">
               <font-awesome-icon :icon="faRotate" :class="$style['about__infocompany-button-ic']" />
               <span>Đổi ảnh</span>
             </button>
+
+            <input
+              type="file"
+              style="display: none"
+              id="input_file1"
+              accept="image/*"
+              @change="handleFileInputChange1"
+            />
           </div>
         </div>
         <p v-html="InfoCompanyContent.content2" v-if="!isEdit"></p>

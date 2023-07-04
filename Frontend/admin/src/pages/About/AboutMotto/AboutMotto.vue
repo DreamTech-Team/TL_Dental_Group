@@ -64,8 +64,12 @@ const mottoItems = [
 ];
 
 const move = ref(0);
+const item = ref(mottoItems[0]);
+const indexItems = ref(0);
 const isDisableLeft = ref(false);
+const isDisableLeftEdit = ref(false);
 const isDisableRight = ref(false);
+const isDisableRightEdit = ref(false);
 const isEdit = ref(false);
 const isOpenAdd = ref(false);
 const isOpenUpdate = ref(false);
@@ -90,6 +94,25 @@ const handleClickRight = () => {
   else {
     move.value -= widthItem.offsetWidth + 150;
   }
+};
+
+const handleClickLeftEdit = () => {
+  isDisableRightEdit.value = false;
+
+  if (indexItems.value === 0) (indexItems.value = 0), (isDisableLeftEdit.value = true);
+  else indexItems.value--;
+
+  item.value = mottoItems[indexItems.value];
+};
+
+const handleClickRightEdit = () => {
+  isDisableLeftEdit.value = false;
+
+  if (indexItems.value === mottoItems.length - 1)
+    (indexItems.value = mottoItems.length - 1), (isDisableRightEdit.value = true);
+  else indexItems.value++;
+
+  item.value = mottoItems[indexItems.value];
 };
 </script>
 
@@ -155,8 +178,8 @@ const handleClickRight = () => {
           <div :class="$style['about__motto-left-button']">
             <button
               :class="$style['about__motto-left-button-left']"
-              @click="handleClickLeft"
-              :disabled="isDisableLeft"
+              @click="handleClickLeftEdit"
+              :disabled="isDisableLeftEdit"
             >
               <font-awesome-icon
                 :icon="faChevronLeft"
@@ -165,17 +188,8 @@ const handleClickRight = () => {
             </button>
           </div>
 
-          <div
-            :class="$style['about__motto-slider1']"
-            id="motto-list"
-            :style="{ transform: 'translateX' + '(' + move + 'px' + ')' }"
-          >
-            <div
-              :class="$style['about__motto-slider1-item']"
-              v-for="(item, index) in mottoItems"
-              :key="index"
-              :id="index"
-            >
+          <div :class="$style['about__motto-slider1']">
+            <div :class="$style['about__motto-slider1-item']">
               <img :src="item.img" alt="" />
 
               <p :class="$style['about__motto-slider1-item-title']">{{ item.title }}</p>
@@ -189,11 +203,11 @@ const handleClickRight = () => {
           <div :class="$style['about__motto-left-button']">
             <button
               :class="$style['about__motto-left-button-right']"
-              @click="handleClickLeft"
-              :disabled="isDisableLeft"
+              @click="handleClickRightEdit"
+              :disabled="isDisableRightEdit"
             >
               <font-awesome-icon
-                :icon="faChevronLeft"
+                :icon="faChevronRight"
                 :class="$style['about__motto-left-button-right-ic']"
               />
             </button>
