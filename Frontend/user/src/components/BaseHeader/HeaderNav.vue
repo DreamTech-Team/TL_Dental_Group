@@ -9,6 +9,7 @@ import HeaderCategory from './HeaderCategory/HeaderCategory.vue';
 import HeaderSearch from './HeaderSearch/HeaderSearch.vue';
 import HeaderCategoryRespo from './HeaderCategoryRespo/HeaderCategoryRespo.vue';
 import { pages } from './HeaderHandle';
+import router from '@/router/index';
 
 const path = useRoute();
 const pageHover = ref('none');
@@ -22,14 +23,14 @@ const hiddenNav = () => {
 </script>
 <template>
   <div :class="$style.header__nav">
-    <div :class="$style['header__nav-logo']">
+    <div :class="$style['header__nav-logo']" @click="() => router.push('/trangchu')">
       <img :src="logo" alt="logo" width="50" height="50" />
       <div>
         <h4>TL Dental Group</h4>
         <p>Dental distributors</p>
       </div>
     </div>
-    <div :class="$style['header__nav-shield']">
+    <div :class="$style['header__nav-shield']" @click="() => router.push('/chinhsach')">
       <div :class="$style['header__nav-shield-content']">
         <h4>12</h4>
         <h5>MONTHS</h5>
@@ -74,7 +75,12 @@ const hiddenNav = () => {
       <div :class="$style['header__nav-mobile--btn']" @click="flagMobile = !flagMobile">
         <font-awesome-icon :icon="faBars" size="xl" />
       </div>
-      <div :class="$style['header__nav-mobile--list']" v-if="flagMobile">
+      <div
+        :class="[
+          $style['header__nav-mobile--list'],
+          $style[flagMobile ? 'header__nav-mobile--show' : '']
+        ]"
+      >
         <div :class="$style['header__nav-mobile--item']" v-for="item in pages" :key="item.slug">
           <router-link
             :to="'/' + item.slug"
