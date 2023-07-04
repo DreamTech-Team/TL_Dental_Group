@@ -2,6 +2,13 @@
 @import '@/styles/responsive';
 
 .container__card {
+  // width: 100%;
+  &-responsive {
+    &-item {
+      display: none;
+    }
+  }
+
   &-type1 {
     width: 25%;
 
@@ -115,7 +122,6 @@
   }
 
   &-type3:hover &-type3-bg2 {
-    cursor: pointer;
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
   }
 
@@ -129,12 +135,8 @@
     align-items: center;
 
     &-title {
-      .nav-recruit-enter-from {
-        transition: all 0.5s ease;
-        // opacity: 1;
-      }
-
       h3 {
+        transition: all 0.3s;
         font-size: $text-xl;
         color: $text_800;
         font-weight: 500;
@@ -142,18 +144,22 @@
 
       &-active {
         h3 {
+          transition: all 0.3s;
           font-size: $text-2xl;
           color: $text_800;
           font-weight: 500;
         }
       }
     }
+
+    &-icon {
+      display: none;
+    }
   }
 
   &-type5 {
-    width: 100vw;
     height: 90vh;
-    padding-left: 40vw;
+    padding-left: 45vw;
     padding-top: 8rem;
 
     &-title {
@@ -166,7 +172,7 @@
     }
 
     &-content {
-      width: 60%;
+      width: 70%;
       padding: 1.5rem 2rem 1.5rem 1rem;
       margin-bottom: 3rem;
       border-left: 0.3rem solid $complimentary_500;
@@ -180,8 +186,13 @@
   }
 
   &-type6 {
-    display: flex;
-    align-items: center;
+    // display: flex;
+    // align-items: center;
+    .type6-block {
+      display: flex;
+      align-items: center;
+      margin-left: 1rem;
+    }
 
     &-title {
       h3 {
@@ -247,18 +258,19 @@
 }
 
 .type5-color-background-2 {
-  background-color: rgba($color: $primary_100, $alpha: 0.2);
+  // background-color: rgba($color: $primary_100, $alpha: 0.2);
+  background-color: white;
 }
 .type5-color-background-1 {
-  // background-color: rgba($color: $complimentary_100, $alpha: 0.2);
   background-color: white;
 }
 .type5-color-background-3 {
-  background-color: rgba($color: $complimentary_100, $alpha: 0.2);
-  // background-color: rgba($color: $analogous_100, $alpha: 0.1);
+  // background-color: rgba($color: $complimentary_100, $alpha: 0.2);
+  background-color: white;
 }
 .type5-color-background-4 {
-  background-color: rgba($color: $triadic_100, $alpha: 0.2);
+  // background-color: rgba($color: $triadic_100, $alpha: 0.2);
+  background-color: white;
 }
 
 .display-none {
@@ -267,6 +279,19 @@
 
 @include responsive_mobile() {
   .container__card {
+    &-responsive-item {
+      display: block;
+      transition: opacity 1s ease-out;
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+
+      &-active {
+        opacity: 1;
+        height: auto;
+      }
+    }
+
     &-type1 {
       width: 90%;
       padding-top: 1rem;
@@ -344,6 +369,73 @@
       }
     }
 
+    &-type4 {
+      margin: 0 1rem 0 1rem;
+      padding: 1rem 0 1rem 0;
+      border-bottom: 0.1rem solid $text_200;
+
+      &-block {
+        width: 100%;
+      }
+
+      &-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        h3 {
+          font-size: $text-2xl-mobile;
+        }
+
+        &-active {
+          h3 {
+            font-size: $text-2xl-mobile;
+          }
+        }
+      }
+
+      &-icon {
+        display: block;
+        padding-right: 2rem;
+        padding-top: 0.5rem;
+
+        svg {
+          transition: transform 1s;
+          width: 2rem;
+          height: auto;
+
+          path {
+            fill: $text_800;
+          }
+        }
+
+        &-active svg {
+          transform: rotate(180deg);
+        }
+      }
+    }
+
+    &-type5 {
+      height: auto;
+      padding-left: 0;
+      padding-top: 2rem;
+
+      &-title {
+        display: none;
+        margin-bottom: 2rem;
+        h3 {
+          font-size: $text-lg-mobile;
+        }
+      }
+
+      &-content {
+        width: 90%;
+        margin-left: 2rem;
+        border-left: 0.3rem solid $complimentary_500;
+        font-size: $text-base;
+        color: $text_800;
+      }
+    }
+
     &-type6 {
       &-title {
         h3 {
@@ -352,11 +444,32 @@
       }
     }
 
+    &-image {
+      padding-bottom: 2rem;
+      display: flex;
+      justify-content: center;
+      img {
+        width: 80vw;
+        height: auto;
+      }
+    }
+
     &-icon {
       &-block {
-        width: 3rem;
-        height: 3rem;
+        width: 4rem;
+        height: 4rem;
         border-radius: 0.5rem;
+
+        &-type4 {
+          width: 4rem;
+          height: 4rem;
+          border-radius: 5rem;
+          margin-right: 2rem;
+          img {
+            width: 58%;
+            height: auto;
+          }
+        }
 
         &-type6 {
           width: 2.5rem;

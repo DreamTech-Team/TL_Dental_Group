@@ -12,6 +12,7 @@
   border-radius: 1.2rem;
   background-color: rgb(255, 255, 255);
   filter: drop-shadow(0px 1px 5px rgba(0, 0, 0, 0.1));
+  cursor: pointer;
 
   &__header {
     width: 100%;
@@ -294,7 +295,7 @@
     background-color: rgb(255, 255, 255);
     filter: drop-shadow(0px 1px 5px rgba(0, 0, 0, 0.1));
     overflow: hidden;
-  
+
     &__header {
       width: 100%;
       height: 60%;
@@ -335,7 +336,7 @@
             align-items: center;
           }
         }
-    
+
         .card__header--insurance {
           display: flex;
           position: absolute;
@@ -355,7 +356,7 @@
             color: #fc5151;
           }
         }
-    
+
         .card__header--support {
           display: flex;
           position: absolute;
@@ -376,7 +377,7 @@
           }
         }
       }
-  
+
       &--wgenuine {
         position: absolute;
         border-left: 30px solid transparent;
@@ -387,10 +388,10 @@
         z-index: 2;
         top: 95%;
         right: 0%;
-  
+
         &-confirm {
           position: relative;
-  
+
           &::before {
             position: absolute;
             content: '';
@@ -404,7 +405,7 @@
           }
         }
       }
-  
+
       &--txtconfirm {
         position: absolute;
         color: #ffffff;
@@ -442,7 +443,7 @@
         height: 100%;
       }
     }
-  
+
     &__body {
       height: 40%;
       width: 100%;
@@ -451,7 +452,7 @@
       flex-direction: column;
       margin-top: 0.5rem;
       padding: 0 10px;
-  
+
       &--name {
         color: #000;
         font-size: 12px;
@@ -478,7 +479,7 @@
         margin: 0.5rem 0;
         margin-top: 1rem;
         height: max-content;
-  
+
         &-company {
           width: max-content;
           height: 2rem;
@@ -492,11 +493,11 @@
         }
       }
     }
-  
+
     &__show {
       display: none;
     }
-  
+
     &:hover &__show,
     .card__show--info-text,
     .card__show--info-button {

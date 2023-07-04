@@ -4,7 +4,7 @@ import { ic_bag, ic_hourglass, ic_location } from '@/assets/imgs/Recruitment/Rec
 import { type PropType } from 'vue';
 import { RouterLink } from 'vue-router';
 
-export type FormartCardWork = {
+type FormartCardWork = {
   title: string;
   typeWork: string;
   time: string;
@@ -41,7 +41,7 @@ const contentRecruit = [
 </script>
 
 <template>
-  <div :class="$style.container__card">
+  <div v-if="props.infor.title !== ''" :class="$style.container__card">
     <div :class="$style['container__card-left']">
       <div :class="$style['container__card-left-title']">{{ props.infor.title }}</div>
       <div :class="$style['container__card-left-content']">

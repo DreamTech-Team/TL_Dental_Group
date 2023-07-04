@@ -22,6 +22,7 @@ import ic_filter from './icons/ic_filter.svg';
 import ic_hourglass from './icons/ic_hourglass.svg';
 import ic_bag from './icons/ic_bag.svg';
 import ic_location from './icons/ic_location.svg';
+import ic_arrow from './icons/ic_arrow.svg';
 
 export {
   girl1,
@@ -47,5 +48,6 @@ export {
   ic_filter,
   ic_bag,
   ic_hourglass,
-  ic_location
+  ic_location,
+  ic_arrow
 };

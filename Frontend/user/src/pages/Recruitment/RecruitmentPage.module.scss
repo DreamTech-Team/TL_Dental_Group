@@ -126,13 +126,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100vw;
+    width: 100%;
     margin-top: 10rem;
-    padding: 5rem 15rem;
+    padding: 5rem 13rem;
     background-color: rgba($color: $text_100, $alpha: 0.3);
 
     &-block {
       display: flex;
+      align-items: center;
 
       &-img1 {
         img {
@@ -290,9 +291,6 @@
     // display: flex;
 
     &-left {
-      position: absolute;
-      left: 15rem;
-
       width: 90%;
       &-title {
         position: absolute;
@@ -316,8 +314,10 @@
       }
     }
 
-    &-right {
-      // display: inline-block;
+    .sticky-container {
+      top: 7rem;
+      left: 15rem;
+      position: sticky;
     }
   }
 
@@ -380,11 +380,72 @@
   }
 }
 
-.sticky-container {
-  top: 7rem;
-  position: sticky;
-  position: -webkit-sticky;
-  // height: 95vh;
+.display-none {
+  transition: all 0.2s ease;
+  opacity: 0;
+}
+
+//Loading
+#loader {
+  padding: 1.5rem;
+  width: 2rem;
+  height: 2rem;
+  margin: auto;
+  margin-top: 3rem;
+  border: 0.8rem solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 0.8rem solid #3498db;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Add animation to "page content" */
+.animate-bottom {
+  position: relative;
+  -webkit-animation-name: animatebottom;
+  -webkit-animation-duration: 1s;
+  animation-name: animatebottom;
+  animation-duration: 1s;
+}
+
+@-webkit-keyframes animatebottom {
+  from {
+    bottom: -100px;
+    opacity: 0;
+  }
+  to {
+    bottom: 0px;
+    opacity: 1;
+  }
+}
+
+@keyframes animatebottom {
+  from {
+    bottom: -100px;
+    opacity: 0;
+  }
+  to {
+    bottom: 0;
+    opacity: 1;
+  }
 }
 
 @include responsive_mobile() {
@@ -492,22 +553,21 @@
       margin: 3rem 1rem 0 2rem;
 
       &-heading {
-        width: 100rem;
         &-title {
           &-main {
             &-1 {
-              font-size: $text-xl-mobile;
+              font-size: $text-3xl-mobile;
               padding: 0.4rem 0.7rem;
               margin-right: 0.5rem;
             }
 
             &-2 {
-              font-size: $text-xl-mobile;
+              font-size: $text-3xl-mobile;
             }
           }
 
           &-3 {
-            font-size: $text-2xl-mobile;
+            font-size: $text-4xl-mobile;
           }
         }
 
@@ -525,7 +585,7 @@
       padding: 2rem 2rem 3rem 2rem;
 
       &-title {
-        font-size: $text-xl-mobile;
+        font-size: $text-4xl-mobile;
       }
 
       &-block {
@@ -575,19 +635,56 @@
       }
     }
 
-    &__rectuit {
+    &__recruit {
       &-left {
+        position: inherit;
+        // text-align: center;
+        // padding: 2rem;
+        width: 100%;
+
+        &-title {
+          position: inherit;
+          top: 0;
+          width: 100%;
+          margin-bottom: 3rem;
+          padding: 2rem;
+          // display: flex;
+          // flex-direction: column-reverse;
+
+          h2 {
+            font-size: $text-4xl-mobile;
+          }
+
+          span {
+            font-size: $text-xl-mobile;
+          }
+        }
+
+        &-nav {
+          position: inherit;
+          top: 0;
+        }
+      }
+
+      &-right {
+        display: none;
+      }
+
+      .sticky-container {
+        top: 0;
+        left: 0;
+        position: inherit;
       }
     }
 
     &__work {
-      margin: 1rem 2rem;
+      margin: 3rem 2rem;
 
       &-heading {
         display: block;
 
         &-title {
-          font-size: $text-xl-mobile;
+          font-size: $text-4xl-mobile;
         }
 
         &-filter {
@@ -596,9 +693,9 @@
 
           input {
             background-size: 2.5rem;
-            font-size: $text-sm-mobile;
-            padding: 0.5rem 1rem 0.5rem 0.5rem;
-            width: 80vw;
+            font-size: $text-base-mobile;
+            padding: 1rem 1rem 1rem 1rem;
+            width: 84vw;
             border: 0.1rem solid $text_300;
           }
         }
@@ -616,11 +713,16 @@
       }
 
       &-btn {
+        text-align: center;
         margin-top: 3rem;
         border: 0.1rem solid $primary_700;
-        padding: 1rem 4rem;
+        padding: 1rem 2rem;
         border-radius: 2rem;
-        font-size: $text-sm-mobile;
+        font-size: $text-base-mobile;
+
+        p {
+          width: 10rem;
+        }
       }
     }
   }

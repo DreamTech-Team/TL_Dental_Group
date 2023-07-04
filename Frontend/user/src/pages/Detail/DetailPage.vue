@@ -6,22 +6,57 @@ import DetailImage from '@/assets/imgs/Product/Rectangle.png';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faRegistered } from '@fortawesome/free-solid-svg-icons';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChevronLeft,
+  faChevronRight,
+  faMagnifyingGlassPlus,
+  faTimes
+} from '@fortawesome/free-solid-svg-icons';
 import ZaloImg from '@/assets/imgs/Contact/Zalo.svg';
 import Product1 from '@/assets/imgs/Product/Rectangle2061.png';
 import Product2 from '@/assets/imgs/Product/Rectangle2062.png';
 import Product3 from '@/assets/imgs/Product/Rectangle2063.png';
 import Product4 from '@/assets/imgs/Product/Rectangle2064.png';
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 
 const pathBC = 'dung-cu-nha-khoa/kep-chinh-nha/kep-gap-mac-cai-R6,7-kep-gap-Tube-PMC-ORTHOR';
-
-//Scroll Properties
+const images = [DetailImage, Product1, Product2, Product3, Product4];
 const isDesktop = ref(false);
 
 const wItem = ref(0);
 const tranfX = ref(0);
 let resizeListener: () => void;
+const isDialogOpen = ref(false);
+const currentIndex = ref(0);
+const startIndex = ref(0);
+const displayedImagesCount = 3;
+
+const setCurrentImage = (index: number) => {
+  currentIndex.value = index;
+};
+
+const displayedImages = computed(() =>
+  images.slice(startIndex.value, startIndex.value + displayedImagesCount)
+);
+
+const nextImage = () => {
+  currentIndex.value = (currentIndex.value + 1) % images.length;
+};
+
+const prevImage = () => {
+  currentIndex.value = (currentIndex.value - 1 + images.length) % images.length;
+};
+
+const currentImage = computed(() => images[currentIndex.value]);
+
+const showDialog = () => {
+  isDialogOpen.value = true;
+};
+
+const closeDialog = () => {
+  isDialogOpen.value = false;
+};
+
 onMounted(() => {
   const container = document.getElementById('trend-wrapper');
 
@@ -64,32 +99,73 @@ onUnmounted(() => {
     <div :class="$style.detail">
       <div :class="$style.detail__image">
         <div :class="$style['detail__image--ctn']">
-          <img :class="$style['detail__image--ctn-main']" :src="DetailImage" alt="Detail Product" />
-          <button :class="$style['detail__image--ctn-left']">
+          <img
+            :class="$style['detail__image--ctn-main']"
+            :src="currentImage"
+            alt="Detail Product"
+          />
+          <button :class="$style['detail__image--ctn-left']" @click="prevImage">
             <font-awesome-icon :icon="faChevronLeft" :class="$style['home__trend-ic']" />
           </button>
-          <button :class="$style['detail__image--ctn-right']">
+          <button :class="$style['detail__image--ctn-right']" @click="nextImage">
             <font-awesome-icon :icon="faChevronRight" :class="$style['home__trend-ic']" />
+          </button>
+          <button :class="$style['detail__image--ctn-zoom']" @click="showDialog">
+            <font-awesome-icon :icon="faMagnifyingGlassPlus" :class="$style['home__trend-ic']" />
+          </button>
+        </div>
+
+        <div v-if="isDialogOpen" :class="$style.dialog" @click="closeDialog">
+          <img
+            @click.stop
+            :src="currentImage"
+            alt="Detail Product"
+            :class="$style['dialog-image']"
+          />
+          <button @click="closeDialog" :class="$style['dialog-close']">
+            <font-awesome-icon :icon="faTimes" />
           </button>
         </div>
 
         <div :class="$style['detail__image--multi']">
-          <img :class="$style['detail__image--multi-product']" :src="Product1" alt="product1" />
-          <img :class="$style['detail__image--multi-product']" :src="Product2" alt="product2" />
-          <img :class="$style['detail__image--multi-product']" :src="Product3" alt="product3" />
+          <img
+            v-for="(image, index) in displayedImages"
+            :key="index"
+            :class="[
+              $style['detail__image--multi-product'],
+              {
+                [$style['detail__image--multi-product-active']]: index === currentIndex
+              }
+            ]"
+            :src="image"
+            alt="product1"
+            @click="setCurrentImage(index)"
+          />
           <div :class="$style['detail__image--multi-products']">
             <img
-              :class="$style['detail__image--multi-products-item']"
-              :src="Product4"
+              :class="[
+                $style['detail__image--multi-product'],
+                {
+                  [$style['detail__image--multi-product-active']]: currentIndex === 3
+                }
+              ]"
+              :src="images[3]"
               alt="product4"
             />
-            <div :class="$style['detail__image--multi-products-count']">
-              <p>+3</p>
+            <div
+              :class="[
+                $style['detail__image--multi-products-count'],
+                {
+                  [$style['detail__image--multi-product-active']]: currentIndex === 3
+                }
+              ]"
+            >
+              <p>+ {{ images.length - 3 }}</p>
             </div>
           </div>
         </div>
-        <div :class="$style['detail__image--count']">
-          <p>1/5</p>
+        <div v-if="!isDesktop" :class="$style['detail__image--counts']">
+          <p>{{ currentIndex + 1 }}/{{ images.length }}</p>
         </div>
       </div>
       <div :class="$style.detail__content">

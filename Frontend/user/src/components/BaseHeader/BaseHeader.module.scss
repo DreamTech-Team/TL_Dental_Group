@@ -1,5 +1,5 @@
-@import "@/styles/base";
-@import "@/styles/responsive";
+@import '@/styles/base';
+@import '@/styles/responsive';
 
 .header {
   box-shadow: 0 0 2px rgb(0, 0, 0, 0.05);
@@ -74,7 +74,8 @@
         width: 50px;
         color: #fff;
 
-        h4 {}
+        h4 {
+        }
 
         h5 {
           font-size: 0.8rem;
@@ -118,7 +119,7 @@
         transform: translateX(-50%);
         bottom: 20px;
         width: 0;
-        content: "";
+        content: '';
         height: 2px;
         border-radius: 16px;
         background-color: $primary_900;
@@ -138,48 +139,41 @@
 
 @include responsize_resolution() {
   .header {
-  
     &__contact {
-  
       &-item {
-
         p {
-
         }
       }
-  
+
       &-icon {
-        
       }
     }
-  
+
     &__nav {
-      
       &-logo {
-  
         div {
         }
-  
+
         h4 {
         }
-  
+
         p {
         }
       }
-  
+
       &-shield {
-  
         &-content {
-  
-          h4 {}
-  
-          h5 {}
-  
+          h4 {
+          }
+
+          h5 {
+          }
+
           p {
           }
         }
       }
-  
+
       &-list {
         display: none;
       }
@@ -201,18 +195,17 @@
           }
         }
       }
-  
+
       &-item {
-  
         &-link {
         }
-  
+
         span {
         }
-  
+
         .nav-hover {
         }
-  
+
         .nav-active {
         }
       }
@@ -222,48 +215,41 @@
 
 @include responsive_tablet() {
   .header {
-  
     &__contact {
-  
       &-item {
-
         p {
-
         }
       }
-  
+
       &-icon {
-        
       }
     }
-  
+
     &__nav {
-      
       &-logo {
-  
         div {
         }
-  
+
         h4 {
         }
-  
+
         p {
         }
       }
-  
+
       &-shield {
-  
         &-content {
-  
-          h4 {}
-  
-          h5 {}
-  
+          h4 {
+          }
+
+          h5 {
+          }
+
           p {
           }
         }
       }
-  
+
       &-list {
         display: none;
       }
@@ -271,7 +257,7 @@
         height: 100%;
         display: flex;
         align-items: center;
-        
+
         &--btn {
           padding: 10px;
           margin-left: 10px;
@@ -285,18 +271,17 @@
           }
         }
       }
-  
+
       &-item {
-  
         &-link {
         }
-  
+
         span {
         }
-  
+
         .nav-hover {
         }
-  
+
         .nav-active {
         }
       }
@@ -306,52 +291,47 @@
 
 @include responsive_mobile() {
   .header {
-  
     &__contact {
       display: none;
-  
+
       &-item {
-
         p {
-
         }
       }
-  
+
       &-icon {
-        
       }
     }
-  
+
     &__nav {
       padding: 0 10px;
-      
+
       &-logo {
-  
         div {
         }
-  
+
         h4 {
           font-size: $text-xl-mobile;
         }
-  
+
         p {
           font-size: $text-sm-mobile;
         }
       }
-  
+
       &-shield {
-  
         &-content {
-  
-          h4 {}
-  
-          h5 {}
-  
+          h4 {
+          }
+
+          h5 {
+          }
+
           p {
           }
         }
       }
-  
+
       &-list {
         display: none;
       }
@@ -368,25 +348,43 @@
           cursor: pointer;
           color: $color_primary;
           border-radius: 4px;
+        }
 
-          &:hover {
-            background-color: $primary_700;
+        &--list {
+          position: absolute;
+          width: 100vw;
+          height: 100vh;
+          left: 0;
+          right: 0;
+          top: 70px;
+          background-color: $color_primary;
+          transition: all .3s ease-in-out;
+        }
+
+        &--item {
+          
+          a {
+            padding: 16px 12px;
+            border-bottom: 1px solid white;
             color: white;
+            font-size: $text-base-mobile;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
           }
         }
       }
-  
+
       &-item {
-  
         &-link {
         }
-  
+
         span {
         }
-  
+
         .nav-hover {
         }
-  
+
         .nav-active {
         }
       }

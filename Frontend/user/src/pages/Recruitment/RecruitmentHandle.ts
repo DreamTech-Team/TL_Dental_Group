@@ -10,10 +10,7 @@ import {
   rec_img2,
   rec_img3,
   rec_img4,
-  ic_filter,
-  ic_bag,
-  ic_hourglass,
-  ic_location
+  ic_arrow
 } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 
 export const formDefault = [
@@ -139,25 +136,25 @@ export const recStep = [
     icon: { link: rec_step1, style: 'type4' },
     title: { content: 'Nộp Đơn Ứng Tuyển', style: 'type4' },
     content: { content: '', style: '' },
-    image: { link: '', style: '' }
+    image: { link: ic_arrow, style: '' }
   },
   {
     icon: { link: rec_step2, style: 'type4' },
     title: { content: 'Sơ Loại Hồ Sơ Ứng Viên', style: 'type4' },
     content: { content: '', style: '' },
-    image: { link: '', style: '' }
+    image: { link: ic_arrow, style: '' }
   },
   {
     icon: { link: rec_step3, style: 'type4' },
     title: { content: 'Tham Gia Phỏng Vấn', style: 'type4' },
     content: { content: '', style: '' },
-    image: { link: '', style: '' }
+    image: { link: ic_arrow, style: '' }
   },
   {
     icon: { link: rec_step4, style: 'type4' },
     title: { content: 'Nhận Lời Mời Làm Việc', style: 'type4' },
     content: { content: '', style: '' },
-    image: { link: '', style: '' }
+    image: { link: ic_arrow, style: '' }
   }
 ];
 
