@@ -15,6 +15,10 @@ const pageHover = ref('none');
 
 const flagMobile = ref(false);
 const pageMobile = ref('none');
+
+const hiddenNav = () => {
+  flagMobile.value = false;
+};
 </script>
 <template>
   <div :class="$style.header__nav">
@@ -84,7 +88,11 @@ const pageMobile = ref('none');
             >{{ item.name }}
             <font-awesome-icon v-if="item.slug === 'sanpham'" :icon="faChevronDown" size="sm" />
           </router-link>
-          <header-category-respo v-if="pageMobile === 'sanpham' && item.slug === 'sanpham'" />
+          <header-category-respo
+            :page-mobile="pageMobile"
+            :current-item="item.slug"
+            :hiddenNav="hiddenNav"
+          />
         </div>
       </div>
     </div>
