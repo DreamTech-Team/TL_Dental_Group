@@ -12,12 +12,13 @@ import { pages } from './HeaderHandle';
 import router from '@/router/index';
 
 const path = useRoute();
-const pageHover = ref('none');
+const pageHover = ref('none'); // Web
 
-const flagMobile = ref(false);
-const pageMobile = ref('none');
+const flagMobile = ref(false); // Mobile + Tablet
+const pageMobile = ref('none'); // check click item mobile
 
 const hiddenNav = () => {
+  // hidden nav on mobile
   flagMobile.value = false;
 };
 </script>
@@ -71,6 +72,8 @@ const hiddenNav = () => {
       </div>
     </div>
     <header-search />
+
+    <!-- MOBILE + TABLET -->
     <div :class="$style['header__nav-mobile']">
       <div :class="$style['header__nav-mobile--btn']" @click="flagMobile = !flagMobile">
         <font-awesome-icon :icon="faBars" size="xl" />
@@ -81,6 +84,7 @@ const hiddenNav = () => {
           $style[flagMobile ? 'header__nav-mobile--show' : '']
         ]"
       >
+        <!-- List page -->
         <div :class="$style['header__nav-mobile--item']" v-for="item in pages" :key="item.slug">
           <router-link
             :to="'/' + item.slug"
@@ -94,6 +98,8 @@ const hiddenNav = () => {
             >{{ item.name }}
             <font-awesome-icon v-if="item.slug === 'sanpham'" :icon="faChevronDown" size="sm" />
           </router-link>
+
+          <!-- Category -->
           <header-category-respo
             :page-mobile="pageMobile"
             :current-item="item.slug"
