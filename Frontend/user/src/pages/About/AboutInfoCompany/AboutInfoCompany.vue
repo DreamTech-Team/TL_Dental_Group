@@ -17,11 +17,15 @@ import InfoCompany from '@/assets/imgs/About/InfoCompany.png';
           điện thoại thông minh), iPad (máy tính bảng), Mac (máy tính cá nhân và laptop), Apple
           Watch (đồng hồ thông minh), và AirPods (tai nghe không dây).
         </p>
-        <img :src="InfoCompany" alt="" />
+        <div>
+          <img :src="InfoCompany" alt="" />
+        </div>
       </div>
 
       <div>
-        <img :src="InfoCompany" alt="" />
+        <div>
+          <img :src="InfoCompany" alt="" />
+        </div>
         <p>
           Ngoài ra, Apple cũng phát triển và cung cấp nền tảng phần mềm như hệ điều hành macOS, iOS
           và watchOS, cùng với các ứng dụng và dịch vụ như iTunes, App Store, iCloud và Apple

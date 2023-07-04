@@ -10,9 +10,11 @@ import { faChevronRight, faDiamondTurnRight } from '@fortawesome/free-solid-svg-
 </script>
 <template>
   <div :class="$style.contact__facility">
+    <h3>CƠ SỞ CỦA CÔNG TY</h3>
+
     <div :class="$style['contact__facility-wrap']">
       <div :class="$style['contact__facility-left']">
-        <h4>Cơ sở tại TP Hồ Chí Minh</h4>
+        <h4>Cơ sở TP HCM</h4>
 
         <div>
           <img :src="Location" :class="$style['contact__facility-ic']" />
@@ -31,16 +33,17 @@ import { faChevronRight, faDiamondTurnRight } from '@fortawesome/free-solid-svg-
 
         <div>
           <img :src="Facebook" :class="$style['contact__facility-ic']" />
-          <a href="https://www.facebook.com/BiomeawTLG"> https://www.facebook.com/BiomeawTLG </a>
+          <a href="">https://www.facebook.com/BiomeawTLG</a>
         </div>
 
         <button :class="$style['contact__facility-button']">
-          <font-awesome-icon
-            :icon="faDiamondTurnRight"
-            :class="$style['contact__facility-button-ic']"
-          />
-          <!-- <img :src="Signpost" :class="$style['contact__facility-button-ic']" /> -->
-          <p>Đường đi</p>
+          <a href="https://goo.gl/maps/4KYphAyVoQMALkfUA">
+            <font-awesome-icon
+              :icon="faDiamondTurnRight"
+              :class="$style['contact__facility-button-ic']"
+            />
+            <p>Đường đi</p>
+          </a>
         </button>
       </div>
       <img :src="Facility" alt="" />

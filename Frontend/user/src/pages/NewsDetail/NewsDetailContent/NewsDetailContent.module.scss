@@ -6,7 +6,7 @@
     padding-right: 2rem;
 
     h1{
-        font-size: 4rem;
+        font-size: $text-4xl;
         color: $primary_900;
     }
 
@@ -16,7 +16,7 @@
         margin: 2rem 0;
 
         p{
-            font-size: $text-2xl;
+            font-size: $text-xl;
             margin-left: 2rem;
             font-weight: 300;
         }
@@ -33,7 +33,7 @@
             margin-bottom: 4rem;
 
             p{
-                font-size: $text-2xl;
+                font-size: $text-xl;
                 line-height: 3rem;
                 margin-bottom: 3rem;
             }
@@ -139,9 +139,14 @@
             align-items: center;
             margin: 1rem 0;
     
+            img{
+                width: 2rem;
+                height: 2rem;
+            }
+            
             p{
                 font-size: $text-lg-mobile;
-                margin-left: 2rem;
+                margin-left: 1.4rem;
                 font-weight: 300;
             }
     
@@ -159,7 +164,7 @@
                 p{
                     font-size: $text-lg-mobile;
                     line-height: 3rem;
-                    margin-bottom: 2rem;
+                    margin-bottom: 1rem;
                 }
 
                 img{
@@ -174,7 +179,7 @@
                 h3{
                     font-size: $text-lg-mobile;
                     line-height: 3rem;
-                    margin-bottom: 1rem;
+                    margin-bottom: 0.3rem;
                     color: $primary_900; 
                 }
     
