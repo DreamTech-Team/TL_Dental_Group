@@ -372,8 +372,9 @@
     font-size: 2rem;
     font-weight: 400;
     line-height: 2rem;
-    margin-left: 3rem;
+    padding: 0 2rem 0 0.5rem;
     margin-bottom: 1.5rem;
+    margin-left: 2rem;
   }
   &__title {
     margin-bottom: 1.5rem;
@@ -508,7 +509,6 @@
       }
 
       &--list {
-        padding-left: 1.5rem;
         &-detail {
           font-size: $text-sm;
           font-weight: 400;
@@ -641,7 +641,6 @@
     &__content {
       color: #000;
       font-size: $text-sm;
-      margin-left: 3rem;
       margin-bottom: 1.5rem;
     }
     &__title {
