@@ -11,9 +11,7 @@
     h1{
         font-weight: 600;
         font-size: $text-5xl;
-        line-height: 7.5rem;
         margin-left: 4rem;
-        margin-top: 1.2rem;
     }
 
     &-position{
@@ -198,19 +196,15 @@
             }
     
             button{
-                // background: $primary_700;
+                background: #fff;
                 border: 2px solid #184A7F;
                 border-radius: 4rem;
                 margin: 2rem 0rem 0 4rem;
                 width: fit-content;
                 padding: 1.4rem 4.2rem;
                 border: none;
-                border: 1px solid #0587FF;
-                transition: all 0.5s ease-in-out;
-
-                background-image: linear-gradient(to left,white, #184A7F);
-                background-size: 300% 100%;
-                transition: all 1s ease;
+                border: 2px solid #0587FF;
+                transition: all 0.4s ease;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -219,22 +213,22 @@
                     font-size: $text-xl;
                     line-height: 2.8rem;
                     font-weight: 700;
-                    color: #fff;
+                    color: $primary_700;
                 }
             }
             button:hover{
-                transition: all 1s ease;
-                opacity: 0.9;
-                background: white;
-                background-size: 0 0;
                 cursor: pointer;
+                box-shadow: inset 20em 0 0 0 $primary_600;
 
                 p{
-                    color: #184A7F;
+                    color: #fff;
                 }
            }
         }
     }
+}
+.contact__formMB{
+    display: none;
 }
 
 @include responsive_mobile() {
@@ -391,7 +385,8 @@
                         transition: all 0.5s ease;
         
                         &-ic{
-                            font-size: $text-4xl;
+                            width: 3.5rem;
+                            height: 3.5rem;
                             color: #fff;
                         }
                         p{

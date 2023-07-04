@@ -348,10 +348,29 @@
           cursor: pointer;
           color: $color_primary;
           border-radius: 4px;
+        }
 
-          &:hover {
-            background-color: $primary_700;
+        &--list {
+          position: absolute;
+          width: 100vw;
+          height: 100vh;
+          left: 0;
+          right: 0;
+          top: 70px;
+          background-color: $color_primary;
+          transition: all .3s ease-in-out;
+        }
+
+        &--item {
+          
+          a {
+            padding: 16px 12px;
+            border-bottom: 1px solid white;
             color: white;
+            font-size: $text-base-mobile;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
           }
         }
       }

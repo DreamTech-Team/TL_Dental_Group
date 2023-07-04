@@ -54,7 +54,7 @@ onMounted(() => {
       :class="
         style === 'type4'
           ? [$style[`container__card-${style}`], $style[`${style}-color-background-${index + 1}`]]
-          : ''
+          : $style[`${style}-block`]
       "
     >
       <div :class="$style['container__card-icon']" v-if="item.icon !== ''">

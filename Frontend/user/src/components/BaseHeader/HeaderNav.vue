@@ -7,10 +7,14 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronDown, faBars } from '@fortawesome/free-solid-svg-icons';
 import HeaderCategory from './HeaderCategory/HeaderCategory.vue';
 import HeaderSearch from './HeaderSearch/HeaderSearch.vue';
+import HeaderCategoryRespo from './HeaderCategoryRespo/HeaderCategoryRespo.vue';
 import { pages } from './HeaderHandle';
 
 const path = useRoute();
 const pageHover = ref('none');
+
+const flagMobile = ref(false);
+const pageMobile = ref('none');
 </script>
 <template>
   <div :class="$style.header__nav">
@@ -63,11 +67,26 @@ const pageHover = ref('none');
     </div>
     <header-search />
     <div :class="$style['header__nav-mobile']">
-      <div :class="$style['header__nav-mobile--btn']">
+      <div :class="$style['header__nav-mobile--btn']" @click="flagMobile = !flagMobile">
         <font-awesome-icon :icon="faBars" size="xl" />
       </div>
-
-      <div :class="$style['header__nav-mobile-list']"></div>
+      <div :class="$style['header__nav-mobile--list']" v-if="flagMobile">
+        <div :class="$style['header__nav-mobile--item']" v-for="item in pages" :key="item.slug">
+          <router-link
+            :to="'/' + item.slug"
+            :class="$style['header__nav-mobile-item-link']"
+            @click="
+              () => {
+                if (item.slug !== 'sanpham') flagMobile = !flagMobile;
+                pageMobile = pageMobile === 'sanpham' ? 'none' : item.slug;
+              }
+            "
+            >{{ item.name }}
+            <font-awesome-icon v-if="item.slug === 'sanpham'" :icon="faChevronDown" size="sm" />
+          </router-link>
+          <header-category-respo v-if="pageMobile === 'sanpham' && item.slug === 'sanpham'" />
+        </div>
+      </div>
     </div>
   </div>
 </template>

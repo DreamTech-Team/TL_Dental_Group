@@ -18,8 +18,8 @@
         align-items: center;
         background-color: #EAF8FF;
         border-radius: 3.5rem;
-        margin: 6rem 10rem;
-        padding: 6rem 12rem;
+        margin: 6rem 8rem;
+        padding: 4rem 10rem;
 
         .contact__facility-left{
             width: 50%;
@@ -46,39 +46,53 @@
                 }
 
                 a{
-                    font-size: $text-2xl;
+                    font-size: $text-xl;
                     line-height: 2.8rem;
                     color: $primary_700;
                     text-decoration: underline;
                 }
 
                 p{
-                    font-size: $text-2xl;
+                    font-size: $text-xl;
                     line-height: 2.8rem;
                     color: #000;
                 }
             }
 
             button{
-                display: flex;
-                justify-content: center;
-                align-items: center;
                 background: #FCFCFC;
-                border: 3px solid #4E7ECD;
+                border: 3px solid $primary_700;
                 border-radius: 4rem;
-                margin: 4rem 0 0 4rem;
-                padding: 1.2rem 2.4rem;
+                margin: 2rem 0 0 4rem;
+                transition: all 0.3s ease;
+
+                a{
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 1.2rem 2.4rem;
+
+                    .contact__facility-button-ic{
+                        font-size: $text-4xl;
+                        margin-right: 2rem;
+                    }
+    
+                    p{
+                        font-size: $text-xl;
+                        line-height: 2.8rem;
+                    }
+                }
+            }
+
+            button:hover{
+                background-color: $primary_700;
 
                 .contact__facility-button-ic{
-                    // font-size: $text-2xl;
-                    margin-right: 2rem;
-                    width: 4rem;
-                    height: 4rem;
+                    color: #fff;
                 }
 
                 p{
-                    font-size: $text-2xl;
-                    line-height: 2.8rem;
+                    color: #fff;
                 }
             }
         }
@@ -146,18 +160,21 @@
     
                 button{
                     margin: 1rem 0 1rem 3rem;
-                    padding: 0.4rem 0.8rem;
                     border: 1px solid #4E7ECD;
     
-                    .contact__facility-button-ic{
-                        margin-right: 0.8rem;
-                        width: 2rem;
-                        height: 2rem;
-                    }
-    
-                    p{
-                        font-size: $text-xs-mobile;
-                        line-height: 1.8rem;
+                    a{
+                        padding: 0.4rem 0.8rem;
+
+                        .contact__facility-button-ic{
+                            margin-right: 0.8rem;
+                            width: 2rem;
+                            height: 2rem;
+                        }
+        
+                        p{
+                            font-size: $text-xs-mobile;
+                            line-height: 1.8rem;
+                        }
                     }
                 }
             }
