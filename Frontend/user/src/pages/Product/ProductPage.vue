@@ -153,8 +153,8 @@ window.addEventListener('resize', checkScreenSize);
     <div :class="$style['product__header']">
       <product-banner :class="$style['product__header-banner']" />
       <!-- <product-navigation :class="$style['product__header-navigation']" /> -->
-      <bread-crumb :tags="pathBC" />
     </div>
+    <bread-crumb :tags="pathBC" />
     <div :class="$style['product__content']">
       <base-category v-if="isDesktop" />
       <div :class="$style['product__content-wrap']">
