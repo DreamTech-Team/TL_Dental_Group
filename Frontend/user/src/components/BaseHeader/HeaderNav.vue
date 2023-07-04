@@ -84,6 +84,9 @@ const hiddenNav = () => {
           $style[flagMobile ? 'header__nav-mobile--show' : '']
         ]"
       >
+        <form :class="$style['header__nav-mobile--search']">
+          <input type="text" name="search" placeholder="Tìm kiếm" />
+        </form>
         <!-- List page -->
         <div :class="$style['header__nav-mobile--item']" v-for="item in pages" :key="item.slug">
           <router-link
