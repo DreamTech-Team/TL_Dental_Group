@@ -5,8 +5,7 @@ import Logo from '@/assets/imgs/logo_nobg.png';
 import EditBtn from '@/components/EditBtn/EditBtn.vue';
 import CamBtn from '@/components/ImageBtn/ImageBtn.vue';
 import ModalIntro from './ModalIntro.vue';
-
-const isOpen = ref(false);
+import ModalCam from './CamIntro.vue';
 
 const content = ref({
   title: `Lời ngỏ từ <strong>CEO NGUYEN HOANG</strong>`,
@@ -19,8 +18,12 @@ const content = ref({
           <br />
           <strong>Michel Dedrick</strong>
           <br />
-          <span>Senior Conversion Optimizer</span>`
+          <span>Senior Conversion Optimizer</span>`,
+  image: CEO
 });
+
+const isOpen = ref(false);
+const isOpenCam = ref(false);
 </script>
 <template>
   <div :class="$style.home__intro">
@@ -29,8 +32,8 @@ const content = ref({
       <button :class="$style['home__intro-btn']">XEM CHI TIẾT</button>
     </div>
     <div :class="$style['home__intro-center']">
-      <img :src="CEO" alt="ceo" />
-      <CamBtn />
+      <img :src="content.image" alt="ceo" />
+      <CamBtn @click="isOpenCam = true" />
       <div :class="$style['home__intro-description']">
         <div :class="$style['home__intro-logo']">
           <img :src="Logo" alt="logo" />
@@ -48,6 +51,7 @@ const content = ref({
     :title="content.title"
     :tags="content.context"
   />
+  <ModalCam v-if="isOpenCam" :image="content.image" @close="isOpenCam = false" />
 </template>
 
 <style module scoped lang="scss">

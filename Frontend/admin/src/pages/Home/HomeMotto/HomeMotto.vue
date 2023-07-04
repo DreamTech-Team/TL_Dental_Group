@@ -4,8 +4,10 @@ import Meeting from '@/assets/imgs/Home/Meeting.png';
 import EditBtn from '@/components/EditBtn/EditBtn.vue';
 import CamBtn from '@/components/ImageBtn/ImageBtn.vue';
 import ModalMotto from './ModalMotto.vue';
+import ModalCam from './CamMotto.vue';
 
 const isOpen = ref(false);
+const isOpenCam = ref(false);
 
 const content = ref({
   title: 'SỨC KHỎE LÀ CHÂN ÁI',
@@ -18,7 +20,8 @@ const content = ref({
         <br />
         Trao sản phẩm và bảo hành trọn đời. Lấy uy tín khách hàng <br />
         hàng đầu. Sản phẩm cho mọi người. An toàn và chất lượng. 
-        Trao sản phẩm và bảo hành trọn đời.`
+        Trao sản phẩm và bảo hành trọn đời.`,
+  image: Meeting
 });
 </script>
 <template>
@@ -30,8 +33,8 @@ const content = ref({
     </div>
     <div :class="$style['home__motto-right']">
       <h4 :class="$style['home__motto-title']">PHƯƠNG CHÂM</h4>
-      <img :src="Meeting" alt="meeting" />
-      <CamBtn />
+      <img :src="content.image" alt="meeting" />
+      <CamBtn @click="isOpenCam = true" />
     </div>
   </div>
   <ModalMotto
@@ -40,6 +43,7 @@ const content = ref({
     :title="content.title"
     :tags="content.context"
   />
+  <ModalCam v-if="isOpenCam" :image="content.image" @close="isOpenCam = false" />
 </template>
 
 <style module scoped lang="scss">
