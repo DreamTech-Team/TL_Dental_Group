@@ -20,18 +20,18 @@ const handleClick = () => {
   else move.value = 0;
 };
 
-const handleSocialForm = (e) => {
-  if (e.target.textContent.trim() === 'Mạng xã hội') {
-    isSocial.value = true;
-    widthLine.value = e.target.offsetWidth;
-  } else if (e.target.textContent === 'Biểu mẫu') {
-    isSocial.value = false;
-    widthLine.value = e.target.offsetWidth;
-  }
+const handleSocialForm = (e: Event) => {
+  const target = e.target as HTMLElement; // Ép kiểu 'e.target' thành 'HTMLElement'
 
-  console.log(isSocial.value);
-  console.log(widthLine.value);
-  console.log(e.target.textContent);
+  if (target) {
+    if (target.textContent && target.textContent.trim() === 'Mạng xã hội') {
+      isSocial.value = true;
+      widthLine.value = target.offsetWidth;
+    } else if (target.textContent === 'Biểu mẫu') {
+      isSocial.value = false;
+      widthLine.value = target.offsetWidth;
+    }
+  }
 };
 </script>
 

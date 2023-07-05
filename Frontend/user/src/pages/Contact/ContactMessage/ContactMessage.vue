@@ -12,15 +12,14 @@ const move2 = ref(0);
 const handleMessage = () => {
   const circleWidth = document.getElementById('circle');
   const circle1 = document.getElementById('circle1');
-  const circle2 = document.getElementById('circle2');
-  // console.log(circle1);
+  if (circleWidth && circle1) {
+    isOpen.value = !isOpen.value;
 
-  isOpen.value = !isOpen.value;
-
-  if (isOpen.value)
-    (move1.value = -circleWidth.offsetHeight),
-      (move2.value = -circleWidth.offsetHeight - circle1.offsetHeight - 6);
-  else (move1.value = 0), (move2.value = 0);
+    if (isOpen.value)
+      (move1.value = -circleWidth.offsetHeight),
+        (move2.value = -circleWidth.offsetHeight - circle1.offsetHeight - 6);
+    else (move1.value = 0), (move2.value = 0);
+  }
 };
 </script>
 <template>
