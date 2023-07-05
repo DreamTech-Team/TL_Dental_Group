@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
+import { ref } from 'vue';
 import { ElPagination } from 'element-plus'; // Import the specific component from element-plus
 import 'element-plus/dist/index.css';
 
