@@ -99,7 +99,7 @@ const handleClickRight = () => {
           :class="$style['about__motto-slider-item']"
           v-for="(item, index) in mottoItems"
           :key="index"
-          :id="index"
+          :id="index.toString()"
         >
           <img :src="item.img" alt="" />
 
