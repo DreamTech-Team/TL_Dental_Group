@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
-import { ElPagination } from 'element-plus'; // Import the specific component from element-plus
+import { ref } from 'vue';
+import ElPagination from 'element-plus'; // Import the specific component from element-plus
 import 'element-plus/dist/index.css';
 
 const props = defineProps({
@@ -26,19 +26,13 @@ const handleCurrentChange = (val: number) => {
   console.log(props.currentPage);
   console.log(props.pageSize);
 };
-
-// Export the variable or function using defineExpose
-defineExpose({
-  handleSizeChange,
-  handleCurrentChange
-});
 </script>
 
 <template>
   <div :class="$style['pagination']">
     <el-config-provider namespace="ep">
       <div class="demo-pagination-block">
-        <el-pagination
+        <!-- <el-pagination
           :value="currentPage"
           @input="currentPageRef = $event"
           :page-size="pageSize"
@@ -49,7 +43,7 @@ defineExpose({
           layout="prev, pager, next, jumper"
           :total="39"
           :class="$style['custom-pagination']"
-        />
+        /> -->
       </div>
     </el-config-provider>
   </div>
