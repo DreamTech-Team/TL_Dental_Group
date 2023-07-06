@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { ElPagination } from 'element-plus'; // Import the specific component from element-plus
+import { ElPagination } from 'element-plus/lib/components/index.js';
 import 'element-plus/dist/index.css';
 
 const props = defineProps({
@@ -55,5 +55,5 @@ defineExpose({
   </div>
 </template>
 <style scoped module lang="scss">
-@import '../Pagination/Pagination.module.scss';
+// @import '../Pagination/Pagination.module.scss';
 </style>
