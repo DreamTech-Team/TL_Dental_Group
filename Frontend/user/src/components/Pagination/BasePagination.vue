@@ -26,12 +26,6 @@ const handleCurrentChange = (val: number) => {
   console.log(props.currentPage);
   console.log(props.pageSize);
 };
-
-// Export the variable or function using defineExpose
-defineExpose({
-  handleSizeChange,
-  handleCurrentChange
-});
 </script>
 
 <template>
