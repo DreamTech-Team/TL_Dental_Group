@@ -45,7 +45,7 @@ public class HomePageController {
     private IStorageService storageService;
 
     @GetMapping("/header")
-    ResponseEntity<ResponseObject> getHomeHeader() {
+    public ResponseEntity<ResponseObject> getHomeHeader() {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject("ok", "Get Header Successfully", contentPageRepository.findHomePageByTypeName("home::header"))
         );
@@ -69,17 +69,23 @@ public class HomePageController {
         );
     }
 
-    @PatchMapping(value="/content-page")
+    @PatchMapping(value="/header")
     public ResponseEntity<ResponseObject> updateContentPage(@RequestBody ContentPage entity) { 
         Optional<ContentPage> foundContentPage = contentPageRepository.findById(entity.getId());
 
         if (foundContentPage.isPresent()) {
             ContentPage currentContentPage = foundContentPage.get();
-            BeanUtils.copyProperties(entity, currentContentPage);
 
-            return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Update Content Page Successfully", contentPageRepository.save(currentContentPage))
-            );
+            if (currentContentPage.getType().equals("home::header")) {
+
+                BeanUtils.copyProperties(entity, currentContentPage);
+
+                currentContentPage.setType("home::header");
+
+                return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Update Content Page Successfully", contentPageRepository.save(currentContentPage))
+                );
+            }
         }
 
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
@@ -156,24 +162,30 @@ public class HomePageController {
             ContentPage section1SubItem2 = foundSection1SubItem2.get();
             ContentPage section1SubItem3 = foundSection1SubItem3.get();
             
-            BeanUtils.copyProperties(entity.getHeading(), section1Heading);
-            BeanUtils.copyProperties(entity.getSubItem1(), section1SubItem1);
-            BeanUtils.copyProperties(entity.getSubItem2(), section1SubItem2);
-            BeanUtils.copyProperties(entity.getSubItem3(), section1SubItem3);
+            if (section1Heading.getType().equals("home::section1_heading") 
+                && section1SubItem1.getType().equals("home::section1_subitem1") 
+                && section1SubItem2.getType().equals("home::section1_subitem2") 
+                && section1SubItem3.getType().equals("home::section1_subitem3")) {
 
-            section1Heading.setType("home::section1_heading");
-            section1SubItem1.setType("home::section1_subitem1");
-            section1SubItem2.setType("home::section1_subitem2");
-            section1SubItem3.setType("home::section1_subitem3");
+                BeanUtils.copyProperties(entity.getHeading(), section1Heading);
+                BeanUtils.copyProperties(entity.getSubItem1(), section1SubItem1);
+                BeanUtils.copyProperties(entity.getSubItem2(), section1SubItem2);
+                BeanUtils.copyProperties(entity.getSubItem3(), section1SubItem3);
 
-            if (image != null) {
-                String imageFile = storageService.storeFile(image);
-                section1Heading.setImage(imageFile);
+                section1Heading.setType("home::section1_heading");
+                section1SubItem1.setType("home::section1_subitem1");
+                section1SubItem2.setType("home::section1_subitem2");
+                section1SubItem3.setType("home::section1_subitem3");
+
+                if (image != null) {
+                    String imageFile = storageService.storeFile(image);
+                    section1Heading.setImage(imageFile);
+                }
+
+                return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Update Content Page Successfully", contentPageRepository.saveAll(Arrays.asList(section1Heading, section1SubItem1, section1SubItem2, section1SubItem3)))
+                );
             }
-
-            return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Update Content Page Successfully", contentPageRepository.saveAll(Arrays.asList(section1Heading, section1SubItem1, section1SubItem2, section1SubItem3)))
-            );
         }
 
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
@@ -230,18 +242,21 @@ public class HomePageController {
 
             ContentPage section2 = foundSection2.get();
 
-            BeanUtils.copyProperties(entity, section2);
+            if (section2.getType().equals("home::section2")) {
 
-            if (image != null) {
-                String imageFile = storageService.storeFile(image);
-                section2.setImage(imageFile);
+                BeanUtils.copyProperties(entity, section2);
+
+                if (image != null) {
+                    String imageFile = storageService.storeFile(image);
+                    section2.setImage(imageFile);
+                }
+                
+                section2.setType("home::section2");
+                
+                return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Update section 2 successfully", contentPageRepository.save(section2))
+                );
             }
-            
-            section2.setType("home::section2");
-            
-            return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Update section 2 successfully", contentPageRepository.save(section2))
-            );
         }
 
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
@@ -298,18 +313,20 @@ public class HomePageController {
 
             ContentPage section3 = foundSection3.get();
 
-            BeanUtils.copyProperties(entity, section3);
+            if (section3.getType().equals("home::section3")) {
+                BeanUtils.copyProperties(entity, section3);
 
-            if (image != null) {
-                String imageFile = storageService.storeFile(image);
-                section3.setImage(imageFile);
+                if (image != null) {
+                    String imageFile = storageService.storeFile(image);
+                    section3.setImage(imageFile);
+                }
+                
+                section3.setType("home::section3");
+                
+                return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Update section 3 successfully", contentPageRepository.save(section3))
+                );
             }
-            
-            section3.setType("home::section3");
-            
-            return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Update section 3 successfully", contentPageRepository.save(section3))
-            );
         }
 
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
@@ -333,6 +350,35 @@ public class HomePageController {
         
         return ResponseEntity.status(HttpStatus.OK).body(
             new ResponseObject("ok", "Add review successfully", reviewRepository.save(entity))
+        );
+    }
+
+    @PatchMapping(value="/reviews")
+    public ResponseEntity<ResponseObject> updateReviews(@RequestParam("data") String data, @RequestParam(name = "image", required = false) MultipartFile image) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Review entity = objectMapper.readValue(data, Review.class);
+        
+        Optional<Review> foundReview = reviewRepository.findById(entity.getId());
+
+        if (foundReview.isPresent()) {
+
+            Review review = foundReview.get();
+
+            BeanUtils.copyProperties(entity, review);
+
+            if (image != null) {
+                String imageFile = storageService.storeFile(image);
+                review.setImage(imageFile);
+            }
+            
+            
+            return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Update review successfully", reviewRepository.save(review))
+            );
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+            new ResponseObject("failed", "Cannot found your data", "")
         );
     }
 
