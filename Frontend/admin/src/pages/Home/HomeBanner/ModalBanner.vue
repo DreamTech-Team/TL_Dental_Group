@@ -58,7 +58,7 @@ const submitForm = () => {
   <div :class="$style.banner__overlay">
     <div :class="$style.banner__modal">
       <div :class="$style.banner__modal__heading">
-        CẬP NHẬT PHƯƠNG CHÂM
+        CẬP NHẬT NỘI DUNG
         <font-awesome-icon
           :icon="faXmark"
           :class="$style['banner__modal-ic']"
@@ -71,7 +71,7 @@ const submitForm = () => {
         <h4>Nội dung</h4>
         <textarea placeholder="Nhập mô tả" :value="textareaInput" @input="updateContext" />
         <div :class="$style['modal__buttons']">
-          <button>Hủy</button>
+          <button @click="$emit('close')">Hủy</button>
           <button @click="submitForm">Cập nhật</button>
         </div>
       </div>

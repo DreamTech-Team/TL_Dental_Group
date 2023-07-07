@@ -1,6 +1,6 @@
 @import '@/styles/base';
 
-.camreason__overlay {
+.SVGReason__overlay {
   position: fixed;
   display: flex;
   align-items: center;
@@ -12,9 +12,9 @@
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 20;
 
-  .camreason__modal {
+  .SVGReason__modal {
     display: block;
-    width: 700px;
+    width: max-content;
     height: auto;
     border-radius: 10px;
     background-color: white;
@@ -33,7 +33,7 @@
       border-radius: 10px 10px 0px 0px;
       color: white;
 
-      .camreason__modal-ic {
+      .SVGReason__modal-ic {
         position: absolute;
         top: 50%;
         right: 20px;
@@ -52,18 +52,24 @@
       width: 100%;
       height: max-content;
       padding: 0 45px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 
-      .camreason__ctn {
-        width: 100%;
-        height: auto;
+      .SVGReason__ctn {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: #0088cc;
         position: relative;
         margin-top: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         img {
-          width: 100%;
-          height: 100%;
-          max-height: 447px;
-          border-radius: 10px;
+          width: 50px;
+          height: 50px;
         }
 
         @keyframes fade-in {
@@ -75,7 +81,7 @@
           }
         }
 
-        .camreason__image_overlay {
+        .SVGReason__image_overlay {
           position: absolute;
           display: none;
           align-items: center;
@@ -83,14 +89,27 @@
           top: 0;
           left: 0;
           width: 100%;
-          max-height: 447px;
-          border-radius: 10px;
+          border-radius: 50%;
           height: 100%;
-          background-color: rgba(0, 0, 0, 0.5);
+          background-color: rgba(0, 0, 0, 0.8);
+          cursor: pointer;
           animation: fade-in 0.3s forwards;
+
+          button {
+            width: max-content;
+            height: max-content;
+            border: none;
+            background-color: transparent;
+
+            .SVGReason__img-edit {
+              color: white;
+              font-size: 2.5rem;
+              cursor: pointer;
+            }
+          }
         }
 
-        &:hover .camreason__image_overlay{
+        &:hover .SVGReason__image_overlay {
           display: flex;
         }
       }
@@ -100,7 +119,7 @@
         align-items: center;
         justify-content: center;
         width: 100%;
-        margin-top: 20px;
+        margin-top: 30px;
 
         button {
           padding: 8px 15px;

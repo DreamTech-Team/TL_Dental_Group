@@ -53,38 +53,43 @@
 
       .home__reason-item {
         display: flex;
+        align-items: center;
         margin-bottom: 40px;
 
         .home__reason-icon {
           flex: 1;
           display: flex;
+          width: 68px;
+          height: 68px;
           align-items: center;
           justify-content: center;
           position: relative;
-          min-height: 110px;
+          border-radius: 50%;
+          background-color: #0088cc;
 
           img {
-            width: 95%;
+            width: 30px;
+            height: 30px;
           }
 
-          button{
+          button {
             position: absolute;
             display: flex;
             width: 30px;
             height: 30px;
             align-items: center;
             justify-content: center;
-            top: 12px;
-            right: 0;
+            top: -5px;
+            right: -3px;
             border: none;
             border-radius: 50%;
             background-color: $primary_900;
 
-            &:hover{
+            &:hover {
               opacity: 0.95;
             }
 
-            img{
+            img {
               width: 15px;
               height: 15px;
             }
