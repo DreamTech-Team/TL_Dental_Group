@@ -3,6 +3,7 @@ package com.dreamtech.tldental.controllers;
 import com.dreamtech.tldental.models.News;
 import com.dreamtech.tldental.models.ResponseObject;
 import com.dreamtech.tldental.models.Tags;
+import com.dreamtech.tldental.repositories.TagsNewsFKRepository;
 import com.dreamtech.tldental.repositories.TagsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,8 @@ import java.util.Optional;
 public class TagsController {
     @Autowired
     private TagsRepository repository;
+    @Autowired
+    private TagsNewsFKRepository fkTagsNewsRepository;
 
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAll() {
@@ -78,11 +81,12 @@ public class TagsController {
 
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseObject> deleteTag(@PathVariable String id) {
-        Optional<Tags> foundNews = repository.findById(id);
-        if (foundNews.isPresent()) {
+        Optional<Tags> foundTags = repository.findById(id);
+        if (foundTags.isPresent()) {
+            fkTagsNewsRepository.deleteByFkTags(foundTags.get().getId());
             repository.deleteById(id);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Deleted tag successfully", foundNews)
+                    new ResponseObject("ok", "Deleted tag successfully", foundTags)
             );
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(

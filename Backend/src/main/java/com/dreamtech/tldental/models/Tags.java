@@ -82,7 +82,6 @@ public class Tags {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", slug='" + slug + '\'' +
-                ", createAt=" + createAt +
                 '}';
     }
 }
