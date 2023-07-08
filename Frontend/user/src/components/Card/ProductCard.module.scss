@@ -20,6 +20,7 @@
     background: linear-gradient(244.87deg, #6b5ab0 -26.72%, #4592ec 39.12%, #2a3c97 92.91%);
     border-radius: 10px 10px 0px 0px;
     position: relative;
+
     &--container {
       background: #ffffff;
       width: 90%;
@@ -31,66 +32,74 @@
       transform: translate(-50%, -50%);
       border-radius: 4px 4px 0 0;
       z-index: 1;
-    }
 
-    &--genuine {
-      width: 5.5rem;
-      display: flex;
-      position: absolute;
-      flex-direction: column;
-      top: 17%;
-      right: 7%;
-      align-items: center;
-      &-sticker {
-        width: 100%;
-        height: 100%;
-      }
-      &-text {
-        font-style: normal;
-        font-weight: 600;
-        font-size: 6px;
-        color: #fc5151;
+      .card__header--genuine {
+        width: 5.5rem;
+        display: flex;
+        position: absolute;
+        flex-direction: column;
+        top: 17%;
+        right: 4%;
         align-items: center;
+        &-sticker {
+          width: 100%;
+          height: 100%;
+        }
+        &-text {
+          font-style: normal;
+          font-weight: 600;
+          font-size: 6px;
+          color: #fc5151;
+          align-items: center;
+        }
       }
-    }
-
-    &--insurance {
-      display: flex;
-      position: absolute;
-      flex-direction: column;
-      top: 40%;
-      right: 7%;
-      align-items: center;
-      width: 5.5rem;
-      &-sticker {
-        width: 100%;
-        height: 100%;
+  
+      .card__header--insurance {
+        display: flex;
+        position: absolute;
+        flex-direction: column;
+        top: 40%;
+        right: 4%;
+        align-items: center;
+        width: 5.5rem;
+        &-sticker {
+          width: 100%;
+          height: 100%;
+        }
+        &-text {
+          font-style: normal;
+          font-weight: 600;
+          font-size: 6px;
+          color: #fc5151;
+        }
       }
-      &-text {
-        font-style: normal;
-        font-weight: 600;
-        font-size: 6px;
-        color: #fc5151;
+  
+      .card__header--support {
+        display: flex;
+        position: absolute;
+        flex-direction: column;
+        top: 63%;
+        right: 4%;
+        align-items: center;
+        width: 5.5rem;
+        &-sticker {
+          width: 100%;
+          height: 100%;
+        }
+        &-text {
+          font-style: normal;
+          font-weight: 600;
+          font-size: 6px;
+          color: #fc5151;
+        }
       }
-    }
-
-    &--support {
-      display: flex;
-      position: absolute;
-      flex-direction: column;
-      top: 63%;
-      right: 7%;
-      align-items: center;
-      width: 5.5rem;
-      &-sticker {
-        width: 100%;
-        height: 100%;
-      }
-      &-text {
-        font-style: normal;
-        font-weight: 600;
-        font-size: 6px;
-        color: #fc5151;
+  
+      .card__header--genuine,
+      .card__header--insurance,
+      .card__header--support {
+        p {
+          font-size: 6px !important;
+        }
       }
     }
 
@@ -107,6 +116,8 @@
 
       &-confirm {
         position: relative;
+        width: 100%;
+        height: 100%;
 
         &::before {
           position: absolute;
@@ -120,18 +131,21 @@
           left: -43px;
         }
       }
+
+      .card__header--txtconfirm {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        color: #ffffff;
+        text-transform: uppercase;
+        font-weight: 700;
+        top: -24px;
+        right: 5px;
+        z-index: 2;
+        font-size: 1.2rem;
+      }
     }
 
-    &--txtconfirm {
-      position: absolute;
-      color: #ffffff;
-      text-transform: uppercase;
-      font-weight: 700;
-      top: 98%;
-      right: 7%;
-      z-index: 2;
-      font-size: 1.2rem;
-    }
     &--title {
       display: flex;
       justify-content: space-evenly;
@@ -376,6 +390,14 @@
             color: #fc5151;
           }
         }
+
+        .card__header--genuine,
+        .card__header--insurance,
+        .card__header--support {
+          p {
+            font-size: 4px !important;
+          }
+        }
       }
 
       &--wgenuine {
@@ -404,17 +426,19 @@
             left: -36px;
           }
         }
-      }
 
-      &--txtconfirm {
-        position: absolute;
-        color: #ffffff;
-        text-transform: uppercase;
-        font-weight: 700;
-        top: 99%;
-        right: 5%;
-        z-index: 2;
-        font-size: 0.65rem;
+        .card__header--txtconfirm {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          color: #ffffff;
+          text-transform: uppercase;
+          font-weight: 700;
+          top: -16px;
+          right: 5px;
+          z-index: 2;
+          font-size: 0.65rem;
+        }
       }
 
       &--title {
@@ -436,6 +460,10 @@
           flex: 5;
           text-align: right;
           margin-right: 1rem;
+        }
+
+        .card__header--title-content {
+          font-size: 5px !important;
         }
       }
       &--picture {
@@ -481,7 +509,7 @@
         height: max-content;
 
         &-company {
-          width: max-content;
+          width: auto;
           height: 2rem;
         }
         &-price {

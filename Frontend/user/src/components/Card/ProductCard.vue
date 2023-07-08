@@ -4,7 +4,7 @@ import ProductPic from '@/assets/imgs/Product/product.png';
 import LogoCompany from '@/assets/imgs/Product/logoCompany.png';
 import OkSticker from '@/assets/imgs/Product/GroupOk.svg';
 import Insurance from '@/assets/imgs/Product/GroupInsurance.svg';
-import SupportSticker from '@/assets/imgs/Product/GroupSupport.svg';
+import SPSticker from '@/assets/imgs/Product/GroupSupport.svg';
 import { useRouter } from 'vue-router';
 import { type PropType } from 'vue';
 
@@ -46,17 +46,14 @@ defineProps({
           <p :class="$style['card__header--insurance-text']">Bảo hành 12 tháng</p>
         </div>
         <div :class="$style['card__header--support']">
-          <img
-            :class="$style['card__header--insurance-sticker']"
-            :src="SupportSticker"
-            alt="sticker"
-          />
-          <p :class="$style['card__header--insurance-text']">Hỗ trợ đổi trả</p>
+          <img :class="$style['card__header--support-sticker']" :src="SPSticker" alt="sticker" />
+          <p :class="$style['card__header--support-text']">Hỗ trợ đổi trả</p>
         </div>
         <div :class="$style['card__header--wgenuine']">
           <div :class="$style['card__header--wgenuine-confirm']"></div>
+          <div :class="$style['card__header--txtconfirm']">Chính hãng</div>
         </div>
-        <p :class="$style['card__header--txtconfirm']">Chính hãng</p>
+
         <div :class="$style['card__header--title']">
           <img :class="$style['card__header--title-logo']" :src="LogoNoBg" alt="logononbg" />
           <div :class="$style['card__header--title-content']">

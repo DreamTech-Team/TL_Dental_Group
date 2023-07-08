@@ -7,7 +7,6 @@ let b = 0;
 const handleOpen = () => {
   if (b == 0) {
     const mobileElement = document.getElementById('haha');
-    console.log(mobileElement.offsetHeight);
 
     if (mobileElement) {
       window.scrollTo({

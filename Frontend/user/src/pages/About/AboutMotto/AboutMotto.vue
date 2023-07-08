@@ -61,12 +61,13 @@ const isDisableRight = ref(false);
 
 const handleClickLeft = () => {
   const widthItem = document.getElementById('1');
-  console.log(widthItem.offsetWidth);
 
-  isDisableRight.value = false;
-  if (move.value === 0) (move.value = widthItem.offsetWidth + 150), (isDisableLeft.value = true);
-  else {
-    move.value += widthItem.offsetWidth + 150;
+  if (widthItem) {
+    isDisableRight.value = false;
+    if (move.value === 0) (move.value = widthItem.offsetWidth + 150), (isDisableLeft.value = true);
+    else {
+      move.value += widthItem.offsetWidth + 150;
+    }
   }
 };
 
@@ -74,10 +75,12 @@ const handleClickRight = () => {
   isDisableLeft.value = false;
   const widthItem = document.getElementById('1');
 
-  if (move.value === (3 - mottoItems.length) * (widthItem.offsetWidth + 150))
-    (move.value -= widthItem.offsetWidth + 150), (isDisableRight.value = true);
-  else {
-    move.value -= widthItem.offsetWidth + 150;
+  if (widthItem) {
+    if (move.value === (3 - mottoItems.length) * (widthItem.offsetWidth + 150))
+      (move.value -= widthItem.offsetWidth + 150), (isDisableRight.value = true);
+    else {
+      move.value -= widthItem.offsetWidth + 150;
+    }
   }
 };
 </script>
@@ -96,7 +99,7 @@ const handleClickRight = () => {
           :class="$style['about__motto-slider-item']"
           v-for="(item, index) in mottoItems"
           :key="index"
-          :id="index"
+          :id="index.toString()"
         >
           <img :src="item.img" alt="" />
 

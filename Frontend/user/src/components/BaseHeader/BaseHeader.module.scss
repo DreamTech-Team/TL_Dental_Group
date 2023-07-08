@@ -44,6 +44,7 @@
     &-logo {
       display: flex;
       align-items: center;
+      cursor: pointer;
 
       div {
         margin-left: 10px;
@@ -64,6 +65,7 @@
     &-shield {
       margin: 0 12px;
       position: relative;
+      cursor: pointer;
 
       &-content {
         position: absolute;
@@ -181,6 +183,7 @@
         height: 100%;
         display: flex;
         align-items: center;
+        position: relative;
 
         &--btn {
           padding: 10px;
@@ -188,11 +191,38 @@
           cursor: pointer;
           color: $color_primary;
           border-radius: 4px;
+        }
 
-          &:hover {
-            background-color: $primary_700;
+        &--list {
+          position: absolute;
+          min-width: 0;
+          width: 0;
+          height: 100vh;
+          top: 70px;
+          right: -50px;
+          background-color: $color_primary;
+          transition: all .3s ease-in-out;
+        }
+
+        &--show {
+          min-width: 40vw;
+        }
+
+        &--item {
+          
+          a {
+            padding: 16px 12px;
+            border-bottom: 1px solid white;
             color: white;
+            font-size: $text-base-mobile;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
           }
+        }
+
+        &--search {
+          display: none;
         }
       }
 
@@ -264,11 +294,38 @@
           cursor: pointer;
           color: $color_primary;
           border-radius: 4px;
+        }
 
-          &:hover {
-            background-color: $primary_700;
+        &--list {
+          position: absolute;
+          min-width: 0;
+          width: 0;
+          height: 100vh;
+          top: 70px;
+          right: -50px;
+          background-color: $color_primary;
+          transition: all .3s ease-in-out;
+        }
+
+        &--show {
+          min-width: 40vw;
+        }
+
+        &--item {
+          
+          a {
+            padding: 16px 12px;
+            border-bottom: 1px solid white;
             color: white;
+            font-size: $text-base-mobile;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
           }
+        }
+
+        &--search {
+          display: none;
         }
       }
 
@@ -353,12 +410,17 @@
         &--list {
           position: absolute;
           width: 100vw;
-          height: 100vh;
+          height: 0;
+          overflow: hidden;
           left: 0;
           right: 0;
           top: 70px;
           background-color: $color_primary;
           transition: all .3s ease-in-out;
+        }
+
+        &--show {
+          height: 100vh;
         }
 
         &--item {
@@ -371,6 +433,31 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+          }
+        }
+
+        &--search {
+          width: calc(100% - 20px);
+          display: flex;
+          align-items: center;
+          padding: 8px;
+          margin: 10px auto;
+          border-radius: 50px;
+          background-color: white;
+          box-shadow: inset -3px -2px 9px $text_200;
+
+          input {
+            border: none;
+            padding: 4px 6px;
+            font-size: $text-sm;
+            width: 100%;
+            background-color: transparent;
+          }
+      
+          &-icon {
+            color: $text_600;
+            cursor: pointer;
+            padding: 0 8px;
           }
         }
       }

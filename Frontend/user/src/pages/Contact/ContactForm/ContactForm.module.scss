@@ -3,7 +3,7 @@
 
 .contact__form{
     margin: 4rem 8rem;
-    border: 4px solid #D0D0D0;
+    border: 3px solid #D0D0D0;
     border-radius: 20px;
     padding: 2rem 4rem;
 
@@ -29,7 +29,6 @@
                 align-items: center;
                 padding: 0 12rem;
                 margin-bottom: 4rem;
-    
     
                 &-title{
                     font-weight: 500;
@@ -99,7 +98,7 @@
             .contact__form-content{
                 width: 50%;
                 padding: 0 6rem 0 10rem;
-                border-left: 1px solid #000;
+                border-left: 1px solid #2218b3;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -278,7 +277,7 @@
                     }
         
                     p{
-                        font-size: $text-sm-mobile;
+                        font-size: $text-base-mobile;
                         line-height: 1.8rem;
                         font-weight: 500;
                     }
@@ -291,7 +290,7 @@
                 margin-bottom: 2rem;
 
                 span{
-                    font-size: $text-sm-mobile;
+                    font-size: $text-base-mobile;
                     font-weight: 500;
                     cursor: pointer;
                 }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
-import { ElPagination } from 'element-plus'; // Import the specific component from element-plus
+import { ref } from 'vue';
+import { ElPagination } from 'element-plus/lib/components/index.js';
 import 'element-plus/dist/index.css';
 
 const props = defineProps({
@@ -26,12 +26,6 @@ const handleCurrentChange = (val: number) => {
   console.log(props.currentPage);
   console.log(props.pageSize);
 };
-
-// Export the variable or function using defineExpose
-defineExpose({
-  handleSizeChange,
-  handleCurrentChange
-});
 </script>
 
 <template>
@@ -55,5 +49,5 @@ defineExpose({
   </div>
 </template>
 <style scoped module lang="scss">
-@import '../Pagination/Pagination.module.scss';
+// @import '../Pagination/Pagination.module.scss';
 </style>
