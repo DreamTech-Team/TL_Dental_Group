@@ -176,43 +176,67 @@
                     }
                 }
     
-                .about__motto-slider1{
+                .about__motto-slider1-wrapper{
                     display: flex;
                     transition: transform 150ms ease-out;
                     width: 38.4rem;
                     overflow: hidden;
-                    
-                    &-item{
-                        background-color: #D7FFFA;
-                        padding: 6rem 3rem;
-                        border-radius: 2rem;
-                        height: 100%;
+                    overflow-x: auto;
+                    scroll-behavior: smooth;
+                    overflow-y: hidden;
+                    overflow-x: hidden;
+
+                    .about__motto-slider1{
+                        // display: flex;
+                        // transition: transform 150ms ease-out;
+                        // width: 38.4rem;
+                        // overflow: hidden;
+                        // overflow-x: auto;
+                        // scroll-behavior: smooth;
+                        // overflow-y: hidden;
+                        // overflow-x: hidden;
+                        // margin: auto;
                         display: flex;
-                        flex-direction: column;
+                        height: 100%;
+                        left: 0;
+                        transition: all 0.5s ease-in-out;
                         align-items: center;
-    
-                        img{
-                            width: calc(100vw*0.3333 - 15rem - 3.9rem);
-                        }
-            
-                        p{
-                            width: 100%;
-                            text-align: center;
-                        }
-    
-                        &-title{
-                            font-weight: 700;
-                            font-size: $text-2xl;
-                            line-height: 5.5rem;
-                            letter-spacing: 0.02em;
-                        }
-    
-                        &-content{
-                            font-weight: 700;
-                            font-size: $text-xs;
-                            line-height: 2.5rem;
-                            letter-spacing: 0.02em;
-                            color: #76768F;
+                        justify-content: flex-start;
+                        flex-wrap: nowrap;
+                        scroll-behavior: smooth;
+                                        
+                        &-item{
+                            background-color: #D7FFFA;
+                            padding: 6rem 3rem;
+                            border-radius: 2rem;
+                            height: 100%;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+        
+                            img{
+                                width: calc(100vw*0.3333 - 15rem - 3.9rem);
+                            }
+                
+                            p{
+                                width: 100%;
+                                text-align: center;
+                            }
+        
+                            &-title{
+                                font-weight: 700;
+                                font-size: $text-2xl;
+                                line-height: 5.5rem;
+                                letter-spacing: 0.02em;
+                            }
+        
+                            &-content{
+                                font-weight: 700;
+                                font-size: $text-xs;
+                                line-height: 2.5rem;
+                                letter-spacing: 0.02em;
+                                color: #76768F;
+                            }
                         }
                     }
                 }
