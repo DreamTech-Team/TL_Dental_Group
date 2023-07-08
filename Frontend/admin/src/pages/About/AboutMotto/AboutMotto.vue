@@ -64,10 +64,11 @@ const mottoItems = [
 ];
 
 const move = ref(0);
-const item = ref(mottoItems[0]);
+const moveEdit = ref(0);
+const items = ref(mottoItems);
 const indexItems = ref(0);
 const isDisableLeft = ref(false);
-const isDisableLeftEdit = ref(false);
+const isDisableLeftEdit = ref(true);
 const isDisableRight = ref(false);
 const isDisableRightEdit = ref(false);
 const isEdit = ref(false);
@@ -75,44 +76,70 @@ const isOpenAdd = ref(false);
 const isOpenUpdate = ref(false);
 
 const handleClickLeft = () => {
-  const widthItem = document.getElementById('1');
-  console.log(widthItem.offsetWidth);
-
   isDisableRight.value = false;
-  if (move.value === 0) (move.value = widthItem.offsetWidth + 150), (isDisableLeft.value = true);
-  else {
-    move.value += widthItem.offsetWidth + 150;
+
+  const widthItem = document.getElementById('1');
+
+  if (widthItem) {
+    if (move.value === 0) (move.value = widthItem.offsetWidth + 150), (isDisableLeft.value = true);
+    else {
+      move.value += widthItem.offsetWidth + 150;
+    }
   }
 };
 
 const handleClickRight = () => {
   isDisableLeft.value = false;
+
   const widthItem = document.getElementById('1');
 
-  if (move.value === (3 - mottoItems.length) * (widthItem.offsetWidth + 150))
-    (move.value -= widthItem.offsetWidth + 150), (isDisableRight.value = true);
-  else {
-    move.value -= widthItem.offsetWidth + 150;
+  if (widthItem) {
+    if (move.value === (3 - items.value.length) * (widthItem.offsetWidth + 150))
+      (move.value -= widthItem.offsetWidth + 150), (isDisableRight.value = true);
+    else {
+      move.value -= widthItem.offsetWidth + 150;
+    }
   }
 };
 
 const handleClickLeftEdit = () => {
   isDisableRightEdit.value = false;
 
-  if (indexItems.value === 0) (indexItems.value = 0), (isDisableLeftEdit.value = true);
-  else indexItems.value--;
+  indexItems.value -= 1;
 
-  item.value = mottoItems[indexItems.value];
+  if (indexItems.value <= 0)
+    ((indexItems.value = 0), (moveEdit.value += 383)), (isDisableLeftEdit.value = true);
+  else moveEdit.value += 383;
 };
 
 const handleClickRightEdit = () => {
   isDisableLeftEdit.value = false;
 
-  if (indexItems.value === mottoItems.length - 1)
-    (indexItems.value = mottoItems.length - 1), (isDisableRightEdit.value = true);
-  else indexItems.value++;
+  indexItems.value += 1;
 
-  item.value = mottoItems[indexItems.value];
+  console.log(indexItems.value);
+
+  if (indexItems.value >= items.value.length - 1) {
+    moveEdit.value -= 383;
+    indexItems.value = items.value.length - 1;
+    isDisableRightEdit.value = true;
+  } else moveEdit.value -= 383;
+};
+
+const handleRemoveItem = () => {
+  items.value.splice(indexItems.value, 1);
+  indexItems.value--;
+
+  if (indexItems.value < 0) {
+    indexItems.value = 0;
+  } else if (indexItems.value === items.value.length - 1) {
+    moveEdit.value += 383;
+  } else {
+    indexItems.value += 1;
+    console.log(indexItems.value);
+  }
+
+  return items.value;
 };
 </script>
 
@@ -128,7 +155,7 @@ const handleClickRightEdit = () => {
       >
         <div
           :class="$style['about__motto-slider-item']"
-          v-for="(item, index) in mottoItems"
+          v-for="(item, index) in items"
           :key="index"
           :id="index"
         >
@@ -188,7 +215,7 @@ const handleClickRightEdit = () => {
             </button>
           </div>
 
-          <div :class="$style['about__motto-slider1']">
+          <!-- <div :class="$style['about__motto-slider1']">
             <div :class="$style['about__motto-slider1-item']">
               <img :src="item.img" alt="" />
 
@@ -197,6 +224,28 @@ const handleClickRightEdit = () => {
               <p :class="$style['about__motto-slider1-item-content']">
                 {{ item.content }}
               </p>
+            </div>
+          </div> -->
+          <div :class="$style['about__motto-slider1-wrapper']">
+            <div
+              :class="$style['about__motto-slider1']"
+              id="motto-list"
+              :style="{ transform: 'translateX' + '(' + moveEdit + 'px' + ')' }"
+            >
+              <div
+                :class="$style['about__motto-slider1-item']"
+                v-for="(item, index) in items"
+                :key="index"
+                :id="index"
+              >
+                <img :src="item.img" alt="" />
+
+                <p :class="$style['about__motto-slider1-item-title']">{{ item.title }}</p>
+
+                <p :class="$style['about__motto-slider1-item-content']">
+                  {{ item.content }}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -220,7 +269,7 @@ const handleClickRightEdit = () => {
             <span>Chỉnh sửa</span>
           </button>
 
-          <button :class="$style['about__motto-button-close']">
+          <button :class="$style['about__motto-button-close']" @click="handleRemoveItem">
             <font-awesome-icon :icon="faClose" :class="$style['about__motto-button-close-ic']" />
             <span>Xóa bỏ</span>
           </button>
@@ -256,8 +305,22 @@ const handleClickRightEdit = () => {
     </button>
   </div>
 
-  <ModalMotto v-if="isOpenAdd" @close="isOpenAdd = false" :title="''" :descript="''" />
-  <ModalMotto v-if="isOpenUpdate" @close="isOpenUpdate = false" :title="'cc'" :descript="'cc'" />
+  <ModalMotto
+    v-if="isOpenAdd"
+    @close="isOpenAdd = false"
+    :title="''"
+    :content="''"
+    :check="'add'"
+    :image="items[indexItems].img"
+  />
+  <ModalMotto
+    v-if="isOpenUpdate"
+    @close="isOpenUpdate = false"
+    :title="items[indexItems].title"
+    :content="items[indexItems].content"
+    :check="'update'"
+    :image="items[indexItems].img"
+  />
 </template>
 
 <style module scoped lang="scss">
