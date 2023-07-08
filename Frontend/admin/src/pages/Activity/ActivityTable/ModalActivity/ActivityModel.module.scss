@@ -1,0 +1,82 @@
+@import '@/styles/base';
+
+.activity_container {
+  width: 85%;
+  height: 92%;
+  background-color: #fff;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+
+  &--title {
+    justify-content: center;
+    align-items: center;
+    font-size: 2.4rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    color: $primary_700;
+    text-align: center;
+    margin: 1.5rem 0;
+  }
+
+  &--wrap {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+
+    &-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 0 2rem;
+
+      .wrap_title {
+        display: flex;
+        flex-direction: column;
+
+        &--text {
+          font-size: $text-base;
+          font-style: normal;
+          font-weight: 700;
+          line-height: normal;
+          margin-bottom: 1rem;
+          font-family: 'Roboto';
+        }
+
+        .custom-input {
+          width: 100%;
+          height: 40px;
+          font-size: $text-base;
+          border-radius: 10px;
+          border: 1px solid #ccc;
+          padding: 0 10px;
+          font-family: 'Roboto';
+          margin-bottom: 1.5rem;
+        }
+
+        .custom-textarea {
+          font-family: 'Roboto';
+          background-color: aqua;
+        }
+      }
+
+      .wrap_sumary {
+        display: flex;
+        flex-direction: column;
+
+        &--area {
+          resize: 'none';
+          height: '100px';
+          max-height: '100px';
+        }
+      }
+    }
+
+    &-right {
+      flex: 1.7;
+      background-color: bisque;
+    }
+  }
+}

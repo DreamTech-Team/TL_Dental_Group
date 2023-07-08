@@ -2,24 +2,23 @@
 import { ref, computed } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faPlus, faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
-import { products } from './Products';
 import Swal from 'sweetalert2';
-import ModalAdd from './components/ModalAdd.vue';
+// import ModalAdd from './components/ModalAdd.vue';
 import Pagination from '@/components/Pagination/BasePagination.vue';
+import { activities } from '../Activity';
 
-const isOpen = ref(false); 
 const searchText = ref('');
-const results = ref(products);
+const results = ref(activities);
 
 const currentPage = ref(1);
 const pageSize = ref(10);
 
-const filteredProducts = computed(() => {
+const filteredActivitiess = computed(() => {
   if (searchText.value.trim() === '') {
     return results.value;
   } else {
     const searchTerm = searchText.value.toLowerCase();
-    return results.value.filter((product) => product.name.toLowerCase().includes(searchTerm));
+    return results.value.filter((activity) => activity.name.toLowerCase().includes(searchTerm));
   }
 });
 
@@ -39,10 +38,17 @@ const handlePageChange = (page: number) => {
 const displayNews = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
-  return filteredProducts.value.slice(start, end);
+  return filteredActivitiess.value.slice(start, end);
 });
 
-const deleteProduct = (id: number) => {
+const truncateText = (text: string, maxLength: number) => {
+  if (text.length > maxLength) {
+    return text.slice(0, maxLength) + '...';
+  }
+  return text;
+};
+
+const deleteActivity = (id: number) => {
   Swal.fire({
     title: 'Bạn có chắc muốn xóa?',
     text: 'Dữ liệu sẽ không thể khôi phục sau khi xóa!',
@@ -54,7 +60,7 @@ const deleteProduct = (id: number) => {
     cancelButtonText: 'Hủy'
   }).then((result) => {
     if (result.isConfirmed) {
-      results.value = results.value.filter((product) => product.id !== id);
+      results.value = results.value.filter((activity) => activity.id !== id);
 
       Swal.fire({
         title: 'Xóa thành công',
@@ -71,45 +77,41 @@ const deleteProduct = (id: number) => {
 };
 </script>
 <template>
-  <div :class="$style.mn_product">
-    <h3>DANH SÁCH SẢN PHẨM</h3>
-    <div :class="$style.mn_product_control">
-      <button>
-        <font-awesome-icon :icon="faPlus" :class="$style['mn_product_control-ic1']" />
-        THÊM SẢN PHẨM
-      </button>
-      <div :class="$style['mn_product_control-input1']">
-        <font-awesome-icon :icon="faMagnifyingGlass" :class="$style['mn_product_control-ic2']" />
+  <div>
+    <div :class="$style.mn_activity_control">
+      <span></span>
+      <div :class="$style['mn_activity_control-input1']">
+        <font-awesome-icon :icon="faMagnifyingGlass" :class="$style['mn_activity_control-ic2']" />
         <input v-model="searchText" placeholder="Tìm kiếm" />
       </div>
     </div>
-    <table :class="$style.mn_product_table">
+    <table :class="$style.mn_activity_table">
       <thead>
         <tr>
-          <th style="width: 8%">STT</th>
-          <th style="width: 40%">Tên sản phẩm</th>
-          <th style="width: 14%">Công ty</th>
-          <th style="width: 24%">Giá</th>
-          <th style="width: 14%">Chỉnh sửa</th>
+          <th style="width: 5%">STT</th>
+          <th style="width: 25%">Tên hoạt động</th>
+          <th style="width: 30%">Tags</th>
+          <th style="width: 25%">Thời gian diễn ra</th>
+          <th style="width: 15%">Chỉnh sửa</th>
         </tr>
       </thead>
       <tbody>
-        <template v-if="filteredProducts.length > 0">
+        <template v-if="filteredActivitiess.length > 0">
           <tr v-for="(item, index) in displayNews" :key="index">
-            <td style="width: 8%">{{ index + 1 }}</td>
-            <td style="width: 40%">
-              <div :class="$style['table_item']">
-                <img :src="item.src" alt="SP" :class="$style['table_img']" />
-                <span>{{ item.name }}</span>
-              </div>
+            <td style="max-width: 5%">{{ index + 1 }}</td>
+            <td style="max-width: 25%">
+              {{ truncateText(item.name, 33) }}
             </td>
-            <td style="width: 14%">{{ item.company }}</td>
-            <td style="width: 24%">{{ item.price }}</td>
-            <td style="width: 14%">
-              <button :class="$style['btn-room-trash']" @click="deleteProduct(item.id)">
+            <td style="width: 30%">{{ truncateText(item.tags.join(', '), 40) }}</td>
+
+            <td style="width: 25%">{{ item.date }}</td>
+            <td style="width: 15%">
+              <button :class="$style['btn-room-trash']" @click="deleteActivity(item.id)">
                 <font-awesome-icon :icon="faTrash" />
               </button>
-              <button :class="$style['edit-room-btn']"><font-awesome-icon :icon="faPen" /></button>
+              <button :class="$style['edit-room-btn']">
+                <font-awesome-icon :icon="faPen" />
+              </button>
             </td>
           </tr>
         </template>
@@ -120,18 +122,17 @@ const deleteProduct = (id: number) => {
         </template>
       </tbody>
     </table>
-    <div :class="$style['mn_product_pagination']">
+    <div :class="$style['mn_activity_pagination']">
       <pagination
-        :total="Math.ceil(filteredProducts.length / pageSize)"
+        :total="Math.ceil(filteredActivitiess.length / pageSize)"
         :current-page="currentPage"
         :page-size="pageSize"
         @current-change="handlePageChange"
       />
     </div>
   </div>
-  <ModalAdd v-if="isOpen" @close="isOpen = false" />
 </template>
 
 <style module scoped lang="scss">
-@import './ProductMN.module.scss';
+@import '../Activity.module.scss';
 </style>
