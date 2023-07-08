@@ -48,6 +48,11 @@ const handleScroll = () => {
   }
 };
 
+const hanldeScrollToVacancies = () => {
+  const element = document.getElementById('position-rec');
+  element?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+};
+
 //Hàm cập nhật item sau khi loading
 const showPageCompleted = () => {
   showMore.value = false;
@@ -94,7 +99,7 @@ onMounted(() => {
         </div>
       </div>
       <div :class="$style['container__poster-btn']">
-        <div :class="$style['container__poster-btn-item']">
+        <div :class="$style['container__poster-btn-item']" @click="hanldeScrollToVacancies">
           <p>Xem vị trí tuyển dụng</p>
         </div>
       </div>
@@ -216,7 +221,7 @@ onMounted(() => {
         <recruitment-card :items="recStepItems" :style="'type5'" />
       </div>
     </div>
-    <div :class="$style.container__work">
+    <div :class="$style.container__work" id="position-rec">
       <div :class="$style['container__work-heading']">
         <div :class="$style['container__work-heading-title']">Các Vị Trí Tuyển Dụng</div>
         <div :class="$style['container__work-heading-filter']">

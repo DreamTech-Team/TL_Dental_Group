@@ -25,6 +25,11 @@ const selectedContent = (index: any) => {
     indexSelected.value = index;
     const element = document.getElementById(`type5-${indexSelected.value}`);
     element?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+
+    // if (index === 0) {
+    //   const e = document.getElementById('container-main');
+    //   e?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    // }
   } else {
     if (onActive.value !== index) onActive.value = index;
     else onActive.value = -1;

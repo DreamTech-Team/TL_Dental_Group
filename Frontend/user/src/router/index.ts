@@ -7,8 +7,7 @@ const DetailPage = () => import('@/pages/Detail/DetailPage.vue');
 const NewsPage = () => import('@/pages/News/NewsPage.vue');
 const NotFound = () => import('@/pages/NotFound/NotFound.vue');
 const RecruimentPage = () => import('@/pages/Recruitment/RecruitmentPage.vue');
-const RecruitmentDetailsPage = () =>
-  import('@/pages/Recruitment/RecruitmentDetailsPage/RecruitmentDetailsPage.vue');
+const RecruitmentDetailsPage = () => import('@/pages/RecruitmentDetails/RecruitmentDetails.vue');
 const SearchPage = () => import('@/pages/Search/SearchPage.vue');
 const ContactPage = () => import('@/pages/Contact/ContactPage.vue');
 const PolicyPage = () => import('@/pages/Policy/PolicyPage.vue');

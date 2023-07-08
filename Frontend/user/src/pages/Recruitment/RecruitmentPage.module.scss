@@ -136,18 +136,19 @@
       align-items: center;
 
       &-img1 {
+        margin-right: 2rem;
         img {
           border-radius: 10rem;
-          height: auto;
-          max-width: 90%;
+          height: 15rem;
+          width: 15rem;
         }
       }
 
       &-img2 {
         img {
           border-radius: 22rem;
-          height: auto;
-          max-width: 85%;
+          height: 40rem;
+          width: 27rem;
         }
       }
     }
@@ -233,10 +234,14 @@
       justify-content: space-between;
       margin-top: 5rem;
 
+      img {
+        border-radius: 30rem;
+      }
+
       &-img1 {
         img {
-          width: auto;
-          height: 90%;
+          width: 25.6rem;
+          height: 41.6rem;
         }
 
         &-center {
@@ -257,8 +262,8 @@
 
       &-img2 {
         img {
-          width: auto;
-          height: 55%;
+          width: 18rem;
+          height: 26rem;
         }
 
         &-circle {
@@ -297,9 +302,11 @@
         top: 8rem;
 
         h2 {
+          padding-top: 0.5rem;
           font-size: $text-3xl;
           color: $primary_900;
         }
+
         span {
           // position: absolute;
           // top: -2.5rem;
@@ -383,6 +390,7 @@
 .display-none {
   transition: all 0.2s ease;
   opacity: 0;
+  display: none;
 }
 
 //Loading
@@ -464,18 +472,18 @@
       }
 
       &-title {
-        font-size: $text-sm-mobile;
+        font-size: $text-base-mobile;
         margin: 0rem 1rem 0rem 1rem;
         h3 {
-          font-size: $text-lg-mobile;
+          font-size: $text-2xl-mobile;
         }
 
         h2 {
-          font-size: $text-xl-mobile;
+          font-size: $text-3xl-mobile;
         }
 
         h1 {
-          font-size: $text-2xl-mobile;
+          font-size: $text-4xl-mobile;
         }
       }
 
@@ -585,7 +593,7 @@
       padding: 2rem 2rem 3rem 2rem;
 
       &-title {
-        font-size: $text-4xl-mobile;
+        font-size: $text-2xl-mobile;
       }
 
       &-block {

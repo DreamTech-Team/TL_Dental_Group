@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import logo from '@/assets/imgs/logo.png';
 import RecruitmentDetailsItem from './RecruitmentDetailsItem/RecruitmentDetailsItem.vue';
-import RecruitmentCard from '../RecruitmentCard/RecruitmentCard.vue';
+import RecruitmentCard from '../Recruitment/RecruitmentCard/RecruitmentCard.vue';
 import { data, recContentDetails } from './RecruitmentDetailsHandle';
 import { ic_bag, ic_hourglass, ic_location } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 
@@ -70,5 +70,5 @@ const contentOrganite = [
 </template>
 
 <style module scoped lang="scss">
-@import './RecruitmentDetailsPage.module.scss';
+@import './RecruitmentDetails.module.scss';
 </style>
