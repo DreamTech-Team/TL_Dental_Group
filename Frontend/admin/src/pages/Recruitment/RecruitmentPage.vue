@@ -44,6 +44,11 @@ const contentPosterItems = ref(posterItems);
 const contentVisionItems = ref(visionItems);
 const contentValueItems = ref(valueItems);
 
+const selectedImageVision = ref([imgHand, ceo]);
+const selectedImageEnvir = ref([img1, img2, img3, img4, img5]);
+
+let prevImageEnvir: string[] = [];
+
 const handleEditPoster = () => {
   topicUpdate.value = topics.poster;
   contentEdit.value = [];
@@ -95,7 +100,7 @@ const handleUpdateVision = (newContent: any) => {
   topicUpdate.value = '';
   contentVisionItems.value = [];
 
-  newContent.forEach((value: any, index: number) => {
+  newContent.forEach((value: any) => {
     contentVisionItems.value.push({
       icon: '',
       title: { content: value.title, style: 'type2' },
@@ -124,7 +129,7 @@ const handleUpdateValue = (newContent: any) => {
   topicUpdate.value = '';
   contentValueItems.value = [];
 
-  newContent.forEach((value: any, index: number) => {
+  newContent.forEach((value: any) => {
     contentValueItems.value.push({
       icon: '',
       title: { content: value.title, style: 'type3' },
@@ -138,6 +143,31 @@ const handleUpdated = (newContent: any) => {
   if (topicUpdate.value === topics.poster) handleUpdatePoster(newContent);
   else if (topicUpdate.value === topics.vision) handleUpdateVision(newContent);
   else handleUpdateValue(newContent);
+};
+
+const handleModalClose = () => {
+  isOpen.value = false;
+  enableScroll();
+};
+
+const handleEditEnvir = () => {
+  prevImageEnvir = selectedImageEnvir.value.slice();
+  editEvir.value = true;
+};
+
+//Choose image
+const handleFileInputChange = (event: Event, index: number, topic: any) => {
+  const inputElement = event.target as HTMLInputElement;
+  const file = inputElement.files?.[0];
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (topic === topics.vision) selectedImageVision.value[index] = reader.result as string;
+      else selectedImageEnvir.value[index] = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
 };
 
 const handleModalCancel = () => {
@@ -155,6 +185,9 @@ const handleModalCancel = () => {
   }).then((result) => {
     if (result.isDenied) {
       editEvir.value = false;
+      selectedImageEnvir.value = [];
+      selectedImageEnvir.value = prevImageEnvir.slice();
+      prevImageEnvir = [];
     }
   });
 };
@@ -174,6 +207,7 @@ const handleModalUpdate = () => {
   }).then((result) => {
     /* Read more about isConfirmed, isDenied below */
     if (result.isConfirmed) {
+      editEvir.value = false;
       Swal.fire({
         title: 'Cập nhật nội dung thành công!',
         icon: 'success',
@@ -185,7 +219,7 @@ const handleModalUpdate = () => {
       });
     } else if (result.isDenied) {
       Swal.fire({
-        title: 'Nội dung không được cập nhật',
+        title: 'Nội dung chưa được cập nhật',
         icon: 'error',
         customClass: {
           popup: styles['container-popup'],
@@ -195,11 +229,6 @@ const handleModalUpdate = () => {
       });
     }
   });
-};
-
-const handleModalClose = () => {
-  isOpen.value = false;
-  enableScroll();
 };
 
 // Ngăn chặn cuộn chuột
@@ -249,6 +278,11 @@ const handleScroll = () => {
     else hiddenElement.value = false;
     // console.log(locationHidden, hiddenElement.value);
   }
+};
+
+const hanldeScrollToVacancies = () => {
+  const element = document.getElementById('position-rec');
+  element?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
 };
 
 //Hàm cập nhật item sau khi loading
@@ -303,7 +337,7 @@ onMounted(() => {
         </div>
       </div>
       <div :class="$style['container__poster-btn']">
-        <div :class="$style['container__poster-btn-item']">
+        <div :class="$style['container__poster-btn-item']" @click="hanldeScrollToVacancies">
           <p>Xem vị trí tuyển dụng</p>
         </div>
       </div>
@@ -345,8 +379,9 @@ onMounted(() => {
       <div :class="$style['container__vision-block']">
         <div :class="$style['container__vision-block-img1']">
           <div :class="$style.block__img">
-            <img :src="imgHand" alt="none" />
+            <img :src="selectedImageVision[0]" alt="none" />
             <div :class="[$style['block__img-edit'], $style['block__img-edit-full1']]">
+              <input type="file" @change="(e) => handleFileInputChange(e, 0, topics.vision)" />
               <svg
                 viewBox="-368.64 -368.64 1761.28 1761.28"
                 class="icon"
@@ -386,8 +421,9 @@ onMounted(() => {
         </div>
         <div :class="$style['container__vision-block-img2']">
           <div :class="$style.block__img">
-            <img :src="ceo" alt="none" />
+            <img :src="selectedImageVision[1]" alt="none" />
             <div :class="[$style['block__img-edit'], $style['block__img-edit-full2']]">
+              <input type="file" @change="(e) => handleFileInputChange(e, 1, topics.vision)" />
               <svg
                 viewBox="-368.64 -368.64 1761.28 1761.28"
                 class="icon"
@@ -471,7 +507,7 @@ onMounted(() => {
         <div
           :class="[$style['btn-edit-2'], $style['btn-edit']]"
           v-if="!editEvir"
-          @click="editEvir = true"
+          @click="handleEditEnvir"
         >
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -510,8 +546,9 @@ onMounted(() => {
           ]"
         >
           <div :class="$style.block__img">
-            <img :src="img1" alt="none" />
+            <img :src="selectedImageEnvir[0]" alt="none" />
             <div :class="$style['block__img-edit']" v-if="editEvir">
+              <input type="file" @change="(e) => handleFileInputChange(e, 0, '')" />
               <svg
                 viewBox="-368.64 -368.64 1761.28 1761.28"
                 class="icon"
@@ -551,8 +588,9 @@ onMounted(() => {
         </div>
         <div :class="$style['container__envir-block-img2']">
           <div :class="$style.block__img">
-            <img :src="img2" alt="none" />
+            <img :src="selectedImageEnvir[1]" alt="none" />
             <div :class="$style['block__img-edit']" v-if="editEvir">
+              <input type="file" @change="(e) => handleFileInputChange(e, 1, '')" />
               <svg
                 viewBox="-368.64 -368.64 1761.28 1761.28"
                 class="icon"
@@ -603,8 +641,9 @@ onMounted(() => {
           ]"
         >
           <div :class="$style.block__img">
-            <img :src="img3" alt="none" />
+            <img :src="selectedImageEnvir[2]" alt="none" />
             <div :class="$style['block__img-edit']" v-if="editEvir">
+              <input type="file" @change="(e) => handleFileInputChange(e, 2, '')" />
               <svg
                 viewBox="-368.64 -368.64 1761.28 1761.28"
                 class="icon"
@@ -656,8 +695,9 @@ onMounted(() => {
               ]"
             ></div>
             <div :class="$style.block__img">
-              <img :src="img4" alt="none" />
+              <img :src="selectedImageEnvir[3]" alt="none" />
               <div :class="$style['block__img-edit']" v-if="editEvir">
+                <input type="file" @change="(e) => handleFileInputChange(e, 3, '')" />
                 <svg
                   viewBox="-368.64 -368.64 1761.28 1761.28"
                   class="icon"
@@ -703,8 +743,9 @@ onMounted(() => {
           ]"
         >
           <div :class="$style.block__img">
-            <img :src="img5" alt="none" />
+            <img :src="selectedImageEnvir[4]" alt="none" />
             <div :class="$style['block__img-edit']" v-if="editEvir">
+              <input type="file" @change="(e) => handleFileInputChange(e, 4, '')" />
               <svg
                 viewBox="-368.64 -368.64 1761.28 1761.28"
                 class="icon"
@@ -769,7 +810,7 @@ onMounted(() => {
         <recruitment-card :items="recStepItems" :style="'type5'" />
       </div>
     </div>
-    <div :class="$style.container__work">
+    <div :class="$style.container__work" id="position-rec">
       <div :class="$style['container__work-heading']">
         <div :class="$style['container__work-heading-title']">Các Vị Trí Tuyển Dụng</div>
         <div :class="$style['container__work-heading-filter']">
