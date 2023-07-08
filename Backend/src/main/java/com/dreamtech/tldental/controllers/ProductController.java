@@ -26,7 +26,9 @@ public class ProductController {
     @GetMapping("")
     ResponseEntity<ResponseObject> getAllProducts(@RequestParam("cate1") String cate1,
                                                   @RequestParam("cate2") String cate2,
-                                                  @RequestParam("page") String page) {
+                                                  @RequestParam(required = false, defaultValue = "12") String pageSize,
+                                                  @RequestParam(required = false, defaultValue = "0") String page,
+                                                  @RequestParam(required = false, defaultValue = "desc") String sort) {
         System.out.println(cate1);
         System.out.println(cate2);
         // HANDLE FILTER
@@ -53,7 +55,7 @@ public class ProductController {
     @PatchMapping("/{id}")
     ResponseEntity<ResponseObject> updateProduct(@PathVariable String id,
                                                  @RequestParam("imgs") List<MultipartFile> imgs,
-                                                 @RequestParam("mainImg") MultipartFile mainImg,
+                                                 @RequestParam(value = "mainImg", required = false) MultipartFile mainImg,
                                                  @RequestParam("data") String data,
                                                  @RequestParam("removeImgs") String removeImgs) {
         try {
@@ -87,7 +89,7 @@ public class ProductController {
                 existingProduct.setPriceSale(updatedProduct.getPriceSale());
 
                 // Check main image was changed
-                if (mainImg.getSize() != 0) {
+                if (mainImg != null && mainImg.getSize() != 0) {
                     storageService.deleteFile(existingProduct.getMainImg());
                     String mainImgFileName = storageService.storeFile(mainImg);
                     existingProduct.setMainImg(mainImgFileName);
@@ -211,6 +213,7 @@ public class ProductController {
     }
 
 
+    // GET ALL HIGHLIGHT PRODUCTS
     @GetMapping("/highlight")
     ResponseEntity<ResponseObject> getAllHighlight() {
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -218,6 +221,7 @@ public class ProductController {
         );
     }
 
+    // UPDATE HIGHLIGHT NEWS
     @PatchMapping("/highlight")
     ResponseEntity<ResponseObject> updateHighlight(@RequestBody ArrayList<Map<String, String>> data) {
         ArrayList<Object> res = new ArrayList<>();

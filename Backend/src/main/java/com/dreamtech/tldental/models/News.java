@@ -1,5 +1,6 @@
 package com.dreamtech.tldental.models;
 
+import com.dreamtech.tldental.utils.Utils;
 import jakarta.persistence.*;
 
 import java.text.Normalizer;
@@ -39,16 +40,12 @@ public class News {
     @PrePersist
     protected void onCreate() {
         createAt = LocalDateTime.now();
-        generateSlug();
+        this.slug = Utils.generateSlug(title);
     }
 
     @PreUpdate
-    protected void generateSlug() {
-        String slug = Normalizer.normalize(title, Normalizer.Form.NFD)
-                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
-
-        this.slug = slug.toLowerCase(Locale.getDefault())
-                .replaceAll("\\s+", "-");
+    protected void preUpdate() {
+        this.slug = Utils.generateSlug(title);
     }
 
     public News() {

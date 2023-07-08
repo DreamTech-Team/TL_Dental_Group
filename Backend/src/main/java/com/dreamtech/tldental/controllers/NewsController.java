@@ -28,6 +28,7 @@ public class NewsController {
     @Autowired
     private IStorageService storageService;
 
+    // GET ALL NEWS WITH FILTER
     @GetMapping("")
     ResponseEntity<ResponseObject> getFilter(@RequestParam(required = false, defaultValue = "12") String pageSize,
                                              @RequestParam(required = false, defaultValue = "0") String page,
@@ -46,41 +47,24 @@ public class NewsController {
         }
 
         // Handle data
-        List<Object> combinedList = new ArrayList<>(); // Result
-        List<Object> tempList = new ArrayList<>(); // Store tags of a news
-        Map<String, Object> tempObj = new HashMap<String, Object>();
-
-        for (Object[] result : newsList) {
-            News news = (News) result[0];
-            Tags tags = (Tags) result[1];
-
-            if (tempList.isEmpty() || !((News) tempObj.get("news")).getId().equals(news.getId())) {
-                if (!tempList.isEmpty()) {
-                    // Check news has not tag
-                    if (tempList.get(0) == null)
-                        tempList.remove(0);
-                    tempObj.put("tags", tempList);
-                    combinedList.add(tempObj);
-                    tempObj = new HashMap<>();
-                }
-                tempList = new ArrayList<>();
-                tempObj.put("news", news);
-            }
-
-            tempList.add(tags);
-        }
-        if (tempObj.containsKey("news")) {
-            if (tempList.get(0) == null)
-                tempList.remove(0);
-            tempObj.put("tags", tempList);
-            combinedList.add(tempObj);
-        }
+        List<Object> combinedList = handleDataNews(newsList);
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject("ok", "Query news successfully", combinedList)
         );
     }
 
+    // GET NEWS WITH FILTER BY MONTH
+    @GetMapping("/month")
+    ResponseEntity<ResponseObject> getNewsByMonth(@RequestParam int month) {
+        List<Object[]> foundNews = repository.findNewsByMonth(month);
+        List<Object> data = handleDataNews(foundNews);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Get news by month (" + month + ") successfully", data)
+        );
+    }
+
+    // GET DETAIL NEWS
     @GetMapping("/{slug}")
     ResponseEntity<ResponseObject> getDetail(@PathVariable String slug) {
         Optional<News> foundNews = Optional.ofNullable(repository.findBySlug(slug));
@@ -93,6 +77,7 @@ public class NewsController {
                 );
     }
 
+    // CREATE NEWS
     @PostMapping("")
     ResponseEntity<ResponseObject> createNews(@RequestPart("img") MultipartFile img,
                                               @RequestParam ("data") String data,
@@ -141,11 +126,12 @@ public class NewsController {
         }
     }
 
+    // UPDATE NEWS
     @PatchMapping("/{id}")
     ResponseEntity<ResponseObject> updateNews(@PathVariable String id,
-                                              @RequestPart("img") MultipartFile img,
-                                              @RequestParam ("data") String data,
-                                              @RequestParam ("tags") String tags) throws JsonProcessingException {
+                                              @RequestPart(value = "img", required = false) MultipartFile img,
+                                              @RequestParam("data") String data,
+                                              @RequestParam("tags") String tags) throws JsonProcessingException {
         // Convert String to JSON
         ObjectMapper objectMapper = new ObjectMapper();
         News newsData = objectMapper.readValue(data, News.class);
@@ -169,7 +155,7 @@ public class NewsController {
             }
 
             // Update img
-            if (img.getSize() !=0) {
+            if (img != null && img.getSize() != 0) {
                 storageService.deleteFile(oldUrlImg);
                 // Upload image to cloudinary
                 String mainImgFileName = storageService.storeFile(img);
@@ -188,6 +174,7 @@ public class NewsController {
         }
     }
 
+    // DELETE NEWS
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseObject> deleteNews(@PathVariable String id) {
         Optional<News> foundNews = repository.findById(id);
@@ -208,12 +195,24 @@ public class NewsController {
     }
 
 
-    // HIGHLIGHT
-    @PatchMapping("/highlight")
-    ResponseEntity<ResponseObject> updateHighlight(@PathVariable String slug,
+    // HIGHLIGHT //
+    // GET ALL HIGHLIGHT NEWS
+    @GetMapping("/highlight")
+    ResponseEntity<ResponseObject> getHighlightNews() {
+        List<Object[]> foundNews = repository.findHighlightNews();
+        List<Object> data = handleDataNews(foundNews);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Get all highlight news successfully", data)
+        );
+    }
+
+    // UPDATE HIGHLIGHT NEWS
+    @PatchMapping("/highlight/{slug}")
+    ResponseEntity<ResponseObject> updateHighlightNews(@PathVariable String slug,
                                                    @RequestParam int highlight) {
         Optional<News> foundNews = Optional.ofNullable(repository.findBySlug(slug));
         foundNews.get().setHighlight(highlight);
+        System.out.println(highlight);
         return foundNews.isPresent() ?
                 ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObject("ok", "Update highlight news successfully", repository.save(foundNews.get()))
@@ -222,4 +221,40 @@ public class NewsController {
                         new ResponseObject("failed", "Can not find product with id = "+slug, "")
                 );
     }
+
+
+
+    private List<Object> handleDataNews(List<Object[]> srcList) {
+        List<Object> combinedList = new ArrayList<>(); // Result
+        List<Object> tempList = new ArrayList<>(); // Store tags of a news
+        Map<String, Object> tempObj = new HashMap<String, Object>();
+
+        for (Object[] result : srcList) {
+            News news = (News) result[0];
+            Tags tags = (Tags) result[1];
+
+            if (tempList.isEmpty() || !((News) tempObj.get("news")).getId().equals(news.getId())) {
+                if (!tempList.isEmpty()) {
+                    // Check news has not tag
+                    if (tempList.get(0) == null)
+                        tempList.remove(0);
+                    tempObj.put("tags", tempList);
+                    combinedList.add(tempObj);
+                    tempObj = new HashMap<>();
+                }
+                tempList = new ArrayList<>();
+                tempObj.put("news", news);
+            }
+
+            tempList.add(tags);
+        }
+        if (tempObj.containsKey("news")) {
+            if (tempList.get(0) == null)
+                tempList.remove(0);
+            tempObj.put("tags", tempList);
+            combinedList.add(tempObj);
+        }
+        return combinedList;
+    }
+
 }

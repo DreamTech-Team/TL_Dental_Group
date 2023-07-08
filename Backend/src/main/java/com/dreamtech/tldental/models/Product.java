@@ -1,6 +1,7 @@
 package com.dreamtech.tldental.models;
 
 
+import com.dreamtech.tldental.utils.Utils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 
@@ -52,16 +53,12 @@ public class Product {
     @PrePersist
     protected void onCreate() {
         createAt = LocalDateTime.now();
-        generateSlug();
+        this.slug = Utils.generateSlug(name);
     }
 
     @PreUpdate
-    protected void generateSlug() {
-        String slug = Normalizer.normalize(name, Normalizer.Form.NFD)
-                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
-
-        this.slug = slug.toLowerCase(Locale.getDefault())
-                .replaceAll("\\s+", "-");
+    protected void preUpdate() {
+        this.slug = Utils.generateSlug(name);
     }
 
     public Product() {

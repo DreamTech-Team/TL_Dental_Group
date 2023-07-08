@@ -17,4 +17,10 @@ public interface NewsRepository extends JpaRepository<News, String> {
 
     @Query("SELECT n, t FROM News n LEFT JOIN TagsNewsFK tn ON tn.fkNews = n.id LEFT JOIN Tags t ON tn.fkTags = t.id")
     List<Object[]> findFilteredNews(Pageable pageable);
+
+    @Query("SELECT n, t FROM News n LEFT JOIN TagsNewsFK tn ON tn.fkNews = n.id LEFT JOIN Tags t ON tn.fkTags = t.id WHERE n.highlight <> 0")
+    List<Object[]> findHighlightNews();
+
+    @Query("SELECT n, t FROM News n LEFT JOIN TagsNewsFK tn ON tn.fkNews = n.id LEFT JOIN Tags t ON tn.fkTags = t.id WHERE EXTRACT(MONTH FROM n.createAt) = :month")
+    List<Object[]> findNewsByMonth(@Param("month") int month);
 }
