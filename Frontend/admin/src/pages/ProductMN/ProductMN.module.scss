@@ -62,11 +62,35 @@
     }
   }
 
-  .mn_product_table {
-    border-collapse: collapse;
+  .mn_product_body{
     width: 100%;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     margin-top: 15px;
+
+    .mn_product_table_1{
+    border-collapse: collapse;
+    width: 100%;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    overflow: hidden;
+    font-size: $text-base;
+
+    th {
+      background-color: #08c;
+      font-weight: bold;
+      color: white;
+      padding: 15px 10px;
+    }
+  }
+
+  .mn_product_table_ctn{
+    width: 100%;
+    height: calc(100vh - 400px);
+    overflow-y: auto;
+
+    .mn_product_table {
+    border-collapse: collapse;
+    width: 100%;
     border-radius: 5px;
     overflow: hidden;
     font-size: $text-base;
@@ -141,9 +165,11 @@
       }
     }
   }
+  }
+  }
 
   .mn_product_pagination{
-    margin-top: 5rem;
+    margin-top: 3rem;
     display: flex;
     align-items: center;
     justify-content: center;

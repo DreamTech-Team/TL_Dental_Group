@@ -22,15 +22,22 @@
             margin-bottom: 3rem;
             gap: 3rem;
 
-            div{
+            .about__infocompany-position{
                 width: 50%;
                 position: relative;
 
-                img{
+                .about__infocompany-img{
                     width: 100%;
+                    height: auto;
+
+                    img{
+                        width: 100%;
+                        height: 100%;
+                        border-radius: 8px;
+                    }
                 }
 
-                div{
+                .about__infocompany-button-wrapper{
                     position: absolute;
                     top: 0;
                     width: 100%;
@@ -39,6 +46,8 @@
                     align-items: center;
                     justify-content: center;
                     transition: all 0.3s ease-out;
+                    border-radius: 8px;
+                    z-index: 10;
 
                     .about__infocompany-button{
                         padding: 1rem 2rem;
@@ -78,11 +87,12 @@
                         }
                     }
                 }
-                div:hover{
+                .about__infocompany-button-wrapper:hover{
+                    border-radius: 8px;
                     background-color: rgba($color: #000000, $alpha: 0.8);
                 }
 
-                div:hover .about__infocompany-button{
+                .about__infocompany-button-wrapper:hover .about__infocompany-button{
                     display: flex;
                 }
             }

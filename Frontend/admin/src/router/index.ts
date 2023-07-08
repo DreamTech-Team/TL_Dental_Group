@@ -5,6 +5,7 @@ import ActivityVue from '@/pages/Activity/Activity.vue';
 const AboutPage = () => import('@/pages/About/AboutPage.vue');
 const NotFound = () => import('@/pages/NotFound/NotFound.vue');
 const ProductMN = () => import('@/pages/ProductMN/ProductMN.vue');
+const RecruitmentPage = () => import('@/pages/Recruitment/RecruitmentPage.vue');
 
 const routes = [
   {
@@ -20,6 +21,11 @@ const routes = [
     path: '/about',
     name: 'about',
     component: AboutPage
+  },
+  {
+    path: '/tuyendung',
+    name: 'tuyendung',
+    component: RecruitmentPage
   },
   {
     path: '/mnproduct',

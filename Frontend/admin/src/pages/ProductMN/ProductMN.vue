@@ -74,7 +74,7 @@ const deleteProduct = (id: number) => {
   <div :class="$style.mn_product">
     <h3>DANH SÁCH SẢN PHẨM</h3>
     <div :class="$style.mn_product_control">
-      <button>
+      <button @click="isOpen = true">
         <font-awesome-icon :icon="faPlus" :class="$style['mn_product_control-ic1']" />
         THÊM SẢN PHẨM
       </button>
@@ -83,43 +83,52 @@ const deleteProduct = (id: number) => {
         <input v-model="searchText" placeholder="Tìm kiếm" />
       </div>
     </div>
-    <table :class="$style.mn_product_table">
-      <thead>
-        <tr>
-          <th style="width: 8%">STT</th>
-          <th style="width: 40%">Tên sản phẩm</th>
-          <th style="width: 14%">Công ty</th>
-          <th style="width: 24%">Giá</th>
-          <th style="width: 14%">Chỉnh sửa</th>
-        </tr>
-      </thead>
-      <tbody>
-        <template v-if="filteredProducts.length > 0">
-          <tr v-for="(item, index) in displayNews" :key="index">
-            <td style="width: 8%">{{ index + 1 }}</td>
-            <td style="width: 40%">
-              <div :class="$style['table_item']">
-                <img :src="item.src" alt="SP" :class="$style['table_img']" />
-                <span>{{ item.name }}</span>
-              </div>
-            </td>
-            <td style="width: 14%">{{ item.company }}</td>
-            <td style="width: 24%">{{ item.price }}</td>
-            <td style="width: 14%">
-              <button :class="$style['btn-room-trash']" @click="deleteProduct(item.id)">
-                <font-awesome-icon :icon="faTrash" />
-              </button>
-              <button :class="$style['edit-room-btn']"><font-awesome-icon :icon="faPen" /></button>
-            </td>
-          </tr>
-        </template>
-        <template v-else>
+    <div :class="$style.mn_product_body">
+      <table :class="$style.mn_product_table_1">
+        <thead>
           <tr>
-            <td colspan="5">DANH SÁCH TRỐNG</td>
+            <th style="width: 8%">STT</th>
+            <th style="width: 40%">Tên sản phẩm</th>
+            <th style="width: 14%">Công ty</th>
+            <th style="width: 24%">Giá</th>
+            <th style="width: 14%">Chỉnh sửa</th>
           </tr>
-        </template>
-      </tbody>
-    </table>
+        </thead>
+      </table>
+      <div :class="$style.mn_product_table_ctn">
+        <table :class="$style.mn_product_table">
+          <tbody>
+            <template v-if="filteredProducts.length > 0">
+              <tr v-for="(item, index) in displayNews" :key="index">
+                <td style="width: 8%">{{ index + 1 }}</td>
+                <td style="width: 40%">
+                  <div :class="$style['table_item']">
+                    <img :src="item.src" alt="SP" :class="$style['table_img']" />
+                    <span>{{ item.name }}</span>
+                  </div>
+                </td>
+                <td style="width: 14%">{{ item.company }}</td>
+                <td style="width: 24%">{{ item.price }}</td>
+                <td style="width: 14%">
+                  <button :class="$style['btn-room-trash']" @click="deleteProduct(item.id)">
+                    <font-awesome-icon :icon="faTrash" />
+                  </button>
+                  <button :class="$style['edit-room-btn']">
+                    <font-awesome-icon :icon="faPen" />
+                  </button>
+                </td>
+              </tr>
+            </template>
+            <template v-else>
+              <tr>
+                <td colspan="5">DANH SÁCH TRỐNG</td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <div :class="$style['mn_product_pagination']">
       <pagination
         :total="Math.ceil(filteredProducts.length / pageSize)"
