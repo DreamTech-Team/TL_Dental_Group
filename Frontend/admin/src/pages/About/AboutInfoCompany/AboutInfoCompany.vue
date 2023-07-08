@@ -28,13 +28,17 @@ const InfoCompanyContent = ref({
 
 const _content1 = ref(InfoCompanyContent.value.content1);
 const _content2 = ref(InfoCompanyContent.value.content2);
+const selectedImage = ref(null);
+const selectedImage1 = ref(null);
 
-const handleChangeContent1 = (e) => {
-  _content1.value = e.target.getContent();
+const handleChangeContent1 = (e: Event) => {
+  if (e.target) {
+    _content1.value = e.target.getContent();
+  }
 };
 
 const handleChangeContent2 = (e) => {
-  _content2.value = e.target.getContent();
+  if (e.target) _content2.value = e.target.getContent();
 };
 
 const handleUpdateContent = () => {
@@ -43,15 +47,24 @@ const handleUpdateContent = () => {
   InfoCompanyContent.value.content2 = _content2.value;
 };
 
-const selectedImage = ref(null);
-
 const handleChangeImage = () => {
-  document.getElementById('input_file').click();
+  document.getElementById('input_file2').click();
 };
 
 const handleChangeImage1 = () => {
   document.getElementById('input_file1').click();
 };
+
+// const handleFileInputChange = (event) => {
+//   const file = event.target.files[0];
+//   const reader = new FileReader();
+
+//   reader.onload = (e) => {
+//     selectedImage.value = e.target.result;
+//   };
+
+//   reader.readAsDataURL(file);
+// };
 
 const handleFileInputChange = (event) => {
   const file = event.target.files[0];
@@ -65,14 +78,14 @@ const handleFileInputChange = (event) => {
 };
 
 const handleFileInputChange1 = (event) => {
-  const file = event.target.files[0];
-  const reader = new FileReader();
+  const file1 = event.target.files[0];
+  const reader1 = new FileReader();
 
-  reader.onload = (e) => {
-    selectedImage.value = e.target.result;
+  reader1.onload = (e) => {
+    selectedImage1.value = e.target.result;
   };
 
-  reader.readAsDataURL(file);
+  reader1.readAsDataURL(file1);
 };
 </script>
 <template>
@@ -105,11 +118,15 @@ const handleFileInputChange1 = (event) => {
            bullist numlist outdent indent | removeformat | help'
           }"
         />
-        <div>
-          <img :src="selectedImage" alt="" v-if="selectedImage" />
-          <img :src="InfoCompany" alt="" v-else />
+        <div :class="$style['about__infocompany-position']">
+          <div :class="$style['about__infocompany-img']" v-if="selectedImage">
+            <img :src="selectedImage" alt="" />
+          </div>
+          <div :class="$style['about__infocompany-img']" v-else>
+            <img :src="InfoCompany" alt="" />
+          </div>
 
-          <div v-if="isEdit">
+          <div v-if="isEdit" :class="$style['about__infocompany-button-wrapper']">
             <button :class="$style['about__infocompany-button']" @click="handleChangeImage">
               <font-awesome-icon :icon="faRotate" :class="$style['about__infocompany-button-ic']" />
               <span>Đổi ảnh</span>
@@ -118,7 +135,7 @@ const handleFileInputChange1 = (event) => {
             <input
               type="file"
               style="display: none"
-              id="input_file"
+              id="input_file2"
               accept="image/*"
               @change="handleFileInputChange"
             />
@@ -127,10 +144,15 @@ const handleFileInputChange1 = (event) => {
       </div>
 
       <div :class="$style['about__infocompany-content-item']">
-        <div>
-          <img :src="InfoCompany" alt="" />
+        <div :class="$style['about__infocompany-position']">
+          <div :class="$style['about__infocompany-img']" v-if="selectedImage1">
+            <img :src="selectedImage1" alt="" />
+          </div>
+          <div :class="$style['about__infocompany-img']" v-else>
+            <img :src="InfoCompany" alt="" />
+          </div>
 
-          <div v-if="isEdit">
+          <div v-if="isEdit" :class="$style['about__infocompany-button-wrapper']">
             <button :class="$style['about__infocompany-button']" @click="handleChangeImage1">
               <font-awesome-icon :icon="faRotate" :class="$style['about__infocompany-button-ic']" />
               <span>Đổi ảnh</span>
