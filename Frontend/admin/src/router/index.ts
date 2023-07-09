@@ -4,6 +4,7 @@ import HomePage from '@/pages/Home/HomePage.vue';
 const AboutPage = () => import('@/pages/About/AboutPage.vue');
 const NotFound = () => import('@/pages/NotFound/NotFound.vue');
 const ProductMN = () => import('@/pages/ProductMN/ProductMN.vue');
+const ManageCopany = () => import('@/pages/ManageCompany/ManageCompany.vue');
 
 const routes = [
   {
@@ -28,6 +29,11 @@ const routes = [
   {
     path: '/:catchAll(.*)*',
     component: NotFound
+  },
+  {
+    path: '/mncompany',
+    name: 'mncompany',
+    component: ManageCopany
   }
 ];
 
