@@ -175,7 +175,7 @@ const addFile = (e: DragEvent) => {
           </div>
         </div>
 
-        <h4>Sản phẩm nổi bật</h4>
+        <!-- <h4>Sản phẩm nổi bật</h4>
         <div :class="$style['category']">
           <input
             type="text"
@@ -187,7 +187,7 @@ const addFile = (e: DragEvent) => {
           <button @click="isOpen = true">
             <font-awesome-icon :icon="faPencil" :class="$style['category-icon']" />
           </button>
-        </div>
+        </div> -->
 
         <div :class="$style['modal__buttons']">
           <button @click="$emit('close')">Hủy</button>
