@@ -70,6 +70,8 @@ const updateDes3 = (e: Event) => {
 };
 const submitForm = () => {
   if (
+    (titleInput.value?.length ?? 0) < 10 ||
+    (titleSub.value?.length ?? 0) < 10 ||
     (name1.value?.length ?? 0) < 5 ||
     (name2.value?.length ?? 0) < 5 ||
     (name3.value?.length ?? 0) < 5 ||
