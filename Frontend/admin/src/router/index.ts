@@ -35,15 +35,14 @@ const routes = [
     component: ProductMN
   },
   {
-<<<<<<< HEAD
     path: '/mncategory',
     name: 'mncategory',
     component: CategoryMN
-=======
+  },
+  {
     path: '/dashboard',
     name: 'dashboard',
     component: Dashboard
->>>>>>> 51195e26ea82bf32bafe07ff11529fc69cefe174
   },
   {
     path: '/:catchAll(.*)*',
