@@ -1,36 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark, faCloudArrowUp, faRotate } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 
-const context = defineProps({
-  title: {
-    type: String,
-    required: true
-  },
-  content: {
-    type: String,
-    required: true
-  },
-  check: {
-    type: String,
-    required: true
-  },
-  image: {
-    type: String,
-    required: true
-  }
-});
-
 const emit = defineEmits(['close']);
 
-const titleInput = ref(context.title);
-const contentInput = ref(context.content);
-const isModal = ref(context.check);
-const img = ref(context.image);
-const selectedImage = ref(null);
-const fileImg = ref('');
+const titleInput = ref('');
+const contentInput = ref('');
+const selectedImage: Ref<string | null> = ref(null);
 
 //Validate form
 const updateTitle = (e: Event) => {
@@ -43,7 +21,7 @@ const updateContent = (e: Event) => {
 };
 
 const submitForm = () => {
-  if (titleInput.value.length < 4 || contentInput.value.length < 4) {
+  if (titleInput.value.length < 4 || contentInput.value.length < 4 || !selectedImage.value) {
     Swal.fire({
       title: 'Vui lòng điền đủ thông tin',
       icon: 'error',
@@ -52,7 +30,7 @@ const submitForm = () => {
     });
   } else {
     Swal.fire({
-      title: 'Cập nhật thành công',
+      title: 'Thêm thành công',
       icon: 'success',
       confirmButtonText: 'Hoàn tất',
       width: '30rem'
@@ -65,26 +43,52 @@ const submitForm = () => {
   }
 };
 
-const handleFileInputChange = (event) => {
-  const file = event.target.files[0];
-  const reader = new FileReader();
+// Hàm chuyển đổi từ ArrayBuffer sang string
+const arrayBufferToString = (buffer: ArrayBuffer) => {
+  const uintArray = new Uint16Array(buffer);
+  const charArray: string[] = [];
+  for (let i = 0; i < uintArray.length; i++) {
+    charArray.push(String.fromCharCode(uintArray[i]));
+  }
+  return charArray.join('');
+};
 
-  reader.onload = (e) => {
-    selectedImage.value = e.target.result;
-  };
+const handleFileInputChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
 
-  reader.readAsDataURL(file);
+  if (target.files) {
+    const file = target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      const result = e.target?.result;
+      if (result instanceof ArrayBuffer) {
+        selectedImage.value = arrayBufferToString(result);
+      } else if (typeof result === 'string') {
+        selectedImage.value = result;
+      }
+    };
+
+    reader.readAsDataURL(file);
+  }
 };
 
 const handleChangeImage = () => {
-  document.getElementById('input_file_modal').click();
+  const inputElement = document.getElementById('input_file_modal');
+  if (inputElement) {
+    inputElement.click();
+  }
 };
 
-const addFile = (e) => {
-  const { files } = e.dataTransfer;
-  if (files.length > 0) {
-    const imageFile = files[0];
-    fileImg.value = URL.createObjectURL(imageFile);
+const addFile = (e: DragEvent) => {
+  e.preventDefault();
+
+  if (e.dataTransfer) {
+    const { files } = e.dataTransfer;
+    if (files.length > 0) {
+      const imageFile = files[0];
+      selectedImage.value = URL.createObjectURL(imageFile);
+    }
   }
 };
 </script>
@@ -93,7 +97,7 @@ const addFile = (e) => {
   <div :class="$style.motto__overlay">
     <div :class="$style.motto__modal">
       <div :class="$style.motto__modal__heading">
-        CẬP NHẬT PHƯƠNG CHÂM
+        THÊM PHƯƠNG CHÂM
         <font-awesome-icon
           :icon="faXmark"
           :class="$style['motto__modal-ic']"
@@ -102,20 +106,25 @@ const addFile = (e) => {
       </div>
       <div :class="$style.motto__modal__body">
         <h4>Tiêu đề chính</h4>
-        <input type="text" placeholder="Nhập tiêu đề..." :value="titleInput" @input="updateTitle" />
+        <input
+          type="text"
+          placeholder="Nhập tiêu đề..."
+          :value="titleInput"
+          @change="updateTitle"
+        />
 
         <h4>Mô tả</h4>
         <input
           type="text"
           placeholder="Nhập mô tả..."
           :value="contentInput"
-          @input="updateContent"
+          @change="updateContent"
         />
 
         <h4>Ảnh minh họa</h4>
         <div
           :class="$style['wrapper']"
-          v-if="isModal === 'add' && !selectedImage && fileImg === ''"
+          v-if="!selectedImage"
           @click="handleChangeImage"
           v-cloak
           @drop.prevent="addFile"
@@ -134,8 +143,8 @@ const addFile = (e) => {
           />
         </div>
         <div :class="$style['wrapper1']" v-else>
-          <div v-if="selectedImage || fileImg">
-            <img :src="selectedImage || fileImg" />
+          <div>
+            <img :src="selectedImage" />
           </div>
 
           <div :class="$style['about__mottomodal-button-wrapper']">
@@ -153,30 +162,10 @@ const addFile = (e) => {
             />
           </div>
         </div>
-        <div :class="$style['wrapper1']" v-if="isModal === 'update'">
-          <div>
-            <img :src="img" />
-          </div>
-
-          <div :class="$style['about__mottomodal-button-wrapper']">
-            <button :class="$style['about__mottomodal-button']">
-              <font-awesome-icon :icon="faRotate" :class="$style['about__mottomodal-button-ic']" />
-              <span>Đổi ảnh</span>
-            </button>
-
-            <!-- <input
-              type="file"
-              style="display: none"
-              id="input_file2"
-              accept="image/*"
-              @change="handleFileInputChange"
-            /> -->
-          </div>
-        </div>
 
         <div :class="$style['modal__buttons']">
           <button @click="$emit('close')">Hủy</button>
-          <button @click="submitForm">Lưu thay đổi</button>
+          <button @click="submitForm">Thêm</button>
         </div>
       </div>
     </div>
@@ -184,5 +173,5 @@ const addFile = (e) => {
 </template>
 
 <style module scoped lang="scss">
-@import './ModalMotto.module.scss';
+@import './ModalAddMotto.module.scss';
 </style>
