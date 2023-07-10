@@ -5,6 +5,7 @@ const AboutPage = () => import('@/pages/About/AboutPage.vue');
 const NotFound = () => import('@/pages/NotFound/NotFound.vue');
 const ProductMN = () => import('@/pages/ProductMN/ProductMN.vue');
 const RecruitmentPage = () => import('@/pages/Recruitment/RecruitmentPage.vue');
+const CategoryMN = () => import('@/pages/CategoryMN/CategoryMN.vue');
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: '/mnproduct',
     name: 'mnproduct',
     component: ProductMN
+  },
+  {
+    path: '/mncategory',
+    name: 'mncategory',
+    component: CategoryMN
   },
   {
     path: '/:catchAll(.*)*',

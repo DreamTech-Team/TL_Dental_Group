@@ -24,6 +24,7 @@ import ic_bag from './icons/ic_bag.svg';
 import ic_location from './icons/ic_location.svg';
 import ic_arrow from './icons/ic_arrow.svg';
 import ic_add from './icons/ic_add.svg';
+import ic_logo from '../logo_nobg.png';
 
 export {
   girl1,
@@ -51,5 +52,6 @@ export {
   ic_hourglass,
   ic_location,
   ic_arrow,
-  ic_add
+  ic_add,
+  ic_logo
 };
