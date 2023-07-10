@@ -4,8 +4,10 @@ import HomePage from '@/pages/Home/HomePage.vue';
 const AboutPage = () => import('@/pages/About/AboutPage.vue');
 const NotFound = () => import('@/pages/NotFound/NotFound.vue');
 const ProductMN = () => import('@/pages/ProductMN/ProductMN.vue');
+const ManageCopany = () => import('@/pages/ManageCompany/ManageCompany.vue');
 const RecruitmentPage = () => import('@/pages/Recruitment/RecruitmentPage.vue');
 const CategoryMN = () => import('@/pages/CategoryMN/CategoryMN.vue');
+const Dashboard = () => import('@/pages/Dashboard/DashboardComp.vue');
 
 const routes = [
   {
@@ -33,13 +35,24 @@ const routes = [
     component: ProductMN
   },
   {
+<<<<<<< HEAD
     path: '/mncategory',
     name: 'mncategory',
     component: CategoryMN
+=======
+    path: '/dashboard',
+    name: 'dashboard',
+    component: Dashboard
+>>>>>>> 51195e26ea82bf32bafe07ff11529fc69cefe174
   },
   {
     path: '/:catchAll(.*)*',
     component: NotFound
+  },
+  {
+    path: '/mncompany',
+    name: 'mncompany',
+    component: ManageCopany
   }
 ];
 

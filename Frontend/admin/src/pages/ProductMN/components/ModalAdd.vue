@@ -186,7 +186,6 @@ const submitForm = () => {
             type="text"
             placeholder="Nhập vào tên sản phẩm"
             v-model="Name"
-            ref="NameRef"
             @input="updateName"
           />
           <h4>Giá sản phẩm</h4>
@@ -194,7 +193,6 @@ const submitForm = () => {
             type="number"
             placeholder="Nhập vào giá sản phẩm"
             v-model="Price"
-            ref="PriceRef"
             @input="updatePrice"
           />
           <h4>Tên công ty</h4>
