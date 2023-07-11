@@ -1,0 +1,106 @@
+@import '@/styles/base';
+
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  &-list {
+    overflow-y: scroll;
+    padding-bottom: 3.5rem;
+
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+      border-radius: 8px;
+      background-color: #e7e7e7;
+      border: 1px solid #cacaca;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 8px;
+      background-color: #818181;
+    }
+    &-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      background-color: $primary_900;
+      border-bottom: 0.1rem solid white;
+      height: 3.5rem;
+
+      p {
+        font-size: $text-base;
+        font-weight: 300;
+        color: white;
+      }
+
+      svg {
+        transition: transform 0.25s;
+        width: 2.8rem;
+        height: auto;
+        transform: rotate(-90deg);
+
+        path {
+          stroke: white;
+        }
+      }
+    }
+
+    &-item:hover {
+      cursor: pointer;
+      background-color: $primary_600;
+    }
+
+    &-item-active {
+      background-color: $primary_600;
+    }
+
+    &-item-active svg {
+      transform: rotate(-180deg);
+    }
+  }
+
+  &-add {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $primary_900;
+    padding: 1.5rem 0 1.5rem 0;
+
+    &-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 0.15rem dashed white;
+      padding: 0.5rem 1rem;
+      border-radius: 1rem;
+
+      svg {
+        width: 2rem;
+        height: auto;
+
+        path {
+          fill: white;
+        }
+      }
+
+      p {
+        font-size: $text-sm;
+        color: white;
+        font-weight: 400;
+        text-transform: uppercase;
+      }
+    }
+
+    &-block:hover {
+      cursor: pointer;
+      background-color: $primary_600;
+    }
+  }
+}

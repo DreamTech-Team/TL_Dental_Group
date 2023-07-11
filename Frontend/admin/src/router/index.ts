@@ -5,8 +5,14 @@ import ActivityVue from '@/pages/Activity/Activity.vue';
 const AboutPage = () => import('@/pages/About/AboutPage.vue');
 const NotFound = () => import('@/pages/NotFound/NotFound.vue');
 const ProductMN = () => import('@/pages/ProductMN/ProductMN.vue');
+const ManageCopany = () => import('@/pages/ManageCompany/ManageCompany.vue');
 const RecruitmentPage = () => import('@/pages/Recruitment/RecruitmentPage.vue');
+<<<<<<< HEAD
 const Staff = () => import('@/pages/Staff/ManageStaff.vue');
+=======
+const CategoryMN = () => import('@/pages/CategoryMN/CategoryMN.vue');
+const Dashboard = () => import('@/pages/Dashboard/DashboardComp.vue');
+>>>>>>> 557f9765e392d2fb157e254db4489ceb71863f07
 
 const routes = [
   {
@@ -42,10 +48,23 @@ const routes = [
     path: '/staff',
     name: 'staff',
     component: Staff
+    path: '/mncategory',
+    name: 'mncategory',
+    component: CategoryMN
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: Dashboard
   },
   {
     path: '/:catchAll(.*)*',
     component: NotFound
+  },
+  {
+    path: '/mncompany',
+    name: 'mncompany',
+    component: ManageCopany
   }
 ];
 

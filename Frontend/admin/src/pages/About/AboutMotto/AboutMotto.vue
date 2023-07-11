@@ -10,7 +10,9 @@ import {
   faPlus
 } from '@fortawesome/free-solid-svg-icons';
 import { ref } from 'vue';
-import ModalMotto from './ModalMotto.vue';
+import ModalAddMotto from './component/ModalAddMotto.vue';
+import ModalUpdateMotto from './component/ModalUpdateMotto.vue';
+import Swal from 'sweetalert2';
 
 const mottoItems = [
   {
@@ -136,10 +138,43 @@ const handleRemoveItem = () => {
     moveEdit.value += 383;
   } else {
     indexItems.value += 1;
-    console.log(indexItems.value);
   }
 
+  // Hiển thị thông báo xóa thành công
+  Swal.fire({
+    title: 'Xóa thành công',
+    icon: 'success',
+    showConfirmButton: false // Ẩn nút xác nhận
+  });
+
+  Swal.fire({
+    title: 'Xóa thành công',
+    icon: 'success',
+    timer: 2000,
+    width: '30rem'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.close();
+    }
+  });
+
   return items.value;
+};
+
+const handleRemove = () => {
+  Swal.fire({
+    title: 'Bạn có muốn xóa đối tượng này không?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Xóa',
+    cancelButtonText: 'Hủy',
+    width: '30rem'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      handleRemoveItem();
+      // Swal.close();
+    }
+  });
 };
 </script>
 
@@ -157,7 +192,7 @@ const handleRemoveItem = () => {
           :class="$style['about__motto-slider-item']"
           v-for="(item, index) in items"
           :key="index"
-          :id="index"
+          :id="'' + index"
         >
           <img :src="item.img" alt="" />
 
@@ -236,7 +271,7 @@ const handleRemoveItem = () => {
                 :class="$style['about__motto-slider1-item']"
                 v-for="(item, index) in items"
                 :key="index"
-                :id="index"
+                :id="'' + index"
               >
                 <img :src="item.img" alt="" />
 
@@ -269,7 +304,7 @@ const handleRemoveItem = () => {
             <span>Chỉnh sửa</span>
           </button>
 
-          <button :class="$style['about__motto-button-close']" @click="handleRemoveItem">
+          <button :class="$style['about__motto-button-close']" @click="handleRemove">
             <font-awesome-icon :icon="faClose" :class="$style['about__motto-button-close-ic']" />
             <span>Xóa bỏ</span>
           </button>
@@ -305,20 +340,12 @@ const handleRemoveItem = () => {
     </button>
   </div>
 
-  <ModalMotto
-    v-if="isOpenAdd"
-    @close="isOpenAdd = false"
-    :title="''"
-    :content="''"
-    :check="'add'"
-    :image="items[indexItems].img"
-  />
-  <ModalMotto
+  <modal-add-motto v-if="isOpenAdd" @close="isOpenAdd = false" />
+  <modal-update-motto
     v-if="isOpenUpdate"
     @close="isOpenUpdate = false"
     :title="items[indexItems].title"
     :content="items[indexItems].content"
-    :check="'update'"
     :image="items[indexItems].img"
   />
 </template>
