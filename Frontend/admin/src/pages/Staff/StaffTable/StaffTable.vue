@@ -5,30 +5,16 @@ import { faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-i
 import Swal from 'sweetalert2';
 // import ModalAdd from './components/ModalAdd.vue';
 import Pagination from '@/components/Pagination/BasePagination.vue';
-import UpdateTag from './ModalTag/UpdateTag.vue';
-import { tags } from '../Activity';
+import UpdateStaff from './StaffModal/UpdateStaff.vue';
+import { staffs } from '../Staff';
 
 const searchText = ref('');
-const resultTags = ref(tags);
+const results = ref(staffs);
+
 const currentPage = ref(1);
 const pageSize = ref(10);
 const isModalOpen = ref(false);
-const activeTab = ref('tags');
-
-interface Tags {
-  id: number;
-  name: string;
-  createDate: string;
-}
-
-const selectedTag = ref<Record<string, never> | Tags>({});
-
-// Trong phần code xử lý sự kiện
-const editTag = (tags: Tags) => {
-  selectedTag.value = tags;
-  isModalOpen.value = true; // Mở modal
-  console.log(tags);
-};
+const activeTab = ref('activity');
 
 const openModal = () => {
   isModalOpen.value = true;
@@ -38,14 +24,52 @@ const closeModal = () => {
   isModalOpen.value = false;
 };
 
-const filteredTags = computed(() => {
+interface SelectStaff {
+  id: number;
+  name: string;
+  position: string;
+  phone: string;
+  address: string;
+  email: string;
+}
+
+// interface Staff {
+//   name: string;
+//   position: string;
+//   phone: string;
+//   address: string;
+//   email: string;
+// }
+
+const selectedStaff = ref<Record<string, never> | SelectStaff>({});
+// const selectedStaff = ref<Staff>({
+//   name: '',
+//   position: '',
+//   phone: '',
+//   address: '',
+//   email: ''
+// });
+
+// Trong phần code xử lý sự kiện
+const editActivity = (staff: SelectStaff) => {
+  selectedStaff.value = staff;
+  isModalOpen.value = true; // Mở modal
+  console.log(staff);
+};
+
+const filteredStaffs = computed(() => {
   if (searchText.value.trim() === '') {
-    return resultTags.value;
+    return results.value;
   } else {
     const searchTerm = searchText.value.toLowerCase();
-    return resultTags.value.filter((tag) => tag.name.toLowerCase().includes(searchTerm));
+    return results.value.filter((activity) => activity.name.toLowerCase().includes(searchTerm));
   }
 });
+
+const handleUpdateStaff = (updatedStaff: Staff) => {
+  // Cập nhật giá trị cho phần tử đã chỉnh sửa
+  selectedStaff.value = updatedStaff;
+};
 
 //Pagination Handle
 const scrollToTop = (top: number) => {
@@ -60,10 +84,10 @@ const handlePageChange = (page: number) => {
   scrollToTop(0);
 };
 
-const displayTags = computed(() => {
+const displayNews = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
-  return filteredTags.value.slice(start, end);
+  return filteredStaffs.value.slice(start, end);
 });
 
 const truncateText = (text: string, maxLength: number) => {
@@ -73,7 +97,7 @@ const truncateText = (text: string, maxLength: number) => {
   return text;
 };
 
-const deleteTag = (id: number) => {
+const deleteActivity = (id: number) => {
   Swal.fire({
     title: 'Bạn có chắc muốn xóa?',
     text: 'Dữ liệu sẽ không thể khôi phục sau khi xóa!',
@@ -85,7 +109,7 @@ const deleteTag = (id: number) => {
     cancelButtonText: 'Hủy'
   }).then((result) => {
     if (result.isConfirmed) {
-      resultTags.value = resultTags.value.filter((tag) => tag.id !== id);
+      results.value = results.value.filter((activity) => activity.id !== id);
 
       Swal.fire({
         title: 'Xóa thành công',
@@ -103,9 +127,8 @@ const deleteTag = (id: number) => {
 </script>
 <template>
   <div>
-    <div>
+    <div :class="$style.mn_activityTable">
       <div :class="$style.mn_activity_control">
-        <span></span>
         <div :class="$style['mn_activity_control-input1']">
           <font-awesome-icon :icon="faMagnifyingGlass" :class="$style['mn_activity_control-ic2']" />
           <input v-model="searchText" placeholder="Tìm kiếm" />
@@ -116,28 +139,31 @@ const deleteTag = (id: number) => {
           <thead>
             <tr>
               <th style="width: 5%">STT</th>
-              <th style="width: 25%">Tên tag</th>
-              <th style="width: 30%">Ngày tạo tag</th>
-              <th style="width: 15%">Chỉnh sửa</th>
+              <th style="width: 18%">Họ và tên</th>
+              <th style="width: 10%">Vị trí</th>
+              <th style="width: 12%">Số điện thoại</th>
+              <th style="width: 24%">Địa chỉ</th>
+              <th style="width: 20%">Email</th>
+              <th style="width: 16%">Chỉnh sửa</th>
             </tr>
           </thead>
         </table>
-
         <div :class="$style.mn_activity_table_ctn">
           <table :class="$style.mn_activity_table">
             <tbody>
-              <template v-if="filteredTags.length > 0">
-                <tr v-for="(item, index) in displayTags" :key="index">
+              <template v-if="filteredStaffs.length > 0">
+                <tr v-for="(item, index) in displayNews" :key="index">
                   <td style="width: 5%">{{ index + 1 }}</td>
-                  <td style="width: 25%">
-                    {{ truncateText(item.name, 40) }}
-                  </td>
-                  <td style="width: 30%">{{ item.createDate }}</td>
-                  <td style="width: 15%">
-                    <button :class="$style['btn-room-trash']" @click="deleteTag(item.id)">
+                  <td style="width: 18%">{{ truncateText(item.name, 20) }}</td>
+                  <td style="width: 10%">{{ truncateText(item.position, 10) }}</td>
+                  <td style="width: 12%">{{ truncateText(item.phone, 15) }}</td>
+                  <td style="width: 25%">{{ truncateText(item.address, 30) }}</td>
+                  <td style="width: 20%">{{ truncateText(item.email, 20) }}</td>
+                  <td style="width: 10%">
+                    <button :class="$style['btn-room-trash']" @click="deleteActivity(item.id)">
                       <font-awesome-icon :icon="faTrash" />
                     </button>
-                    <button @click="editTag(item)" :class="$style['edit-room-btn']">
+                    <button @click="editActivity(item)" :class="$style['edit-room-btn']">
                       <font-awesome-icon :icon="faPen" />
                     </button>
                   </td>
@@ -154,19 +180,20 @@ const deleteTag = (id: number) => {
       </div>
       <div :class="$style['mn_activity_pagination']">
         <pagination
-          :total="Math.ceil(filteredTags.length / pageSize)"
+          :total="Math.ceil(filteredStaffs.length / pageSize)"
           :current-page="currentPage"
           :page-size="pageSize"
           @current-change="handlePageChange"
         />
       </div>
     </div>
-
     <div :class="$style.activity_overlay" v-if="isModalOpen">
-      <update-tag
-        :selectedTag="selectedTag"
+      <update-staff
+        @updateStaff="handleUpdateStaff"
+        :selectedStaff="selectedStaff"
+        :isModalOpen="isModalOpen"
         :closeModal="closeModal"
-        v-if="activeTab === 'tags'"
+        v-if="activeTab === 'activity'"
         @click.stop
         @close="closeModal"
       />
@@ -175,5 +202,5 @@ const deleteTag = (id: number) => {
 </template>
 
 <style module scoped lang="scss">
-@import '../Activity.module.scss';
+@import '../ManageStaff.module.scss';
 </style>

@@ -1,8 +1,8 @@
 @import '@/styles/base';
 
 .activity_container {
-  width: 85%;
-  height: 92%;
+  width: 35%;
+  height: 70%;
   background-color: #fff;
   border-radius: 1rem;
   display: flex;
@@ -306,22 +306,51 @@
     left: 50%;
     transform: translate(-50%, -50%);
 
-    .button {
+    .button_add {
       background-color: $primary_600;
       color: #ffffff;
       font-size: 16px;
+      font-weight: 500;
       padding: 10px 30px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      margin-left: 5px;
     }
 
-    .button:hover {
-      background-color: $primary_400;
+    .button_add:hover {
+      background-color: #fff;
+      color: $primary_600;
+      border: 2px solid $primary_600;
+      padding: 8px 28px;
     }
 
-    .button:active {
-      background-color: $primary_700;
+    .button_add:active {
+      background-color: $primary_50;
+    }
+
+    .button_cancel {
+      background-color: #fff;
+      color: $text_900;
+      font-size: 16px;
+      font-weight: 500;
+      padding: 9px 29px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      border: 1px solid $text_900;
+      margin-right: 5px;
+    }
+
+    .button_cancel:hover {
+      background-color: #000000;
+      color: #fff;
+      border: 2px solid $text_900;
+      padding: 8px 28px;
+    }
+
+    .button_cancel:active {
+      background-color: #5e5e5e;
     }
   }
 }

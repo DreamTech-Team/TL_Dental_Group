@@ -6,6 +6,7 @@ const AboutPage = () => import('@/pages/About/AboutPage.vue');
 const NotFound = () => import('@/pages/NotFound/NotFound.vue');
 const ProductMN = () => import('@/pages/ProductMN/ProductMN.vue');
 const RecruitmentPage = () => import('@/pages/Recruitment/RecruitmentPage.vue');
+const Staff = () => import('@/pages/Staff/ManageStaff.vue');
 
 const routes = [
   {
@@ -36,6 +37,11 @@ const routes = [
     path: '/activity',
     name: 'activity',
     component: ActivityVue
+  },
+  {
+    path: '/staff',
+    name: 'staff',
+    component: Staff
   },
   {
     path: '/:catchAll(.*)*',

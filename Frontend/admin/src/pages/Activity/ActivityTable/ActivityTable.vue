@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faPlus, faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 // import ModalAdd from './components/ModalAdd.vue';
 import Pagination from '@/components/Pagination/BasePagination.vue';
+import UpdateActivity from './ModalActivity/UpdateActivity.vue';
 import { activities } from '../Activity';
 
 const searchText = ref('');
@@ -12,6 +13,33 @@ const results = ref(activities);
 
 const currentPage = ref(1);
 const pageSize = ref(10);
+const isModalOpen = ref(false);
+const activeTab = ref('activity');
+
+const openModal = () => {
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+};
+interface SelectActivity {
+  id: number;
+  name: string;
+  tags: string[];
+  summary?: string;
+  description?: string;
+  date: string;
+}
+
+const selectedActivity = ref<Record<string, never> | SelectActivity>({});
+
+// Trong phần code xử lý sự kiện
+const editActivity = (activity: SelectActivity) => {
+  selectedActivity.value = activity;
+  isModalOpen.value = true; // Mở modal
+  console.log(activity);
+};
 
 const filteredActivitiess = computed(() => {
   if (searchText.value.trim() === '') {
@@ -78,56 +106,74 @@ const deleteActivity = (id: number) => {
 </script>
 <template>
   <div>
-    <div :class="$style.mn_activity_control">
-      <span></span>
-      <div :class="$style['mn_activity_control-input1']">
-        <font-awesome-icon :icon="faMagnifyingGlass" :class="$style['mn_activity_control-ic2']" />
-        <input v-model="searchText" placeholder="Tìm kiếm" />
+    <div :class="$style.mn_activityTable">
+      <div :class="$style.mn_activity_control">
+        <span></span>
+        <div :class="$style['mn_activity_control-input1']">
+          <font-awesome-icon :icon="faMagnifyingGlass" :class="$style['mn_activity_control-ic2']" />
+          <input v-model="searchText" placeholder="Tìm kiếm" />
+        </div>
+      </div>
+      <div :class="$style.mn_activity_body">
+        <table :class="$style.mn_activity_table1">
+          <thead>
+            <tr>
+              <th style="width: 5%">STT</th>
+              <th style="width: 25%">Tên hoạt động</th>
+              <th style="width: 30%">Tags</th>
+              <th style="width: 25%">Thời gian diễn ra</th>
+              <th style="width: 15%">Chỉnh sửa</th>
+            </tr>
+          </thead>
+        </table>
+        <div :class="$style.mn_activity_table_ctn">
+          <table :class="$style.mn_activity_table">
+            <tbody>
+              <template v-if="filteredActivitiess.length > 0">
+                <tr v-for="(item, index) in displayNews" :key="index">
+                  <td style="max-width: 5%">{{ index + 1 }}</td>
+                  <td style="max-width: 25%">
+                    {{ truncateText(item.name, 33) }}
+                  </td>
+                  <td style="width: 30%">{{ truncateText(item.tags.join(', '), 40) }}</td>
+
+                  <td style="width: 25%">{{ item.date }}</td>
+                  <td style="width: 15%">
+                    <button :class="$style['btn-room-trash']" @click="deleteActivity(item.id)">
+                      <font-awesome-icon :icon="faTrash" />
+                    </button>
+                    <button @click="editActivity(item)" :class="$style['edit-room-btn']">
+                      <font-awesome-icon :icon="faPen" />
+                    </button>
+                  </td>
+                </tr>
+              </template>
+              <template v-else>
+                <tr>
+                  <td colspan="5">DANH SÁCH TRỐNG</td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div :class="$style['mn_activity_pagination']">
+        <pagination
+          :total="Math.ceil(filteredActivitiess.length / pageSize)"
+          :current-page="currentPage"
+          :page-size="pageSize"
+          @current-change="handlePageChange"
+        />
       </div>
     </div>
-    <table :class="$style.mn_activity_table">
-      <thead>
-        <tr>
-          <th style="width: 5%">STT</th>
-          <th style="width: 25%">Tên hoạt động</th>
-          <th style="width: 30%">Tags</th>
-          <th style="width: 25%">Thời gian diễn ra</th>
-          <th style="width: 15%">Chỉnh sửa</th>
-        </tr>
-      </thead>
-      <tbody>
-        <template v-if="filteredActivitiess.length > 0">
-          <tr v-for="(item, index) in displayNews" :key="index">
-            <td style="max-width: 5%">{{ index + 1 }}</td>
-            <td style="max-width: 25%">
-              {{ truncateText(item.name, 33) }}
-            </td>
-            <td style="width: 30%">{{ truncateText(item.tags.join(', '), 40) }}</td>
-
-            <td style="width: 25%">{{ item.date }}</td>
-            <td style="width: 15%">
-              <button :class="$style['btn-room-trash']" @click="deleteActivity(item.id)">
-                <font-awesome-icon :icon="faTrash" />
-              </button>
-              <button :class="$style['edit-room-btn']">
-                <font-awesome-icon :icon="faPen" />
-              </button>
-            </td>
-          </tr>
-        </template>
-        <template v-else>
-          <tr>
-            <td colspan="5">DANH SÁCH TRỐNG</td>
-          </tr>
-        </template>
-      </tbody>
-    </table>
-    <div :class="$style['mn_activity_pagination']">
-      <pagination
-        :total="Math.ceil(filteredActivitiess.length / pageSize)"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        @current-change="handlePageChange"
+    <div :class="$style.activity_overlay" v-if="isModalOpen">
+      <update-activity
+        :selectedActivity="selectedActivity"
+        :isModalOpen="isModalOpen"
+        :closeModal="closeModal"
+        v-if="activeTab === 'activity'"
+        @click.stop
+        @close="closeModal"
       />
     </div>
   </div>

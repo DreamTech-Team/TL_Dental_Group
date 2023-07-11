@@ -6,6 +6,7 @@ import { faPlus, faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-sol
 import ActivityTable from '@/pages/Activity/ActivityTable/ActivityTable.vue';
 import ActivityTag from '@/pages/Activity/ActivityTag/ActivityTag.vue';
 import ActivityModal from './ActivityTable/ModalActivity/ActivityModal.vue';
+import ModalAddTag from './ActivityTag/ModalTag/ModalTag.vue';
 
 const isModalOpen = ref(false);
 const activeTab = ref('activity');
@@ -70,8 +71,20 @@ const closeModal = () => {
         <activity-tag />
       </div>
     </div>
-    <div :class="$style.activity_overlay" v-if="isModalOpen" @click="closeModal">
-      <activity-modal @click.stop @close="closeModal" />
+    <div :class="$style.activity_overlay" v-if="isModalOpen">
+      <activity-modal
+        :closeModal="closeModal"
+        v-if="activeTab === 'activity'"
+        @click.stop
+        @close="closeModal"
+      />
+
+      <modal-add-tag
+        :closeModal="closeModal"
+        v-if="activeTab === 'tags'"
+        @click.stop
+        @close="closeModal"
+      />
     </div>
   </div>
 </template>

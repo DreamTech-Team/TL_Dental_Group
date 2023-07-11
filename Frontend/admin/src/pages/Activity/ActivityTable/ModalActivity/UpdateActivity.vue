@@ -8,37 +8,45 @@ import { faPlus, faMagnifyingGlass, faMinus, faXmark } from '@fortawesome/free-s
 import { tags } from '../../Activity';
 import imageAct from '../../../../assets/imgs/Activity/image.png';
 import icPhoto from '../../../../assets/icons/camera.svg';
-import { type PropType } from 'vue';
-const inputId = ref('imageInput');
 
+import { type PropType } from 'vue';
 interface Tags {
   id: number;
   name: string;
   createDate: string;
 }
 
+interface selectActivity {
+  id: number;
+  name: string;
+  createDate: string;
+  tags: Tags;
+  summary: string;
+  description: string;
+  date: string;
+}
+
 export interface CloseModalFn {
   (...payload: any[]): void;
 }
 
-defineProps({
+const props = defineProps({
+  selectedActivity: {
+    type: Object, // Kiểu dữ liệu của prop
+    required: true // Bắt buộc phải truyền giá trị cho prop
+  },
   closeModal: {
     type: Function as PropType<CloseModalFn>,
     required: true
   }
 });
 
-const activityContent = ref({
-  content: ``
-});
-
+const inputId = ref('imageInput');
 const imageActivity = ref(imageAct);
 const listTags = ref<Tags[]>(tags);
-const selectedTags = ref<Tags[]>([]);
+
 const searchInput = ref('');
 const _content = ref(``);
-const activityTitle = ref('');
-const activitySummary = ref('');
 
 const textareaStyle: CSSProperties = {
   resize: 'none',
@@ -46,16 +54,28 @@ const textareaStyle: CSSProperties = {
   maxHeight: '300px',
   borderRadius: '4px',
   padding: '8px',
-  fontSize: '14px',
+  fontSize: '16px',
   fontFamily: 'Arial, sans-serif',
   border: '1px solid #ccc',
   marginBottom: '16px'
 };
 
-const filteredTags = computed(() => {
-  const searchTerm = searchInput.value.toLowerCase();
-  return listTags.value.filter((item) => item.name.toLowerCase().includes(searchTerm));
-});
+const activityTitle = ref(props.selectedActivity.name);
+const activitySummary = ref(props.selectedActivity.summary);
+const activityContent = ref(props.selectedActivity.description);
+// const selectedTags = ref<Tags[]>(props.selectedActivity.tags.slice());
+// const selectedTags = ref<Tags[]>([...props.selectedActivity.tags]);
+const selectedTags = ref<Tags[]>(
+  props.selectedActivity.tags.map((tag: string, index: number) => ({
+    id: index + 1,
+    name: tag,
+    createDate: '' // Thêm giá trị createDate tương ứng
+  }))
+);
+
+const logTag = () => {
+  console.log(selectedTags);
+};
 
 const handleImageChange = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0];
@@ -89,10 +109,10 @@ const handleChangeContent = (e: { target: { getContent: () => string } }) => {
   console.log(_content.value);
 };
 
-// const handleUpdateContent = () => {
-//   isEdit.value = false;
-//   activityContent.value.content = _content.value;
-// };
+const filteredTags = computed(() => {
+  const searchTerm = searchInput.value.toLowerCase();
+  return listTags.value.filter((item) => item.name.toLowerCase().includes(searchTerm));
+});
 
 // Tạo các biến tính toán
 const computedListTags = computed(() => listTags.value);
@@ -101,7 +121,7 @@ const computedSelectedTags = computed(() => selectedTags.value);
 <template>
   <div :class="$style.activity_container">
     <div :class="$style['activity_container--title']">
-      <p>CHỈNH SỬA HOẠT ĐỘNG</p>
+      <p @click="logTag">CHỈNH SỬA HOẠT ĐỘNG</p>
       <font-awesome-icon @click="closeModal" :icon="faXmark" :class="$style.activity_cancel" />
     </div>
     <div :class="$style['activity_container--wrap']">
@@ -189,8 +209,8 @@ const computedSelectedTags = computed(() => selectedTags.value);
             allowedEvents="onChange"
             @change="handleChangeContent"
             api-key="y70bvcufdhcs3t72wuylxllnf0jyum0u7nf31vzvgvdliy26"
-            :initial-value="activityContent.content"
-            :value="activityContent.content"
+            :initial-value="activityContent"
+            :value="activityContent"
             :init="{
               placeholder: 'Nhập mô tả chi tiết',
               height: 370,

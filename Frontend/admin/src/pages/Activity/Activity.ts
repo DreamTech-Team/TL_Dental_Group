@@ -4,47 +4,68 @@ export const activities = [
     name: 'Hoạt động chống dịch tình nguyệnHoạt động chống dịch tình nguyệnHoạt động chống dịch tình nguyệnHoạt động chống dịch tình nguyện',
     tags: [
       'Hoạt động tình nguyện',
-      ' hoạt động tháng 5',
-      ' hoạt động tháng 5',
-      ' hoạt động tháng 5',
-      ' hoạt động tháng 5'
+      'Hoạt động tri ân khách hàng',
+      'Hoạt động tháng 5',
+      'Hoạt động tháng 5',
+      'Hoạt động tháng 5'
     ],
+    summary: 'Hoạt động chống dịch tình nguyệnHoạt động chống dịch tình nguyện',
+    description:
+      '1Lấy uy tín khách hàng là hàng đầu. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Lấy uy tín khách hàng là hàng đầu. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời.',
     date: '26/5/2023'
   },
   {
     id: 2,
     name: 'Hoạt động chống dịch tình nguyện',
     tags: ['Hoạt động tình nguyện', ' hoạt động tháng 5'],
+    summary: 'Hoạt động chống dịch tình nguyệnHoạt động chống dịch tình nguyện',
+    description:
+      '2Lấy uy tín khách hàng là hàng đầu. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Lấy uy tín khách hàng là hàng đầu. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời.',
     date: '26/5/2023'
   },
   {
     id: 3,
     name: 'Hoạt động chống dịch tình nguyện',
     tags: ['Hoạt động tình nguyện', ' hoạt động tháng 5'],
+    summary: 'Hoạt động chống dịch tình nguyệnHoạt động chống dịch tình nguyện',
+    description:
+      '3Lấy uy tín khách hàng là hàng đầu. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Lấy uy tín khách hàng là hàng đầu. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời.',
     date: '26/5/2023'
   },
   {
     id: 4,
     name: 'Hoạt động chống dịch tình nguyện',
     tags: ['Hoạt động tình nguyện', ' hoạt động tháng 5'],
+    summary: 'Hoạt động chống dịch tình nguyệnHoạt động chống dịch tình nguyện',
+    description:
+      '4Lấy uy tín khách hàng là hàng đầu. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Lấy uy tín khách hàng là hàng đầu. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời.',
     date: '26/5/2023'
   },
   {
     id: 5,
     name: 'Hoạt động chống dịch tình nguyện',
     tags: ['Hoạt động tình nguyện', ' hoạt động tháng 5'],
+    summary: 'Hoạt động chống dịch tình nguyệnHoạt động chống dịch tình nguyện',
+    description:
+      '5Lấy uy tín khách hàng là hàng đầu. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Lấy uy tín khách hàng là hàng đầu. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời.',
     date: '26/5/2023'
   },
   {
     id: 6,
     name: 'Hoạt động chống dịch tình nguyện',
     tags: ['Hoạt động tình nguyện', ' hoạt động tháng 5'],
+    summary: 'Hoạt động chống dịch tình nguyệnHoạt động chống dịch tình nguyện',
+    description:
+      '6Lấy uy tín khách hàng là hàng đầu. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Lấy uy tín khách hàng là hàng đầu. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời.',
     date: '26/5/2023'
   },
   {
     id: 7,
     name: 'Hoạt động chống dịch tình nguyện',
     tags: ['Hoạt động tình nguyện', ' hoạt động tháng 5'],
+    summary: 'Hoạt động chống dịch tình nguyệnHoạt động chống dịch tình nguyện',
+    description:
+      '7Lấy uy tín khách hàng là hàng đầu. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Lấy uy tín khách hàng là hàng đầu. Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời.',
     date: '26/5/2023'
   },
   {
@@ -94,7 +115,7 @@ export const activities = [
 export const tags = [
   {
     id: 1,
-    name: 'Hoạt động chống dịch tình nguyện',
+    name: 'Hoạt động chống dịch tình nguyệnsdbfjbdsjfhdsjkfsdjfkjsdfjksdsdkfjjskd',
     createDate: '26/5/2023'
   },
   {
