@@ -7,6 +7,7 @@ import Logo from '@/assets/imgs/logo_nobg.png';
 import Pagination from '@/components/Pagination/BasePagination.vue';
 import ModalAddCompany from './component/ModalAddCompany.vue';
 import ModalUpdateCompany from './component/ModalUpdateCompany.vue';
+import styles from './ManageCompany.module.scss';
 
 const companies = [
   {
@@ -174,7 +175,14 @@ const deleteCompany = (id: number) => {
     confirmButtonColor: '#3085d6',
     cancelButtonColor: '#d33',
     confirmButtonText: 'Xóa',
-    cancelButtonText: 'Hủy'
+    cancelButtonText: 'Hủy',
+    width: '50rem',
+    padding: '0 2rem 2rem 2rem',
+    customClass: {
+      confirmButton: styles['confirm-button'],
+      cancelButton: styles['cancel-button'],
+      title: styles['title']
+    }
   }).then((result) => {
     if (result.isConfirmed) {
       companyRender.value = companyRender.value.filter((product) => product.id !== id);
@@ -183,8 +191,14 @@ const deleteCompany = (id: number) => {
         title: 'Xóa thành công',
         icon: 'success',
         confirmButtonText: 'Hoàn tất',
-        width: '30rem',
-        timer: 2000
+        timer: 2000,
+        width: '50rem',
+        padding: '0 2rem 2rem 2rem',
+        customClass: {
+          confirmButton: styles['confirm-button'],
+          cancelButton: styles['cancel-button'],
+          title: styles['title']
+        }
       });
 
       setTimeout(function () {
@@ -233,7 +247,7 @@ const deleteCompany = (id: number) => {
         <p style="width: 12%">Chỉnh sửa</p>
       </div>
 
-      <div :class="$style['mn_company--table-list']">
+      <div :class="$style['mn_company--table-list']" v-if="filteredProducts.length > 0">
         <div
           :class="$style['mn_company--table-row']"
           v-for="(company, index) in displayNews"
@@ -259,6 +273,9 @@ const deleteCompany = (id: number) => {
             </button>
           </div>
         </div>
+      </div>
+      <div :class="$style['mn_company--table-row-notfonund']" v-else>
+        <p>Không tìm thấy kết quả mong muốn</p>
       </div>
     </div>
 

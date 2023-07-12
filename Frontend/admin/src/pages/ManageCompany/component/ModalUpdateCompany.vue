@@ -3,6 +3,8 @@ import { Ref, ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark, faRotate, faPencil } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
+import styles from './ModalUpdateCompany.module.scss';
+import ModalAddProduct from './ModalAddProduct.vue';
 
 const context = defineProps({
   name: {
@@ -56,14 +58,26 @@ const submitForm = () => {
       title: 'Vui lòng điền đủ thông tin',
       icon: 'error',
       confirmButtonText: 'Đóng',
-      width: '30rem'
+      width: '50rem',
+      padding: '0 2rem 2rem 2rem',
+      customClass: {
+        confirmButton: styles['confirm-button'],
+        cancelButton: styles['cancel-button'],
+        title: styles['title']
+      }
     });
   } else {
     Swal.fire({
       title: 'Cập nhật thành công',
       icon: 'success',
       confirmButtonText: 'Hoàn tất',
-      width: '30rem'
+      width: '50rem',
+      padding: '0 2rem 2rem 2rem',
+      customClass: {
+        confirmButton: styles['confirm-button'],
+        cancelButton: styles['cancel-button'],
+        title: styles['title']
+      }
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.close();
@@ -112,7 +126,7 @@ const handleChangelogo = () => {
 </script>
 
 <template>
-  <div :class="$style.mncompany__overlay">
+  <div :class="$style.mncompany__overlay" v-if="!isOpen">
     <div :class="$style.mncompany__modal">
       <div :class="$style.mncompany__modal__heading">
         THÊM CÔNG TY
@@ -185,6 +199,8 @@ const handleChangelogo = () => {
       </div>
     </div>
   </div>
+
+  <modal-add-product v-else @close="isOpen = false" />
 </template>
 
 <style module scoped lang="scss">

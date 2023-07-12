@@ -13,6 +13,7 @@ import { ref } from 'vue';
 import ModalAddMotto from './component/ModalAddMotto.vue';
 import ModalUpdateMotto from './component/ModalUpdateMotto.vue';
 import Swal from 'sweetalert2';
+import styles from './AboutMotto.module.scss';
 
 const mottoItems = [
   {
@@ -166,9 +167,17 @@ const handleRemove = () => {
     title: 'Bạn có muốn xóa đối tượng này không?',
     icon: 'warning',
     showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
     confirmButtonText: 'Xóa',
     cancelButtonText: 'Hủy',
-    width: '30rem'
+    width: '50rem',
+    padding: '0 2rem 2rem 2rem',
+    customClass: {
+      confirmButton: styles['confirm-button'],
+      cancelButton: styles['cancel-button'],
+      title: styles['title']
+    }
   }).then((result) => {
     if (result.isConfirmed) {
       handleRemoveItem();

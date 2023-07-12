@@ -8,6 +8,8 @@ const ManageCopany = () => import('@/pages/ManageCompany/ManageCompany.vue');
 const RecruitmentPage = () => import('@/pages/Recruitment/RecruitmentPage.vue');
 const CategoryMN = () => import('@/pages/CategoryMN/CategoryMN.vue');
 const Dashboard = () => import('@/pages/Dashboard/DashboardComp.vue');
+const ManageCustomer = () => import('@/pages/ManageCustomer/ManageCustomer.vue');
+const ManageUI = () => import('@/pages/ManageUI/ManageUI.vue');
 
 const routes = [
   {
@@ -52,6 +54,16 @@ const routes = [
     path: '/mncompany',
     name: 'mncompany',
     component: ManageCopany
+  },
+  {
+    path: '/mncustomer',
+    name: 'mncustomer',
+    component: ManageCustomer
+  },
+  {
+    path: '/mnui',
+    name: 'mnui',
+    component: ManageUI
   }
 ];
 

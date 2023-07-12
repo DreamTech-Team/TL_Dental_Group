@@ -4,12 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark, faCloudArrowUp, faRotate, faPencil } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import ModalAddProduct from './ModalAddProduct.vue';
+import styles from './ModalAddCompany.module.scss';
 
 const emit = defineEmits(['close']);
 
 const titleInput = ref('');
 const contentInput = ref('');
-const productInput = ref('');
 const selectedImage: Ref<string | null> = ref(null);
 const isOpen = ref(false);
 
@@ -22,30 +22,33 @@ const updateContent = (e: Event) => {
   const target = e.target as HTMLInputElement;
   contentInput.value = target.value;
 };
-const updateProduct = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  productInput.value = target.value;
-};
 
 const submitForm = () => {
-  if (
-    titleInput.value.length < 4 ||
-    contentInput.value.length < 4 ||
-    !selectedImage.value ||
-    productInput.value.length === 0
-  ) {
+  if (titleInput.value.length < 4 || contentInput.value.length < 4 || !selectedImage.value) {
     Swal.fire({
       title: 'Vui lòng điền đủ thông tin',
       icon: 'error',
       confirmButtonText: 'Đóng',
-      width: '30rem'
+      width: '50rem',
+      padding: '0 2rem 2rem 2rem',
+      customClass: {
+        confirmButton: styles['confirm-button'],
+        cancelButton: styles['cancel-button'],
+        title: styles['title']
+      }
     });
   } else {
     Swal.fire({
       title: 'Thêm thành công',
       icon: 'success',
       confirmButtonText: 'Hoàn tất',
-      width: '30rem'
+      width: '50rem',
+      padding: '0 2rem 2rem 2rem',
+      customClass: {
+        confirmButton: styles['confirm-button'],
+        cancelButton: styles['cancel-button'],
+        title: styles['title']
+      }
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.close();

@@ -1,0 +1,52 @@
+@import "@/styles/base";
+
+.mn_ui{
+    padding: 2rem 6rem;
+    background-color: #F5F4F4;
+    height: calc(100vh - 70px);
+
+    h2{
+        color: $primary_700;
+        font-size: $text-xl;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    &--list{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding: 2rem 4rem;
+        gap: 3rem;
+
+        .mn_ui--item{
+            padding: 2rem 9rem;
+            border-radius: 15px;
+            background: linear-gradient(240deg, #0094E8 12%, rgba(102, 209, 255, 0.65) 88%, rgba(0, 162, 232, 0.00) 100%);
+
+            h3{
+                font-size: $text-2xl;
+                font-weight: 500;
+                color: #fff;
+            }
+
+            &-ic{
+                font-size: $text-2xl;
+                color: #fff;
+            }
+
+            &-footer{
+
+                p{
+                    font-size: $text-lg;
+                    color: #fff;
+                }
+
+                &-ic{
+
+                }
+            }
+        }
+    }
+}
