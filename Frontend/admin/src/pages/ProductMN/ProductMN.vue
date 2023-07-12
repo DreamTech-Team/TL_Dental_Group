@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import ModalAdd from './components/ModalAdd.vue';
 import Pagination from '@/components/Pagination/BasePagination.vue';
 
-const isOpen = ref(false);
+const isOpen = ref(false); 
 const searchText = ref('');
 const results = ref(products);
 

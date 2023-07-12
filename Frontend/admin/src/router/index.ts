@@ -1,11 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import HomePage from '@/pages/Home/HomePage.vue';
+import ActivityVue from '@/pages/Activity/Activity.vue';
 const AboutPage = () => import('@/pages/About/AboutPage.vue');
 const NotFound = () => import('@/pages/NotFound/NotFound.vue');
 const ProductMN = () => import('@/pages/ProductMN/ProductMN.vue');
 const ManageCopany = () => import('@/pages/ManageCompany/ManageCompany.vue');
 const RecruitmentPage = () => import('@/pages/Recruitment/RecruitmentPage.vue');
+const Staff = () => import('@/pages/Staff/ManageStaff.vue');
 const CategoryMN = () => import('@/pages/CategoryMN/CategoryMN.vue');
 const Dashboard = () => import('@/pages/Dashboard/DashboardComp.vue');
 const ManageCustomer = () => import('@/pages/ManageCustomer/ManageCustomer.vue');
@@ -35,6 +37,16 @@ const routes = [
     path: '/mnproduct',
     name: 'mnproduct',
     component: ProductMN
+  },
+  {
+    path: '/activity',
+    name: 'activity',
+    component: ActivityVue
+  },
+  {
+    path: '/staff',
+    name: 'staff',
+    component: Staff
   },
   {
     path: '/mncategory',

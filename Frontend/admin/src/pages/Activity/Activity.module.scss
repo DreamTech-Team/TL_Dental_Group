@@ -1,21 +1,17 @@
 @import '@/styles/base';
 
-.mn_product {
+.mn_activity {
   padding: 0 50px;
-  padding-bottom: 50px;
 
-  h3 {
-    margin-top: 55px;
-    color: #115ed3;
-    font-size: 2rem;
-    font-weight: 700;
-  }
-
-  .mn_product_control {
+  &--total {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    margin-top: 30px;
+    color: #76768f;
+    font-size: $text-base;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-top: 1rem;
 
     button {
       padding: 12px 20px;
@@ -36,6 +32,44 @@
     &-ic1 {
       margin-right: 10px;
     }
+  }
+
+  &__wrapTab {
+    display: flex;
+    gap: 3rem;
+    margin-top: 0.5rem;
+
+    &--text {
+      font-family: Roboto;
+      font-size: 1.8rem;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      color: $text_600;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+
+    .active {
+      color: $primary_700;
+    }
+  }
+
+  h3 {
+    margin-top: 30px;
+    color: #115ed3;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  .highlight {
+    font-weight: bold;
+    color: $complimentary_600;
+  }
+
+  .mn_activity_control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
     &-input1 {
       display: flex;
@@ -45,8 +79,9 @@
       border-radius: 5px;
       border: 1px solid #b9b3b3;
       padding: 1rem;
+      margin-top: 1rem;
 
-      .mn_product_control-ic2 {
+      .mn_activity_control-ic2 {
         font-size: 1.5rem;
         margin-right: 7px;
         color: #8a8787;
@@ -62,12 +97,12 @@
     }
   }
 
-  .mn_product_body {
+  .mn_activity_body {
     width: 100%;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     margin-top: 15px;
 
-    .mn_product_table_1 {
+    .mn_activity_table1 {
       border-collapse: collapse;
       width: 100%;
       border-top-left-radius: 5px;
@@ -82,13 +117,12 @@
         padding: 15px 10px;
       }
     }
-
-    .mn_product_table_ctn {
+    .mn_activity_table_ctn {
       width: 100%;
-      height: calc(100vh - 400px);
-      overflow-y: auto;
+      height: calc(100vh - 405px);
+      overflow: auto;
 
-      .mn_product_table {
+      .mn_activity_table {
         border-collapse: collapse;
         width: 100%;
         border-radius: 5px;
@@ -97,43 +131,31 @@
 
         th,
         td {
-          padding: 12px 10px;
+          padding: 5px 10px;
           text-align: center;
-
-          .table_item {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            max-height: 4.4rem;
-            width: 100%;
-            height: 100%;
-
-            .table_img {
-              width: 44px;
-              height: 44px;
-              margin-right: 15px;
-            }
-
-            span {
-              overflow: hidden;
-              text-overflow: ellipsis;
-              display: -webkit-box;
-              -webkit-line-clamp: 1;
-              -webkit-box-orient: vertical;
-              text-align: left;
-            }
-          }
         }
 
         th {
-          background-color: #08c;
+          // background-color: #08c;
           font-weight: bold;
-          color: white;
+          color: $text_900;
           padding: 15px 10px;
+          border-radius: 0.4rem;
+          background: #e7f0ff;
         }
 
         td {
-          border-bottom: 2px solid #f5f4f4;
+          border-bottom: 1px solid #ddddddb4;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .truncate-cell {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          width: 100px;
         }
 
         .edit-room-btn,
@@ -168,10 +190,23 @@
     }
   }
 
-  .mn_product_pagination {
+  .mn_activity_pagination {
     margin-top: 3rem;
     display: flex;
     align-items: center;
     justify-content: center;
   }
+}
+
+.activity_overlay {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 20;
 }
