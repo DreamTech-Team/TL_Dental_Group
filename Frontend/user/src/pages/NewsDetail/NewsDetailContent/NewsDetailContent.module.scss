@@ -6,7 +6,7 @@
     padding-right: 2rem;
 
     h1{
-        font-size: $text-4xl;
+        font-size: $text-3xl;
         color: $primary_900;
     }
 
@@ -16,7 +16,7 @@
         margin: 2rem 0;
 
         p{
-            font-size: $text-xl;
+            font-size: $text-lg;
             margin-left: 2rem;
             font-weight: 300;
         }
@@ -33,7 +33,7 @@
             margin-bottom: 4rem;
 
             p{
-                font-size: $text-xl;
+                font-size: $text-lg;
                 line-height: 3rem;
                 margin-bottom: 3rem;
             }
@@ -43,7 +43,7 @@
             margin-bottom: 4rem;
 
             h3{
-                font-size: $text-2xl;
+                font-size: $text-lg;
                 line-height: 3rem;
                 margin-bottom: 2rem;
                 color: $primary_900; 
