@@ -9,7 +9,7 @@ import {
   faChevronLeft,
   faPlus
 } from '@fortawesome/free-solid-svg-icons';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import ModalAddMotto from './component/ModalAddMotto.vue';
 import ModalUpdateMotto from './component/ModalUpdateMotto.vue';
 import Swal from 'sweetalert2';
@@ -77,6 +77,17 @@ const isDisableRightEdit = ref(false);
 const isEdit = ref(false);
 const isOpenAdd = ref(false);
 const isOpenUpdate = ref(false);
+const widthItemEdit = ref(0);
+
+const handleGetWidthItem = () => {
+  const widthItem = document.getElementById('1');
+
+  if (widthItem) widthItemEdit.value = widthItem.offsetWidth;
+
+  console.log(widthItem?.offsetWidth);
+};
+
+onMounted(handleGetWidthItem);
 
 const handleClickLeft = () => {
   isDisableRight.value = false;
@@ -111,8 +122,9 @@ const handleClickLeftEdit = () => {
   indexItems.value -= 1;
 
   if (indexItems.value <= 0)
-    ((indexItems.value = 0), (moveEdit.value += 383)), (isDisableLeftEdit.value = true);
-  else moveEdit.value += 383;
+    ((indexItems.value = 0), (moveEdit.value += widthItemEdit.value)),
+      (isDisableLeftEdit.value = true);
+  else moveEdit.value += widthItemEdit.value;
 };
 
 const handleClickRightEdit = () => {
@@ -123,10 +135,10 @@ const handleClickRightEdit = () => {
   console.log(indexItems.value);
 
   if (indexItems.value >= items.value.length - 1) {
-    moveEdit.value -= 383;
+    moveEdit.value -= widthItemEdit.value;
     indexItems.value = items.value.length - 1;
     isDisableRightEdit.value = true;
-  } else moveEdit.value -= 383;
+  } else moveEdit.value -= widthItemEdit.value;
 };
 
 const handleRemoveItem = () => {
@@ -136,7 +148,7 @@ const handleRemoveItem = () => {
   if (indexItems.value < 0) {
     indexItems.value = 0;
   } else if (indexItems.value === items.value.length - 1) {
-    moveEdit.value += 383;
+    moveEdit.value += widthItemEdit.value;
   } else {
     indexItems.value += 1;
   }
@@ -270,7 +282,10 @@ const handleRemove = () => {
               </p>
             </div>
           </div> -->
-          <div :class="$style['about__motto-slider1-wrapper']">
+          <div
+            :class="$style['about__motto-slider1-wrapper']"
+            :style="{ width: widthItemEdit + 'px' }"
+          >
             <div
               :class="$style['about__motto-slider1']"
               id="motto-list"

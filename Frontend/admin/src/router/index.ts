@@ -24,8 +24,8 @@ const routes = [
     redirect: { path: '/' }
   },
   {
-    path: '/about',
-    name: 'about',
+    path: '/mnabout',
+    name: 'mnabout',
     component: AboutPage
   },
   {
