@@ -5,7 +5,7 @@ import ModalLogo from './components/Logo/ModalLogo.vue';
 import ModalPart1 from './components/Part1/ModalPart1.vue';
 import ModalPart2 from './components/Part2/ModalPart2.vue';
 import ModalPart3 from './components/Part3/ModalPart3.vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const content = ref({
   image: Logo,
@@ -21,10 +21,19 @@ const content = ref({
   facebook: 'https://www.facebook.com/tranduykhuong.it',
   zalo: '038967123'
 });
+const sourceElement = ref<HTMLElement | null>(null);
+const targetElement = ref<HTMLElement | null>(null);
 const isOpen1 = ref(false);
 const isOpen2 = ref(false);
 const isOpen3 = ref(false);
 const isOpen4 = ref(false);
+
+onMounted(() => {
+  const height = sourceElement.value?.clientHeight;
+  if (height !== undefined && targetElement.value !== null) {
+    targetElement.value.style.height = `${height}px`;
+  }
+});
 </script>
 <template>
   <div :class="$style.dashboard_body1">
@@ -61,7 +70,7 @@ const isOpen4 = ref(false);
         </div>
         <EditBtn @click="isOpen2 = true" style="width: 5rem; height: 5rem" />
       </div>
-      <div :class="$style.dashboard_item1">
+      <div :class="$style.dashboard_item1" ref="sourceElement">
         <h4>Thông tin liên hệ</h4>
         <div :class="$style.dashboard_item1_infor">
           <h5>Số điện thoại</h5>
@@ -85,7 +94,7 @@ const isOpen4 = ref(false);
         </div>
         <EditBtn @click="isOpen3 = true" style="width: 5rem; height: 5rem" />
       </div>
-      <div :class="$style.dashboard_item1">
+      <div :class="$style.dashboard_item1" ref="targetElement">
         <h4>Logo</h4>
         <div :class="$style.dashboard_item1_body">
           <div :class="$style.dashboard_item1_img">
