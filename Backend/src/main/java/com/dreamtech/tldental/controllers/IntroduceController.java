@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.dreamtech.tldental.models.ContentPage;
 import com.dreamtech.tldental.models.ResponseObject;
-import com.dreamtech.tldental.models.Review;
 import com.dreamtech.tldental.repositories.ContentPageRepository;
 import com.dreamtech.tldental.services.IStorageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -32,8 +31,63 @@ public class IntroduceController {
     @Autowired
     private ContentPageRepository contentPageRepository;
 
-     @Autowired
+    @Autowired
     private IStorageService storageService;
+
+    @GetMapping("/header")
+    public ResponseEntity<ResponseObject> getHeader() {
+        return ResponseEntity.status(HttpStatus.OK).body(
+            new ResponseObject("ok", "Get header successfully", contentPageRepository.findHomePageByTypeName("introduce::header"))
+        );
+    }
+
+    @PostMapping("/header")
+    public ResponseEntity<ResponseObject> addHeader(@RequestParam("image") MultipartFile image) {
+        Optional<ContentPage> foundHeader = contentPageRepository.findHomePageByTypeName("introduce::header");
+    
+        if (foundHeader.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                new ResponseObject("failed", "Type name already taken", "")
+            );
+        }
+
+        String imageFile = storageService.storeFile(image);
+        
+        ContentPage entity = new ContentPage(null, "Giới Thiệu", null, imageFile, null, "introduce::header");
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+            new ResponseObject("ok", "Add header successfully", contentPageRepository.save(entity))
+        );
+    }
+
+    @PatchMapping("/header")
+    public ResponseEntity<ResponseObject> updateHeader(@RequestParam("data") String data, @RequestParam(name = "image", required = false) MultipartFile image) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ContentPage entity = objectMapper.readValue(data, ContentPage.class);
+        
+        Optional<ContentPage> foundHeader = contentPageRepository.findById(entity.getId());
+    
+        if (foundHeader.isPresent()) {
+            ContentPage header = foundHeader.get();
+
+            if (header.getType().equals("introduce::header")) {
+                BeanUtils.copyProperties(entity, header);
+
+                if (image != null) 
+                    header.setImage(storageService.storeFile(image));
+
+                header.setType("introduce::header");
+
+                return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Update header successfully", contentPageRepository.save(header))
+                );
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+            new ResponseObject("failed", "Cannot found your data", "")
+        );
+    }
 
     @GetMapping("/letter")
     public ResponseEntity<ResponseObject> getLetter() {
