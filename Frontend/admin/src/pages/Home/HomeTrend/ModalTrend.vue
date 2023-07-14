@@ -3,8 +3,10 @@ import { ref, onMounted } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faMagnifyingGlass, faMinus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import DCNK from '@/assets/imgs/Home/DCNK2.png';
+import { VueDraggableNext } from 'vue-draggable-next';
 
 interface Category {
+  order: number;
   name: string;
   category: string;
   check: boolean;
@@ -14,24 +16,30 @@ interface Category {
 //List present categories
 const listCategories = ref<Category[]>([
   {
+    order: 0,
     name: 'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO',
     category: 'Dụng cụ chỉnh nha',
     check: false,
     src: DCNK
   },
   {
+    order: 1,
     name: 'Dung dịch Sodium Hypochlorite 3% bơm rửa ống tủy răng',
     category: 'Vật liệu chỉnh nha',
     check: false,
     src: DCNK
   },
   {
+    order: 2,
     name: 'Composite đặc trám răng Nano (Restorite Nano Hybrid)',
     category: 'Mắc cài tự động',
     check: false,
     src: DCNK
   }
 ]);
+
+//Drag Status
+const drag = ref(false);
 
 //list selected categories
 const selectedCategories = ref<Category[]>([]);
@@ -41,6 +49,7 @@ const initListSelected = () => {
   listCategories.value.forEach((item) => {
     if (item.check) {
       const selectedItem: Category = {
+        order: item.order,
         name: item.name,
         category: item.category,
         check: true,
@@ -71,15 +80,15 @@ const toggleCheck = (index: number) => {
   }
 };
 
-const removeFromSelected = (index: number) => {
-  const selectedItem: Category = selectedCategories.value[index];
-  const originalItem: Category | undefined = listCategories.value.find(
-    (item) => item.name === selectedItem.name
-  );
-  if (originalItem) {
-    originalItem.check = false;
+const removeFromSelected = (order: number) => {
+  const index = selectedCategories.value.findIndex((element) => element.order === order);
+  if (index !== -1) {
+    selectedCategories.value.splice(index, 1);
+    const originalItem = listCategories.value.find((item) => item.order === order);
+    if (originalItem) {
+      originalItem.check = false;
+    }
   }
-  selectedCategories.value.splice(index, 1);
 };
 
 onMounted(() => {
@@ -148,18 +157,28 @@ onMounted(() => {
         <div :class="$style['trend__modal__body-right']">
           <h3>SẢN PHẨM NỔI BẬT ĐÃ CHỌN</h3>
           <div :class="$style['trend__right-list']">
-            <div
-              :class="$style['trend__right-item']"
-              v-for="(item, index) in selectedCategories"
-              :key="index"
-            >
-              <p>{{ item.name }}</p>
-              <font-awesome-icon
-                :icon="faMinus"
-                :class="$style['trend__modal-st']"
-                @click="removeFromSelected(index)"
-              />
-            </div>
+            <vue-draggable-next v-model="selectedCategories">
+              <transition-group type="transition">
+                <div
+                  v-for="element in selectedCategories"
+                  :key="element.order"
+                  :class="{
+                    [$style['trend__right-item']]: drag,
+                    [$style['trend__right-item1']]: !drag
+                  }"
+                  @mousedown="drag = true"
+                  @mouseup="drag = false"
+                >
+                  <p>{{ element.name }}</p>
+
+                  <font-awesome-icon
+                    :icon="faMinus"
+                    :class="$style['trend__modal-st']"
+                    @click="removeFromSelected(element.order)"
+                  />
+                </div>
+              </transition-group>
+            </vue-draggable-next>
           </div>
         </div>
       </div>
