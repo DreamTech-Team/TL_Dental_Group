@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import CategoryModalAdd from '../CategoryModalAdd/CategoryModalAdd.vue';
 
 const database = [
   {
@@ -136,6 +137,7 @@ const database = [
 const props = defineProps({ cateType: { type: Number, required: true } });
 
 const selectedItem = ref(-1);
+const addItem = ref(false);
 </script>
 <template>
   <div :class="$style.container">
@@ -171,7 +173,7 @@ const selectedItem = ref(-1);
       </div>
     </div>
     <div :class="$style['container-add']">
-      <div :class="$style['container-add-block']">
+      <div :class="$style['container-add-block']" @click="addItem = true">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
           <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -184,9 +186,12 @@ const selectedItem = ref(-1);
             ></path>
           </g>
         </svg>
-        <p>Thêm Công ty</p>
+        <p v-if="cateType === 0">Thêm Công ty</p>
+        <p v-else-if="cateType === 1">Thêm Danh Mục 1</p>
+        <p v-else>Thêm Danh Mục 2</p>
       </div>
     </div>
+    <!-- <category-modal-add /> -->
   </div>
 </template>
 

@@ -154,7 +154,7 @@ const handleModalUpdate = () => {
                 placeholder="Nhập nội dung mô tả"
                 v-model="item.content"
                 @input="(e) => updateContent(e, Number(index))"
-              />
+              ></textarea>
             </div>
             <div :class="$style['container__modal-update-add']">
               <div

@@ -12,6 +12,8 @@ const CategoryMN = () => import('@/pages/CategoryMN/CategoryMN.vue');
 const Dashboard = () => import('@/pages/Dashboard/DashboardComp.vue');
 const ManageCustomer = () => import('@/pages/ManageCustomer/ManageCustomer.vue');
 const ManageUI = () => import('@/pages/ManageUI/ManageUI.vue');
+const ManagePolicy = () => import('@/pages/ManagePolicy/ManagePolicy.vue');
+const ManagePolicyEdit = () => import('@/pages/ManagePolicyEdit/ManagePolicyEdit.vue');
 
 const routes = [
   {
@@ -66,6 +68,16 @@ const routes = [
     path: '/mncompany',
     name: 'mncompany',
     component: ManageCopany
+  },
+  {
+    path: '/mnpolicy',
+    name: 'mnpolicy',
+    component: ManagePolicy
+  },
+  {
+    path: '/mnpolicy/:catchAll(.*)*',
+    name: 'mnpolicyedit',
+    component: ManagePolicyEdit
   },
   {
     path: '/mncustomer',
