@@ -113,7 +113,7 @@ const handleFileInputChange1 = (event) => {
               'insertdatetime media table paste code help wordcount'
             ],
             toolbar:
-              'undo redo | formatselect | bold italic backcolor | \
+              'undo redo | formatselect | bold italic backcolor forecolor | \
            alignleft aligncenter alignright alignjustify | \
            bullist numlist outdent indent | removeformat | help'
           }"
@@ -186,7 +186,7 @@ const handleFileInputChange1 = (event) => {
               'insertdatetime media table paste code help wordcount'
             ],
             toolbar:
-              'undo redo | formatselect | bold italic backcolor | \
+              'undo redo | formatselect | bold italic backcolor forecolor | \
            alignleft aligncenter alignright alignjustify | \
            bullist numlist outdent indent | removeformat | help'
           }"

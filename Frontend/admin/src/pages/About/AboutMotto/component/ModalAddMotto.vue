@@ -3,6 +3,7 @@ import { Ref, ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark, faCloudArrowUp, faRotate } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
+import styles from './ModalAddMotto.module.scss';
 
 const emit = defineEmits(['close']);
 
@@ -26,14 +27,26 @@ const submitForm = () => {
       title: 'Vui lòng điền đủ thông tin',
       icon: 'error',
       confirmButtonText: 'Đóng',
-      width: '30rem'
+      width: '50rem',
+      padding: '0 2rem 2rem 2rem',
+      customClass: {
+        confirmButton: styles['confirm-button'],
+        cancelButton: styles['cancel-button'],
+        title: styles['title']
+      }
     });
   } else {
     Swal.fire({
       title: 'Thêm thành công',
       icon: 'success',
       confirmButtonText: 'Hoàn tất',
-      width: '30rem'
+      width: '50rem',
+      padding: '0 2rem 2rem 2rem',
+      customClass: {
+        confirmButton: styles['confirm-button'],
+        cancelButton: styles['cancel-button'],
+        title: styles['title']
+      }
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.close();

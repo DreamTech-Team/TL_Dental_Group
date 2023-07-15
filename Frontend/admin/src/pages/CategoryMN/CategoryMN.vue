@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import CategoryList from './CategoryList/CategoryList.vue';
+import { ic_logo } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 
-const selectedImage = ref('');
+const selectedImage = ref(ic_logo);
 
 //Choose image
-const handleFileInputChange = (event: Event, index: number, topic: any) => {
+const handleFileInputChange = (event: Event) => {
   const inputElement = event.target as HTMLInputElement;
   const file = inputElement.files?.[0];
 
@@ -67,7 +68,7 @@ const handleFileInputChange = (event: Event, index: number, topic: any) => {
           <div :class="$style['container__content-right-image-block']">
             <img :src="selectedImage" />
             <div :class="$style['block__img-edit']">
-              <input type="file" @change="(e) => handleFileInputChange(e, 3, '')" />
+              <input type="file" @change="(e) => handleFileInputChange(e)" />
               <svg
                 viewBox="-368.64 -368.64 1761.28 1761.28"
                 class="icon"

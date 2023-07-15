@@ -13,6 +13,10 @@ const CategoryMN = () => import('@/pages/CategoryMN/CategoryMN.vue');
 const Dashboard = () => import('@/pages/Dashboard/DashboardComp.vue');
 const Login = () => import('@/pages/Authen/LoginPage.vue');
 const Forgot = () => import('@/pages/Authen/ForgotPage.vue');
+const ManageCustomer = () => import('@/pages/ManageCustomer/ManageCustomer.vue');
+const ManageUI = () => import('@/pages/ManageUI/ManageUI.vue');
+const ManagePolicy = () => import('@/pages/ManagePolicy/ManagePolicy.vue');
+const ManagePolicyEdit = () => import('@/pages/ManagePolicyEdit/ManagePolicyEdit.vue');
 
 const routes = [
   {
@@ -25,8 +29,8 @@ const routes = [
     redirect: { path: '/' }
   },
   {
-    path: '/about',
-    name: 'about',
+    path: '/mnabout',
+    name: 'mnabout',
     component: AboutPage
   },
   {
@@ -82,6 +86,26 @@ const routes = [
     path: '/forgot',
     name: 'forgot',
     component: Forgot
+  },
+  {
+    path: '/mnpolicy',
+    name: 'mnpolicy',
+    component: ManagePolicy
+  },
+  {
+    path: '/mnpolicy/:catchAll(.*)*',
+    name: 'mnpolicyedit',
+    component: ManagePolicyEdit
+  },
+  {
+    path: '/mncustomer',
+    name: 'mncustomer',
+    component: ManageCustomer
+  },
+  {
+    path: '/mnui',
+    name: 'mnui',
+    component: ManageUI
   }
 ];
 

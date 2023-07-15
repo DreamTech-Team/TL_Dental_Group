@@ -25,6 +25,7 @@
       border-radius: 8px;
       background-color: #818181;
     }
+
     &-item {
       display: flex;
       justify-content: space-between;
@@ -70,7 +71,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: $primary_900;
+    background-color: $primary_700;
     padding: 1.5rem 0 1.5rem 0;
 
     &-block {
@@ -100,7 +101,7 @@
 
     &-block:hover {
       cursor: pointer;
-      background-color: $primary_600;
+      background-color: $primary_300;
     }
   }
 }

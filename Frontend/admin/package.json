@@ -20,14 +20,19 @@
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@tinymce/tinymce-vue": "^5.1.0",
     "axios": "^1.4.0",
+    "chart.js": "^4.3.0",
+    "croppie": "^2.6.5",
     "element-plus": "^2.3.7",
+    "font-awesome-picker": "^2.0.0",
     "pinia": "^2.0.36",
     "postcss": "^8.4.23",
     "sass": "^1.62.1",
     "sweetalert2": "^11.7.12",
+    "vfa-picker": "^5.9.1",
     "vue": "^3.3.2",
+    "vue-draggable-next": "^2.2.1",
     "vue-router": "^4.2.0",
-    "vuedraggable": "^2.24.3"
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",
