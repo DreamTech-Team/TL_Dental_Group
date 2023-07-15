@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import HomePage from '@/pages/Home/HomePage.vue';
 import ActivityVue from '@/pages/Activity/Activity.vue';
+import MNRecruitmentVue from '@/pages/ManageRecruitment/MNRecruitment.vue';
 const AboutPage = () => import('@/pages/About/AboutPage.vue');
 const NotFound = () => import('@/pages/NotFound/NotFound.vue');
 const ProductMN = () => import('@/pages/ProductMN/ProductMN.vue');
@@ -10,6 +11,8 @@ const RecruitmentPage = () => import('@/pages/Recruitment/RecruitmentPage.vue');
 const Staff = () => import('@/pages/Staff/ManageStaff.vue');
 const CategoryMN = () => import('@/pages/CategoryMN/CategoryMN.vue');
 const Dashboard = () => import('@/pages/Dashboard/DashboardComp.vue');
+const Login = () => import('@/pages/Authen/LoginPage.vue');
+const Forgot = () => import('@/pages/Authen/ForgotPage.vue');
 
 const routes = [
   {
@@ -64,6 +67,21 @@ const routes = [
     path: '/mncompany',
     name: 'mncompany',
     component: ManageCopany
+  },
+  {
+    path: '/mnrecruitment',
+    name: 'mnrecruitment',
+    component: MNRecruitmentVue
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login
+  },
+  {
+    path: '/forgot',
+    name: 'forgot',
+    component: Forgot
   }
 ];
 

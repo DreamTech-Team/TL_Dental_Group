@@ -26,7 +26,7 @@ export interface CloseModalFn {
 
 const props = defineProps({
   selectedStaff: {
-    type: Object as () => Staff,
+    type: Object,
     required: true
   },
   closeModal: {
@@ -40,20 +40,6 @@ const staffPosition = ref(props.selectedStaff.position);
 const staffPhone = ref(props.selectedStaff.phone);
 const staffAddress = ref(props.selectedStaff.address);
 const staffEmail = ref(props.selectedStaff.email);
-
-const updateStaff = () => {
-  const updatedStaff: Staff = {
-    name: staffName.value,
-    position: staffPosition.value,
-    phone: staffPhone.value,
-    address: staffAddress.value,
-    email: staffEmail.value
-  };
-
-  // emit('updateStaff', updatedStaff); // Gửi sự kiện updateStaff với giá trị cập nhật
-
-  props.closeModal(); // Đóng modal
-};
 </script>
 <template>
   <div :class="$style.activity_container">

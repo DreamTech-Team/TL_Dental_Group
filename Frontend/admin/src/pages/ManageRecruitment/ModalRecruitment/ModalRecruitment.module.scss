@@ -1,0 +1,167 @@
+@import '@/styles/base';
+
+.activity_container {
+  width: 35%;
+  height: 70%;
+  background-color: #fff;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+
+  &--title {
+    justify-content: center;
+    align-items: center;
+    font-size: 2.4rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    color: $primary_700;
+    text-align: center;
+    margin: 2rem 0;
+    display: flex;
+    position: relative;
+
+    .activity_cancel {
+      position: absolute;
+      right: 30px;
+      color: $text_800;
+    }
+  }
+
+  &--wrap {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 0 2rem;
+      width: 100%;
+
+      .wrap_title {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 2rem;
+
+        &--text {
+          font-size: $text-base;
+          font-style: normal;
+          font-weight: 700;
+          line-height: normal;
+          margin-bottom: 1rem;
+          font-family: 'Roboto';
+        }
+
+        .custom-input {
+          width: 100%;
+          height: 40px;
+          font-size: $text-base;
+          border-radius: 10px;
+          border: 1px solid #ccc;
+          padding: 0 10px;
+          font-family: 'Roboto';
+          margin-bottom: 1.5rem;
+        }
+
+        .custom-textarea {
+          font-family: 'Roboto';
+        }
+      }
+
+      .wrap_sumary {
+        display: flex;
+        flex-direction: column;
+
+        &--area {
+          resize: 'none';
+          height: '100px';
+          max-height: '100px';
+        }
+      }
+
+      .options_wrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .options_title {
+          font-size: $text-base;
+          font-style: normal;
+          font-weight: 700;
+          line-height: normal;
+          margin-bottom: 1rem;
+          font-family: 'Roboto';
+        }
+
+        &_btn {
+          flex: 1;
+          width: 220px;
+          padding: 10px 40px;
+          border-radius: 10px;
+          font-size: $text-sm;
+          font-style: normal;
+          line-height: normal;
+          text-align: start;
+          border: 1px solid #ccc;
+        }
+      }
+    }
+
+    &--btn {
+      margin-bottom: 20px;
+      .button_add {
+        background-color: $primary_600;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 500;
+        padding: 10px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 5px;
+      }
+
+      .button_add:hover {
+        background-color: #fff;
+        color: $primary_600;
+        border: 1px solid $primary_600;
+        padding: 8px 28px;
+      }
+
+      .button_add:active {
+        background-color: $primary_50;
+      }
+
+      .button_cancel {
+        background-color: #fff;
+        color: $text_900;
+        font-size: 16px;
+        font-weight: 500;
+        padding: 9px 29px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        border: 1px solid $text_900;
+        margin-right: 5px;
+      }
+
+      .button_cancel:hover {
+        background-color: #000000;
+        color: #fff;
+        border: 2px solid $text_900;
+        padding: 8px 28px;
+      }
+
+      .button_cancel:active {
+        background-color: #5e5e5e;
+      }
+    }
+  }
+}

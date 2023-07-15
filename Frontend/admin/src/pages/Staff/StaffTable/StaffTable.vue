@@ -66,7 +66,7 @@ const filteredStaffs = computed(() => {
   }
 });
 
-const handleUpdateStaff = (updatedStaff: Staff) => {
+const handleUpdateStaff = (updatedStaff: SelectStaff) => {
   // Cập nhật giá trị cho phần tử đã chỉnh sửa
   selectedStaff.value = updatedStaff;
 };
