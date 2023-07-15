@@ -24,6 +24,7 @@ public class CompanyController {
     @Autowired
     private IStorageService storageService;
 
+    // GET ALL WITH FILTER
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAll(@RequestParam(required = false) boolean highlight) {
         List <Company> data;
@@ -37,6 +38,7 @@ public class CompanyController {
         );
     }
 
+    // GET DETAIL
     @GetMapping("/{slug}")
     public ResponseEntity<ResponseObject> getDetail(@PathVariable String slug) {
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -44,6 +46,7 @@ public class CompanyController {
         );
     }
 
+    // CREATE COMPANY
     @PostMapping("")
     public ResponseEntity<ResponseObject> createCompany(@RequestParam ("data") String data,
                                                         @RequestPart("logo") MultipartFile logo) {
@@ -82,25 +85,34 @@ public class CompanyController {
         }
     }
 
+    // DELETE
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseObject> deleteCompany(@PathVariable String id) {
-        Optional<Company> foundCompany = companyRepository.findById(id);
-        if (foundCompany.isPresent()) {
-            storageService.deleteFile(foundCompany.get().getLogo());
+        try {
+            Optional<Company> foundCompany = companyRepository.findById(id);
 
-            companyRepository.deleteById(id);
+            if (foundCompany.isPresent()) {
+                storageService.deleteFile(foundCompany.get().getLogo());
 
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Deleted company successfully", foundCompany)
+                companyRepository.deleteById(id);
+
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject("ok", "Deleted company successfully", foundCompany)
+                );
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject("failed", "Can not find company with id = "+id, "")
+            );
+        } catch (Exception exception){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject("failed", exception.getMessage(), "")
             );
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new ResponseObject("failed", "Can not find company with id = "+id, "")
-        );
     }
 
+    // UPDATE
     @PatchMapping("/{id}")
-    ResponseEntity<ResponseObject> updateNews(@PathVariable String id,
+    ResponseEntity<ResponseObject> updateCompany(@PathVariable String id,
                                               @RequestPart(value = "logo", required = false) MultipartFile logo,
                                               @RequestParam ("data") String data) throws JsonProcessingException {
         // Convert String to JSON
