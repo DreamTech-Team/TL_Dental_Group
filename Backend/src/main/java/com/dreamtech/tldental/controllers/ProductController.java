@@ -1,17 +1,27 @@
 package com.dreamtech.tldental.controllers;
 
+import com.dreamtech.tldental.models.CategoryFK;
+import com.dreamtech.tldental.models.DataPageObject;
 import com.dreamtech.tldental.models.Product;
 import com.dreamtech.tldental.models.ResponseObject;
+import com.dreamtech.tldental.repositories.CategoryFKRepository;
 import com.dreamtech.tldental.repositories.ProductRepository;
 import com.dreamtech.tldental.services.IStorageService;
 import com.dreamtech.tldental.utils.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -20,21 +30,47 @@ public class ProductController {
     @Autowired
     private ProductRepository repository;
     @Autowired
+    private CategoryFKRepository categoryFKRepository;
+    @Autowired
     private IStorageService storageService;
 
     // GET ALL WITH FILTER
     @GetMapping("")
-    ResponseEntity<ResponseObject> getAllProducts(@RequestParam("cate1") String cate1,
-                                                  @RequestParam("cate2") String cate2,
+    ResponseEntity<ResponseObject> getAllProducts(@RequestParam(value = "company", required = false) String company,
+                                                  @RequestParam(value = "cate1", required = false) String cate1,
+                                                  @RequestParam(value = "cate2", required = false) String cate2,
                                                   @RequestParam(required = false, defaultValue = "12") String pageSize,
                                                   @RequestParam(required = false, defaultValue = "0") String page,
                                                   @RequestParam(required = false, defaultValue = "desc") String sort) {
-        System.out.println(cate1);
-        System.out.println(cate2);
-        // HANDLE FILTER
+        try {
+            // HANDLE FILTER
+            Sort.Direction sortDirection = sort.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+            Sort sortByCreateAt = Sort.by(sortDirection, "createAt");
+
+            List<Object[]> newsList = repository.findFilteredProducts(company, cate1, cate2, PageRequest
+                    .of(Integer.parseInt(page), Integer.parseInt(pageSize), sortByCreateAt));
+
+            int total = newsList.size();
+
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Query product successfully", new DataPageObject(total, page, pageSize, newsList))
+            );
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("failed", exception.getMessage(), "")
+            );
+        }
+    }
+
+    @GetMapping("/total")
+    ResponseEntity<ResponseObject> getTotal(@RequestParam(value = "company", required = false) String company,
+                                            @RequestParam(value = "cate1", required = false) String cate1,
+                                            @RequestParam(value = "cate2", required = false) String cate2) {
+        List<Object[]> newsList = repository.findFilteredProducts(company, cate1, cate2, null);
+        int total = newsList.size();
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Query product successfully", repository.findAll())
+                new ResponseObject("ok", "Query total successfully", total)
         );
     }
 
@@ -61,7 +97,7 @@ public class ProductController {
         try {
             // Convert String to JSON
             ObjectMapper objectMapper = new ObjectMapper();
-            Product updatedProduct = objectMapper.readValue(data, Product.class);
+            ProductData updatedProduct = objectMapper.readValue(data, ProductData.class);
 
             // Check existed item
             Optional<Product> foundProduct = repository.findById(id);
@@ -77,6 +113,11 @@ public class ProductController {
                         );
                     }
                     existingProduct.setName(updatedProduct.getName().trim());
+                }
+
+                if (updatedProduct.getFkCategory() != null) {
+                    CategoryFK categoryFK = categoryFKRepository.findById(updatedProduct.getFkCategory()).orElseGet(null);
+                    existingProduct.setFkCategory(categoryFK);
                 }
 
                 if (updatedProduct.getDescription() != null)
@@ -134,31 +175,38 @@ public class ProductController {
     // DELETE PRODUCT
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseObject> deleteProduct(@PathVariable String id) {
-        Optional<Product> foundProduct = repository.findById(id);
+        System.out.println(id);
+        try {
+            Optional<Product> foundProduct = repository.findById(id);
+            System.out.println(foundProduct);
 
-        if (foundProduct.isPresent()) {
-            // Delete images on cloudinary
-            if (foundProduct.get().getImgs().length() > 2) {
-                List<String> imgs = Utils.convertStringToImages(foundProduct.get().getImgs());
-                for (int i = 0; i < imgs.size(); i++) {
-                    storageService.deleteFile(imgs.get(i));
+            if (foundProduct.isPresent()) {
+                // Delete images on cloudinary
+                if (foundProduct.get().getImgs().length() > 2) {
+                    List<String> imgs = Utils.convertStringToImages(foundProduct.get().getImgs());
+                    for (int i = 0; i < imgs.size(); i++) {
+                        storageService.deleteFile(imgs.get(i));
+                    }
                 }
-            }
-            if (foundProduct.get().getMainImg().length() > 0) {
-                storageService.deleteFile(foundProduct.get().getMainImg());
-            }
+                if (foundProduct.get().getMainImg().length() > 0) {
+                    storageService.deleteFile(foundProduct.get().getMainImg());
+                }
 
-            // Delete product on mySQL
-            repository.deleteById(id);
+                // Delete product on mySQL
+                repository.deleteById(id);
 
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Deleted product successfully", foundProduct)
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject("ok", "Deleted product successfully", foundProduct)
+                );
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject("failed", "Can not find product with id = "+id, "")
+            );
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject("failed", exception.getMessage(), "")
             );
         }
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new ResponseObject("failed", "Can not find product with id = "+id, "")
-        );
     }
 
     // CREATE PRODUCT
@@ -167,10 +215,11 @@ public class ProductController {
                                                  @RequestParam("mainImg") MultipartFile mainImg,
                                                  @RequestParam ("data") String data){
         try {
-            System.out.println(mainImg);
-            // Convert String to JSON
             ObjectMapper objectMapper = new ObjectMapper();
-            Product product = objectMapper.readValue(data, Product.class);
+            ProductData obj = objectMapper.readValue(data, ProductData.class);
+
+            CategoryFK categoryFK = categoryFKRepository.findById(obj.getFkCategory()).orElseGet(null);
+            Product product = new Product(obj.getName(), obj.getPrice(), obj.getPriceSale(), obj.getSummary(), obj.getDescription(), categoryFK);
 
             // Check existed item
             List<Product> foundProducts = repository.findByName(product.getName().trim());
@@ -242,5 +291,84 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject("ok", "Updated product successfully", res)
         );
+    }
+
+    private static class ProductData {
+        private String name;
+        private int price;
+        private int priceSale;
+        private String summary;
+        private String description;
+        private int highlight;
+        private String fkCategory;
+
+        public ProductData() {
+        }
+
+        public ProductData(String name, int price, int priceSale, String summary, String description, int highlight, String fkCategory) {
+            this.name = name;
+            this.price = price;
+            this.priceSale = priceSale;
+            this.summary = summary;
+            this.description = description;
+            this.highlight = highlight;
+            this.fkCategory = fkCategory;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getPrice() {
+            return price;
+        }
+
+        public void setPrice(int price) {
+            this.price = price;
+        }
+
+        public int getPriceSale() {
+            return priceSale;
+        }
+
+        public void setPriceSale(int priceSale) {
+            this.priceSale = priceSale;
+        }
+
+        public String getSummary() {
+            return summary;
+        }
+
+        public void setSummary(String summary) {
+            this.summary = summary;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public int getHighlight() {
+            return highlight;
+        }
+
+        public void setHighlight(int highlight) {
+            this.highlight = highlight;
+        }
+
+        public String getFkCategory() {
+            return fkCategory;
+        }
+
+        public void setFkCategory(String fkCategory) {
+            this.fkCategory = fkCategory;
+        }
     }
 }

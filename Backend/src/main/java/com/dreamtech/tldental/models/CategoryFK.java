@@ -3,6 +3,8 @@ package com.dreamtech.tldental.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name="CategoryFK")
 public class CategoryFK {
@@ -21,6 +23,10 @@ public class CategoryFK {
     @ManyToOne
     @JoinColumn(name = "cate2_id", nullable = true)
     private Category_2 cate2Id;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "fkCategory")
+    private List<Product> products;
 
     public CategoryFK() {
     }

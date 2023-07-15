@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Min;
 import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.util.Locale;
+import java.util.Optional;
 
 @Entity
 @Table(name="Product")
@@ -45,10 +46,9 @@ public class Product {
     @Column(name = "create_at")
     private LocalDateTime createAt;
 
-//    @ManyToOne
-//    @JoinColumn(nullable = false)
-//    @Column(name = "pk_category")
-//    private String pkCategory;
+    @ManyToOne
+    @JoinColumn(name = "fk_category", nullable = false)
+    private CategoryFK fkCategory;
 
     @PrePersist
     protected void onCreate() {
@@ -64,15 +64,21 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, int price, int priceSale, String summary, String description, String mainImg, String imgs, int highlight) {
+    public Product(String name, int price, int priceSale, String summary, String description, CategoryFK categoryFK) {
         this.name = name;
         this.price = price;
         this.priceSale = priceSale;
         this.summary = summary;
         this.description = description;
-        this.mainImg = mainImg;
-        this.imgs = imgs;
-        this.highlight = highlight;
+        this.fkCategory = categoryFK;
+    }
+
+    public CategoryFK getFkCategory() {
+        return fkCategory;
+    }
+
+    public void setFkCategory(CategoryFK fkCategory) {
+        this.fkCategory = fkCategory;
     }
 
     public String getId() {

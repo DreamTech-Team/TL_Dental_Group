@@ -38,6 +38,7 @@ public class NewsController {
         Sort sortByCreateAt = Sort.by(sortDirection, "createAt");
 
         List<Object[]> newsList;
+        int total;
         if (filterTags == null) {
             newsList = repository.findFilteredNews(PageRequest
                     .of(Integer.parseInt(page), Integer.parseInt(pageSize), sortByCreateAt));
@@ -48,9 +49,28 @@ public class NewsController {
 
         // Handle data
         List<Object> combinedList = handleDataNews(newsList);
+        total = combinedList.size();
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Query news successfully", combinedList)
+                new ResponseObject("ok", "Query news successfully", new DataPageObject(total, page, pageSize, combinedList))
+        );
+    }
+
+    @GetMapping("/total")
+    ResponseEntity<ResponseObject> getTotal(@RequestParam(required = false) List<String> filterTags) {
+        List<Object[]> newsList;
+        if (filterTags == null) {
+            newsList = repository.findFilteredNews(null);
+        } else {
+            newsList = repository.findFilteredNewsByTags(filterTags, null);
+        }
+
+        // Handle data
+        List<Object> combinedList = handleDataNews(newsList);
+        int total = combinedList.size();
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Query total successfully", total)
         );
     }
 
