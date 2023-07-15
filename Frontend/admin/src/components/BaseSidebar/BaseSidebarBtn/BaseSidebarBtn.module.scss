@@ -1,0 +1,103 @@
+@import '@/styles/base.scss';
+
+.container__btn {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  margin-top: 1rem;
+  padding: 1rem 1rem;
+  width: fit-content;
+
+  &-left {
+    &-block {
+      width: 3rem;
+      display: flex;
+      justify-content: center;
+      &-icon {
+        height: 2.5rem;
+        width: auto;
+        color: $text_700;
+      }
+    }
+
+    p {
+      display: none;
+    }
+  }
+
+  &-right-icon {
+    display: none;
+  }
+
+  &:hover {
+    background-color: $primary_900;
+    border-radius: 1rem;
+    cursor: pointer;
+
+    .container__btn {
+      &-left {
+        p {
+          color: white;
+        }
+        &-block {
+          &-icon {
+            color: white;
+          }
+        }
+      }
+
+      &-right-icon {
+        color: white;
+      }
+    }
+  }
+}
+
+.show {
+  width: 24rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .container__btn {
+    &-left {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      p {
+        display: block;
+        width: fit-content;
+        margin-left: 1rem;
+        font-size: $text-base;
+        color: $text_700;
+      }
+    }
+
+    &-right-icon {
+      display: block;
+      margin-left: 3.6rem;
+      color: $text_700;
+    }
+  }
+}
+
+.active {
+  background-color: $primary_900;
+  border-radius: 1rem;
+  .container__btn {
+    &-left {
+      p {
+        color: white;
+      }
+      &-block {
+        &-icon {
+          color: white;
+        }
+      }
+    }
+
+    &-right-icon {
+      color: white;
+    }
+  }
+}
