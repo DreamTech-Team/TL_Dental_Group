@@ -136,9 +136,9 @@ public class CompanyController {
             }
 
 
-            Company resNews = companyRepository.save(foundCompany.get());
+            Company resCompany = companyRepository.save(foundCompany.get());
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Update company successfully", resNews)
+                    new ResponseObject("ok", "Update company successfully", resCompany)
             );
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
