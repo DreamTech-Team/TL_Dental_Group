@@ -6,6 +6,11 @@ import { products } from './Products';
 import Swal from 'sweetalert2';
 import ModalAdd from './components/ModalAdd.vue';
 import Pagination from '@/components/Pagination/BasePagination.vue';
+import useAxios from '@/hooks/useAxios';
+
+const cc = ref([]);
+
+const { response, error, isLoading } = useAxios('get', '/todos', {}, {}, cc.value);
 
 const isOpen = ref(false);
 const searchText = ref('');
