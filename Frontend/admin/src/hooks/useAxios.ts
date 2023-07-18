@@ -2,21 +2,27 @@ import { ref, type Ref, watch } from 'vue';
 import axios, { type AxiosRequestConfig, type AxiosResponse, AxiosError } from 'axios';
 import { axiosClient } from '@/api/axios';
 
-interface UseAxiosResponse<T> {
-  response: Ref<T | null>;
+export interface DataResponse {
+  status: string;
+  message: string;
+  data: any; // Bổ sung kiểu dữ liệu phù hợp cho data, ví dụ: any[] hoặc object[]
+}
+
+interface UseAxiosResponse<DataResponse> {
+  response: Ref<DataResponse | null>;
   error: Ref<AxiosError | null>;
   isLoading: Ref<boolean>;
 }
 
-const useAxios = <T>(
+const useAxios = <DataResponse>(
   method: 'get' | 'post' | 'put' | 'delete' | 'patch',
   api: string,
   body: object,
   options: AxiosRequestConfig,
   deps: unknown[]
-): UseAxiosResponse<T> => {
+): UseAxiosResponse<DataResponse> => {
   const isLoading: Ref<boolean> = ref(false);
-  const response: Ref<T | null> = ref(null);
+  const response: Ref<DataResponse | null> = ref(null);
   const error = ref<AxiosError | null>(null);
 
   const axiosController = axios.CancelToken.source();
@@ -25,7 +31,7 @@ const useAxios = <T>(
     if (!isLoading.value) {
       isLoading.value = true;
       try {
-        const res: AxiosResponse<T> = await axiosClient[method](api, body, {
+        const res: AxiosResponse<DataResponse> = await axiosClient[method](api, body, {
           ...options,
           cancelToken: axiosController.token
         });
@@ -35,7 +41,6 @@ const useAxios = <T>(
         }
       } catch (err: unknown) {
         if (err instanceof AxiosError) {
-          console.log(err);
           error.value = err;
         }
       } finally {

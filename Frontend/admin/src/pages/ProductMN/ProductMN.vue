@@ -1,23 +1,30 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch, toRaw } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faPlus, faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import { products } from './Products';
 import Swal from 'sweetalert2';
 import ModalAdd from './components/ModalAdd.vue';
 import Pagination from '@/components/Pagination/BasePagination.vue';
-import useAxios from '@/hooks/useAxios';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 const cc = ref([]);
-
-const { response, error, isLoading } = useAxios('get', '/todos', {}, {}, cc.value);
-
 const isOpen = ref(false);
 const searchText = ref('');
 const results = ref(products);
 
 const currentPage = ref(1);
 const pageSize = ref(10);
+
+// Gọi hàm useAxios để lấy response, error, và isLoading
+const { response, error, isLoading } = useAxios<DataResponse>('get', '/news', {}, {}, cc.value);
+
+// Truy xuất giá trị response.value và gán vào responseData
+watch(response, () => {
+  console.log(response?.value?.data?.total);
+  console.log(isLoading?.value);
+  console.log(error?.value);
+});
 
 const filteredProducts = computed(() => {
   if (searchText.value.trim() === '') {
