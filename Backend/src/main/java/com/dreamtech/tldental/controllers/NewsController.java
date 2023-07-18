@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
-@CrossOrigin(origins = "http://localhost:5173", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/v1/news")
 public class NewsController {
