@@ -5,6 +5,12 @@ import Yamaha from '@/assets/imgs/Home/Yamaha.png';
 import DELL from '@/assets/imgs/Home/DELL.png';
 import Biocon from '@/assets/imgs/Home/Biocon.png';
 
+import useAxios from '@/hooks/useAxios';
+
+const cc = ref([]);
+
+const { response, error, isLoading } = useAxios('get', '/todos', {}, {}, cc.value);
+
 interface Company {
   id: number;
   name: string;
