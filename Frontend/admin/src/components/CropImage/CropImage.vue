@@ -7,8 +7,10 @@ import Croppie from 'croppie';
 import 'croppie/croppie.css';
 
 const props = defineProps({
-  height: { type: Number, required: true },
-  width: { type: Number, required: true },
+  heightWrap: { type: Number, required: true },
+  heightCrop: { type: Number, required: true },
+  widthWrap: { type: Number, required: true },
+  widthCrop: { type: Number, required: true },
   check: { type: Boolean, required: true }
 });
 
@@ -24,8 +26,8 @@ const initCroppie = () => {
   const container = document.getElementById('croppieContainer');
   if (container) {
     croppieInstance.value = new Croppie(container, {
-      viewport: { width: props.width - 100, height: props.height - 100 },
-      boundary: { width: props.width, height: props.height },
+      viewport: { width: props.widthCrop, height: props.heightCrop },
+      boundary: { width: props.widthWrap, height: props.heightWrap },
       showZoomer: false
     });
   }

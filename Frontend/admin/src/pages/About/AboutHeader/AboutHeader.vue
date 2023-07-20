@@ -43,8 +43,10 @@ const handleCroppedImage = (result: string) => {
   </div>
 
   <crop-image
-    :height="468"
-    :width="1440"
+    :heightCrop="468"
+    :widthCrop="1440"
+    :heightWrap="468"
+    :widthWrap="1440"
     :check="isOpenInput"
     v-show="isCrop"
     @close="isCrop = false"
