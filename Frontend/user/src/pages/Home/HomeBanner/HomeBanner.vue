@@ -1,9 +1,24 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import Capgemini from '@/assets/imgs/Home/Capgemini.png';
 import Yamaha from '@/assets/imgs/Home/Yamaha.png';
 import DELL from '@/assets/imgs/Home/DELL.png';
 import Biocon from '@/assets/imgs/Home/Biocon.png';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+//GET DATA
+const deps = ref([]);
+const { response } = useAxios<DataResponse>('get', '/home/header', {}, {}, deps.value);
+
+const content = ref({
+  title: '',
+  context: ''
+});
+
+watch(response, () => {
+  content.value.title = response.value?.data?.title;
+  content.value.context = response.value?.data?.content;
+});
 
 const bannerItems = [
   { src: Capgemini, alt: 'capgemini', width: '127', height: '30' },
@@ -285,8 +300,8 @@ onUnmounted(() => {
 <template>
   <div :class="$style.home__banner">
     <div :class="$style['home__banner-left']">
-      <h2>TL Dental Group</h2>
-      <p>Nhà cung cấp thiết bị y tế chính hãng, uy tín hàng đầu Việt Nam.</p>
+      <h2>{{ content.title }}</h2>
+      <p>{{ content.context }}</p>
       <div id="bannerList" :class="$style['home__banner-list']">
         <div
           v-for="(item, index) in bannerItems"

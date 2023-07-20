@@ -1,63 +1,37 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, onUnmounted } from 'vue';
-import Doctor from '@/assets/imgs/Home/Doctor.png';
+import { ref, onMounted, computed, onUnmounted, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faStar, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+//GET DATA
+const deps = ref([]);
+const lenght = ref(0);
+const { response } = useAxios<DataResponse>('get', '/home/reviews', {}, {}, deps.value);
 
 const feedbacks = ref([
   {
     title: 'DỤNG CỤ CHỈNH NHA ABC',
-    src: Doctor,
-    speech:
-      // eslint-disable-next-line max-len
-      'Cảm ơn TL Dental Group, đội ngũ nhân sự tư vấn rất nhiệt tình, nhờ các bạn mà mình có thêm cái nhìn sâu hơn về khả năng ứng dụng của các vật tư sử dụng trong chỉnh nha.',
-    name: 'Bác sĩ Huỳnh Vinh',
-    pos: 'Bác sĩ Nha Khoa Bệnh viện A',
-    rate: 4
-  },
-  {
-    title: 'DỤNG CỤ CHỈNH NHA ABC',
-    src: Doctor,
-    speech:
-      // eslint-disable-next-line max-len
-      'Cảm ơn TL Dental Group, đội ngũ nhân sự tư vấn rất nhiệt tình, nhờ các bạn mà mình có thêm cái nhìn sâu hơn về khả năng ứng dụng của các vật tư sử dụng trong chỉnh nha.',
-    name: 'Bác sĩ Huỳnh Vinh',
-    pos: 'Bác sĩ Nha Khoa Bệnh viện B',
-    rate: 5
-  },
-  {
-    title: 'DỤNG CỤ CHỈNH NHA ABC',
-    src: Doctor,
-    speech:
-      // eslint-disable-next-line max-len
-      'Cảm ơn TL Dental Group, đội ngũ nhân sự tư vấn rất nhiệt tình, nhờ các bạn mà mình có thêm cái nhìn sâu hơn về khả năng ứng dụng của các vật tư sử dụng trong chỉnh nha.',
-    name: 'Bác sĩ Huỳnh Vinh',
-    pos: 'Bác sĩ Nha Khoa Bệnh viện C',
-    rate: 2
-  },
-  {
-    title: 'DỤNG CỤ CHỈNH NHA ABC',
-    src: Doctor,
-    speech:
-      // eslint-disable-next-line max-len
-      'Cảm ơn TL Dental Group, đội ngũ nhân sự tư vấn rất nhiệt tình, nhờ các bạn mà mình có thêm cái nhìn sâu hơn về khả năng ứng dụng của các vật tư sử dụng trong chỉnh nha.',
-    name: 'Bác sĩ Huỳnh Vinh',
-    pos: 'Bác sĩ Nha Khoa Bệnh viện D',
-    rate: 2
-  },
-  {
-    title: 'DỤNG CỤ CHỈNH NHA ABC',
-    src: Doctor,
-    speech:
-      // eslint-disable-next-line max-len
-      'Cảm ơn TL Dental Group, đội ngũ nhân sự tư vấn rất nhiệt tình, nhờ các bạn mà mình có thêm cái nhìn sâu hơn về khả năng ứng dụng của các vật tư sử dụng trong chỉnh nha.',
-    name: 'Bác sĩ Huỳnh Vinh',
-    pos: 'Bác sĩ Nha Khoa Bệnh viện E',
-    rate: 2
+    image: '',
+    content: '',
+    fullname: 'Bác sĩ Huỳnh Vinh',
+    position: 'Bác sĩ Nha Khoa Bệnh viện A',
+    rating: 4
   }
 ]);
 
+watch(response, () => {
+  feedbacks.value = response.value?.data;
+  lenght.value = feedbacks.value.length;
+});
+
+const roundNumber = (number: number, decimalPlaces: number) => {
+  const factor = Math.pow(10, decimalPlaces);
+  return Math.round(number * factor) / factor;
+};
+
 //Scroll Properties
+const isPhone = ref(false);
 const MIN_SWIPE_DISTANCE_CM = 3;
 const TOUCH_SENSITIVITY = 25;
 const touchstartX = ref(0);
@@ -115,6 +89,7 @@ onMounted(() => {
   const container = document.getElementById('feedback-wrapper');
   if (container) {
     if (window.innerWidth < 739) {
+      isPhone.value = true;
       wItem.value = container.offsetWidth;
     } else {
       wItem.value = container.offsetWidth / 3;
@@ -125,6 +100,7 @@ onMounted(() => {
     const container = document.getElementById('feedback-wrapper');
     if (container) {
       if (window.innerWidth < 739) {
+        isPhone.value = true;
         wItem.value = container.offsetWidth;
       } else {
         wItem.value = container.offsetWidth / 3;
@@ -158,20 +134,20 @@ onUnmounted(() => {
           @touchend="handleTouchend"
         >
           <div
-            v-for="feedback in feedbacks"
-            :key="feedback.name"
+            v-for="(feedback, index) in feedbacks"
+            :key="index"
             :class="$style['home__feedback-item']"
             :style="{ width: widthItemComputed }"
           >
             <div :class="$style['home__feedback-img']">
-              <img :src="feedback.src" alt="doctor" />
+              <img :src="feedback.image" alt="doctor" />
             </div>
             <div :class="$style['home__feedback-speech']">
-              {{ feedback.speech }}
+              {{ feedback.content }}
             </div>
             <div :class="$style['home__feedback-infor']">
-              <strong>{{ feedback.name }}</strong>
-              <span>{{ feedback.pos }}</span>
+              <strong>{{ feedback.fullname }}</strong>
+              <span>{{ feedback.position }}</span>
               <div :class="$style['home__feedback-rate']">
                 <font-awesome-icon
                   v-for="i in 5"
@@ -179,7 +155,7 @@ onUnmounted(() => {
                   :icon="faStar"
                   :class="[
                     $style['home__feedback-star'],
-                    i <= feedback.rate ? $style['star-active'] : ''
+                    i <= roundNumber(feedback.rating, 0) ? $style['star-active'] : ''
                   ]"
                 />
               </div>
@@ -187,10 +163,14 @@ onUnmounted(() => {
             <div :class="$style['home__feedback-icon']"></div>
           </div>
         </div>
-        <button :class="$style['home__feedback-left']" @click="scrollLeft">
+        <button v-show="tranfX !== 0" :class="$style['home__feedback-left']" @click="scrollLeft">
           <font-awesome-icon :icon="faChevronLeft" :class="$style['home__feedback-ic']" />
         </button>
-        <button :class="$style['home__feedback-right']" @click="scrollRight">
+        <button
+          v-show="(!isPhone && lenght > 3) || (isPhone && lenght > 1)"
+          :class="$style['home__feedback-right']"
+          @click="scrollRight"
+        >
           <font-awesome-icon :icon="faChevronRight" :class="$style['home__feedback-ic']" />
         </button>
       </div>

@@ -19,7 +19,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://jsonplaceholder.typicode.com',
+        target: 'https://dry-ants-production.up.railway.app/api/v1',
         changeOrigin: true
       }
     }
