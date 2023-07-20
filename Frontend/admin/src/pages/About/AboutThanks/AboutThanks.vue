@@ -6,6 +6,10 @@ import { faComputerMouse, faFloppyDisk } from '@fortawesome/free-solid-svg-icons
 import Editor from '@tinymce/tinymce-vue';
 import Swal from 'sweetalert2';
 
+interface MyInputElement extends HTMLInputElement {
+  getContent(): string;
+}
+
 const thanksContent = ref({
   title: 'Tiêu đề/lời nhắn/thư ngỏ của CEO',
   slogan: 'Slogan/tên cty/lời chào',
@@ -24,21 +28,26 @@ const thanksContent = ref({
 });
 
 const isEdit = ref(false);
-const _content = ref(``);
+const content = ref(``);
 
-const handleChangeContent = (e) => {
-  _content.value = e.target.getContent();
-  console.log(_content.value);
+// Hàm xử lí lấy nội dung từ tiny đã thay đổi lưu vào content
+const handleChangeContent = (e: Event) => {
+  const target = e.target as MyInputElement;
+
+  if (target) {
+    content.value = target.getContent();
+  }
 };
 
+// Hàm cập nhật các giá trị khi thay đổi trong tiny(editor)
 const handleUpdateContent = () => {
   isEdit.value = false;
-  thanksContent.value.content = _content.value;
+  thanksContent.value.content = content.value;
 };
 </script>
 <template>
   <div :class="$style.about__thanks">
-    <div :class="$style['about__thanks-letter']" id="haha">
+    <div :class="$style['about__thanks-letter']">
       <h1>LỜI CẢM ƠN</h1>
 
       <h2>

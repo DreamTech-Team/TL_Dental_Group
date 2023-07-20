@@ -16,9 +16,10 @@
     &--list{
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center;
         flex-wrap: wrap;
         row-gap: 6rem;
+        column-gap: 6rem;
         padding: 2rem 4rem;
 
         .mn_ui--item{
@@ -27,6 +28,8 @@
             cursor: pointer;
             transition: all 0.3s ease;
             opacity: 1;
+            position: relative;
+            overflow: hidden;
 
             h3{
                 font-size: $text-2xl;
@@ -63,6 +66,26 @@
                     color: #fff;
                 }
             }
+        }
+        .mn_ui--item::before{
+            position: absolute;
+            content: '';
+            top: -20%;
+            right: -20%;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+        .mn_ui--item::after{
+            position: absolute;
+            content: '';
+            bottom: -20%;
+            right: -10%;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.25);
         }
 
         .mn_ui--item:hover{
