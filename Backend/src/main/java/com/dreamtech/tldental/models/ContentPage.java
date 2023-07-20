@@ -9,7 +9,7 @@ public class ContentPage {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(length = 200, unique = false)
+    @Column(length = 10000, unique = false)
     private String title;
 
     @Column(length = 1000000, unique = false)
