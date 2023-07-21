@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 const content = defineProps({
+  uuid: {
+    type: String,
+    required: true
+  },
   title: {
     type: String,
     required: true
@@ -15,7 +20,12 @@ const content = defineProps({
   }
 });
 
-const emit = defineEmits(['inFocus', 'close']);
+const emits = defineEmits<{
+  // eslint-disable-next-line no-unused-vars
+  (e: 'close'): void;
+  // eslint-disable-next-line no-unused-vars
+  (e: 'update-content', data: { title: string; context: string }): void;
+}>();
 
 //Validate form
 const titleInput = ref(content.title);
@@ -38,16 +48,39 @@ const submitForm = () => {
       confirmButtonText: 'Đóng',
       width: '30rem'
     });
-  } else {
+  } else if (textareaInput.value.length > 100 || titleInput.value.length > 25) {
     Swal.fire({
-      title: 'Cập nhật thành công',
-      icon: 'success',
-      confirmButtonText: 'Hoàn tất',
+      title: 'Thông tin quá dài',
+      icon: 'error',
+      confirmButtonText: 'Đóng',
       width: '30rem'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.close();
-        emit('close');
+    });
+  } else {
+    const deps = ref([]);
+    const object = {
+      id: content.uuid,
+      title: titleInput.value,
+      content: textareaInput.value
+    };
+    const { response } = useAxios<DataResponse>('patch', '/home/header', object, {}, deps.value);
+
+    watch(response, () => {
+      if (response.value?.status === 'ok') {
+        Swal.fire({
+          title: 'Cập nhật thành công',
+          icon: 'success',
+          confirmButtonText: 'Hoàn tất',
+          width: '30rem'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.close();
+            emits('update-content', {
+              title: titleInput.value,
+              context: textareaInput.value
+            });
+            emits('close');
+          }
+        });
       }
     });
   }

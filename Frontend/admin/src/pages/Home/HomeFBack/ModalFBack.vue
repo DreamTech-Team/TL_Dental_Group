@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import Doctor from '@/assets/imgs/Home/Doctor.png';
+import { ref, watch, type PropType } from 'vue';
+import Doctor from '@/assets/imgs/Home/DoctorDF.jpg';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import Swal from 'sweetalert2';
 import IconCam from '@/assets/icons/Camera.png';
@@ -13,46 +13,56 @@ import {
   faTrash,
   faExclamationCircle
 } from '@fortawesome/free-solid-svg-icons';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-const feedbacks = ref([
-  {
-    src: Doctor,
-    speech:
-      // eslint-disable-next-line max-len
-      'Cảm ơn TL Dental Group, đội ngũ nhân sự tư vấn rất nhiệt tình, nhờ các bạn mà mình có thêm cái nhìn sâu hơn về khả năng ứng dụng của các vật tư sử dụng trong chỉnh nha.',
-    name: 'Bác sĩ Anh Khôi',
-    pos: 'Bác sĩ Nha Khoa Bệnh viện A',
-    rate: 4
-  },
-  {
-    src: Doctor,
-    speech:
-      // eslint-disable-next-line max-len
-      'Cảm ơn TL Dental Group, đội ngũ nhân sự tư vấn rất nhiệt tình, nhờ các bạn mà mình có thêm cái nhìn sâu hơn về khả năng ứng dụng của các vật tư sử dụng trong chỉnh nha.',
-    name: 'Bác sĩ Huỳnh Vinh',
-    pos: 'Bác sĩ Nha Khoa Bệnh viện B',
-    rate: 5
-  },
-  {
-    src: Doctor,
-    speech:
-      // eslint-disable-next-line max-len
-      'Cảm ơn TL Dental Group, đội ngũ nhân sự tư vấn rất nhiệt tình, nhờ các bạn mà mình có thêm cái nhìn sâu hơn về khả năng ứng dụng của các vật tư sử dụng trong chỉnh nha.',
-    name: 'Bác sĩ Hữu Chính',
-    pos: 'Bác sĩ Nha Khoa Bệnh viện C',
-    rate: 3
+interface MyFile extends File {
+  name: string;
+}
+
+interface ItemRS {
+  id: string;
+  image: string;
+  content: string;
+  fullname: string;
+  position: string;
+  rating: number;
+}
+
+const content = defineProps({
+  listItem: {
+    type: Array as PropType<ItemRS[]>,
+    required: false
   }
-]);
+});
+
+const emits = defineEmits<{
+  // eslint-disable-next-line no-unused-vars
+  (e: 'close'): void;
+  // eslint-disable-next-line no-unused-vars
+  (
+    // eslint-disable-next-line no-unused-vars
+    e: 'update-content',
+    // eslint-disable-next-line no-unused-vars
+    data: { listrs: ItemRS[] }
+  ): void;
+}>();
+
+const roundNumber = (number: number, decimalPlaces: number) => {
+  const factor = Math.pow(10, decimalPlaces);
+  return Math.round(number * factor) / factor;
+};
+
+const feedbacks = ref(content.listItem?.length ? content.listItem : []);
 
 const selectedItem = ref(0);
 const currentItem = ref(-1);
-const rating = ref(feedbacks.value[selectedItem.value].rate);
+const rating = ref(feedbacks.value[selectedItem.value].rating);
 const hover = ref(0);
-const name = ref(feedbacks.value[selectedItem.value].name);
-const pos = ref(feedbacks.value[selectedItem.value].pos);
-const speech = ref(feedbacks.value[selectedItem.value].speech);
+const fullname = ref(feedbacks.value[selectedItem.value].fullname);
+const position = ref(feedbacks.value[selectedItem.value].position);
+const speech = ref(feedbacks.value[selectedItem.value].content);
 const selectedImage = ref('');
-const emit = defineEmits(['inFocus', 'close']);
+const file = ref<MyFile | null>(null);
 
 //Adding new one
 const addStatus = ref(false);
@@ -68,17 +78,17 @@ const setHover = (index: number) => {
 
 //Information
 const changeInfor = () => {
-  name.value = feedbacks.value[selectedItem.value].name;
-  pos.value = feedbacks.value[selectedItem.value].pos;
-  speech.value = feedbacks.value[selectedItem.value].speech;
-  setRating(feedbacks.value[selectedItem.value].rate);
+  fullname.value = feedbacks.value[selectedItem.value].fullname;
+  position.value = feedbacks.value[selectedItem.value].position;
+  speech.value = feedbacks.value[selectedItem.value].content;
+  setRating(feedbacks.value[selectedItem.value].rating);
   setHover(rating.value);
 };
 
 //Reset inputs
 const resetInfor = () => {
-  name.value = '';
-  pos.value = '';
+  fullname.value = '';
+  position.value = '';
   speech.value = '';
   setRating(0);
   setHover(0);
@@ -112,15 +122,15 @@ const scrollRight = () => {
 //Choose image
 const handleFileInputChange = (event: Event) => {
   const inputElement = event.target as HTMLInputElement;
-  const file = inputElement.files?.[0];
+  file.value = inputElement.files?.[0] || null;
 
-  if (file) {
+  if (file.value) {
     const reader = new FileReader();
     reader.onload = () => {
       selectedImage.value = reader.result as string;
-      feedbacks.value[selectedItem.value].src = selectedImage.value;
+      feedbacks.value[selectedItem.value].image = selectedImage.value;
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(file.value);
   }
 };
 
@@ -151,29 +161,51 @@ const deleteItem = () => {
     cancelButtonText: 'Hủy'
   }).then((result) => {
     if (result.isConfirmed) {
-      feedbacks.value.splice(selectedItem.value, 1);
-      if (selectedItem.value === feedbacks.value.length) {
-        selectedItem.value = 0;
-      }
+      const deps = ref([]);
+      const object = {};
+      const { response } = useAxios<DataResponse>(
+        'delete',
+        `/home/reviews/${feedbacks.value[selectedItem.value].id}`,
+        object,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        },
+        deps.value
+      );
 
-      changeInfor();
+      watch(response, () => {
+        if (response.value?.status === 'ok') {
+          console.log(feedbacks.value);
+          emits('update-content', {
+            listrs: feedbacks.value
+          });
+          feedbacks.value.splice(selectedItem.value, 1);
+          if (selectedItem.value === feedbacks.value.length) {
+            selectedItem.value = 0;
+          }
 
-      Swal.fire({
-        title: 'Xóa thành công',
-        icon: 'success',
-        confirmButtonText: 'Hoàn tất',
-        width: '30rem'
+          changeInfor();
+
+          Swal.fire({
+            title: 'Xóa thành công',
+            icon: 'success',
+            confirmButtonText: 'Hoàn tất',
+            width: '30rem'
+          });
+
+          setTimeout(function () {
+            Swal.close();
+          }, 1200);
+        }
       });
-
-      setTimeout(function () {
-        Swal.close();
-      }, 1200);
     }
   });
 };
 
 const validateInform = () => {
-  if (nameInput.value && name.value.length <= 5) {
+  if (nameInput.value && fullname.value.length <= 5) {
     nameInput.value.focus();
     isName.value = true;
     return;
@@ -181,7 +213,7 @@ const validateInform = () => {
     isName.value = false;
   }
 
-  if (posInput.value && pos.value.length <= 3) {
+  if (posInput.value && position.value.length <= 3) {
     posInput.value.focus();
     isPos.value = true;
     return;
@@ -197,10 +229,10 @@ const validateInform = () => {
     isCont.value = false;
   }
 
-  feedbacks.value[selectedItem.value].name = name.value;
-  feedbacks.value[selectedItem.value].pos = pos.value;
-  feedbacks.value[selectedItem.value].speech = speech.value;
-  feedbacks.value[selectedItem.value].rate = rating.value;
+  feedbacks.value[selectedItem.value].fullname = fullname.value;
+  feedbacks.value[selectedItem.value].position = position.value;
+  feedbacks.value[selectedItem.value].content = speech.value;
+  feedbacks.value[selectedItem.value].rating = rating.value;
 };
 
 const updateForm = () => {
@@ -208,27 +240,99 @@ const updateForm = () => {
 
   if (!isName.value && !isCont.value && !isPos.value) {
     if (!addStatus.value) {
-      Swal.fire({
-        title: 'Cập nhật thành công',
-        icon: 'success',
-        confirmButtonText: 'Hoàn tất',
-        width: '30rem'
+      const deps = ref([]);
+      const object = {
+        id: feedbacks.value[selectedItem.value].id,
+        fullname: feedbacks.value[selectedItem.value].fullname,
+        position: feedbacks.value[selectedItem.value].position,
+        rating: feedbacks.value[selectedItem.value].rating,
+        content: feedbacks.value[selectedItem.value].content
+      };
+      const formData = new FormData();
+      formData.append('data', JSON.stringify(object));
+      formData.append('image', file.value as Blob);
+      const { response } = useAxios<DataResponse>(
+        'patch',
+        '/home/reviews',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        },
+        deps.value
+      );
+
+      watch(response, () => {
+        if (response.value?.status === 'ok') {
+          console.log(feedbacks.value);
+          emits('update-content', {
+            listrs: feedbacks.value
+          });
+          Swal.fire({
+            title: 'Cập nhật thành công',
+            icon: 'success',
+            confirmButtonText: 'Hoàn tất',
+            width: '30rem'
+          });
+          setTimeout(function () {
+            Swal.close();
+          }, 1200);
+        }
       });
-      emit('close');
-      setTimeout(function () {
-        Swal.close();
-      }, 1200);
     } else {
-      Swal.fire({
-        title: 'Thêm thành công',
-        icon: 'success',
-        confirmButtonText: 'Hoàn tất',
-        width: '30rem'
-      });
-      addStatus.value = false;
-      setTimeout(function () {
-        Swal.close();
-      }, 1200);
+      const deps = ref([]);
+      const object = {
+        fullname: feedbacks.value[selectedItem.value].fullname,
+        position: feedbacks.value[selectedItem.value].position,
+        rating: feedbacks.value[selectedItem.value].rating,
+        content: feedbacks.value[selectedItem.value].content
+      };
+      const formData = new FormData();
+      formData.append('data', JSON.stringify(object));
+      formData.append('image', file.value as Blob);
+      if (file.value === null) {
+        Swal.fire({
+          title: 'Bạn chưa chọn ảnh',
+          icon: 'error',
+          showConfirmButton: false,
+          width: '30rem'
+        });
+        setTimeout(function () {
+          Swal.close();
+        }, 1200);
+        return;
+      } else {
+        const { response } = useAxios<DataResponse>(
+          'post',
+          '/home/reviews',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          },
+          deps.value
+        );
+        watch(response, () => {
+          console.log(response);
+          if (response.value?.status === 'ok') {
+            emits('update-content', {
+              listrs: feedbacks.value
+            });
+            Swal.fire({
+              title: 'Thêm thành công',
+              icon: 'success',
+              confirmButtonText: 'Hoàn tất',
+              width: '30rem'
+            });
+            addStatus.value = false;
+            setTimeout(function () {
+              Swal.close();
+            }, 1200);
+          }
+        });
+      }
     }
   }
 };
@@ -248,14 +352,15 @@ const addItem = () => {
       validateInform();
       if (!isName.value && !isCont.value && !isPos.value) {
         addStatus.value = true;
-        const newItem = {
-          src: Doctor,
-          speech:
+        const newItem: ItemRS = {
+          id: '',
+          image: Doctor,
+          content:
             // eslint-disable-next-line max-len
             'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-          name: 'Bác sĩ ABC',
-          pos: 'Bác sĩ Nha khoa bệnh viện A',
-          rate: 0
+          fullname: 'Bác sĩ ABC',
+          position: 'Bác sĩ Nha khoa bệnh viện A',
+          rating: 0
         };
         feedbacks.value.push(newItem);
         selectedItem.value = feedbacks.value.length - 1;
@@ -284,7 +389,7 @@ const addItem = () => {
           <div :class="$style['modal__feedback-ctn']">
             <div :class="$style['modal__feedback-item']">
               <div :class="$style['modal__feedback-img']">
-                <img :src="feedbacks[selectedItem].src" alt="doctor" />
+                <img :src="feedbacks[selectedItem].image" alt="doctor" />
                 <div :class="$style.modal_imagebtn">
                   <button style="border: none" @click="openFileInput">
                     <input
@@ -298,11 +403,11 @@ const addItem = () => {
                 </div>
               </div>
               <div :class="$style['modal__feedback-speech']">
-                {{ feedbacks[selectedItem].speech }}
+                {{ feedbacks[selectedItem].content }}
               </div>
               <div :class="$style['modal__feedback-infor']">
-                <strong>{{ feedbacks[selectedItem].name }}</strong>
-                <span>{{ feedbacks[selectedItem].pos }}</span>
+                <strong>{{ feedbacks[selectedItem].fullname }}</strong>
+                <span>{{ feedbacks[selectedItem].position }}</span>
                 <div :class="$style['modal__feedback-rate']">
                   <font-awesome-icon
                     v-for="i in 5"
@@ -310,7 +415,9 @@ const addItem = () => {
                     :icon="faStar"
                     :class="[
                       $style['modal__feedback-star'],
-                      i <= feedbacks[selectedItem].rate ? $style['star-active'] : ''
+                      i <= roundNumber(feedbacks[selectedItem].rating, 0)
+                        ? $style['star-active']
+                        : ''
                     ]"
                   />
                 </div>
@@ -336,7 +443,7 @@ const addItem = () => {
         <div :class="$style['feedback__modal__body-right']">
           <div :class="$style['feedback__right-input']" style="margin-top: 30px">
             <h4>Thông tin người đánh giá</h4>
-            <input type="text" placeholder="Bác sĩ Huỳnh Vinh" v-model="name" ref="nameInput" />
+            <input type="text" placeholder="Bác sĩ Huỳnh Vinh" v-model="fullname" ref="nameInput" />
             <div v-if="isName" :class="$style['error__input']">
               <font-awesome-icon :icon="faExclamationCircle" :class="$style['warning-ic']" />
               Tên không được quá ngắn
@@ -344,7 +451,7 @@ const addItem = () => {
           </div>
           <div :class="$style['feedback__right-input']">
             <h4>Nghề nghiệp/ Chức vụ</h4>
-            <input type="text" placeholder="Bác sĩ Nha Khoa A" v-model="pos" ref="posInput" />
+            <input type="text" placeholder="Bác sĩ Nha Khoa A" v-model="position" ref="posInput" />
             <div v-if="isPos" :class="$style['error__input']">
               <font-awesome-icon :icon="faExclamationCircle" :class="$style['warning-ic']" />
               Chức vụ không hợp lệ
@@ -369,7 +476,9 @@ const addItem = () => {
                 v-for="index in 5"
                 :key="index"
                 :style="
-                  index <= (hover || rating) ? 'color: rgb(255, 205, 29);' : 'color: #E3E3E4;'
+                  index <= (roundNumber(hover, 0) || roundNumber(rating, 0))
+                    ? 'color: rgb(255, 205, 29);'
+                    : 'color: #E3E3E4;'
                 "
                 @click="setRating(index)"
                 @mouseenter="setHover(index)"

@@ -5,6 +5,10 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import CamBtn from '@/components/ImageBtn/ImageBtn.vue';
 
+interface MyFile extends File {
+  name: string;
+}
+
 const context = defineProps({
   image: {
     type: String,
@@ -15,6 +19,7 @@ const context = defineProps({
 const emit = defineEmits(['inFocus', 'close']);
 const selectedImage = ref(context.image);
 const fileInput = ref<HTMLInputElement | null>(null);
+const file = ref<MyFile | null>(null);
 
 //Open file image
 const openFileInput = () => {
@@ -24,14 +29,14 @@ const openFileInput = () => {
 //Choose image
 const handleFileInputChange = (event: Event) => {
   const inputElement = event.target as HTMLInputElement;
-  const file = inputElement.files?.[0];
+  file.value = inputElement.files?.[0] || null;
 
-  if (file) {
+  if (file.value) {
     const reader = new FileReader();
     reader.onload = () => {
       selectedImage.value = reader.result as string;
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(file.value);
   }
 };
 

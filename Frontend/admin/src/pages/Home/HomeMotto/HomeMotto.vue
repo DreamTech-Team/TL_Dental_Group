@@ -1,38 +1,44 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import Meeting from '@/assets/imgs/Home/Meeting.png';
+import { ref, watch } from 'vue';
 import EditBtn from '@/components/EditBtn/EditBtn.vue';
 import CamBtn from '@/components/ImageBtn/ImageBtn.vue';
 import ModalMotto from './ModalMotto.vue';
 import ModalCam from './CamMotto.vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+//GET DATA
+const deps = ref([]);
+const { response } = useAxios<DataResponse>('get', '/home/section2', {}, {}, deps.value);
+
+const content = ref({
+  id: '',
+  title: '',
+  context: ``,
+  image: ''
+});
+
+const onUpdateContent = (data: object) => {
+  content.value = { ...content.value, ...data };
+};
+
+watch(response, () => {
+  content.value.id = response.value?.data?.id;
+  content.value.title = response.value?.data?.title;
+  content.value.context = response.value?.data?.content;
+  content.value.image = response.value?.data?.image;
+});
 
 const isOpen = ref(false);
 const isOpenCam = ref(false);
-
-const content = ref({
-  title: 'SỨC KHỎE LÀ CHÂN ÁI',
-  context: `Lấy uy tín khách hàng là hàng đầu. <br />
-        <br />
-        Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. <br />
-        Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. <br />
-        Sản phẩm cho mọi người. An toàn và chất lượng. Trao sản phẩm và bảo hành trọn đời. Sản
-        người. An toàn và chất lượng. <br />
-        <br />
-        Trao sản phẩm và bảo hành trọn đời. Lấy uy tín khách hàng <br />
-        hàng đầu. Sản phẩm cho mọi người. An toàn và chất lượng. 
-        Trao sản phẩm và bảo hành trọn đời.`,
-  image: Meeting
-});
 </script>
 <template>
   <div :class="$style.home__motto">
     <div :class="$style['home__motto-left']">
-      <h4>SỨC KHỎE LÀ CHÂN ÁI</h4>
+      <h4>{{ content.title }}</h4>
       <span v-html="content.context"></span>
       <EditBtn style="right: 50px" @click="isOpen = true" />
     </div>
     <div :class="$style['home__motto-right']">
-      <h4 :class="$style['home__motto-title']">PHƯƠNG CHÂM</h4>
       <img :src="content.image" alt="meeting" />
       <CamBtn @click="isOpenCam = true" />
     </div>
@@ -40,8 +46,11 @@ const content = ref({
   <ModalMotto
     v-if="isOpen"
     @close="isOpen = false"
+    @update-content="onUpdateContent"
+    :uuid="content.id"
     :title="content.title"
     :tags="content.context"
+    :image="content.image"
   />
   <ModalCam v-if="isOpenCam" :image="content.image" @close="isOpenCam = false" />
 </template>
