@@ -62,6 +62,7 @@ const hanldeConvertPage = (link: string) => {
         ]"
         @click="showSidebar = !showSidebar"
         v-on:mouseover="showBtnSidebar = true"
+        v-on:mouseout="showBtnSidebar = false"
       >
         <font-awesome-icon
           :class="$style['container__sidebar-btn-block-icon']"

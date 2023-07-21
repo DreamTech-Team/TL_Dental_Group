@@ -34,7 +34,7 @@ const productInput = ref(context.nameProduct);
 const selectedlogo: Ref<string | null> = ref(context.logo);
 const isOpen = ref(false);
 
-//Validate form
+// Các hàm update dữ liệu cho thẻ input
 const updateTitle = (e: Event) => {
   const target = e.target as HTMLInputElement;
   nameCompanyInput.value = target.value;
@@ -48,6 +48,7 @@ const updateProduct = (e: Event) => {
   productInput.value = target.value;
 };
 
+// Hàm submit dữ liệu, đẩy dữ liệu lên database
 const submitForm = () => {
   if (
     nameCompanyInput.value.length < 4 ||
@@ -97,6 +98,7 @@ const arrayBufferToString = (buffer: ArrayBuffer) => {
   return charArray.join('');
 };
 
+// Hàm lấy ảnh từ máy và lưu vào biến selectedImage
 const handleFileInputChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
 
@@ -117,6 +119,7 @@ const handleFileInputChange = (event: Event) => {
   }
 };
 
+// Hàm kích hoạt thẻ input type file với id là input_file_modal
 const handleChangelogo = () => {
   const inputElement = document.getElementById('input_file_modalupdate');
   if (inputElement) {

@@ -113,8 +113,27 @@ const widthLine1 = ref(0);
 const widthLine2 = ref(0);
 const isChart = ref(true);
 
-let chartInstance: Chart;
+// Hàm xử lí search
+const filteredProducts = computed(() => {
+  if (searchText.value.trim() === '') {
+    return infoCustomerRender.value;
+  } else {
+    const searchTerm = searchText.value.toLowerCase();
+    return infoCustomerRender.value.filter((company) =>
+      company.name.toLowerCase().includes(searchTerm)
+    );
+  }
+});
 
+// tính toán mỗi page có bao nhiêu phần tử để render lên màn hình
+const displayNews = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return filteredProducts.value.slice(start, end);
+});
+
+// Xử lí render biểu đồ
+let chartInstance: Chart;
 const renderChart = () => {
   const chartCanvas = document.getElementById('chartCanvas') as HTMLCanvasElement;
   console.log(chartCanvas);
@@ -160,31 +179,12 @@ const renderChart = () => {
     }
   });
 };
-
 // Xử lý việc render biểu đồ khi component được mounted
 onMounted(renderChart);
-
 // Xử lý việc xóa biểu đồ khi component bị hủy
 onBeforeUnmount(() => {
   if (chartInstance) {
     chartInstance.destroy();
-  }
-});
-
-onActivated(() => {
-  if (isChart.value) {
-    renderChart();
-  }
-});
-
-const filteredProducts = computed(() => {
-  if (searchText.value.trim() === '') {
-    return infoCustomerRender.value;
-  } else {
-    const searchTerm = searchText.value.toLowerCase();
-    return infoCustomerRender.value.filter((company) =>
-      company.name.toLowerCase().includes(searchTerm)
-    );
   }
 });
 
@@ -196,17 +196,13 @@ const scrollToTop = (top: number) => {
   });
 };
 
+// Xử lí thay khi chuyển trang
 const handlePageChange = (page: number) => {
   currentPage.value = page;
   scrollToTop(0);
 };
 
-const displayNews = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return filteredProducts.value.slice(start, end);
-});
-
+// Check Tab và xử lí line dưới các title của tab
 const handleLine = (e: Event) => {
   const target = e.target as HTMLInputElement;
   const widthSpan1 = document.getElementById('text1');
@@ -228,12 +224,14 @@ const handleLine = (e: Event) => {
   }
 };
 
+// Hàm mở modal show thông tin
 const handleShowInfo = (id: number) => {
   isOpen.value = true;
 
   indexRow.value = id;
 };
 
+// Hàm xóa một khách hàng
 const deleteInfoCustomer = (id: number, e: Event) => {
   e.stopPropagation();
 
@@ -277,6 +275,11 @@ const deleteInfoCustomer = (id: number, e: Event) => {
     }
   });
 };
+
+// Ngăn cản sự kiện mở modal show info khi click vào checkbox
+const handleCheckBox = (e: Event) => {
+  e.stopPropagation();
+};
 </script>
 <template>
   <div :class="$style.mn_customer">
@@ -318,8 +321,9 @@ const deleteInfoCustomer = (id: number, e: Event) => {
         <p style="width: 8%">STT</p>
         <p style="width: 16%">Họ và tên</p>
         <p style="width: 16%">Số điện thoại</p>
-        <p style="width: 28%">Email</p>
+        <p style="width: 24%">Email</p>
         <p style="width: 20%">Thời gian</p>
+        <p style="width: 4%"></p>
         <p style="width: 12%">Xóa</p>
       </div>
 
@@ -335,13 +339,7 @@ const deleteInfoCustomer = (id: number, e: Event) => {
           <p :class="$style['mn_customer--table-row-3']">{{ customer.phonenumber }}</p>
           <p :class="$style['mn_customer--table-row-4']">{{ customer.email }}</p>
           <p :class="$style['mn_customer--table-row-5']">{{ customer.time }}</p>
-          <!-- <div :class="$style['mn_customer--table-row-4']">
-            <img :src="company.email" alt="" />
-          </div> -->
-          <!-- <div :class="$style['mn_customer--table-row-5']">
-            <img :src="company.time" alt="" />
-            <p>{{ company.nameProduct }}</p>
-          </div> -->
+          <input type="checkbox" style="width: 4%" @click="(e) => handleCheckBox(e)" />
           <div :class="$style['mn_customer--table-row-6']">
             <button
               @click="
@@ -360,8 +358,8 @@ const deleteInfoCustomer = (id: number, e: Event) => {
       </div>
     </div>
 
-    <div :class="$style['mn_customer--canvas']">
-      <canvas id="chartCanvas" ref="chartCanvas" v-show="isChart"></canvas>
+    <div :class="$style['mn_customer--canvas']" v-show="isChart">
+      <canvas id="chartCanvas" ref="chartCanvas"></canvas>
     </div>
 
     <div :class="$style['mn_customer--pagination']" v-if="!isChart">

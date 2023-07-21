@@ -26,7 +26,7 @@ const titleInput = ref(context.title);
 const contentInput = ref(context.content);
 const selectedImage: Ref<string | null> = ref(context.image);
 
-//Validate form
+// Các hàm update dữ liệu cho thẻ input
 const updateTitle = (e: Event) => {
   const target = e.target as HTMLInputElement;
   titleInput.value = target.value;
@@ -36,6 +36,7 @@ const updateContent = (e: Event) => {
   contentInput.value = target.value;
 };
 
+// Hàm submit dữ liệu, đẩy dữ liệu lên database
 const submitForm = () => {
   if (titleInput.value.length < 4 || contentInput.value.length < 4 || !selectedImage.value) {
     Swal.fire({
@@ -81,6 +82,7 @@ const arrayBufferToString = (buffer: ArrayBuffer) => {
   return charArray.join('');
 };
 
+// Hàm lấy ảnh từ máy và lưu vào biến selectedImage
 const handleFileInputChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
 
@@ -101,6 +103,7 @@ const handleFileInputChange = (event: Event) => {
   }
 };
 
+// Hàm kích hoạt thẻ input type file với id là input_file_modal
 const handleChangeImage = () => {
   const inputElement = document.getElementById('input_file_modalupdate');
   if (inputElement) {
