@@ -123,7 +123,7 @@ const nextStep = () => {
       </div>
     </div>
     <div :class="$style.authen_welcome">
-      <img :src="second" alt="sdf" :class="$style.authen_welcome_img" />
+      <div :class="$style.authen_welcome_img"></div>
       <div :class="$style.authen_welcome_content">
         <img :class="$style.authen_welcome_content_ellip1" :src="ellip1" alt="elip" />
         <img :class="$style.authen_welcome_content_ellip2" :src="ellip1" alt="elip2" />

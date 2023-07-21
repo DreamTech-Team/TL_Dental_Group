@@ -25,7 +25,8 @@ const props = defineProps({
 const recruitmentTitle = ref(props.selectedRecruitment.title);
 const addressInfo = ref(props.selectedRecruitment.address);
 // const selectedPosition = ref(props.selectedRecruitment.position);
-const selectedPosition = ref<string>(props.selectedRecruitment.position);
+// const selectedPosition = ref<string>(props.selectedRecruitment.position);
+const selectedPosition = ref('');
 
 const selectedTime = ref(props.selectedRecruitment.type);
 const jobDescription = ref(props.selectedRecruitment.description);
@@ -59,7 +60,7 @@ const textareaStyle2: CSSProperties = {
 };
 
 const positionOptions = [
-  { value: 'option1', label: 'Kinh doanh' },
+  { value: 'Kinh doanh', label: 'Kinh doanh' },
   { value: 'option2', label: 'Marketing' },
   { value: 'option3', label: 'Sale' }
 ];
@@ -68,6 +69,10 @@ const timeOptions = [
   { value: 'option2', label: 'Tùy chọn 2' },
   { value: 'option3', label: 'Tùy chọn 3' }
 ];
+
+const logValue = () => {
+  console.log(selectedPosition.value);
+};
 
 const saveInformation = () => {
   // Tiến hành lưu thông tin hoặc các xử lý khác
@@ -129,7 +134,7 @@ onMounted(() => {
         <div :class="$style.options_wrap">
           <div>
             <p :class="$style.options_title">Vị trí</p>
-            <select :class="$style.options_wrap_btn" v-model="selectedPosition">
+            <select @click="logValue" :class="$style.options_wrap_btn" v-model="selectedPosition">
               <option value="">Chọn một tùy chọn</option>
               <option v-for="option in positionOptions" :key="option.value" :value="option.value">
                 {{ option.label }}
