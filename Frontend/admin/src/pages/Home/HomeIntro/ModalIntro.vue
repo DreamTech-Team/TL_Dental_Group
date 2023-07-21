@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import Editor from '@tinymce/tinymce-vue';
 import Swal from 'sweetalert2';
-
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 const context = defineProps({
@@ -81,8 +80,7 @@ const submitForm = () => {
     const object = {
       id: context.uuid,
       title: titleInput.value.level.content,
-      content: textareaInput.value.level.content,
-      image: context.image
+      content: textareaInput.value.level.content
     };
 
     const formData = new FormData();
