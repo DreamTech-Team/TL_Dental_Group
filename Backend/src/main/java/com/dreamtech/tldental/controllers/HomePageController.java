@@ -24,8 +24,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/v1/home")
 public class HomePageController {
     @Autowired

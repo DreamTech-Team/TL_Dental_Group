@@ -140,13 +140,17 @@ public class IntroduceController {
 
     @PostMapping("/company-info")
     public ResponseEntity<ResponseObject> addCompanyInfor(@RequestParam("data") String data, @RequestParam("image") MultipartFile image) throws JsonMappingException, JsonProcessingException {
-        // Optional<ContentPage[]> foundCompanyInfor = contentPageRepository.findAllByType("introduce::company-info");
+        Optional<ContentPage[]> foundCompanyInfor = contentPageRepository.findAllByType("introduce::company-info");
     
-        // if (foundCompanyInfor.isPresent()) {
-        //     return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-        //         new ResponseObject("failed", "Type name already taken", "")
-        //     );
-        // }
+        if (foundCompanyInfor.isPresent()) {
+
+            ContentPage[] listCompanyInfor = foundCompanyInfor.get();
+
+            if (listCompanyInfor.length >= 2) 
+                return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                    new ResponseObject("failed", "Company information is full", null)
+                );
+        }
 
         ObjectMapper objectMapper = new ObjectMapper();
         ContentPage entity = objectMapper.readValue(data, ContentPage.class);
