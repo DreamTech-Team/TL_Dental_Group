@@ -2,8 +2,12 @@
 import InfoCompany from '@/assets/imgs/About/InfoCompany.png';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faClose, faPencil, faCheck, faRotate } from '@fortawesome/free-solid-svg-icons';
-import { ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import Editor from '@tinymce/tinymce-vue';
+
+interface MyInputElement extends HTMLInputElement {
+  getContent(): string;
+}
 
 const isEdit = ref(false);
 const InfoCompanyContent = ref({
@@ -26,66 +30,100 @@ const InfoCompanyContent = ref({
           gồm cam kết sử dụng năng lượng tái tạo và tái chế các thành phần trong sản phẩm của họ.`
 });
 
-const _content1 = ref(InfoCompanyContent.value.content1);
-const _content2 = ref(InfoCompanyContent.value.content2);
-const selectedImage = ref(null);
-const selectedImage1 = ref(null);
+const content1 = ref(InfoCompanyContent.value.content1); //Lưu nội dung 1
+const content2 = ref(InfoCompanyContent.value.content2); //Lưu nội dung 2
+const selectedImage: Ref<string | null> = ref(null); //Lưu ảnh 1
+const selectedImage1: Ref<string | null> = ref(null); //Lưu ảnh 2
 
+// Hàm xử lí lấy nội dung từ tiny đã thay đổi lưu vào content1
 const handleChangeContent1 = (e: Event) => {
-  if (e.target) {
-    _content1.value = e.target.getContent();
+  const target = e.target as MyInputElement;
+
+  if (target) {
+    content1.value = target.getContent();
   }
 };
 
-const handleChangeContent2 = (e) => {
-  if (e.target) _content2.value = e.target.getContent();
+// Hàm xử lí lấy nội dung từ tiny đã thay đổi lưu vào content2
+const handleChangeContent2 = (e: Event) => {
+  const target = e.target as MyInputElement;
+
+  if (target) content2.value = target.getContent();
 };
 
+// Hàm cập nhật các giá trị khi thay đổi trong tiny(editor)
 const handleUpdateContent = () => {
   isEdit.value = false;
-  InfoCompanyContent.value.content1 = _content1.value;
-  InfoCompanyContent.value.content2 = _content2.value;
+  InfoCompanyContent.value.content1 = content1.value;
+  InfoCompanyContent.value.content2 = content2.value;
 };
 
+// Hàm xử lí click vào chọn ảnh 1
 const handleChangeImage = () => {
-  document.getElementById('input_file2').click();
+  const inputElement = document.getElementById('input_file2');
+  if (inputElement) {
+    inputElement.click();
+  }
 };
 
+// Hàm xử lí click vào chọn ảnh 2
 const handleChangeImage1 = () => {
-  document.getElementById('input_file1').click();
+  const inputElement = document.getElementById('input_file1');
+  if (inputElement) {
+    inputElement.click();
+  }
 };
 
-// const handleFileInputChange = (event) => {
-//   const file = event.target.files[0];
-//   const reader = new FileReader();
-
-//   reader.onload = (e) => {
-//     selectedImage.value = e.target.result;
-//   };
-
-//   reader.readAsDataURL(file);
-// };
-
-const handleFileInputChange = (event) => {
-  const file = event.target.files[0];
-  const reader = new FileReader();
-
-  reader.onload = (e) => {
-    selectedImage.value = e.target.result;
-  };
-
-  reader.readAsDataURL(file);
+// Hàm chuyển đổi từ ArrayBuffer sang string
+const arrayBufferToString = (buffer: ArrayBuffer) => {
+  const uintArray = new Uint16Array(buffer);
+  const charArray: string[] = [];
+  for (let i = 0; i < uintArray.length; i++) {
+    charArray.push(String.fromCharCode(uintArray[i]));
+  }
+  return charArray.join('');
 };
 
-const handleFileInputChange1 = (event) => {
-  const file1 = event.target.files[0];
-  const reader1 = new FileReader();
+// Hàm xử lí lấy ảnh 1 từ máy và lưu lại vào biến selectedImage
+const handleFileInputChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
 
-  reader1.onload = (e) => {
-    selectedImage1.value = e.target.result;
-  };
+  if (target.files) {
+    const file = target.files[0];
+    const reader = new FileReader();
 
-  reader1.readAsDataURL(file1);
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      const result = e.target?.result;
+      if (result instanceof ArrayBuffer) {
+        selectedImage.value = arrayBufferToString(result);
+      } else if (typeof result === 'string') {
+        selectedImage.value = result;
+      }
+    };
+
+    reader.readAsDataURL(file);
+  }
+};
+
+// Hàm xử lí lấy ảnh 2 từ máy và lưu lại vào biến selectedImage1
+const handleFileInputChange1 = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+
+  if (target.files) {
+    const file = target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      const result = e.target?.result;
+      if (result instanceof ArrayBuffer) {
+        selectedImage1.value = arrayBufferToString(result);
+      } else if (typeof result === 'string') {
+        selectedImage1.value = result;
+      }
+    };
+
+    reader.readAsDataURL(file);
+  }
 };
 </script>
 <template>

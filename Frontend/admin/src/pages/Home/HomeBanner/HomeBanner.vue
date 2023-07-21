@@ -1,18 +1,34 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import Capgemini from '@/assets/imgs/Home/Capgemini.png';
 import Yamaha from '@/assets/imgs/Home/Yamaha.png';
 import DELL from '@/assets/imgs/Home/DELL.png';
 import Biocon from '@/assets/imgs/Home/Biocon.png';
 import EditBtn from '@/components/EditBtn/EditBtn.vue';
 import ModalBanner from './ModalBanner.vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+//GET DATA
+const deps = ref([]);
+const { response } = useAxios<DataResponse>('get', '/home/header', {}, {}, deps.value);
+
+const content = ref({
+  id: '',
+  title: '',
+  context: ''
+});
+
+const onUpdateContent = (data: object) => {
+  content.value = { ...content.value, ...data };
+};
+
+watch(response, () => {
+  content.value.id = response.value?.data?.id;
+  content.value.title = response.value?.data?.title;
+  content.value.context = response.value?.data?.content;
+});
 
 const isOpen = ref(false);
-
-const content = {
-  title: 'TL Dental Group',
-  context: 'Nhà cung cấp thiết bị y tế chính hãng, uy tín hàng đầu Việt Nam.'
-};
 
 const bannerItems = [
   { src: Capgemini, alt: 'capgemini', width: '127', height: '30' },
@@ -178,6 +194,8 @@ onUnmounted(() => {
   <ModalBanner
     v-if="isOpen"
     @close="isOpen = false"
+    @update-content="onUpdateContent"
+    :uuid="content.id"
     :title="content.title"
     :context="content.context"
   />

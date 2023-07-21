@@ -7,6 +7,7 @@ import ic_private from '@/assets/imgs/Policy/icon/ic_private.svg';
 import { computed, ref } from 'vue';
 
 const datebase = [
+  { name: '1Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
@@ -17,6 +18,7 @@ const datebase = [
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
+  { name: '2Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
@@ -26,6 +28,7 @@ const datebase = [
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
+  { name: '3Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
@@ -35,15 +38,13 @@ const datebase = [
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-  { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-  { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-  { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-  { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
+  { name: '4Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private }
 ];
 
 const searchText = ref('');
+// const tmpResult = ref(datebase);
 const results = ref(datebase);
 
 const currentPage = ref(1);
@@ -67,9 +68,23 @@ const filteredProducts = computed(() => {
 const displayNews = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
+  console.log(start, end);
 
   return filteredProducts.value.slice(start, end);
 });
+
+//Pagination Handle
+const scrollToTop = (top: number) => {
+  window.scrollTo({
+    top: top,
+    behavior: 'smooth'
+  });
+};
+
+const handlePageChange = (page: number) => {
+  currentPage.value = page;
+  scrollToTop(0);
+};
 </script>
 <template>
   <div :class="$style.mn_policy">
@@ -163,6 +178,7 @@ const displayNews = computed(() => {
         :total="Math.ceil(filteredProducts.length / pageSize)"
         :current-page="currentPage"
         :page-size="pageSize"
+        @current-change="handlePageChange"
       />
     </div>
   </div>

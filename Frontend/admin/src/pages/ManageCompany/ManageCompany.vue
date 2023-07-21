@@ -121,6 +121,38 @@ const companies = [
     logo: Logo,
     imgProduct: Logo,
     nameProduct: 'kềm chỉnh nha'
+  },
+  {
+    id: 15,
+    name: 'PMC Company',
+    description: 'Công ty chuyên bán sỉ lẻ thiết bị nha kho',
+    logo: Logo,
+    imgProduct: Logo,
+    nameProduct: 'kềm chỉnh nha'
+  },
+  {
+    id: 16,
+    name: 'PMC Company',
+    description: 'Công ty chuyên bán sỉ lẻ thiết bị nha kho',
+    logo: Logo,
+    imgProduct: Logo,
+    nameProduct: 'kềm chỉnh nha'
+  },
+  {
+    id: 17,
+    name: 'PMC Company',
+    description: 'Công ty chuyên bán sỉ lẻ thiết bị nha kho',
+    logo: Logo,
+    imgProduct: Logo,
+    nameProduct: 'kềm chỉnh nha'
+  },
+  {
+    id: 18,
+    name: 'PMC Company',
+    description: 'Công ty chuyên bán sỉ lẻ thiết bị nha kho',
+    logo: Logo,
+    imgProduct: Logo,
+    nameProduct: 'kềm chỉnh nha'
   }
 ];
 
@@ -132,6 +164,7 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const indexRow = ref(0);
 
+// Hàm xử lí search
 const filteredProducts = computed(() => {
   if (searchText.value.trim() === '') {
     return companyRender.value;
@@ -139,6 +172,13 @@ const filteredProducts = computed(() => {
     const searchTerm = searchText.value.toLowerCase();
     return companyRender.value.filter((company) => company.name.toLowerCase().includes(searchTerm));
   }
+});
+
+// tính toán mỗi page có bao nhiêu phần tử để render lên màn hình
+const displayNews = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return filteredProducts.value.slice(start, end);
 });
 
 //Pagination Handle
@@ -149,23 +189,20 @@ const scrollToTop = (top: number) => {
   });
 };
 
+// Xử lí thay khi chuyển trang
 const handlePageChange = (page: number) => {
   currentPage.value = page;
   scrollToTop(0);
 };
 
-const displayNews = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return filteredProducts.value.slice(start, end);
-});
-
+// Xử lí mở modal chỉnh sửa một công ty
 const handleUpdateModal = (id: number) => {
   isOpenUpdate.value = true;
 
   indexRow.value = id;
 };
 
+// Xử lí xóa một công ty
 const deleteCompany = (id: number) => {
   Swal.fire({
     title: 'Bạn có chắc muốn xóa công ty này không?',

@@ -66,29 +66,29 @@ const mottoItems = [
   }
 ];
 
-const move = ref(0);
-const moveEdit = ref(0);
-const items = ref(mottoItems);
-const indexItems = ref(0);
+const move = ref(0); // biến lưu chiều dài của một item khi bấm nút qua lại
+const moveEdit = ref(0); // biến lưu chiều dài của một item khi bấm nút qua lại khi trong trạng thái chỉnh sửa
+const items = ref(mottoItems); // biến để lấy dữ liệu để render
+const indexItems = ref(0); // biến lưu vị trí hiện tại
+// biến kiểm tra xem đã hết phần tử bên trái khi bấm nút qua lại chưa
 const isDisableLeft = ref(false);
-const isDisableLeftEdit = ref(true);
-const isDisableRight = ref(false);
-const isDisableRightEdit = ref(false);
+const isDisableLeftEdit = ref(true); // biến kiểm tra xem đã hết phần tử bên trái khi bấm nút qua lại chưa trong trang thái Edit
+const isDisableRight = ref(false); // biến kiểm tra xem đã hết phần tử bên phải khi bấm nút qua lại chưa
+const isDisableRightEdit = ref(false); // biến kiểm tra xem đã hết phần tử bên phải khi bấm nút qua lại chưa trong trạng thái Edit
 const isEdit = ref(false);
 const isOpenAdd = ref(false);
 const isOpenUpdate = ref(false);
 const widthItemEdit = ref(0);
 
+// Hàm lấy width của một thẻ trong trạng thái Edit
 const handleGetWidthItem = () => {
   const widthItem = document.getElementById('1');
 
   if (widthItem) widthItemEdit.value = widthItem.offsetWidth;
-
-  console.log(widthItem?.offsetWidth);
 };
-
 onMounted(handleGetWidthItem);
 
+// Hàm bấm nút sang trái
 const handleClickLeft = () => {
   isDisableRight.value = false;
 
@@ -102,6 +102,7 @@ const handleClickLeft = () => {
   }
 };
 
+// Hàm bấm nút sang phải
 const handleClickRight = () => {
   isDisableLeft.value = false;
 
@@ -116,6 +117,7 @@ const handleClickRight = () => {
   }
 };
 
+// Hàm bấm nút sang trái trong trạng thái Edit
 const handleClickLeftEdit = () => {
   isDisableRightEdit.value = false;
 
@@ -127,12 +129,11 @@ const handleClickLeftEdit = () => {
   else moveEdit.value += widthItemEdit.value;
 };
 
+// Hàm bấm nút sang phải trong trạng thái Edit
 const handleClickRightEdit = () => {
   isDisableLeftEdit.value = false;
 
   indexItems.value += 1;
-
-  console.log(indexItems.value);
 
   if (indexItems.value >= items.value.length - 1) {
     moveEdit.value -= widthItemEdit.value;
@@ -141,6 +142,7 @@ const handleClickRightEdit = () => {
   } else moveEdit.value -= widthItemEdit.value;
 };
 
+// Hàm thao tác xóa đi một Item phương châm
 const handleRemoveItem = () => {
   items.value.splice(indexItems.value, 1);
   indexItems.value--;
@@ -157,14 +159,14 @@ const handleRemoveItem = () => {
   Swal.fire({
     title: 'Xóa thành công',
     icon: 'success',
-    showConfirmButton: false // Ẩn nút xác nhận
-  });
-
-  Swal.fire({
-    title: 'Xóa thành công',
-    icon: 'success',
     timer: 2000,
-    width: '30rem'
+    width: '50rem',
+    padding: '0 2rem 2rem 2rem',
+    customClass: {
+      confirmButton: styles['confirm-button'],
+      cancelButton: styles['cancel-button'],
+      title: styles['title']
+    }
   }).then((result) => {
     if (result.isConfirmed) {
       Swal.close();
@@ -174,6 +176,7 @@ const handleRemoveItem = () => {
   return items.value;
 };
 
+// Hàm thực thi xóa
 const handleRemove = () => {
   Swal.fire({
     title: 'Bạn có muốn xóa đối tượng này không?',
@@ -271,17 +274,6 @@ const handleRemove = () => {
             </button>
           </div>
 
-          <!-- <div :class="$style['about__motto-slider1']">
-            <div :class="$style['about__motto-slider1-item']">
-              <img :src="item.img" alt="" />
-
-              <p :class="$style['about__motto-slider1-item-title']">{{ item.title }}</p>
-
-              <p :class="$style['about__motto-slider1-item-content']">
-                {{ item.content }}
-              </p>
-            </div>
-          </div> -->
           <div
             :class="$style['about__motto-slider1-wrapper']"
             :style="{ width: widthItemEdit + 'px' }"

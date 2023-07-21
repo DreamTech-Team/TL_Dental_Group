@@ -1,20 +1,43 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import CamBtn from '@/components/ImageBtn/ImageBtn.vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+interface MyFile extends File {
+  name: string;
+}
 
 const context = defineProps({
+  uuid: {
+    type: String,
+    required: true
+  },
+  title: {
+    type: String,
+    required: true
+  },
+  tags: {
+    type: String,
+    required: true
+  },
   image: {
     type: String,
     required: true
   }
 });
 
-const emit = defineEmits(['inFocus', 'close']);
+const emits = defineEmits<{
+  // eslint-disable-next-line no-unused-vars
+  (e: 'close'): void;
+  // eslint-disable-next-line no-unused-vars
+  (e: 'update-content', data: { image: string }): void;
+}>();
 const selectedImage = ref(context.image);
 const fileInput = ref<HTMLInputElement | null>(null);
+const file = ref<MyFile | null>(null);
 
 //Open file image
 const openFileInput = () => {
@@ -24,27 +47,57 @@ const openFileInput = () => {
 //Choose image
 const handleFileInputChange = (event: Event) => {
   const inputElement = event.target as HTMLInputElement;
-  const file = inputElement.files?.[0];
+  file.value = inputElement.files?.[0] || null;
 
-  if (file) {
+  if (file.value) {
     const reader = new FileReader();
     reader.onload = () => {
       selectedImage.value = reader.result as string;
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(file.value);
   }
 };
 
 const submitForm = () => {
-  Swal.fire({
-    title: 'Cập nhật thành công',
-    icon: 'success',
-    confirmButtonText: 'Hoàn tất',
-    width: '30rem'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.close();
-      emit('close');
+  const deps = ref([]);
+
+  const object = {
+    id: context.uuid,
+    title: context.title,
+    content: context.tags
+  };
+
+  const formData = new FormData();
+  formData.append('data', JSON.stringify(object));
+  formData.append('image', file.value as Blob);
+  const { response } = useAxios<DataResponse>(
+    'patch',
+    '/home/section3',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    },
+    deps.value
+  );
+
+  watch(response, () => {
+    if (response.value?.status === 'ok') {
+      Swal.fire({
+        title: 'Cập nhật thành công',
+        icon: 'success',
+        confirmButtonText: 'Hoàn tất',
+        width: '30rem'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.close();
+          emits('update-content', {
+            image: selectedImage.value
+          });
+          emits('close');
+        }
+      });
     }
   });
 };

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, onUnmounted } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faPencil } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronRight, faPencil } from '@fortawesome/free-solid-svg-icons';
 import EditBtn from '@/components/EditBtn/EditBtn.vue';
 import DCNK2 from '@/assets/imgs/Home/DCNK2.png';
 import ModalCategory from './ModalCategory.vue';
