@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { recruitWorkItems } from '../RecruitmentHandle';
 import RecruitmentCardWork from '../RecruitmentCardWork/RecruitmentCardWork.vue';
+
+const props = defineProps({ getElementRec: { type: Function, required: true } });
 
 const moreRecruitWorkItems = ref();
 const showMore = ref(false);
@@ -23,6 +25,11 @@ const openLoading = () => {
   showMore.value = true;
   setTimeout(showPageCompleted, 3000);
 };
+
+onMounted(() => {
+  const element = document.getElementById('position-rec');
+  props.getElementRec(element);
+});
 </script>
 <template>
   <div :class="$style.container__work" id="position-rec">

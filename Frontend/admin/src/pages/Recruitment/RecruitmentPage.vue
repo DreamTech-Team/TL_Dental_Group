@@ -1,5 +1,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
+import { ref } from 'vue';
+
 import { posterItems, visionItems, valueItems } from './RecruitmentHandle';
 
 import ModalUpdateContent from './ModalUpdateContent/ModalUpdateContent.vue';
@@ -10,13 +12,13 @@ import RecruitmentEnviroment from './RecruitmentEnviroment/RecruitmentEnviroment
 import RecruitmentNavScroll from './RecruitmentNavScroll/RecruitmentNavScroll.vue';
 import RecruitmentWork from './RecruitmentWork/RecruitmentWork.vue';
 
-import { ref } from 'vue';
-
 const topics = {
   poster: 'poster',
   vision: 'vision',
   value: 'value'
 };
+
+const elementEventRec = ref();
 
 const contentEdit = ref();
 const topicUpdate = ref();
@@ -156,8 +158,10 @@ function enableScroll() {
   window.scrollTo(-scrollLeft, -scrollTop);
 }
 
+const getElementRec = (e: Event) => (elementEventRec.value = e);
+
 const hanldeScrollToVacancies = () => {
-  const element = document.getElementById('position-rec');
+  const element = elementEventRec.value;
   element?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
 };
 </script>
@@ -181,7 +185,7 @@ const hanldeScrollToVacancies = () => {
     <recruitment-value :handleEditValue="handleEditValue" :contentValueItems="contentValueItems" />
     <recruitment-enviroment />
     <recruitment-nav-scroll />
-    <recruitment-work />
+    <recruitment-work :getElementRec="getElementRec" />
   </div>
 </template>
 
