@@ -52,7 +52,15 @@ const isOpenCam = ref(false);
     :tags="content.context"
     :image="content.image"
   />
-  <ModalCam v-if="isOpenCam" :image="content.image" @close="isOpenCam = false" />
+  <ModalCam
+    v-if="isOpenCam"
+    @update-content="onUpdateContent"
+    :uuid="content.id"
+    :title="content.title"
+    :tags="content.context"
+    :image="content.image"
+    @close="isOpenCam = false"
+  />
 </template>
 
 <style module scoped lang="scss">
