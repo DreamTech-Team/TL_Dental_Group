@@ -25,6 +25,7 @@ const selectedContent = (index: any) => {
 
 onMounted(() => {
   // console.log(document.getElementById(`type5-${indexSelected.value}`)?.style.top);
+  console.log(props.items);
 });
 </script>
 

@@ -1,101 +1,93 @@
 @import '@/styles/base';
 
-.container {
-  position: fixed;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 20;
+.container__content-right {
+  width: 35rem;
+  height: 70vh;
+  box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 2rem;
+  padding: 1.5rem;
 
-  &__modal {
-    background-color: white;
-    width: 50vw;
-    height: fit-content;
-    max-height: 90vh;
-    border-radius: 1rem;
+  h3 {
+    font-size: $text-base;
+  }
 
-    &-heading {
-      position: relative;
-      height: 6rem;
-      background-color: $primary_600;
-      border-radius: 1rem 1rem 0 0;
-
-      &-title {
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: $text-xl;
-        font-weight: 500;
-        color: white;
-        text-transform: uppercase;
-      }
-
-      &-exit {
-        position: absolute;
-        top: 1.7rem;
-        right: 3.5rem;
-
-        svg {
-          transform: rotate(45deg);
-          width: 2.5rem;
-          height: auto;
-
-          path {
-            fill: white;
-          }
-        }
-      }
-
-      &-exit:hover {
-        cursor: pointer;
-      }
+  &-edit {
+    p {
+      font-size: $text-sm;
+      font-weight: 500;
+      text-transform: uppercase;
     }
 
-    &-update {
+    input {
       width: 100%;
-      min-height: 50vh;
-      max-height: 80vh;
-      padding-left: 3rem;
-      overflow-y: scroll;
+      height: 3.5rem;
+      padding: 0.7rem 1.5rem;
+      margin: 1rem 0;
+      border-radius: 0.6rem;
+      border: 0.2rem solid #9e9e9e;
+      font-size: $text-base;
+      // font-weight: 500;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+        'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+  }
 
-      &-btn {
-        display: flex;
-        justify-content: center;
-        margin-top: 2rem;
-        margin-bottom: 3rem;
+  &-image {
+    width: 100%;
+    height: 40vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-        &-submit {
-          width: 13rem;
-          padding: 0.5rem 0;
-          border-radius: 3rem;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-size: $text-lg;
-          font-weight: 500;
-        }
+    &-block {
+      position: relative;
+      width: 60%;
+      height: 60%;
+      border: 0.15rem dashed $text_500;
+      display: flex;
+      justify-content: center;
 
-        &-cancel {
-          border: 0.2rem solid $primary_700;
-          color: $text_800;
-        }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+  }
 
-        &-update {
-          margin-left: 3rem;
-          background: linear-gradient(270deg, #22d1ee 0%, #3d5af1 100%);
+  &-btn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    &-block {
+      button {
+        padding: 0.8rem 1.5rem;
+        border-radius: 5rem;
+        width: 12rem;
+        font-size: $text-base;
+        font-weight: 600;
+
+        &:first-child {
+          margin-right: 3rem;
+          // border: 0.2rem solid $primary_500;
           color: white;
+          background-color: #9e9e9e;
+          border: 0;
+          text-transform: uppercase;
         }
 
-        &-submit:hover {
-          cursor: pointer;
-          opacity: 0.6;
+        &:last-child {
+          margin-right: 3rem;
+          border: 0;
+          color: white;
+          background: linear-gradient(270deg, #22d1ee 0%, #3d5af1 100%);
+          text-transform: uppercase;
         }
+      }
+
+      button:hover {
+        filter: brightness(60%);
       }
     }
   }
