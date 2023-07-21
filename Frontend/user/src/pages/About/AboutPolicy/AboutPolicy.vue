@@ -1,55 +1,31 @@
 <script setup lang="ts">
-import Policy from '@/assets/imgs/About/Policy.png';
+import { ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-const listPolicy = [
-  {
-    title: 'Chính sách bảo mật',
-    content: 'Chúng tôi cam kết sẽ bảo mật những thông tin mang tính riêng tư của bạn.',
-    img: Policy
-  },
-  {
-    title: 'Chính sách bảo mật',
-    content: 'Chúng tôi cam kết sẽ bảo mật những thông tin mang tính riêng tư của bạn.',
-    img: Policy
-  },
-  {
-    title: 'Chính sách bảo mật',
-    content: 'Chúng tôi cam kết sẽ bảo mật những thông tin mang tính riêng tư của bạn.',
-    img: Policy
-  },
-  {
-    title: 'Chính sách bảo mật',
-    content: 'Chúng tôi cam kết sẽ bảo mật những thông tin mang tính riêng tư của bạn.',
-    img: Policy
-  },
-  {
-    title: 'Chính sách bảo mật',
-    content: 'Chúng tôi cam kết sẽ bảo mật những thông tin mang tính riêng tư của bạn.',
-    img: Policy
-  },
-  {
-    title: 'Chính sách bảo mật',
-    content: 'Chúng tôi cam kết sẽ bảo mật những thông tin mang tính riêng tư của bạn.',
-    img: Policy
-  },
-  {
-    title: 'Chính sách bảo mật',
-    content: 'Chúng tôi cam kết sẽ bảo mật những thông tin mang tính riêng tư của bạn.',
-    img: Policy
-  },
-  {
-    title: 'Chính sách bảo mật',
-    content: 'Chúng tôi cam kết sẽ bảo mật những thông tin mang tính riêng tư của bạn.',
-    img: Policy
-  },
-  {
-    title: 'Chính sách bảo mật',
-    content: 'Chúng tôi cam kết sẽ bảo mật những thông tin mang tính riêng tư của bạn.',
-    img: Policy
-  }
-];
+interface AboutPolicy {
+  name: string;
+  detail: string;
+  symbol: string;
+}
+
+const variableChange = ref([]);
+const listPolicy = ref<AboutPolicy[]>([]);
+
+// Gọi hàm useAxios để lấy response, error, và isLoading
+const { response, error, isLoading } = useAxios<DataResponse>(
+  'get',
+  '/policy',
+  {},
+  {},
+  variableChange.value
+);
+
+// Truy xuất giá trị response.value và gán vào responseData
+watch(response, () => {
+  listPolicy.value = response?.value?.data;
+});
 </script>
 <template>
   <div :class="$style.about__policy">
@@ -61,16 +37,17 @@ const listPolicy = [
         v-for="(itemPolicy, index) in listPolicy"
         :key="index"
       >
-        <!-- <font-awesome-icon :icon="faChevronLeft" :class="$style['about__policy-ic']" /> -->
-        <img :src="itemPolicy.img" alt="" :class="$style['about__policy-ic']" />
+        <div :class="$style['about__policy-ic']">
+          <img :src="itemPolicy.symbol" alt="" />
+        </div>
 
-        <p :class="$style['about__policy-items-title']">{{ itemPolicy.title }}</p>
+        <p :class="$style['about__policy-items-title']">{{ itemPolicy.name }}</p>
         <p :class="$style['about__policy-items-content']">
-          {{ itemPolicy.content }}
+          {{ itemPolicy.detail }}
         </p>
 
         <div>
-          <p :class="$style['about__policy-items-more']">Xem thêm về {{ itemPolicy.title }}</p>
+          <p :class="$style['about__policy-items-more']">Xem thêm về {{ itemPolicy.name }}</p>
           <font-awesome-icon :icon="faChevronRight" :class="$style['about__policy-ic-right']" />
         </div>
       </div>

@@ -18,7 +18,7 @@
 
     &-content{
 
-        div{
+        &-item{
             display: flex;
             align-items: center;
             margin-bottom: 3rem;
@@ -37,8 +37,12 @@
                 font-size: $text-base;
                 line-height: 3.5rem;
                 color: #000000;
-                text-align: justify;
             }
+        }
+
+        &-item:last-child{
+            flex-direction: row-reverse;
+            margin-bottom: 0;
         }
     }
 }
@@ -60,17 +64,20 @@
     
         &-content{
     
-            div{
+            &-item{
                 display: flex;
-                flex-direction: column;
-                align-items: center;
+                flex-direction: column-reverse;
+                // align-items: center;
+                // justify-content: center;
                 gap: 0;
     
                 div{
                     width: 100%;
+                    text-align: center;
                     
                     img{
                         width: 90%;
+                        margin-bottom: 1rem;
                     }
                 }
     
@@ -81,17 +88,20 @@
                     color: #000000;
                 }
             }
-            div:first-child{
-                display: flex;
-                flex-direction: column-reverse;
-                align-items: center;
+            // &-item:first-child{
+            //     display: flex;
+            //     flex-direction: column-reverse;
+            //     align-items: center;
     
-                p{  
-                    width: 100%;
-                    font-size: $text-base-mobile;
-                    line-height: 2.6rem;
-                    color: #000000;
-                }
+            //     p{  
+            //         width: 100%;
+            //         font-size: $text-base-mobile;
+            //         line-height: 2.6rem;
+            //         color: #000000;
+            //     }
+            // }
+            &-item:last-child{
+                flex-direction: column-reverse;
             }
         }
     }

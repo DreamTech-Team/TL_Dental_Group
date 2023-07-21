@@ -1,12 +1,28 @@
 <script setup lang="ts">
-import Intro from '@/assets/imgs/About/Intro.png';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { ref, watch } from 'vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+const variableChange = ref([]);
+const imageIntro = ref('');
+
+// Gọi hàm useAxios để lấy response, error, và isLoading
+const { response, error, isLoading } = useAxios<DataResponse>(
+  'get',
+  '/introduce/header',
+  {},
+  {},
+  variableChange.value
+);
+
+// Truy xuất giá trị response.value và gán vào responseData
+watch(response, () => {
+  imageIntro.value = response?.value?.data?.image;
+});
 </script>
 <template>
   <div :class="$style.about__header">
     <div :class="$style['about__header-introduce']">
-      <img :src="Intro" alt="" />
+      <img :src="imageIntro" alt="" />
 
       <p>Giới Thiệu</p>
     </div>

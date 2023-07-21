@@ -1,64 +1,46 @@
 <script setup lang="ts">
-import Motto from '@/assets/imgs/About/Motto.png';
+import { ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faChevronLeft, faChevronRight, faL } from '@fortawesome/free-solid-svg-icons';
-import { ref } from 'vue';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-const mottoItems = [
-  {
-    title: 'Sự đổi mới sáng tạo 1',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 2',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 3',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 4',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 5',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 6',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 7',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 8',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  }
-];
+interface AboutMotto {
+  title: string;
+  content: string;
+  image: string;
+}
 
+const variableChange = ref([]);
+const mottoItems = ref<AboutMotto[]>([]);
 const move = ref(0);
+const isOneItem = ref(false);
 const isDisableLeft = ref(false);
 const isDisableRight = ref(false);
 
+// Gọi hàm useAxios để lấy response, error, và isLoading
+const { response, error, isLoading } = useAxios<DataResponse>(
+  'get',
+  '/introduce/section1',
+  {},
+  {},
+  variableChange.value
+);
+
+// Truy xuất giá trị response.value và gán vào responseData
+watch(response, () => {
+  mottoItems.value = response?.value?.data;
+
+  // Xử lí trường hợp có 1 hoặc 2 item
+  if (mottoItems.value.length === 1) {
+    isOneItem.value = true;
+    isDisableRight.value = true;
+    isDisableLeft.value = true;
+  } else if (mottoItems.value.length === 2) {
+    isDisableRight.value = true;
+  }
+});
+
+// Xử lí Click thì các items di chuyển sang trái
 const handleClickLeft = () => {
   const widthItem = document.getElementById('1');
 
@@ -71,12 +53,13 @@ const handleClickLeft = () => {
   }
 };
 
+// Xử lí Click thì các items di chuyển sang phải
 const handleClickRight = () => {
   isDisableLeft.value = false;
   const widthItem = document.getElementById('1');
 
   if (widthItem) {
-    if (move.value === (3 - mottoItems.length) * (widthItem.offsetWidth + 150))
+    if (move.value === (3 - mottoItems.value.length) * (widthItem.offsetWidth + 150))
       (move.value -= widthItem.offsetWidth + 150), (isDisableRight.value = true);
     else {
       move.value -= widthItem.offsetWidth + 150;
@@ -93,7 +76,10 @@ const handleClickRight = () => {
       <div
         :class="$style['about__motto-slider']"
         id="motto-list"
-        :style="{ transform: 'translateX' + '(' + move + 'px' + ')' }"
+        :style="{
+          transform: 'translateX' + '(' + move + 'px' + ')',
+          justifyContent: isOneItem ? 'center' : ''
+        }"
       >
         <div
           :class="$style['about__motto-slider-item']"
@@ -101,7 +87,7 @@ const handleClickRight = () => {
           :key="index"
           :id="index.toString()"
         >
-          <img :src="item.img" alt="" />
+          <img :src="item.image" alt="" />
 
           <p :class="$style['about__motto-slider-item-title']">{{ item.title }}</p>
 

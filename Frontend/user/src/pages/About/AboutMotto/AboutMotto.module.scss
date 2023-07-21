@@ -23,6 +23,7 @@
             width: 100%;
             
             &-item{
+                width: calc(33.33% - 100px);
                 background-color: #D7FFFA;
                 padding: 6rem 3rem;
                 border-radius: 2rem;
