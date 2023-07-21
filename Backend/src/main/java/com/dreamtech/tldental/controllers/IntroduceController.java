@@ -134,7 +134,7 @@ public class IntroduceController {
     @GetMapping("/company-info")
     public ResponseEntity<ResponseObject> getCompanyInfor() {
         return ResponseEntity.status(HttpStatus.OK).body(
-            new ResponseObject("ok", "Get company information successfully", contentPageRepository.findHomePageByTypeName("introduce::company-info"))
+            new ResponseObject("ok", "Get company information successfully", contentPageRepository.findAllByType("introduce::company-info").get())
         );
     }
 
