@@ -1,15 +1,22 @@
 <script setup lang="ts">
-import { ref, type PropType } from 'vue';
+import { ref, watch, type PropType } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 interface ItemRS {
+  id: string;
+  image: string;
   title: string;
   description: string;
 }
 
 const content = defineProps({
+  uuid: {
+    type: String,
+    required: true
+  },
   title: {
     type: String,
     required: false
@@ -21,10 +28,24 @@ const content = defineProps({
   listItem: {
     type: Array as PropType<ItemRS[]>,
     required: false
+  },
+  image: {
+    type: String,
+    required: false
   }
 });
 
-const emit = defineEmits(['inFocus', 'close']);
+const emits = defineEmits<{
+  // eslint-disable-next-line no-unused-vars
+  (e: 'close'): void;
+  // eslint-disable-next-line no-unused-vars
+  (
+    // eslint-disable-next-line no-unused-vars
+    e: 'update-content',
+    // eslint-disable-next-line no-unused-vars
+    data: { title: string; description: string; image: string; listrs: ItemRS[] }
+  ): void;
+}>();
 
 //Validate form
 const titleInput = ref(content.title);
@@ -86,15 +107,95 @@ const submitForm = () => {
       width: '30rem'
     });
   } else {
-    Swal.fire({
-      title: 'Cập nhật thành công',
-      icon: 'success',
-      confirmButtonText: 'Hoàn tất',
-      width: '30rem'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.close();
-        emit('close');
+    const deps = ref([]);
+
+    const object = {
+      heading: {
+        id: content.uuid,
+        title: titleInput.value,
+        content: titleSub.value,
+        image: content.image
+      },
+      subItem1: content.listItem?.[0]
+        ? {
+            id: content.listItem[0].id,
+            title: name1.value,
+            content: des1.value,
+            image: content.listItem[0].image
+          }
+        : null,
+      subItem2: content.listItem?.[1]
+        ? {
+            id: content.listItem[1].id,
+            title: name2.value,
+            content: des2.value,
+            image: content.listItem[1].image
+          }
+        : null,
+      subItem3: content.listItem?.[2]
+        ? {
+            id: content.listItem[2].id,
+            title: name3.value,
+            content: des3.value,
+            image: content.listItem[2].image
+          }
+        : null
+    };
+
+    const tempObject: ItemRS[] = [
+      {
+        id: content.listItem?.[0]?.id ?? '',
+        title: name1.value ?? '',
+        description: des1.value ?? '',
+        image: content.listItem?.[0]?.image ?? ''
+      },
+      {
+        id: content.listItem?.[1]?.id ?? '',
+        title: name2.value ?? '',
+        description: des2.value ?? '',
+        image: content.listItem?.[1]?.image ?? ''
+      },
+      {
+        id: content.listItem?.[2]?.id ?? '',
+        title: name3.value ?? '',
+        description: des3.value ?? '',
+        image: content.listItem?.[2]?.image ?? ''
+      }
+    ];
+
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(object));
+    const { response } = useAxios<DataResponse>(
+      'patch',
+      '/home/section1',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      },
+      deps.value
+    );
+
+    watch(response, () => {
+      if (response.value?.status === 'ok') {
+        Swal.fire({
+          title: 'Cập nhật thành công',
+          icon: 'success',
+          confirmButtonText: 'Hoàn tất',
+          width: '30rem'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.close();
+            emits('update-content', {
+              title: titleInput.value || '',
+              description: titleSub.value || '',
+              image: content.image || '',
+              listrs: tempObject.filter((item) => item !== null)
+            });
+            emits('close');
+          }
+        });
       }
     });
   }
