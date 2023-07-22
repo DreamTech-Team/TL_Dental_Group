@@ -1,8 +1,8 @@
 package com.dreamtech.tldental.controllers;
 
-import com.dreamtech.tldental.models.Company;
-import com.dreamtech.tldental.models.ResponseObject;
+import com.dreamtech.tldental.models.*;
 import com.dreamtech.tldental.repositories.CompanyRepository;
+import com.dreamtech.tldental.repositories.ProductRepository;
 import com.dreamtech.tldental.services.IStorageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,8 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -23,20 +22,29 @@ public class CompanyController {
     @Autowired
     private CompanyRepository companyRepository;
     @Autowired
+    private ProductRepository productRepository;
+    @Autowired
     private IStorageService storageService;
 
     // GET ALL WITH FILTER
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAll(@RequestParam(required = false) boolean highlight) {
-        List <Company> data;
-        if (highlight) {
-            data = companyRepository.findHighlightCompany();
-        } else {
-            data = companyRepository.findAll();
+        try {
+            List <Object> data;
+            if (highlight) {
+                List<Object[]> res = companyRepository.findHighlightCompany();
+                data = handleDataCompany(res);
+            } else {
+                data = Collections.singletonList(companyRepository.findAll());
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Query company successfully", data)
+            );
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("failed", exception.getMessage(), "")
+            );
         }
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Query company successfully", data)
-        );
     }
 
     // GET DETAIL
@@ -74,6 +82,7 @@ public class CompanyController {
             // Upload image to cloudinary
             String mainImgFileName = storageService.storeFile(logo);
             companyData.setLogo(mainImgFileName);
+            companyData.setHighlight(0);
             companyData.setName(companyData.getName().trim());
 
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -146,5 +155,83 @@ public class CompanyController {
                     new ResponseObject("failed", "Can not find company with id = "+companyData.getId(), "")
             );
         }
+    }
+
+
+    // HIGHLIGHT
+    // UPDATE HIGHLIGHT COMPANY
+    @PatchMapping("/highlight/{slug}")
+    ResponseEntity<ResponseObject> updateHighlightCompany(@PathVariable String slug,
+                                                       @RequestParam int highlight) {
+        try {
+            Company foundCompany = companyRepository.findBySlug(slug);
+            if (foundCompany == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject("failed", "Can not find company with slug = "+slug, "")
+                );
+            }
+            if (highlight != 0 && foundCompany.getOutstandingProductId() == null) {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject("failed", "Please update outstanding product before update highlight!", "")
+                );
+            } else {
+                foundCompany.setHighlight(highlight);
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject("ok", "Update highlight company successfully", companyRepository.save(foundCompany))
+                );
+            }
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject("failed", exception.getMessage(), "")
+            );
+        }
+    }
+
+    // UPDATE OUTSTANDING COMPANY
+    @PatchMapping("/outstanding/{slug}")
+    ResponseEntity<ResponseObject> updateOutstandingCompany(@PathVariable String slug,
+                                                            @RequestParam("idProduct") String idProduct) {
+        try {
+            Company foundCompany = companyRepository.findBySlug(slug);
+            Optional<Product> foundProduct = productRepository.findById(idProduct);
+            if (!foundProduct.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject("failed", "Can not find product with id = "+idProduct, "")
+                );
+            } else if (foundProduct.get().getFkCategory().getCompanyId().getId() != foundCompany.getId()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject("failed", "This product is not belong to " + foundCompany.getName(), "")
+                );
+            }
+
+            if (foundCompany == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject("failed", "Can not find company with slug = "+slug, "")
+                );
+            }
+
+            foundCompany.setHighlight(1);
+            foundCompany.setOutstandingProductId(idProduct);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Update outstanding company successfully", companyRepository.save(foundCompany))
+            );
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject("failed", exception.getMessage(), "")
+            );
+        }
+    }
+
+
+    private List<Object> handleDataCompany(List<Object[]> srcList) {
+        List<Object> combinedList = new ArrayList<>(); // Result
+        Map<String, Object> tempObj = new HashMap<String, Object>();
+
+        for (Object[] result : srcList) {
+            tempObj.put("company", (Company) result[0]);
+            tempObj.put("outstandingProduct", (Product) result[1]);
+            combinedList.add(tempObj);
+        }
+        return combinedList;
     }
 }

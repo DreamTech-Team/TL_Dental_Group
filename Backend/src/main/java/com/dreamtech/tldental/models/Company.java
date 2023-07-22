@@ -35,6 +35,9 @@ public class Company {
     @OneToMany(mappedBy = "companyId")
     private List<CategoryFK> cateFKs;
 
+    @Column(name = "outstanding_product_id", nullable = true)
+    private String outstandingProductId;
+
     @PrePersist
     protected void onCreate() {
         createAt = LocalDateTime.now();
@@ -66,7 +69,16 @@ public class Company {
                 ", slug='" + slug + '\'' +
                 ", createAt=" + createAt +
                 ", cateFKs=" + cateFKs +
+                ", outstandingProduct=" + outstandingProductId +
                 '}';
+    }
+
+    public String getOutstandingProductId() {
+        return outstandingProductId;
+    }
+
+    public void setOutstandingProductId(String outstandingProductId) {
+        this.outstandingProductId = outstandingProductId;
     }
 
     public String getId() {
