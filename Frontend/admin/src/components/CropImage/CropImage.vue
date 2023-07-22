@@ -14,7 +14,7 @@ const props = defineProps({
   check: { type: Boolean, required: true }
 });
 
-const emit = defineEmits(['close', 'open', 'closeIpnut', 'crop']);
+const emit = defineEmits(['close', 'open', 'crop']);
 
 const selectedImage: Ref<string | null> = ref(null);
 const croppieInstance: Ref<Croppie | null> = ref(null);
@@ -102,6 +102,7 @@ const crop = () => {
     croppieInstance.value.result('base64').then((result: string) => {
       // Xử lý kết quả crop ở đây (ví dụ: lưu vào biến imageFile)
       imageFile.value = result;
+
       emit('crop', result);
     });
   }
@@ -112,7 +113,7 @@ const crop = () => {
     <div id="croppieContainer" ref="croppieContainer"></div>
     <div>
       <button @click="crop">Crop</button>
-      <button @click="emit('close'), emit('closeIpnut')">Hủy</button>
+      <button @click="emit('close')">Hủy</button>
     </div>
 
     <input

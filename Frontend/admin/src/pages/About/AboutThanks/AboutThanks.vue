@@ -1,34 +1,38 @@
 <script setup lang="ts">
-// import Intro from '@/assets/imgs/About/Intro.png';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faComputerMouse, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 import Editor from '@tinymce/tinymce-vue';
 import Swal from 'sweetalert2';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 interface MyInputElement extends HTMLInputElement {
   getContent(): string;
 }
 
-const thanksContent = ref({
-  title: 'Tiêu đề/lời nhắn/thư ngỏ của CEO',
-  slogan: 'Slogan/tên cty/lời chào',
-  content: `Nội dung: Tôi xin gửi lời cảm ơn chân thành đến các công ty hợp tác và những nhà đồng sáng
-        lập đã đồng hành cùng chúng tôi trong suốt thời gian qua. Sự hỗ trợ và đóng góp của các bạn
-        đã góp phần quan trọng vào thành công và phát triển của chúng tôi.<br /><br />
-        Các công ty hợp tác đã đồng hành và chia sẻ tầm nhìn cùng chúng tôi, tạo nên một môi trường
-        làm việc chuyên nghiệp và sáng tạo. Chúng tôi đánh giá cao sự tin tưởng và cam kết của các
-        bạn, giúp chúng tôi thực hiện những dự án đầy thách thức và mang lại giá trị cho khách
-        hàng.<br /><br />
-        Những nhà đồng sáng lập đã cùng chúng tôi khởi động và xây dựng nền tảng thành công. Sự tận
-        tâm, năng lực và sự đổi mới của các bạn đã trở thành động lực để chúng tôi phát triển và
-        vươn lên. Chúng tôi biết ơn những giá trị và tầm nhìn mà các bạn mang đến, và sẽ tiếp tục
-        duy trì những giá trị đó trong tất cả các hoạt động của chúng tôi.<br /><br />
-        Trân trọng.`
-});
+interface AboutLetter {
+  content: string;
+  id: string;
+}
 
+const variableChange = ref([]);
+const contentLetter = ref<AboutLetter>({ content: '', id: '' });
 const isEdit = ref(false);
-const content = ref(``);
+const content = ref('');
+
+// Gọi hàm useAxios để lấy response, error, và isLoading
+const { response, error, isLoading } = useAxios<DataResponse>(
+  'get',
+  '/introduce/letter',
+  {},
+  {},
+  variableChange.value
+);
+
+// Truy xuất giá trị response.value và gán vào responseData
+watch(response, () => {
+  contentLetter.value = response?.value?.data;
+});
 
 // Hàm xử lí lấy nội dung từ tiny đã thay đổi lưu vào content
 const handleChangeContent = (e: Event) => {
@@ -42,7 +46,16 @@ const handleChangeContent = (e: Event) => {
 // Hàm cập nhật các giá trị khi thay đổi trong tiny(editor)
 const handleUpdateContent = () => {
   isEdit.value = false;
-  thanksContent.value.content = content.value;
+  contentLetter.value.content = content.value;
+
+  const deps = ref([]);
+
+  const object = {
+    id: contentLetter.value.id,
+    content: contentLetter.value.content
+  };
+
+  const { response } = useAxios<DataResponse>('patch', '/introduce/letter', object, {}, deps.value);
 };
 </script>
 <template>
@@ -50,19 +63,14 @@ const handleUpdateContent = () => {
     <div :class="$style['about__thanks-letter']">
       <h1>LỜI CẢM ƠN</h1>
 
-      <h2>
-        {{ thanksContent.title }}<br />
-        {{ thanksContent.slogan }}
-      </h2>
-
-      <p v-if="!isEdit" v-html="thanksContent.content"></p>
+      <p v-if="!isEdit" v-html="contentLetter.content"></p>
       <div :class="$style['about__thanks-letter-editor']" v-else>
         <editor
           allowedEvents="onChange"
           @change="handleChangeContent"
           api-key="y70bvcufdhcs3t72wuylxllnf0jyum0u7nf31vzvgvdliy26"
-          :initial-value="thanksContent.content"
-          :value="thanksContent.content"
+          :initial-value="contentLetter.content"
+          :value="contentLetter.content"
           :init="{
             selector: 'textarea',
             placeholder: 'Nhập phương châm',
@@ -74,7 +82,7 @@ const handleUpdateContent = () => {
               'insertdatetime media table paste code help wordcount'
             ],
             toolbar:
-              'undo redo | formatselect | bold italic backcolor forecolor | \
+              'undo redo | formatselect | fontsize bold italic backcolor forecolor | \
            alignleft aligncenter alignright alignjustify | \
            bullist numlist outdent indent | removeformat | help'
           }"
