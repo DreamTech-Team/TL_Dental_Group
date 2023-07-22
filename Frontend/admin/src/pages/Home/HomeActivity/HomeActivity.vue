@@ -32,6 +32,7 @@ const sourceElement = ref<HTMLElement | null>(null);
 const itemWidth = ref(0);
 const tags = ref('all');
 const feedbacks = ref<Item[]>([]);
+const selectedItem = ref(-1);
 const activities = ref([
   {
     id: '',
@@ -54,25 +55,6 @@ const uniqueTags = ref([
   }
 ]);
 
-watch(response, () => {
-  feedbacks.value = response.value?.data;
-  if (window.innerWidth < 739) {
-    activities.value = feedbacks.value.map((item) => item.news).slice(0, 4);
-  } else {
-    activities.value = feedbacks.value.map((item) => item.news).slice(0, 8);
-  }
-
-  const allTags = feedbacks.value.flatMap((item) => item.tags);
-  const uniqueTagsMap = new Map<string, (typeof allTags)[0]>();
-
-  allTags.forEach((tag) => {
-    uniqueTagsMap.set(tag.name, tag);
-  });
-
-  uniqueTags.value = Array.from(uniqueTagsMap.values());
-});
-const selectedItem = ref(-1);
-
 const filterTags = (selectedTag: string) => {
   if (selectedTag === 'all') {
     if (window.innerWidth < 739) {
@@ -92,8 +74,6 @@ const filterTags = (selectedTag: string) => {
         .map((item) => item.news)
         .slice(0, 8);
     }
-
-    console.log(activities.value);
   }
 };
 
@@ -109,6 +89,24 @@ const HandleClick = (index: number) => {
 const SeeAll = () => {
   router.push('/tintuc');
 };
+
+watch(response, () => {
+  feedbacks.value = response.value?.data;
+  if (window.innerWidth < 739) {
+    activities.value = feedbacks.value.map((item) => item.news).slice(0, 4);
+  } else {
+    activities.value = feedbacks.value.map((item) => item.news).slice(0, 8);
+  }
+
+  const allTags = feedbacks.value.flatMap((item) => item.tags);
+  const uniqueTagsMap = new Map<string, (typeof allTags)[0]>();
+
+  allTags.forEach((tag) => {
+    uniqueTagsMap.set(tag.name, tag);
+  });
+
+  uniqueTags.value = Array.from(uniqueTagsMap.values());
+});
 
 onMounted(() => {
   const width = sourceElement.value?.clientWidth;
