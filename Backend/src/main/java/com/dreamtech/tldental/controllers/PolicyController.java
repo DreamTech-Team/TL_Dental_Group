@@ -1,11 +1,14 @@
 package com.dreamtech.tldental.controllers;
 
 import com.dreamtech.tldental.models.Company;
+import com.dreamtech.tldental.models.ContentPage;
 import com.dreamtech.tldental.models.Policy;
 import com.dreamtech.tldental.models.ResponseObject;
+import com.dreamtech.tldental.repositories.ContentPageRepository;
 import com.dreamtech.tldental.repositories.PolicyRepository;
 import com.dreamtech.tldental.services.IStorageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,8 @@ import java.util.Optional;
 public class PolicyController {
     @Autowired
     PolicyRepository repository;
+    @Autowired
+    private ContentPageRepository contentPageRepository;
     @Autowired
     private IStorageService storageService;
 
@@ -150,5 +155,64 @@ public class PolicyController {
                     new ResponseObject("failed", "Can not find policy with id = " + policyData.getId(), "")
             );
         }
+    }
+
+
+    //  BANNER HEADER
+    @GetMapping("/header")
+    public ResponseEntity<ResponseObject> getHeader() {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Get header successfully", contentPageRepository.findHomePageByTypeName("policy::header"))
+        );
+    }
+
+    @PostMapping("/header")
+    public ResponseEntity<ResponseObject> addHeader(@RequestParam("image") MultipartFile image) {
+        Optional<ContentPage> foundHeader = contentPageRepository.findHomePageByTypeName("policy::header");
+
+        if (foundHeader.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                    new ResponseObject("failed", "Type name already taken", "")
+            );
+        }
+
+        String imageFile = storageService.storeFile(image);
+
+        ContentPage entity = new ContentPage(null, "Chính sách", null, imageFile, null, "policy::header");
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Add header successfully", contentPageRepository.save(entity))
+        );
+    }
+
+    @PatchMapping("/header")
+    public ResponseEntity<ResponseObject> updateHeader(@RequestParam("data") String data, @RequestParam(name = "image", required = false) MultipartFile image) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ContentPage entity = objectMapper.readValue(data, ContentPage.class);
+
+        Optional<ContentPage> foundHeader = contentPageRepository.findById(entity.getId());
+
+        if (foundHeader.isPresent()) {
+            ContentPage header = foundHeader.get();
+
+            if (header.getType().equals("policy::header")) {
+                BeanUtils.copyProperties(entity, header);
+
+                if (image != null) {
+                    storageService.deleteFile(header.getImage());
+                    header.setImage(storageService.storeFile(image));
+                }
+
+                header.setType("policy::header");
+
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject("ok", "Update header successfully", contentPageRepository.save(header))
+                );
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                new ResponseObject("failed", "Cannot found your data", "")
+        );
     }
 }

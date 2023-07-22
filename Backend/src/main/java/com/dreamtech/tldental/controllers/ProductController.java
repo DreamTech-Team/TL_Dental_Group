@@ -1,18 +1,19 @@
 package com.dreamtech.tldental.controllers;
 
-import com.dreamtech.tldental.models.CategoryFK;
-import com.dreamtech.tldental.models.DataPageObject;
-import com.dreamtech.tldental.models.Product;
-import com.dreamtech.tldental.models.ResponseObject;
+import com.dreamtech.tldental.models.*;
 import com.dreamtech.tldental.repositories.CategoryFKRepository;
+import com.dreamtech.tldental.repositories.ContentPageRepository;
 import com.dreamtech.tldental.repositories.ProductRepository;
 import com.dreamtech.tldental.services.IStorageService;
 import com.dreamtech.tldental.utils.Utils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Min;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -32,6 +33,8 @@ public class ProductController {
     private ProductRepository repository;
     @Autowired
     private CategoryFKRepository categoryFKRepository;
+    @Autowired
+    private ContentPageRepository contentPageRepository;
     @Autowired
     private IStorageService storageService;
 
@@ -293,6 +296,66 @@ public class ProductController {
                 new ResponseObject("ok", "Updated product successfully", res)
         );
     }
+
+
+    //  BANNER HEADER
+    @GetMapping("/header")
+    public ResponseEntity<ResponseObject> getHeader() {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Get header successfully", contentPageRepository.findHomePageByTypeName("product_list::header"))
+        );
+    }
+
+    @PostMapping("/header")
+    public ResponseEntity<ResponseObject> addHeader(@RequestParam("image") MultipartFile image) {
+        Optional<ContentPage> foundHeader = contentPageRepository.findHomePageByTypeName("product_list::header");
+
+        if (foundHeader.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                    new ResponseObject("failed", "Type name already taken", "")
+            );
+        }
+
+        String imageFile = storageService.storeFile(image);
+
+        ContentPage entity = new ContentPage(null, "Chính sách", null, imageFile, null, "product_list::header");
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Add header successfully", contentPageRepository.save(entity))
+        );
+    }
+
+    @PatchMapping("/header")
+    public ResponseEntity<ResponseObject> updateHeader(@RequestParam("data") String data, @RequestParam(name = "image", required = false) MultipartFile image) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ContentPage entity = objectMapper.readValue(data, ContentPage.class);
+
+        Optional<ContentPage> foundHeader = contentPageRepository.findById(entity.getId());
+
+        if (foundHeader.isPresent()) {
+            ContentPage header = foundHeader.get();
+
+            if (header.getType().equals("product_list::header")) {
+                BeanUtils.copyProperties(entity, header);
+
+                if (image != null) {
+                    storageService.deleteFile(header.getImage());
+                    header.setImage(storageService.storeFile(image));
+                }
+
+                header.setType("product_list::header");
+
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject("ok", "Update header successfully", contentPageRepository.save(header))
+                );
+            }
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                new ResponseObject("failed", "Cannot found your data", "")
+        );
+    }
+    
 
     private static class ProductData {
         private String name;

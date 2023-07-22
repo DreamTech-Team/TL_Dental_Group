@@ -2,6 +2,7 @@ package com.dreamtech.tldental.models;
 
 
 import com.dreamtech.tldental.utils.Utils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 
