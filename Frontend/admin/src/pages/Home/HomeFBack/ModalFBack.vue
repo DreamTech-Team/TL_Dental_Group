@@ -246,7 +246,8 @@ const updateForm = () => {
         fullname: feedbacks.value[selectedItem.value].fullname,
         position: feedbacks.value[selectedItem.value].position,
         rating: feedbacks.value[selectedItem.value].rating,
-        content: feedbacks.value[selectedItem.value].content
+        content: feedbacks.value[selectedItem.value].content,
+        image: feedbacks.value[selectedItem.value].image
       };
       const formData = new FormData();
       formData.append('data', JSON.stringify(object));

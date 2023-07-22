@@ -1,22 +1,36 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import Capgemini from '@/assets/imgs/Home/Capgemini.png';
-import Yamaha from '@/assets/imgs/Home/Yamaha.png';
-import DELL from '@/assets/imgs/Home/DELL.png';
-import Biocon from '@/assets/imgs/Home/Biocon.png';
+import { ref, watch } from 'vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 interface Company {
-  id: number;
+  id: string;
   name: string;
-  image: string;
+  logo: string;
+  description: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
 }
 
-const companies = ref<Company[]>([
-  { id: 1, name: 'Capgemini', image: Capgemini },
-  { id: 2, name: 'Yamaha', image: Yamaha },
-  { id: 3, name: 'Biocon', image: Biocon },
-  { id: 4, name: 'DELL', image: DELL }
-]);
+const companies = ref<Company[]>([]);
+const deps = ref([]);
+const { response } = useAxios<DataResponse>('get', '/company', {}, {}, deps.value);
+
+watch(response, () => {
+  companies.value = response.value?.data;
+
+  if (companies.value) {
+    const sortedCompanies = [...companies.value];
+    sortedCompanies.sort((a, b) => {
+      if (a.highlight === b.highlight) return 0;
+      if (a.highlight === 0) return 1;
+      if (b.highlight === 0) return -1;
+      return a.highlight - b.highlight;
+    });
+
+    companies.value = sortedCompanies;
+  }
+});
 </script>
 
 <template>
@@ -29,7 +43,7 @@ const companies = ref<Company[]>([
           v-for="(company, index) in companies"
           :key="index"
         >
-          <img :src="company.image" :alt="company.name" />
+          <img :src="company.logo" :alt="company.name" />
         </div>
       </div>
       <div :class="[$style['home__company-list'], 'logos-slide']" ref="companyList">
@@ -38,7 +52,7 @@ const companies = ref<Company[]>([
           v-for="(company, index) in companies"
           :key="index"
         >
-          <img :src="company.image" :alt="company.name" />
+          <img :src="company.logo" :alt="company.name" />
         </div>
       </div>
     </div>

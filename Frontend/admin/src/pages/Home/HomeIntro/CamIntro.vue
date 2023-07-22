@@ -116,7 +116,7 @@ const submitForm = () => {
       </div>
       <div :class="$style.camintro__modal__body">
         <div :class="$style.camintro__ctn">
-          <img :src="selectedImage" alt="meeting" />
+          <img :src="selectedImage" alt="CEO" />
           <div :class="$style.camintro__image_overlay">
             <input
               type="file"

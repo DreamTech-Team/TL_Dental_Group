@@ -102,7 +102,16 @@ const updateSVG = (path: string) => {
     </div>
     <EditBtn @click="isOpen = true" />
   </div>
-  <ModalCam v-if="isOpenCam" :image="content.image" @close="isOpenCam = false" />
+  <ModalCam
+    v-if="isOpenCam"
+    @update-content="onUpdateContent"
+    :uuid="content.id"
+    :title="content.title"
+    :description="content.description"
+    :list-item="content.listrs"
+    :image="content.image"
+    @close="isOpenCam = false"
+  />
   <ModalSVG v-if="isOpenSVG" :image="selectedSVG" @close="isOpenSVG = false" />
   <ModalReason
     v-if="isOpen"
