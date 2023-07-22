@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import CategoryModalAdd from '../CategoryModalAdd/CategoryModalAdd.vue';
-
+import { ref, watch } from 'vue';
 const database = [
   {
-    nameCompany: 'Cong ty ABC',
+    name: 'Cong ty ABC',
     category1: [
       {
         name: 'Vat lieu chinh nha ABC',
@@ -20,7 +18,7 @@ const database = [
     ]
   },
   {
-    nameCompany: 'Cong ty ABCD',
+    name: 'Cong ty ABCD',
     category1: [
       {
         name: 'Vat lieu chinh nha ABC',
@@ -29,7 +27,7 @@ const database = [
     ]
   },
   {
-    nameCompany: 'Cong ty ABCDE',
+    name: 'Cong ty ABCDE',
     category1: [
       {
         name: 'Vat lieu chinh nha ABC',
@@ -38,7 +36,7 @@ const database = [
     ]
   },
   {
-    nameCompany: 'Cong ty ABCDEF',
+    name: 'Cong ty ABCDEF',
     category1: [
       {
         name: 'Vat lieu chinh nha ABC',
@@ -47,7 +45,7 @@ const database = [
     ]
   },
   {
-    nameCompany: 'Cong ty ABC',
+    name: 'Cong ty ABC',
     category1: [
       {
         name: 'Vat lieu chinh nha ABC',
@@ -63,7 +61,7 @@ const database = [
     ]
   },
   {
-    nameCompany: 'Cong ty ABCD',
+    name: 'Cong ty ABCD',
     category1: [
       {
         name: 'Vat lieu chinh nha ABC',
@@ -72,7 +70,7 @@ const database = [
     ]
   },
   {
-    nameCompany: 'Cong ty ABCDE',
+    name: 'Cong ty ABCDE',
     category1: [
       {
         name: 'Vat lieu chinh nha ABC',
@@ -81,7 +79,7 @@ const database = [
     ]
   },
   {
-    nameCompany: 'Cong ty ABCDEF',
+    name: 'Cong ty ABCDEF',
     category1: [
       {
         name: 'Vat lieu chinh nha ABC',
@@ -90,7 +88,7 @@ const database = [
     ]
   },
   {
-    nameCompany: 'Cong ty ABC',
+    name: 'Cong ty ABC',
     category1: [
       {
         name: 'Vat lieu chinh nha ABC',
@@ -106,7 +104,7 @@ const database = [
     ]
   },
   {
-    nameCompany: 'Cong ty ABCD',
+    name: 'Cong ty ABCD',
     category1: [
       {
         name: 'Vat lieu chinh nha ABC',
@@ -115,7 +113,7 @@ const database = [
     ]
   },
   {
-    nameCompany: 'Cong ty ABCDE',
+    name: 'Cong ty ABCDE',
     category1: [
       {
         name: 'Vat lieu chinh nha ABC',
@@ -124,7 +122,7 @@ const database = [
     ]
   },
   {
-    nameCompany: 'Cong ty ABCDEF',
+    name: 'Cong ty ABCDEF',
     category1: [
       {
         name: 'Vat lieu chinh nha ABC',
@@ -134,24 +132,53 @@ const database = [
   }
 ];
 
-const props = defineProps({ cateType: { type: Number, required: true } });
+const props = defineProps({
+  cateType: { type: Number, required: true },
+  data: { type: Object, require: true },
+  isEmptyItems: { type: Boolean, required: true },
+  handleSelected: { type: Function, required: true }
+});
+
+const emptyItem = '<<Trống>>';
 
 const selectedItem = ref(-1);
 const addItem = ref(false);
+const listItem = ref();
+
+const handleClickItem = (index: number, item: object) => {
+  if (selectedItem.value === index) {
+    selectedItem.value = -1;
+    props.handleSelected(null);
+  } else {
+    selectedItem.value = index;
+    props.handleSelected(item);
+  }
+};
+
+watch(
+  () => props.data,
+  (value) => {
+    listItem.value = value;
+
+    if (!value?.id) {
+      selectedItem.value = -1;
+    }
+  }
+);
 </script>
 <template>
   <div :class="$style.container">
     <div :class="$style['container-list']">
       <div
-        v-for="(item, index) in database"
+        v-for="(item, index) in listItem"
         :class="[
           $style['container-list-item'],
-          $style[selectedItem === index ? 'container-list-item-active' : '']
+          $style[selectedItem === Number(index) ? 'container-list-item-active' : '']
         ]"
         :key="index"
-        @click="selectedItem = Number(index)"
+        @click="handleClickItem(index, item)"
       >
-        <p>{{ item.nameCompany }}</p>
+        <p>{{ item.name || item.title }}</p>
         <svg
           v-if="props.cateType !== 2"
           viewBox="0 0 24 24"
@@ -170,6 +197,12 @@ const addItem = ref(false);
             ></path>
           </g>
         </svg>
+      </div>
+      <div
+        v-if="isEmptyItems"
+        :class="[$style['container-list-item'], $style['container-list-item-empty']]"
+      >
+        <p>{{ emptyItem }}</p>
       </div>
     </div>
     <div :class="$style['container-add']">

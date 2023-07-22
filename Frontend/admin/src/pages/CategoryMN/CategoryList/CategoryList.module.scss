@@ -8,8 +8,9 @@
   justify-content: space-between;
 
   &-list {
-    overflow-y: scroll;
-    padding-bottom: 3.5rem;
+    height: 100%;
+    overflow-y: auto;
+    margin-bottom: 3.5rem;
 
     &::-webkit-scrollbar {
       width: 5px;
@@ -36,8 +37,8 @@
       height: 3.5rem;
 
       p {
-        font-size: $text-base;
-        font-weight: 300;
+        font-size: $text-sm;
+        font-weight: 400;
         color: white;
       }
 
@@ -49,6 +50,20 @@
 
         path {
           stroke: white;
+        }
+      }
+
+      &-empty {
+        background-color: #818181;
+        display: flex;
+        justify-content: center;
+
+        p {
+          font-size: $text-sm;
+        }
+
+        &:hover {
+          background-color: #818181 !important;
         }
       }
     }
@@ -72,7 +87,7 @@
     justify-content: center;
     align-items: center;
     background-color: $primary_700;
-    padding: 1.5rem 0 1.5rem 0;
+    height: 7.8rem;
 
     &-block {
       display: flex;
