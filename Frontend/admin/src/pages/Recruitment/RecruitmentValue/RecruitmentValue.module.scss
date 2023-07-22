@@ -1,0 +1,97 @@
+@import '@/styles/base';
+
+.container__value {
+  position: relative;
+  display: flex;
+  padding: 10rem 15rem 0 15rem;
+
+  &-heading {
+    &-title {
+      &-main {
+        display: flex;
+        align-items: center;
+        &-1 {
+          display: block;
+          width: fit-content;
+          padding: 0.8rem 1rem;
+          margin-right: 1rem;
+          background-color: $complimentary_400;
+          color: white;
+          font-size: $text-2xl;
+          border-radius: 0.5rem;
+          font-weight: 500;
+        }
+
+        &-2 {
+          font-size: $text-2xl;
+          font-weight: 550;
+          color: $triadic_900;
+        }
+      }
+
+      &-3 {
+        margin-top: 0.5rem;
+        font-size: $text-3xl;
+        font-weight: 500;
+        word-spacing: 0.2rem;
+        color: $text_900;
+      }
+    }
+
+    &-content {
+      margin-top: 5rem;
+      font-size: $text-base;
+      color: $text_800;
+      width: 90%;
+    }
+  }
+
+  &-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+}
+
+.btn-edit {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 5.2rem;
+  width: 5.2rem;
+  border-radius: 3rem;
+
+  svg {
+    width: 3rem;
+    height: auto;
+  }
+
+  &-1 {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: white;
+
+    path {
+      fill: $primary_900;
+    }
+  }
+
+  &-2 {
+    position: absolute;
+    top: 3rem;
+    right: 3rem;
+    background-color: $primary_900;
+
+    path {
+      fill: white;
+    }
+  }
+}
+
+.btn-edit:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}

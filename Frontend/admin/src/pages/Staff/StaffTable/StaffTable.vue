@@ -33,22 +33,7 @@ interface SelectStaff {
   email: string;
 }
 
-// interface Staff {
-//   name: string;
-//   position: string;
-//   phone: string;
-//   address: string;
-//   email: string;
-// }
-
 const selectedStaff = ref<Record<string, never> | SelectStaff>({});
-// const selectedStaff = ref<Staff>({
-//   name: '',
-//   position: '',
-//   phone: '',
-//   address: '',
-//   email: ''
-// });
 
 // Trong phần code xử lý sự kiện
 const editActivity = (staff: SelectStaff) => {

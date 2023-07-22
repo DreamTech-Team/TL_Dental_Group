@@ -1,25 +1,32 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import CEO from '@/assets/imgs/Home/CEO.png';
+import { ref, watch } from 'vue';
 import Logo from '@/assets/imgs/logo_nobg.png';
 import EditBtn from '@/components/EditBtn/EditBtn.vue';
 import CamBtn from '@/components/ImageBtn/ImageBtn.vue';
 import ModalIntro from './ModalIntro.vue';
 import ModalCam from './CamIntro.vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+//GET DATA
+const deps = ref([]);
+const { response } = useAxios<DataResponse>('get', '/home/section3', {}, {}, deps.value);
 
 const content = ref({
-  title: `Lời ngỏ từ <strong>CEO NGUYEN HOANG</strong>`,
-  context: `<span
-            >"I used to have a bunch of different tools I had to pay for, with Circle you get
-            everything in one bundle."</span
-          >
-          <br />
-          <br />
-          <br />
-          <strong>Michel Dedrick</strong>
-          <br />
-          <span>Senior Conversion Optimizer</span>`,
-  image: CEO
+  id: '',
+  title: ``,
+  context: ``,
+  image: ''
+});
+
+const onUpdateContent = (data: object) => {
+  content.value = { ...content.value, ...data };
+};
+
+watch(response, () => {
+  content.value.id = response.value?.data?.id;
+  content.value.image = response.value?.data?.image;
+  content.value.title = response.value?.data?.title;
+  content.value.context = response.value?.data?.content;
 });
 
 const isOpen = ref(false);
@@ -32,7 +39,7 @@ const isOpenCam = ref(false);
       <button :class="$style['home__intro-btn']">XEM CHI TIẾT</button>
     </div>
     <div :class="$style['home__intro-center']">
-      <img :src="content.image" alt="ceo" />
+      <img :src="content.image" alt="CEO" />
       <CamBtn @click="isOpenCam = true" />
       <div :class="$style['home__intro-description']">
         <div :class="$style['home__intro-logo']">
@@ -48,10 +55,21 @@ const isOpenCam = ref(false);
   <ModalIntro
     v-if="isOpen"
     @close="isOpen = false"
+    @update-content="onUpdateContent"
+    :uuid="content.id"
     :title="content.title"
     :tags="content.context"
+    :image="content.image"
   />
-  <ModalCam v-if="isOpenCam" :image="content.image" @close="isOpenCam = false" />
+  <ModalCam
+    v-if="isOpenCam"
+    @update-content="onUpdateContent"
+    :uuid="content.id"
+    :title="content.title"
+    :tags="content.context"
+    :image="content.image"
+    @close="isOpenCam = false"
+  />
 </template>
 
 <style module scoped lang="scss">

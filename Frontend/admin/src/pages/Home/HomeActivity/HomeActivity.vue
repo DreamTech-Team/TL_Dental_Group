@@ -1,83 +1,185 @@
 <script setup lang="ts">
-import Act from '@/assets/imgs/Home/Activiy.png';
-import { ref } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
+import router from '@/router/index';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-const activities = [
+//GET DATA
+interface Item {
+  news: {
+    id: string;
+    title: string;
+    img: string;
+    slug: string;
+    summary: string;
+    detail: string;
+    detailMobile: string;
+    highlight: number;
+    createAt: string;
+  };
+  tags: [
+    {
+      id: string;
+      name: string;
+      slug: string;
+      createAt: string;
+    }
+  ];
+}
+let resizeListener: () => void;
+const deps = ref([]);
+const { response } = useAxios<DataResponse>('get', '/news/highlight', {}, {}, deps.value);
+const sourceElement = ref<HTMLElement | null>(null);
+const itemWidth = ref(0);
+const tags = ref('all');
+const feedbacks = ref<Item[]>([]);
+const activities = ref([
   {
-    title: 'TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước',
-    description:
-      'Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh nha'
-  },
-  {
-    title: 'TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước',
-    description:
-      'Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh nha'
-  },
-  {
-    title: 'TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước',
-    description:
-      'Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh nha'
-  },
-  {
-    title: 'TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước',
-    description:
-      'Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh nha'
-  },
-  {
-    title: 'TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước',
-    description:
-      'Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh nha'
-  },
-  {
-    title: 'TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước',
-    description:
-      'Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh nha'
-  },
-  {
-    title: 'TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước',
-    description:
-      'Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh nha'
-  },
-  {
-    title: 'TL Dental Group tham gia các sự kiện Nha khoa, chỉnh nha trong và ngoài nước',
-    description:
-      'Nhận được sự quan tâm đến từ rất nhiều quý bác sĩ, đối tác nhà cung cấp sản phẩm chỉnh nha'
+    id: '',
+    title: '',
+    img: '',
+    slug: '',
+    summary: '',
+    detail: '',
+    detailMobile: '',
+    highlight: 1,
+    createAt: ''
   }
-  // Thêm các hoạt động khác vào đây
-];
+]);
+const uniqueTags = ref([
+  {
+    id: '',
+    name: '',
+    slug: '',
+    createAt: ''
+  }
+]);
 
+watch(response, () => {
+  feedbacks.value = response.value?.data;
+  if (window.innerWidth < 739) {
+    activities.value = feedbacks.value.map((item) => item.news).slice(0, 4);
+  } else {
+    activities.value = feedbacks.value.map((item) => item.news).slice(0, 8);
+  }
+
+  const allTags = feedbacks.value.flatMap((item) => item.tags);
+  const uniqueTagsMap = new Map<string, (typeof allTags)[0]>();
+
+  allTags.forEach((tag) => {
+    uniqueTagsMap.set(tag.name, tag);
+  });
+
+  uniqueTags.value = Array.from(uniqueTagsMap.values());
+});
 const selectedItem = ref(-1);
+
+const filterTags = (selectedTag: string) => {
+  if (selectedTag === 'all') {
+    if (window.innerWidth < 739) {
+      activities.value = feedbacks.value.map((item) => item.news).slice(0, 4);
+    } else {
+      activities.value = feedbacks.value.map((item) => item.news).slice(0, 8);
+    }
+  } else {
+    if (window.innerWidth < 739) {
+      activities.value = feedbacks.value
+        .filter((item) => item.tags.some((tag) => tag.name === selectedTag))
+        .map((item) => item.news)
+        .slice(0, 4);
+    } else {
+      activities.value = feedbacks.value
+        .filter((item) => item.tags.some((tag) => tag.name === selectedTag))
+        .map((item) => item.news)
+        .slice(0, 8);
+    }
+
+    console.log(activities.value);
+  }
+};
+
+const setTags = (temp: string) => {
+  tags.value = temp;
+  filterTags(temp);
+};
 
 const HandleClick = (index: number) => {
   selectedItem.value = index;
 };
+
+const SeeAll = () => {
+  router.push('/tintuc');
+};
+
+onMounted(() => {
+  const width = sourceElement.value?.clientWidth;
+
+  if (width !== undefined) {
+    if (window.innerWidth >= 739) {
+      itemWidth.value = (width - 200) / 4;
+    } else {
+      itemWidth.value = (width - 35) / 2;
+    }
+  }
+
+  resizeListener = function () {
+    if (width !== undefined) {
+      if (window.innerWidth >= 739) {
+        itemWidth.value = (width - 200) / 4;
+      } else {
+        itemWidth.value = (width - 35) / 2;
+      }
+    }
+  };
+});
+
+onUnmounted(() => {
+  if (window.innerWidth < 739) {
+    window.removeEventListener('resize', resizeListener);
+  }
+});
 </script>
 <template>
   <div :class="$style.home__activities">
     <h3>CÁC HOẠT ĐỘNG CỦA CÔNG TY</h3>
-    <button :class="$style['home__activities-button']" @click.prevent>Xem tất cả</button>
+    <button :class="$style['home__activities-button']" @click="SeeAll">Xem tất cả</button>
     <div :class="$style['home__activities-list']">
-      <button>Tất cả</button>
-      <button>Hội nghị tháng 6</button>
-      <button>Sự kiện</button>
-      <button>Hội nghị tháng 4</button>
-      <button>Hội nghị tháng 3</button>
+      <button
+        @click="setTags('all')"
+        :style="{
+          'background-color': tags === 'all' ? 'white' : '',
+          color: tags === 'all' ? '#005796' : ''
+        }"
+      >
+        Tất cả
+      </button>
+      <button
+        v-for="(item, index) in uniqueTags"
+        :key="index"
+        @click="setTags(item.name)"
+        :style="{
+          'background-color': tags === item.name ? 'white' : '',
+          color: tags === item.name ? '#005796' : ''
+        }"
+      >
+        {{ item.name }}
+      </button>
     </div>
-    <div :class="$style['home__activities-grid']">
+    <div :class="$style['home__activities-grid']" ref="sourceElement">
       <div
         v-for="(activity, index) in activities"
         :key="index"
         :class="$style['home__activities-item']"
+        :style="{ width: itemWidth + 'px' }"
         @click="HandleClick(index)"
       >
-        <img :src="Act" alt="activity" />
+        <img :src="activity.img" alt="activity" />
         <div
           :class="$style['home__activities-hover']"
           :style="selectedItem === index ? 'display: flex' : ''"
         >
           <div :class="$style['home__activities-text']">
             <h4>{{ activity.title }}</h4>
-            <span>{{ activity.description }}</span>
+            <span>{{ activity.summary }}</span>
           </div>
         </div>
       </div>

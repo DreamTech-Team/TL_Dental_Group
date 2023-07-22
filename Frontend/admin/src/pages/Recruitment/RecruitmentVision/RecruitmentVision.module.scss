@@ -1,9 +1,46 @@
 @import '@/styles/base';
 
-.display-none {
-  transition: all 0.2s ease;
-  opacity: 0;
-  display: none;
+.container__vision {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 10rem;
+  padding: 5rem 13rem;
+  background-color: rgba($color: $text_100, $alpha: 0.3);
+
+  &-block {
+    display: flex;
+    align-items: center;
+
+    &-img1 {
+      margin-right: 2rem;
+      img {
+        border-radius: 10rem;
+        height: 15rem;
+        width: 15rem;
+      }
+    }
+
+    &-img2 {
+      img {
+        border-radius: 22rem;
+        height: 40rem;
+        width: 27rem;
+      }
+    }
+  }
+
+  &-content {
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    text-align: center;
+    font-size: $text-base;
+    color: $text_800;
+  }
 }
 
 .btn-edit {
@@ -46,43 +83,6 @@
 .btn-edit:hover {
   cursor: pointer;
   opacity: 0.8;
-}
-
-.update-btn {
-  position: absolute;
-  top: 1.8rem;
-  right: 3rem;
-  display: flex;
-  justify-content: center;
-  margin-top: 2rem;
-  margin-bottom: 3rem;
-
-  &-submit {
-    width: 13rem;
-    padding: 0.5rem 0;
-    border-radius: 3rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: $text-lg;
-    font-weight: 500;
-  }
-
-  &-cancel {
-    border: 0.2rem solid $primary_700;
-    color: $text_800;
-  }
-
-  &-update {
-    margin-left: 3rem;
-    background: linear-gradient(270deg, #22d1ee 0%, #3d5af1 100%);
-    color: white;
-  }
-
-  &-submit:hover {
-    cursor: pointer;
-    opacity: 0.8;
-  }
 }
 
 .block__img {

@@ -5,6 +5,7 @@ import { axiosClient } from '@/api/axios';
 export interface DataResponse {
   status: string;
   message: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any; // Bổ sung kiểu dữ liệu phù hợp cho data, ví dụ: any[] hoặc object[]
 }
 
@@ -41,6 +42,7 @@ const useAxios = <DataResponse>(
         }
       } catch (err: unknown) {
         if (err instanceof AxiosError) {
+          console.log(err);
           error.value = err;
         }
       } finally {

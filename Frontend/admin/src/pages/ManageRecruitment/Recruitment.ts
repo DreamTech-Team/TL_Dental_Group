@@ -4,7 +4,7 @@ export const recruitments = [
     title: '1VHG – Tuyển Thực Tập Sinh Marketing 1VHG – Tuyển Thực Tập Sinh Marketing 1VHG',
     address: '135 Trần Hưng Đạo, Quận 1, TP HCM',
     description: 'Công việc này sịn lắm. Ăn nằm ngủ có lương. Không làm tiền vô như nước',
-    position: 'Kinh doanh/Marketing',
+    position: 'Kinh doanh',
     requirements:
       'Không cần kinh nghiệm, răng đẹp hoặc là răng xấu là được chứ không nhận răng bình thường',
     contact: 'Liên hệ qua facebook hoặc quét cái mã QR dưới trang chủ để qua facebook liên hệ nghe',

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import Comp from '@/assets/imgs/Home/ABComp.png';
+import { ref, watch } from 'vue';
 import ICEdit from '@/assets/icons/Edit.png';
 import EditBtn from '@/components/EditBtn/EditBtn.vue';
 import CamBtn from '@/components/ImageBtn/ImageBtn.vue';
@@ -8,34 +7,57 @@ import ModalCam from './CamReason.vue';
 import ModalReason from './ModalReason.vue';
 import ModalSVG from './SVGReason.vue';
 import SVG from '@/assets/icons/white_check.png';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+//GET DATA
+const deps = ref([]);
+const { response } = useAxios<DataResponse>('get', '/home/section1', {}, {}, deps.value);
 
 const content = ref({
-  image: Comp,
-  title: 'TẠI SAO NÊN LỰA CHỌN TL DENTAL GROUP',
-  description: '#1 Nhà Cung Cấp Sản Phẩm Nha Khoa - Chỉnh Nha Tại Việt Nam',
+  id: '',
+  image: '',
+  title: '',
+  description: '',
   listrs: [
     {
-      icon: SVG,
-      title: 'Sản phẩm chính hãng',
-      description:
-        // eslint-disable-next-line max-len
-        'Quý khách hàng sẽ được trải nghiệm những sản phẩm chính hãng từ các thương hiệu uy tín, chất lượng cao.'
+      id: '',
+      image: SVG,
+      title: '',
+      description: ''
     },
     {
-      icon: SVG,
-      title: 'Mức giá cạnh tranh',
-      description:
-        // eslint-disable-next-line max-len
-        'TL Gental Group với phương châm kinh doanh đôi bên cùng có lợi, quý khách được cung cấp giá cả cạnh tranh hàng đầu thị trường.'
+      id: '',
+      image: SVG,
+      title: '',
+      description: ''
     },
     {
-      icon: SVG,
-      title: 'Chân thành, tin cậy và uy tín',
-      description:
-        // eslint-disable-next-line max-len
-        'Sự phát triển của quý bác sỹ cũng chính là sự thành công của TL Gental Group. Từ đó, tạo nên hệ thống đối tác bền vững và lâu dài.'
+      id: '',
+      image: SVG,
+      title: '',
+      description: ''
     }
   ]
+});
+
+const onUpdateContent = (data: object) => {
+  content.value = { ...content.value, ...data };
+};
+
+watch(response, () => {
+  content.value.id = response.value?.data?.heading?.id;
+  content.value.image = response.value?.data?.heading?.image;
+  content.value.title = response.value?.data?.heading?.title;
+  content.value.description = response.value?.data?.heading?.content;
+  content.value.listrs[0].id = response.value?.data?.subItem1?.id;
+  content.value.listrs[0].title = response.value?.data?.subItem1?.title;
+  content.value.listrs[0].description = response.value?.data?.subItem1?.content;
+  content.value.listrs[1].id = response.value?.data?.subItem2?.id;
+  content.value.listrs[1].title = response.value?.data?.subItem2?.title;
+  content.value.listrs[1].description = response.value?.data?.subItem2?.content;
+  content.value.listrs[2].id = response.value?.data?.subItem3?.id;
+  content.value.listrs[2].title = response.value?.data?.subItem3?.title;
+  content.value.listrs[2].description = response.value?.data?.subItem3?.content;
 });
 
 const selectedSVG = ref(SVG);
@@ -64,8 +86,8 @@ const updateSVG = (path: string) => {
           :key="index"
         >
           <div :class="$style['home__reason-icon']">
-            <img :src="item.icon" alt="icon1" />
-            <button @click="updateSVG(item.icon)">
+            <img :src="item.image" alt="icon1" />
+            <button @click="updateSVG(item.image)">
               <img :src="ICEdit" alt="iconed" />
             </button>
           </div>
@@ -80,14 +102,26 @@ const updateSVG = (path: string) => {
     </div>
     <EditBtn @click="isOpen = true" />
   </div>
-  <ModalCam v-if="isOpenCam" :image="content.image" @close="isOpenCam = false" />
+  <ModalCam
+    v-if="isOpenCam"
+    @update-content="onUpdateContent"
+    :uuid="content.id"
+    :title="content.title"
+    :description="content.description"
+    :list-item="content.listrs"
+    :image="content.image"
+    @close="isOpenCam = false"
+  />
   <ModalSVG v-if="isOpenSVG" :image="selectedSVG" @close="isOpenSVG = false" />
   <ModalReason
     v-if="isOpen"
     @close="isOpen = false"
+    @update-content="onUpdateContent"
+    :uuid="content.id"
     :title="content.title"
     :description="content.description"
     :list-item="content.listrs"
+    :image="content.image"
   />
 </template>
 
