@@ -7,8 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.dreamtech.tldental.models.ContentPage;
 import com.dreamtech.tldental.models.ResponseObject;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
+@RestController
 @RequestMapping("/api/v1/recruitment")
 public class RecruitmentController {
     @Autowired
@@ -30,7 +33,7 @@ public class RecruitmentController {
     @GetMapping("/header")
     public ResponseEntity<ResponseObject> getHeader() {
         return ResponseEntity.status(HttpStatus.OK).body(
-            new ResponseObject("ok", "Get header successfully", contentPageRepository.findHomePageByTypeName("recruitment::header"))
+            new ResponseObject("ok", "Get header successfully", contentPageRepository.findAllByType("recruitment::header").get())
         );
     }
 
@@ -58,4 +61,29 @@ public class RecruitmentController {
             new ResponseObject("ok", "Add header successfully", contentPageRepository.save(entity))
         );
     }
+
+    // @PatchMapping(value="/header")
+    // public ResponseEntity<ResponseObject> updateHeader (@RequestParam("data") String data) throws JsonMappingException, JsonProcessingException {
+
+    //     Optional<ContentPage[]> headers = contentPageRepository.findAllByType("recruitment::header");
+
+    //     if (headers.isPresent()) {
+
+    //         ContentPage[] listHeader = headers.get();
+
+    //         if (listHeader.length >= 3) 
+    //             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+    //                 new ResponseObject("error", "Header is full", null)
+    //             );
+    //     }
+
+    //     ObjectMapper objectMapper = new ObjectMapper();
+    //     ContentPage entity = objectMapper.readValue(data, ContentPage.class);
+
+    //     entity.setType("recruitment::header");
+
+    //     return ResponseEntity.status(HttpStatus.OK).body(
+    //         new ResponseObject("ok", "Add header successfully", contentPageRepository.saveAll())
+    //     );
+    // }
 }

@@ -68,8 +68,11 @@ public class IntroduceController {
             if (header.getType().equals("introduce::header")) {
                 BeanUtils.copyProperties(entity, header);
 
-                if (image != null) 
+                if (image != null) {
+                    storageService.deleteFile(header.getImage());
+
                     header.setImage(storageService.storeFile(image));
+                }
 
                 header.setType("introduce::header");
 
@@ -179,6 +182,7 @@ public class IntroduceController {
                 BeanUtils.copyProperties(entity, compInfo);
                 
                 if (image != null) {
+                    storageService.deleteFile(compInfo.getImage());
                     String imageFile = storageService.storeFile(image);
                     compInfo.setImage(imageFile);
                 }
@@ -232,6 +236,7 @@ public class IntroduceController {
                 BeanUtils.copyProperties(entity, section1);
                 
                 if (image != null) {
+                    storageService.deleteFile(section1.getImage());
                     String imageFile = storageService.storeFile(image);
                     section1.setImage(imageFile);
                 }
@@ -253,6 +258,8 @@ public class IntroduceController {
         Optional<ContentPage> foundSection1 = contentPageRepository.findById(id);
 
         if (foundSection1.isPresent() && foundSection1.get().getType().equals("introduce::section1")) {
+            storageService.deleteFile(foundSection1.get().getImage());
+            
             contentPageRepository.deleteById(id);
 
             return ResponseEntity.status(HttpStatus.OK).body(

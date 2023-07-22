@@ -171,6 +171,8 @@ public class HomePageController {
                 section1SubItem3.setType("home::section1_subitem3");
 
                 if (image != null) {
+                    storageService.deleteFile(section1Heading.getImage());
+                    
                     String imageFile = storageService.storeFile(image);
                     section1Heading.setImage(imageFile);
                 }
@@ -240,6 +242,8 @@ public class HomePageController {
                 BeanUtils.copyProperties(entity, section2);
 
                 if (image != null) {
+                    storageService.deleteFile(section2.getImage());
+
                     String imageFile = storageService.storeFile(image);
                     section2.setImage(imageFile);
                 }
@@ -310,6 +314,7 @@ public class HomePageController {
                 BeanUtils.copyProperties(entity, section3);
 
                 if (image != null) {
+                    storageService.deleteFile(section3.getImage());
                     String imageFile = storageService.storeFile(image);
                     section3.setImage(imageFile);
                 }
@@ -360,6 +365,7 @@ public class HomePageController {
             BeanUtils.copyProperties(entity, review);
 
             if (image != null) {
+                storageService.deleteFile(review.getImage());
                 String imageFile = storageService.storeFile(image);
                 review.setImage(imageFile);
             }
@@ -379,6 +385,7 @@ public class HomePageController {
         Optional<Review> foundReview = reviewRepository.findById(id);
 
         if (foundReview.isPresent()) {
+            storageService.deleteFile(foundReview.get().getImage());
             reviewRepository.deleteById(id);
 
             return ResponseEntity.status(HttpStatus.OK).body(
