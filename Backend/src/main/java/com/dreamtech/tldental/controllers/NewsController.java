@@ -145,7 +145,7 @@ public class NewsController {
                     new ResponseObject("ok", "Insert news successfully", resNews)
             );
         } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                     new ResponseObject("failed", exception.getMessage(), "")
             );
         }

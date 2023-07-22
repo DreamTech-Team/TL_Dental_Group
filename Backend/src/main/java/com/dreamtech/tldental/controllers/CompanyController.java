@@ -41,7 +41,7 @@ public class CompanyController {
                     new ResponseObject("ok", "Query company successfully", data)
             );
         } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObject("failed", exception.getMessage(), "")
             );
         }
@@ -89,7 +89,7 @@ public class CompanyController {
                     new ResponseObject("ok", "Insert company successfully", companyRepository.save(companyData))
             );
         } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObject("failed", exception.getMessage(), "")
             );
         }
@@ -171,7 +171,7 @@ public class CompanyController {
                 );
             }
             if (highlight != 0 && foundCompany.getOutstandingProductId() == null) {
-                return ResponseEntity.status(HttpStatus.OK).body(
+                return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                         new ResponseObject("failed", "Please update outstanding product before update highlight!", "")
                 );
             } else {

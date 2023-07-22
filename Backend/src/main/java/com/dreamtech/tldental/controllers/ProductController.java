@@ -60,7 +60,7 @@ public class ProductController {
                     new ResponseObject("ok", "Query product successfully", new DataPageObject(total, page, pageSize, newsList))
             );
         } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                     new ResponseObject("failed", exception.getMessage(), "")
             );
         }
@@ -171,7 +171,7 @@ public class ProductController {
             }
 
         } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObject("failed", exception.getMessage(), ""));
         }
     }
@@ -259,7 +259,7 @@ public class ProductController {
                     new ResponseObject("ok", "Insert product successfully", repository.save(product))
             );
         } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                     new ResponseObject("failed", exception.getMessage(), "")
             );
         }

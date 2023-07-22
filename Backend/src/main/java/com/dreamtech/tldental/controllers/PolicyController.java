@@ -39,7 +39,7 @@ public class PolicyController {
                     new ResponseObject("ok", "Query company successfully", data)
             );
         } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                     new ResponseObject("Failed", exception.getMessage(), "")
             );
         }
@@ -52,7 +52,7 @@ public class PolicyController {
                     new ResponseObject("ok", "Query company successfully", repository.findBySlug(slug))
             );
         } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                     new ResponseObject("Failed", exception.getMessage(), "")
             );
         }
@@ -90,7 +90,7 @@ public class PolicyController {
                     new ResponseObject("ok", "Insert company successfully", repository.save(policyData))
             );
         } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                     new ResponseObject("failed", exception.getMessage(), "")
             );
         }
