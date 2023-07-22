@@ -1,9 +1,5 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
-import Capgemini from '@/assets/imgs/Home/Capgemini.png';
-import Yamaha from '@/assets/imgs/Home/Yamaha.png';
-import DELL from '@/assets/imgs/Home/DELL.png';
-import Biocon from '@/assets/imgs/Home/Biocon.png';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 //GET DATA
@@ -20,12 +16,57 @@ watch(response, () => {
   content.value.context = response.value?.data?.content;
 });
 
-const bannerItems = [
-  { src: Capgemini, alt: 'capgemini', width: '127', height: '30' },
-  { src: Yamaha, alt: 'yamaha', width: '127', height: '26' },
-  { src: Biocon, alt: 'biocon', width: '101', height: '40' },
-  { src: DELL, alt: 'dell', width: '82.42', height: '25' }
-];
+interface Company {
+  id: string;
+  name: string;
+  logo: string;
+  description: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+}
+
+interface Item {
+  src: string;
+  alt: string;
+  width: string;
+  height: string;
+}
+
+const companies = ref<Company[]>([]);
+const deps1 = ref([]);
+const results = useAxios<DataResponse>('get', '/company', {}, {}, deps1.value);
+const bannerItems = ref([{ src: '', alt: '', width: '0', height: '0' }]);
+
+const calculateWidths = () => {
+  return new Promise<void>((resolve) => {
+    const imagePromises = bannerItems.value.map((item: Item) => {
+      return new Promise<void>((resolve) => {
+        const image = new Image();
+        image.onload = () => {
+          const aspectRatio = image.width / image.height;
+          const newWidth = 30 * aspectRatio;
+          item.width = newWidth.toFixed(2);
+          resolve();
+        };
+        image.src = item.src;
+      });
+    });
+
+    Promise.all(imagePromises).then(() => {
+      resolve();
+    });
+  });
+};
+
+const getRandomItems = (array: Company[], count: number) => {
+  const shuffled = array.slice();
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, count);
+};
 
 //Scroll Properties
 const MIN_SWIPE_DISTANCE_CM = 3.5;
@@ -41,13 +82,13 @@ const mobilestatus = ref(true);
 
 //WEB
 const activeIndex = ref(0);
-const activeBanner = ref(bannerItems[0]);
+const activeBanner = ref(bannerItems.value[0]);
 const showBannerBg = ref(true);
 const lineWidth = ref(0);
 let resizeListener: () => void;
 
 const widthComputed = computed(() => {
-  return widthItemMB.value * bannerItems.length + 'px';
+  return widthItemMB.value * bannerItems.value.length + 'px';
 });
 
 const widthItemComputed = computed(() => {
@@ -70,7 +111,7 @@ const scrollRight = () => {
       circleActive.value = 0;
       container.scrollTo({ left: 0, behavior: 'smooth' });
     } else {
-      if (circleActive.value == bannerItems.length - 1) {
+      if (circleActive.value == bannerItems.value.length - 1) {
         circleActive.value = 0;
       } else {
         circleActive.value++;
@@ -90,7 +131,7 @@ const scrollLeft = () => {
     const targetScrollLeft = currentScrollLeft - itemWidth - 10;
 
     if (targetScrollLeft < 0) {
-      circleActive.value = bannerItems.length - 1;
+      circleActive.value = bannerItems.value.length - 1;
       container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
     } else {
       circleActive.value--;
@@ -127,15 +168,15 @@ const handleTouchend = (e: TouchEvent) => {
 const lineTransform = computed(() => {
   let selectedItemLeft = 0;
   for (let i = 0; i < activeIndex.value; i++) {
-    const itemWidth = Number(bannerItems[i].width) + 30;
+    const itemWidth = Number(bannerItems.value[i].width) + 30;
     selectedItemLeft += itemWidth;
   }
-  selectedItemLeft += (Number(bannerItems[activeIndex.value].width) - lineWidth.value) / 2;
+  selectedItemLeft += (Number(bannerItems.value[activeIndex.value].width) - lineWidth.value) / 2;
   return `translateX(${selectedItemLeft}px)`;
 });
 
 const selectedItem = computed(() => {
-  return bannerItems[activeIndex.value];
+  return bannerItems.value[activeIndex.value];
 });
 
 //Set background for banner
@@ -243,24 +284,66 @@ const elipseColorMB = [
 //To do when moveline
 const moveLine = (index: number) => {
   activeIndex.value = index;
-  activeBanner.value = bannerItems[index];
+  activeBanner.value = bannerItems.value[index];
   showBannerBg.value = false;
 
   setTimeout(() => {
     showBannerBg.value = true;
   }, 100);
-};
 
-onMounted(() => {
-  //Find active and set width for line
-  const lineActive = document.getElementById('line_active');
-  if (lineActive) {
-    lineWidth.value = lineActive.offsetWidth;
+  let totalWidthToLeft = 0;
+  for (let i = 0; i < index; i++) {
+    const itemWidth = Number(bannerItems.value[i].width) + 30;
+    totalWidthToLeft += itemWidth;
   }
 
+  const selectedItemWidth = Number(bannerItems.value[index].width);
+  const selectedItemCenter = totalWidthToLeft + selectedItemWidth / 2;
+  lineWidth.value = 0.75 * selectedItemWidth;
+  const lineLeft = selectedItemCenter - lineWidth.value / 2;
+
+  const lineActive = document.getElementById('line_active');
+  if (lineActive) {
+    lineActive.style.transform = `translateX(${lineLeft}px)`;
+  }
+};
+
+watch(
+  results.response,
+  async () => {
+    companies.value = results.response.value?.data;
+
+    if (companies.value) {
+      const highlightedCompanies: Company[] = companies.value.filter(
+        (company) => company.highlight !== 0
+      );
+      const randomHighlightedCompanies: Company[] =
+        highlightedCompanies.length >= 4
+          ? getRandomItems(highlightedCompanies, 4)
+          : highlightedCompanies;
+      companies.value = randomHighlightedCompanies;
+
+      bannerItems.value = companies.value.map((company) => {
+        return {
+          src: company.logo,
+          alt: company.name,
+          width: '',
+          height: '30'
+        };
+      });
+
+      await calculateWidths();
+
+      lineWidth.value = Number(bannerItems.value[0].width) * 0.75;
+    }
+  },
+  { immediate: true }
+);
+
+onMounted(() => {
   mobilestatus.value = false;
 
-  //Find width slider
+  // Find width slider
   widthItemMB.value = window.innerWidth;
 
   const startScroll = () => {
@@ -271,14 +354,8 @@ onMounted(() => {
 
   startScroll();
 
-  //Resize Screen
+  // Resize Screen
   resizeListener = function () {
-    const lineActive = document.getElementById('line_active');
-    if (lineActive) {
-      activeIndex.value = 0;
-      lineWidth.value = lineActive.offsetWidth;
-    }
-
     if (window.innerWidth < 739) {
       mobilestatus.value = true;
       widthItemMB.value = window.innerWidth;
@@ -311,7 +388,11 @@ onUnmounted(() => {
         >
           <img :src="item.src" :alt="item.alt" :width="item.width" :height="item.height" />
         </div>
-        <div id="line_active" :class="$style['line']" :style="{ transform: lineTransform }"></div>
+        <div
+          id="line_active"
+          :class="$style['line']"
+          :style="{ transform: lineTransform, width: lineWidth + 'px' }"
+        ></div>
       </div>
     </div>
     <div :class="$style['home__banner-right']">
