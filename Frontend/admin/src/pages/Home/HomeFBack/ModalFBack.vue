@@ -14,10 +14,7 @@ import {
   faExclamationCircle
 } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
-
-interface MyFile extends File {
-  name: string;
-}
+import CropImage from '@/components/CropImage/CropImage.vue';
 
 interface ItemRS {
   id: string;
@@ -61,8 +58,11 @@ const hover = ref(0);
 const fullname = ref(feedbacks.value[selectedItem.value].fullname);
 const position = ref(feedbacks.value[selectedItem.value].position);
 const speech = ref(feedbacks.value[selectedItem.value].content);
-const selectedImage = ref('');
-const file = ref<MyFile | null>(null);
+const urlFile = ref();
+const isCrop = ref(false);
+const isOpenInput = ref(false);
+const fileData = ref();
+const finalImage = ref();
 
 //Adding new one
 const addStatus = ref(false);
@@ -119,21 +119,6 @@ const scrollRight = () => {
   changeInfor();
 };
 
-//Choose image
-const handleFileInputChange = (event: Event) => {
-  const inputElement = event.target as HTMLInputElement;
-  file.value = inputElement.files?.[0] || null;
-
-  if (file.value) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      selectedImage.value = reader.result as string;
-      feedbacks.value[selectedItem.value].image = selectedImage.value;
-    };
-    reader.readAsDataURL(file.value);
-  }
-};
-
 //Validate variables
 const isName = ref(false);
 const isPos = ref(false);
@@ -142,11 +127,29 @@ const isCont = ref(false);
 const nameInput = ref<HTMLInputElement | null>(null);
 const posInput = ref<HTMLInputElement | null>(null);
 const speechInput = ref<HTMLInputElement | null>(null);
-const fileInput = ref<HTMLInputElement | null>(null);
 
 //Open file image
 const openFileInput = () => {
-  fileInput.value?.click();
+  isOpenInput.value = !isOpenInput.value;
+};
+
+const base64ToBlob = (base64Data: string) => {
+  const byteString = atob(base64Data.split(',')[1]);
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  return new Blob([ab], { type: 'image/png' });
+};
+
+const handleCroppedImage = (result: string) => {
+  if (result) {
+    urlFile.value = result;
+    feedbacks.value[selectedItem.value].image = urlFile.value;
+    fileData.value = base64ToBlob(result);
+    finalImage.value = new File([fileData.value], 'image.png', { type: 'image/png' });
+  }
 };
 
 const deleteItem = () => {
@@ -177,7 +180,6 @@ const deleteItem = () => {
 
       watch(response, () => {
         if (response.value?.status === 'ok') {
-          console.log(feedbacks.value);
           emits('update-content', {
             listrs: feedbacks.value
           });
@@ -229,6 +231,19 @@ const validateInform = () => {
     isCont.value = false;
   }
 
+  if (addStatus.value && finalImage.value === undefined) {
+    Swal.fire({
+      title: 'Bạn chưa chọn ảnh',
+      icon: 'error',
+      showConfirmButton: false,
+      width: '30rem'
+    });
+    setTimeout(function () {
+      Swal.close();
+    }, 1200);
+    return;
+  }
+
   feedbacks.value[selectedItem.value].fullname = fullname.value;
   feedbacks.value[selectedItem.value].position = position.value;
   feedbacks.value[selectedItem.value].content = speech.value;
@@ -246,11 +261,12 @@ const updateForm = () => {
         fullname: feedbacks.value[selectedItem.value].fullname,
         position: feedbacks.value[selectedItem.value].position,
         rating: feedbacks.value[selectedItem.value].rating,
-        content: feedbacks.value[selectedItem.value].content
+        content: feedbacks.value[selectedItem.value].content,
+        image: feedbacks.value[selectedItem.value].image
       };
       const formData = new FormData();
       formData.append('data', JSON.stringify(object));
-      formData.append('image', file.value as Blob);
+      formData.append('image', finalImage.value as Blob);
       const { response } = useAxios<DataResponse>(
         'patch',
         '/home/reviews',
@@ -290,49 +306,35 @@ const updateForm = () => {
       };
       const formData = new FormData();
       formData.append('data', JSON.stringify(object));
-      formData.append('image', file.value as Blob);
-      if (file.value === null) {
-        Swal.fire({
-          title: 'Bạn chưa chọn ảnh',
-          icon: 'error',
-          showConfirmButton: false,
-          width: '30rem'
-        });
-        setTimeout(function () {
-          Swal.close();
-        }, 1200);
-        return;
-      } else {
-        const { response } = useAxios<DataResponse>(
-          'post',
-          '/home/reviews',
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          },
-          deps.value
-        );
-        watch(response, () => {
-          console.log(response);
-          if (response.value?.status === 'ok') {
-            emits('update-content', {
-              listrs: feedbacks.value
-            });
-            Swal.fire({
-              title: 'Thêm thành công',
-              icon: 'success',
-              confirmButtonText: 'Hoàn tất',
-              width: '30rem'
-            });
-            addStatus.value = false;
-            setTimeout(function () {
-              Swal.close();
-            }, 1200);
+      formData.append('image', finalImage.value as Blob);
+      const { response } = useAxios<DataResponse>(
+        'post',
+        '/home/reviews',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
           }
-        });
-      }
+        },
+        deps.value
+      );
+      watch(response, () => {
+        if (response.value?.status === 'ok') {
+          emits('update-content', {
+            listrs: feedbacks.value
+          });
+          Swal.fire({
+            title: 'Thêm thành công',
+            icon: 'success',
+            confirmButtonText: 'Hoàn tất',
+            width: '30rem'
+          });
+          addStatus.value = false;
+          setTimeout(function () {
+            Swal.close();
+          }, 1200);
+        }
+      });
     }
   }
 };
@@ -391,13 +393,10 @@ const addItem = () => {
               <div :class="$style['modal__feedback-img']">
                 <img :src="feedbacks[selectedItem].image" alt="doctor" />
                 <div :class="$style.modal_imagebtn">
-                  <button style="border: none" @click="openFileInput">
-                    <input
-                      type="file"
-                      ref="fileInput"
-                      style="display: none"
-                      @change="handleFileInputChange"
-                    />
+                  <button
+                    style="border: none; background-color: transparent"
+                    @click="openFileInput"
+                  >
                     <img :src="IconCam" alt="icon" />
                   </button>
                 </div>
@@ -499,6 +498,17 @@ const addItem = () => {
       </div>
     </div>
   </div>
+  <crop-image
+    :heightCrop="250"
+    :widthCrop="270"
+    :heightWrap="250"
+    :widthWrap="270"
+    :check="isOpenInput"
+    v-show="isCrop"
+    @close="isCrop = false"
+    @open="isCrop = true"
+    @crop="handleCroppedImage"
+  />
 </template>
 
 <style module scoped lang="scss">

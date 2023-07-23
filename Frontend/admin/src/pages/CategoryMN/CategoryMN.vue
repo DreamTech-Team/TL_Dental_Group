@@ -1,9 +1,20 @@
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import CategoryList from './CategoryList/CategoryList.vue';
 import { ic_logo } from '@/assets/imgs/Recruitment/RecruitmentImgs';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 const selectedImage = ref(ic_logo);
+const itemSelected = ref({ company: {}, category1: {}, category2: {} });
+const listCompany = ref({ lst: [{}], lstEmpty: false });
+const listCategory1 = ref({ lst: [{}], lstEmpty: false });
+const listCategory2 = ref({ lst: [{}], lstEmpty: false });
+const openEditImage = ref(false);
+
+// Gọi hàm useAxios để lấy response, error, và isLoading
+const getCompany = useAxios<DataResponse>('get', '/company', {}, {}, listCompany.value.lst);
+// const getCategories = useAxios<DataResponse>('get', '/cate', {}, {}, listCategory1.value.lst);
 
 //Choose image
 const handleFileInputChange = (event: Event) => {
@@ -18,6 +29,107 @@ const handleFileInputChange = (event: Event) => {
     reader.readAsDataURL(file);
   }
 };
+
+const handleSelectCompany = (infCompapy: any) => {
+  itemSelected.value.company = infCompapy;
+
+  if (infCompapy) {
+    const getCategories = useAxios<DataResponse>(
+      'get',
+      `/cate?companyId=${infCompapy.id}&cate1Id&cate2Id`,
+      {},
+      {},
+      listCategory1.value.lst
+    );
+
+    watch(getCategories.response, (value) => {
+      if (value?.data) {
+        const dataCate = value?.data;
+        const cate1IdArray = [];
+        for (let index = 0; index < dataCate.length; index++) {
+          const element = dataCate[index];
+          cate1IdArray.push(element.cate1Id);
+        }
+
+        listCategory1.value.lst = cate1IdArray.filter((element, index, arr) => {
+          return arr.findIndex((e) => e.id === element.id) === index;
+        });
+
+        listCategory1.value.lstEmpty = listCategory1.value.lst.length === 0;
+        listCategory2.value.lstEmpty =
+          listCategory2.value.lst.length === 0 &&
+          !listCategory1.value.lstEmpty &&
+          itemSelected.value.category1 === null;
+
+        // console.log(listCategory1.value.lst);
+      } else {
+        console.log('Error data category');
+      }
+    });
+  } else {
+    listCategory1.value.lst = [];
+    listCategory1.value.lstEmpty = false;
+  }
+
+  listCategory2.value.lst = [];
+  listCategory2.value.lstEmpty = false;
+};
+
+const handleSelectCategory1 = (infCategory1: any) => {
+  itemSelected.value.category1 = infCategory1;
+
+  if (infCategory1) {
+    // console.log(itemSelected.value, infCategory1);
+
+    const getCategories = useAxios<DataResponse>(
+      'get',
+      `/cate?companyId=${itemSelected.value.company.id}&cate1Id=${infCategory1.id}&cate2Id`,
+      {},
+      {},
+      listCategory2.value.lst
+    );
+
+    watch(getCategories.response, (value) => {
+      if (value?.data) {
+        const dataCate = value?.data;
+        listCategory2.value.lst = [];
+        for (let index = 0; index < dataCate.length; index++) {
+          const element = dataCate[index];
+          listCategory2.value.lst.push(element.cate2Id);
+        }
+
+        if (!listCategory2.value.lst[0]) {
+          listCategory2.value.lst = [];
+          listCategory2.value.lstEmpty = true;
+        } else {
+          listCategory2.value.lstEmpty = false;
+        }
+
+        // console.log(listCategory2.value.lst);
+      } else {
+        console.log('Error data category');
+      }
+    });
+
+    // watch(getCategories.error, (value) => {
+    //   console.log(value);
+    // });
+  } else {
+    listCategory2.value.lst = [];
+    listCategory2.value.lstEmpty = false;
+  }
+};
+
+watch(getCompany.response, (value) => {
+  // console.log(getCompany.response);
+
+  if (getCompany.error.value) console.log('error:' + getCompany.error.value);
+  else if (value?.data) {
+    listCompany.value.lst = value?.data;
+  } else {
+    console.log('data: ' + value?.data);
+  }
+});
 </script>
 <template>
   <div :class="$style.container">
@@ -42,32 +154,47 @@ const handleFileInputChange = (event: Event) => {
         <div :class="$style['container__content-left-topic']">
           <h3 :class="$style['heading-style']">Công ty</h3>
           <div :class="$style['container__content-left-topic-item']">
-            <category-list :cate-type="0" />
+            <category-list
+              :cate-type="0"
+              :data="listCompany.lst"
+              :is-empty-items="listCompany.lstEmpty"
+              :handle-selected="handleSelectCompany"
+            />
           </div>
         </div>
         <div :class="$style['container__content-left-topic']">
           <h3 :class="$style['heading-style']">Danh mục 1</h3>
           <div :class="$style['container__content-left-topic-item']">
-            <category-list :cate-type="1" />
+            <category-list
+              :cate-type="1"
+              :data="listCategory1.lst"
+              :is-empty-items="listCategory1.lstEmpty"
+              :handle-selected="handleSelectCategory1"
+            />
           </div>
         </div>
         <div :class="$style['container__content-left-topic']">
           <h3 :class="$style['heading-style']">Danh mục 2</h3>
           <div :class="$style['container__content-left-topic-item']">
-            <category-list :cate-type="2" />
+            <category-list
+              :cate-type="2"
+              :data="listCategory2.lst"
+              :is-empty-items="listCategory2.lstEmpty"
+              :handle-selected="() => {}"
+            />
           </div>
         </div>
       </div>
       <div :class="$style['container__content-right']">
         <h3 :class="$style['heading-style']">Chỉnh sửa</h3>
         <div :class="$style['container__content-right-edit']">
-          <p>Tên</p>
-          <input type="text" placeholder="Nhập thông tin" />
+          <p>Tên Danh Mục</p>
+          <input type="text" placeholder="Nhập tên danh mục" />
         </div>
         <div :class="$style['container__content-right-image']">
           <div :class="$style['container__content-right-image-block']">
             <img :src="selectedImage" />
-            <div :class="$style['block__img-edit']">
+            <div v-if="openEditImage" :class="$style['block__img-edit']">
               <input type="file" @change="(e) => handleFileInputChange(e)" />
               <svg
                 viewBox="-368.64 -368.64 1761.28 1761.28"

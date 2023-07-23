@@ -1,50 +1,146 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch, type PropType } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import CamBtn from '@/components/ImageBtn/ImageBtn.vue';
+import CropImage from '@/components/CropImage/CropImage.vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+interface ItemRS {
+  id: string;
+  image: string;
+  title: string;
+  description: string;
+}
 
 const context = defineProps({
-  image: {
+  uuid: {
     type: String,
     required: true
+  },
+  title: {
+    type: String,
+    required: false
+  },
+  description: {
+    type: String,
+    required: false
+  },
+  listItem: {
+    type: Array as PropType<ItemRS[]>,
+    required: false
+  },
+  image: {
+    type: String,
+    required: false
   }
 });
 
-const emit = defineEmits(['inFocus', 'close']);
-const selectedImage = ref(context.image);
-const fileInput = ref<HTMLInputElement | null>(null);
+const emits = defineEmits<{
+  // eslint-disable-next-line no-unused-vars
+  (e: 'close'): void;
+  // eslint-disable-next-line no-unused-vars
+  (e: 'update-content', data: { image: string }): void;
+}>();
+const urlFile = ref(context.image);
+const isCrop = ref(false);
+const isOpenInput = ref(false);
+const fileData = ref();
+const finalImage = ref();
 
 //Open file image
 const openFileInput = () => {
-  fileInput.value?.click();
+  isOpenInput.value = !isOpenInput.value;
+};
+
+const base64ToBlob = (base64Data: string) => {
+  const byteString = atob(base64Data.split(',')[1]);
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  return new Blob([ab], { type: 'image/png' });
 };
 
 //Choose image
-const handleFileInputChange = (event: Event) => {
-  const inputElement = event.target as HTMLInputElement;
-  const file = inputElement.files?.[0];
+const handleCroppedImage = (result: string) => {
+  if (result) {
+    urlFile.value = result;
 
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      selectedImage.value = reader.result as string;
-    };
-    reader.readAsDataURL(file);
+    fileData.value = base64ToBlob(result);
+    finalImage.value = new File([fileData.value], 'image.png', { type: 'image/png' });
   }
 };
 
 const submitForm = () => {
-  Swal.fire({
-    title: 'Cập nhật thành công',
-    icon: 'success',
-    confirmButtonText: 'Hoàn tất',
-    width: '30rem'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.close();
-      emit('close');
+  const deps = ref([]);
+
+  const object = {
+    heading: {
+      id: context.uuid,
+      title: context.title,
+      content: context.description,
+      image: context.image
+    },
+    subItem1: context.listItem?.[0]
+      ? {
+          id: context.listItem[0].id,
+          title: context.listItem[0].title,
+          content: context.listItem[0].description,
+          image: context.listItem[0].image
+        }
+      : null,
+    subItem2: context.listItem?.[1]
+      ? {
+          id: context.listItem[1].id,
+          title: context.listItem[1].title,
+          content: context.listItem[1].description,
+          image: context.listItem[1].image
+        }
+      : null,
+    subItem3: context.listItem?.[2]
+      ? {
+          id: context.listItem[2].id,
+          title: context.listItem[1].title,
+          content: context.listItem[1].description,
+          image: context.listItem[2].image
+        }
+      : null
+  };
+
+  const formData = new FormData();
+  formData.append('data', JSON.stringify(object));
+  formData.append('image', finalImage.value as Blob);
+  const { response } = useAxios<DataResponse>(
+    'patch',
+    '/home/section1',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    },
+    deps.value
+  );
+
+  watch(response, () => {
+    if (response.value?.status === 'ok') {
+      Swal.fire({
+        title: 'Cập nhật thành công',
+        icon: 'success',
+        confirmButtonText: 'Hoàn tất',
+        width: '30rem'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.close();
+          emits('update-content', {
+            image: urlFile.value || ''
+          });
+          emits('close');
+        }
+      });
     }
   });
 };
@@ -63,14 +159,8 @@ const submitForm = () => {
       </div>
       <div :class="$style.camreason__modal__body">
         <div :class="$style.camreason__ctn">
-          <img :src="selectedImage" alt="meeting" />
+          <img v-if="urlFile" :src="urlFile" alt="company" />
           <div :class="$style.camreason__image_overlay">
-            <input
-              type="file"
-              ref="fileInput"
-              style="display: none"
-              @change="handleFileInputChange"
-            />
             <CamBtn @click="openFileInput" />
           </div>
         </div>
@@ -81,6 +171,17 @@ const submitForm = () => {
       </div>
     </div>
   </div>
+  <crop-image
+    :heightCrop="447"
+    :widthCrop="517"
+    :heightWrap="447"
+    :widthWrap="517"
+    :check="isOpenInput"
+    v-show="isCrop"
+    @close="isCrop = false"
+    @open="isCrop = true"
+    @crop="handleCroppedImage"
+  />
 </template>
 
 <style module scoped lang="scss">

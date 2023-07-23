@@ -69,7 +69,8 @@ const submitForm = () => {
     const object = {
       id: context.uuid,
       title: titleInput.value,
-      content: textareaInput.value.level.content
+      content: textareaInput.value.level.content,
+      image: context.image
     };
 
     const formData = new FormData();

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
+import router from '@/router/index';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 //GET DATA
@@ -24,10 +25,14 @@ interface Item {
     }
   ];
 }
+let resizeListener: () => void;
 const deps = ref([]);
 const { response } = useAxios<DataResponse>('get', '/news/highlight', {}, {}, deps.value);
-
+const sourceElement = ref<HTMLElement | null>(null);
+const itemWidth = ref(0);
+const tags = ref('all');
 const feedbacks = ref<Item[]>([]);
+const selectedItem = ref(-1);
 const activities = ref([
   {
     id: '',
@@ -50,9 +55,48 @@ const uniqueTags = ref([
   }
 ]);
 
+const filterTags = (selectedTag: string) => {
+  if (selectedTag === 'all') {
+    if (window.innerWidth < 739) {
+      activities.value = feedbacks.value.map((item) => item.news).slice(0, 4);
+    } else {
+      activities.value = feedbacks.value.map((item) => item.news).slice(0, 8);
+    }
+  } else {
+    if (window.innerWidth < 739) {
+      activities.value = feedbacks.value
+        .filter((item) => item.tags.some((tag) => tag.name === selectedTag))
+        .map((item) => item.news)
+        .slice(0, 4);
+    } else {
+      activities.value = feedbacks.value
+        .filter((item) => item.tags.some((tag) => tag.name === selectedTag))
+        .map((item) => item.news)
+        .slice(0, 8);
+    }
+  }
+};
+
+const setTags = (temp: string) => {
+  tags.value = temp;
+  filterTags(temp);
+};
+
+const HandleClick = (index: number) => {
+  selectedItem.value = index;
+};
+
+const SeeAll = () => {
+  router.push('/tintuc');
+};
+
 watch(response, () => {
   feedbacks.value = response.value?.data;
-  activities.value = feedbacks.value.map((item) => item.news).slice(0, 8);
+  if (window.innerWidth < 739) {
+    activities.value = feedbacks.value.map((item) => item.news).slice(0, 4);
+  } else {
+    activities.value = feedbacks.value.map((item) => item.news).slice(0, 8);
+  }
 
   const allTags = feedbacks.value.flatMap((item) => item.tags);
   const uniqueTagsMap = new Map<string, (typeof allTags)[0]>();
@@ -61,28 +105,69 @@ watch(response, () => {
     uniqueTagsMap.set(tag.name, tag);
   });
 
-  uniqueTags.value = Array.from(uniqueTagsMap.values()); //HỘI NGHỊ THEO TAGS
+  uniqueTags.value = Array.from(uniqueTagsMap.values());
 });
 
-const selectedItem = ref(-1);
+onMounted(() => {
+  const width = sourceElement.value?.clientWidth;
 
-const HandleClick = (index: number) => {
-  selectedItem.value = index;
-};
+  if (width !== undefined) {
+    if (window.innerWidth >= 739) {
+      itemWidth.value = (width - 200) / 4;
+    } else {
+      itemWidth.value = (width - 35) / 2;
+    }
+  }
+
+  resizeListener = function () {
+    if (width !== undefined) {
+      if (window.innerWidth >= 739) {
+        itemWidth.value = (width - 200) / 4;
+      } else {
+        itemWidth.value = (width - 35) / 2;
+      }
+    }
+  };
+});
+
+onUnmounted(() => {
+  if (window.innerWidth < 739) {
+    window.removeEventListener('resize', resizeListener);
+  }
+});
 </script>
 <template>
   <div :class="$style.home__activities">
     <h3>CÁC HOẠT ĐỘNG CỦA CÔNG TY</h3>
-    <button :class="$style['home__activities-button']" @click.prevent>Xem tất cả</button>
+    <button :class="$style['home__activities-button']" @click="SeeAll">Xem tất cả</button>
     <div :class="$style['home__activities-list']">
-      <button>Tất cả</button>
-      <button v-for="(item, index) in uniqueTags" :key="index">{{ item.name }}</button>
+      <button
+        @click="setTags('all')"
+        :style="{
+          'background-color': tags === 'all' ? 'white' : '',
+          color: tags === 'all' ? '#005796' : ''
+        }"
+      >
+        Tất cả
+      </button>
+      <button
+        v-for="(item, index) in uniqueTags"
+        :key="index"
+        @click="setTags(item.name)"
+        :style="{
+          'background-color': tags === item.name ? 'white' : '',
+          color: tags === item.name ? '#005796' : ''
+        }"
+      >
+        {{ item.name }}
+      </button>
     </div>
-    <div :class="$style['home__activities-grid']">
+    <div :class="$style['home__activities-grid']" ref="sourceElement">
       <div
         v-for="(activity, index) in activities"
         :key="index"
         :class="$style['home__activities-item']"
+        :style="{ width: itemWidth + 'px' }"
         @click="HandleClick(index)"
       >
         <img :src="activity.img" alt="activity" />

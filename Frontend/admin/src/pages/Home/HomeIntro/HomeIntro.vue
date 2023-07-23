@@ -39,7 +39,7 @@ const isOpenCam = ref(false);
       <button :class="$style['home__intro-btn']">XEM CHI TIẾT</button>
     </div>
     <div :class="$style['home__intro-center']">
-      <img :src="content.image" alt="ceo" />
+      <img :src="content.image" alt="CEO" />
       <CamBtn @click="isOpenCam = true" />
       <div :class="$style['home__intro-description']">
         <div :class="$style['home__intro-logo']">
