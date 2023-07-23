@@ -51,7 +51,7 @@ public class ProductController {
             Sort.Direction sortDirection = sort.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
             Sort sortByCreateAt = Sort.by(sortDirection, "createAt");
 
-            List<Object[]> newsList = repository.findFilteredProducts(company, cate1, cate2, PageRequest
+            List<Object> newsList = repository.findFilteredProducts(company, cate1, cate2, PageRequest
                     .of(Integer.parseInt(page), Integer.parseInt(pageSize), sortByCreateAt));
 
             int total = newsList.size();
@@ -70,7 +70,7 @@ public class ProductController {
     ResponseEntity<ResponseObject> getTotal(@RequestParam(value = "company", required = false) String company,
                                             @RequestParam(value = "cate1", required = false) String cate1,
                                             @RequestParam(value = "cate2", required = false) String cate2) {
-        List<Object[]> newsList = repository.findFilteredProducts(company, cate1, cate2, null);
+        List<Object> newsList = repository.findFilteredProducts(company, cate1, cate2, null);
         int total = newsList.size();
 
         return ResponseEntity.status(HttpStatus.OK).body(
