@@ -37,17 +37,19 @@ defineProps({
     </div>
     <div :class="$style.card__header">
       <div :class="$style['card__header--container']">
-        <div :class="$style['card__header--genuine']">
-          <img :class="$style['card__header--genuine-sticker']" :src="OkSticker" alt="sticker" />
-          <p :class="$style['card__header--genuine-text']">100% chính hãng</p>
-        </div>
-        <div :class="$style['card__header--insurance']">
-          <img :class="$style['card__header--insurance-sticker']" :src="Insurance" alt="sticker" />
-          <p :class="$style['card__header--insurance-text']">Bảo hành 12 tháng</p>
-        </div>
-        <div :class="$style['card__header--support']">
-          <img :class="$style['card__header--support-sticker']" :src="SPSticker" alt="sticker" />
-          <p :class="$style['card__header--support-text']">Hỗ trợ đổi trả</p>
+        <div :class="$style['card__header--container-wrapcfc']">
+          <div :class="$style['card__header--genuine']">
+            <img :class="$style['card__header--genuine-sticker']" :src="OkSticker" alt="sticker" />
+            <p :class="$style['card__header--genuine-text']">100% chính hãng</p>
+          </div>
+          <div :class="$style['card__header--genuine']">
+            <img :class="$style['card__header--genuine-sticker']" :src="Insurance" alt="sticker" />
+            <p :class="$style['card__header--genuine-text']">Bảo hành 12 tháng</p>
+          </div>
+          <div :class="$style['card__header--genuine']">
+            <img :class="$style['card__header--genuine-sticker']" :src="SPSticker" alt="sticker" />
+            <p :class="$style['card__header--genuine-text']">Hỗ trợ đổi trả</p>
+          </div>
         </div>
         <div :class="$style['card__header--wgenuine']">
           <div :class="$style['card__header--wgenuine-confirm']"></div>
@@ -60,8 +62,8 @@ defineProps({
             {{ product.tag }} {{ product.company }}
           </div>
         </div>
-        <div>
-          <img :class="$style['card__header--picture']" :src="ProductPic" alt="product" />
+        <div :class="$style['card__header--image']">
+          <img :class="$style['card__header--image-picture']" :src="ProductPic" alt="product" />
         </div>
       </div>
     </div>
