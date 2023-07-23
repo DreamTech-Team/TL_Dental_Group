@@ -94,10 +94,10 @@ public class ProductController {
     // UPDATE PRODUCT
     @PatchMapping("/{id}")
     ResponseEntity<ResponseObject> updateProduct(@PathVariable String id,
-                                                 @RequestParam("imgs") List<MultipartFile> imgs,
+                                                 @RequestParam(value = "imgs", required = false) List<MultipartFile> imgs,
                                                  @RequestParam(value = "mainImg", required = false) MultipartFile mainImg,
                                                  @RequestParam("data") String data,
-                                                 @RequestParam("removeImgs") String removeImgs) {
+                                                 @RequestParam(value = "removeImgs", required = false) String removeImgs) {
         try {
             // Convert String to JSON
             ObjectMapper objectMapper = new ObjectMapper();
@@ -135,26 +135,34 @@ public class ProductController {
 
                 // Check main image was changed
                 if (mainImg != null && mainImg.getSize() != 0) {
-                    storageService.deleteFile(existingProduct.getMainImg());
-                    String mainImgFileName = storageService.storeFile(mainImg);
-                    existingProduct.setMainImg(mainImgFileName);
-                }
-
-                // Remove images at old imgs
-                List<String> imgsRemove = Utils.convertStringToImages(removeImgs);
-                for (int i = 0; i < imgsRemove.size(); i++) {
-                    int index = oldImgs.indexOf(imgsRemove.get(i));
+                    String oldMainImgUrl = existingProduct.getMainImg();
+                    int index = oldImgs.indexOf(oldMainImgUrl);
                     if (index != -1) {
-                        storageService.deleteFile(imgsRemove.get(i));
                         oldImgs.remove(index);
                     }
+
+                    storageService.deleteFile(oldMainImgUrl);
+                    String mainImgFileName = storageService.storeFile(mainImg);
+                    existingProduct.setMainImg(mainImgFileName);
+                    oldImgs.add(0, mainImgFileName);
                 }
 
-                // Upload new imgs
-                for (int i = 0; i < imgs.size(); i++) {
-                    if (imgs.get(i).getSize() != 0) {
-                        String fileName = storageService.storeFile(imgs.get(i));
-                        oldImgs.add(fileName);
+                if (removeImgs != null) {
+                    // Remove images at old imgs
+                    List<String> imgsRemove = Utils.convertStringToImages(removeImgs);
+                    for (int i = 0; i < imgsRemove.size(); i++) {
+                        int index = oldImgs.indexOf(imgsRemove.get(i));
+                        if (index != -1) {
+                            storageService.deleteFile(imgsRemove.get(i));
+                            oldImgs.remove(index);
+                        }
+                    }
+                    // Upload new imgs
+                    for (int i = 0; i < imgs.size(); i++) {
+                        if (imgs.get(i).getSize() != 0) {
+                            String fileName = storageService.storeFile(imgs.get(i));
+                            oldImgs.add(fileName);
+                        }
                     }
                 }
                 existingProduct.setImgs(oldImgs.toString());
@@ -252,7 +260,7 @@ public class ProductController {
                 String fileName = storageService.storeFile(mainImg);
                 imgList.add(fileName);
             }
-            imgList.add(mainImgFileName);
+//            imgList.add(mainImgFileName);
             product.setImgs(imgList.toString());
 
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -358,25 +366,75 @@ public class ProductController {
     
 
     private static class ProductData {
+        private String id;
         private String name;
+        private String slug;
         private int price;
         private int priceSale;
         private String summary;
         private String description;
+        private String mainImg;
+        private String imgs;
         private int highlight;
+        private String createAt;
         private String fkCategory;
 
         public ProductData() {
         }
 
-        public ProductData(String name, int price, int priceSale, String summary, String description, int highlight, String fkCategory) {
+        public ProductData(String id, String name, String slug, int price, int priceSale, String summary, String description, String mainImg, String imgs, int highlight, String createAt, String fkCategory) {
+            this.id = id;
             this.name = name;
+            this.slug = slug;
             this.price = price;
             this.priceSale = priceSale;
             this.summary = summary;
             this.description = description;
+            this.mainImg = mainImg;
+            this.imgs = imgs;
             this.highlight = highlight;
+            this.createAt = createAt;
             this.fkCategory = fkCategory;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getSlug() {
+            return slug;
+        }
+
+        public void setSlug(String slug) {
+            this.slug = slug;
+        }
+
+        public String getMainImg() {
+            return mainImg;
+        }
+
+        public void setMainImg(String mainImg) {
+            this.mainImg = mainImg;
+        }
+
+        public String getImgs() {
+            return imgs;
+        }
+
+        public void setImgs(String imgs) {
+            this.imgs = imgs;
+        }
+
+        public String getCreateAt() {
+            return createAt;
+        }
+
+        public void setCreateAt(String createAt) {
+            this.createAt = createAt;
         }
 
         public String getName() {
