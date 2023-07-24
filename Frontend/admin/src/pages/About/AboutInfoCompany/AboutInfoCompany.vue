@@ -5,6 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faClose, faPencil, faCheck, faRotate } from '@fortawesome/free-solid-svg-icons';
 import Editor from '@tinymce/tinymce-vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import base64ToBlob from '@/utils/base64ToBlob';
+import Swal from 'sweetalert2';
+import styles from './AboutInfoCompany.module.scss';
 
 interface MyInputElement extends HTMLInputElement {
   getContent(): string;
@@ -62,42 +65,66 @@ const handleChangeContent2 = (e: Event) => {
 
 // Hàm cập nhật các giá trị khi thay đổi trong tiny(editor)
 const handleUpdateContent = () => {
+  Swal.fire({
+    title: 'Bạn đã thay đổi dữ liệu xong?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Lưu',
+    cancelButtonText: 'Hủy',
+    width: '50rem',
+    padding: '0 2rem 2rem 2rem',
+    timer: 2000,
+    customClass: {
+      confirmButton: styles['confirm-button'],
+      cancelButton: styles['cancel-button'],
+      title: styles['title']
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.close();
+      isEdit.value = false;
+      contentInfoComapny.value[0].content = content1.value;
+      contentInfoComapny.value[1].content = content2.value;
+
+      const deps = ref([]);
+
+      contentInfoComapny.value.forEach((item, idx) => {
+        const object = {
+          id: item.id,
+          content: item.content,
+          image: item.image
+        };
+
+        const formData = new FormData();
+        formData.append('data', JSON.stringify(object));
+        formData.append('content', idx === 0 ? content1.value : content2.value);
+        if (imageSave1.value && idx === 0) formData.append('image', imageSave1.value as Blob);
+        else if (imageSave2.value && idx === 1) formData.append('image', imageSave2.value as Blob);
+        const { response } = useAxios<DataResponse>(
+          'patch',
+          '/introduce/company-info',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          },
+          deps.value
+        );
+      });
+    }
+  });
+};
+
+// Hàm hủy các dữ liệu đã thay đổi
+const handelDestroy = () => {
   isEdit.value = false;
-  contentInfoComapny.value[0].content = content1.value;
-  contentInfoComapny.value[1].content = content2.value;
-
-  const deps = ref([]);
-
-  contentInfoComapny.value.forEach((item, idx) => {
-    const object = {
-      id: item.id,
-      content: item.content,
-      image: item.image
-    };
-
-    console.log(object);
-
-    const formData = new FormData();
-    formData.append('data', JSON.stringify(object));
-    formData.append('content', idx === 0 ? content1.value : content2.value);
-    if (imageSave1.value && idx === 0) formData.append('image', imageSave1.value as Blob);
-    else formData.append('image', imageSave2.value as Blob);
-    const { response } = useAxios<DataResponse>(
-      'patch',
-      '/introduce/company-info',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      },
-      deps.value
-    );
-  });
-
-  watch(response, () => {
-    console.log(response.value);
-  });
+  content1.value = contentInfoComapny.value[0].content;
+  content2.value = contentInfoComapny.value[1].content;
+  selectedImage.value = contentInfoComapny.value[0].image;
+  selectedImage1.value = contentInfoComapny.value[1].image;
 };
 
 // Hàm xử lí click vào chọn ảnh 1
@@ -126,17 +153,6 @@ const arrayBufferToString = (buffer: ArrayBuffer) => {
   return charArray.join('');
 };
 
-// convert Base64 sang File
-const base64ToBlob = (base64Data: string) => {
-  const byteString = atob(base64Data.split(',')[1]);
-  const ab = new ArrayBuffer(byteString.length);
-  const ia = new Uint8Array(ab);
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i);
-  }
-  return new Blob([ab], { type: 'image/png' });
-};
-
 // Hàm xử lí lấy ảnh 1 từ máy và lưu lại vào biến selectedImage
 const handleFileInputChange = (event: Event) => {
   const target = event.target as HTMLInputElement;
@@ -155,7 +171,7 @@ const handleFileInputChange = (event: Event) => {
 
       // Tạo một đối tượng File từ dữ liệu base64
       if (selectedImage.value) {
-        const fileData = base64ToBlob(selectedImage.value);
+        const fileData = base64ToBlob.covertBase64ToBlob(selectedImage.value);
         const image = new File([fileData], 'image.png', { type: 'image/png' });
         imageSave1.value = image;
       }
@@ -180,13 +196,13 @@ const handleFileInputChange1 = (event: Event) => {
       } else if (typeof result === 'string') {
         selectedImage1.value = result;
       }
-    };
 
-    if (selectedImage1.value) {
-      const fileData = base64ToBlob(selectedImage1.value);
-      const image = new File([fileData], 'image1.png', { type: 'image/png' });
-      imageSave2.value = image;
-    }
+      if (selectedImage1.value) {
+        const fileData = base64ToBlob.covertBase64ToBlob(selectedImage1.value);
+        const image = new File([fileData], 'image1.png', { type: 'image/png' });
+        imageSave2.value = image;
+      }
+    };
 
     reader.readAsDataURL(file);
   }
@@ -305,7 +321,7 @@ const handleFileInputChange1 = (event: Event) => {
       <span>Chỉnh sửa</span>
     </button>
 
-    <button :class="$style['about__infocompany-button-left']" v-if="isEdit" @click="isEdit = false">
+    <button :class="$style['about__infocompany-button-left']" v-if="isEdit" @click="handelDestroy">
       <font-awesome-icon :icon="faClose" :class="$style['about__infocompany-button-ic']" />
       <span>Hủy bỏ</span>
     </button>

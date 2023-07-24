@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faRotate } from '@fortawesome/free-solid-svg-icons';
 import CropImage from '@/components/CropImage/CropImage.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import base64ToBlob from '@/utils/base64ToBlob';
 
 interface AboutHeader {
   id: string;
@@ -36,23 +37,12 @@ watch(response, () => {
   renderImage.value = response?.value?.data;
 });
 
-// convert Base64 sang File
-const base64ToBlob = (base64Data: string) => {
-  const byteString = atob(base64Data.split(',')[1]);
-  const ab = new ArrayBuffer(byteString.length);
-  const ia = new Uint8Array(ab);
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i);
-  }
-  return new Blob([ab], { type: 'image/png' });
-};
-
 const handleCroppedImage = (result: string) => {
   if (result) {
     imageFile.value = result;
 
     // Tạo một đối tượng File từ dữ liệu base64
-    const fileData = base64ToBlob(result);
+    const fileData = base64ToBlob.covertBase64ToBlob(result);
     const image = new File([fileData], 'image.png', { type: 'image/png' });
 
     const deps = ref([]);
