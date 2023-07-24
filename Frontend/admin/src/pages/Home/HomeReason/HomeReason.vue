@@ -60,13 +60,13 @@ watch(response, () => {
   content.value.listrs[2].description = response.value?.data?.subItem3?.content;
 });
 
-const selectedSVG = ref(SVG);
+const selectedSVG = ref(0);
 const isOpen = ref(false);
 const isOpenCam = ref(false);
 const isOpenSVG = ref(false);
 
-const updateSVG = (path: string) => {
-  selectedSVG.value = path;
+const updateSVG = (index: number) => {
+  selectedSVG.value = index;
   isOpenSVG.value = true;
 };
 </script>
@@ -87,7 +87,7 @@ const updateSVG = (path: string) => {
         >
           <div :class="$style['home__reason-icon']">
             <img :src="item.image" alt="icon1" />
-            <button @click="updateSVG(item.image)">
+            <button @click="updateSVG(index)">
               <img :src="ICEdit" alt="iconed" />
             </button>
           </div>
@@ -112,7 +112,17 @@ const updateSVG = (path: string) => {
     :image="content.image"
     @close="isOpenCam = false"
   />
-  <ModalSVG v-if="isOpenSVG" :image="selectedSVG" @close="isOpenSVG = false" />
+  <ModalSVG
+    v-if="isOpenSVG"
+    @update-content="onUpdateContent"
+    :uuid="content.id"
+    :title="content.title"
+    :description="content.description"
+    :list-item="content.listrs"
+    :image="content.image"
+    :index="selectedSVG"
+    @close="isOpenSVG = false"
+  />
   <ModalReason
     v-if="isOpen"
     @close="isOpen = false"

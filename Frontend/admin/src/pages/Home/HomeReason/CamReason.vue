@@ -4,11 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import CamBtn from '@/components/ImageBtn/ImageBtn.vue';
+import CropImage from '@/components/CropImage/CropImage.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
-
-interface MyFile extends File {
-  name: string;
-}
 
 interface ItemRS {
   id: string;
@@ -17,7 +14,7 @@ interface ItemRS {
   description: string;
 }
 
-const content = defineProps({
+const context = defineProps({
   uuid: {
     type: String,
     required: true
@@ -46,26 +43,34 @@ const emits = defineEmits<{
   // eslint-disable-next-line no-unused-vars
   (e: 'update-content', data: { image: string }): void;
 }>();
-const selectedImage = ref(content.image);
-const fileInput = ref<HTMLInputElement | null>(null);
-const file = ref<MyFile | null>(null);
+const urlFile = ref(context.image);
+const isCrop = ref(false);
+const isOpenInput = ref(false);
+const fileData = ref();
+const finalImage = ref();
 
 //Open file image
 const openFileInput = () => {
-  fileInput.value?.click();
+  isOpenInput.value = !isOpenInput.value;
+};
+
+const base64ToBlob = (base64Data: string) => {
+  const byteString = atob(base64Data.split(',')[1]);
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  return new Blob([ab], { type: 'image/png' });
 };
 
 //Choose image
-const handleFileInputChange = (event: Event) => {
-  const inputElement = event.target as HTMLInputElement;
-  file.value = inputElement.files?.[0] || null;
+const handleCroppedImage = (result: string) => {
+  if (result) {
+    urlFile.value = result;
 
-  if (file.value) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      selectedImage.value = reader.result as string;
-    };
-    reader.readAsDataURL(file.value);
+    fileData.value = base64ToBlob(result);
+    finalImage.value = new File([fileData.value], 'image.png', { type: 'image/png' });
   }
 };
 
@@ -74,40 +79,40 @@ const submitForm = () => {
 
   const object = {
     heading: {
-      id: content.uuid,
-      title: content.title,
-      content: content.description,
-      image: content.image
+      id: context.uuid,
+      title: context.title,
+      content: context.description,
+      image: context.image
     },
-    subItem1: content.listItem?.[0]
+    subItem1: context.listItem?.[0]
       ? {
-          id: content.listItem[0].id,
-          title: content.listItem[0].title,
-          content: content.listItem[0].description,
-          image: content.listItem[0].image
+          id: context.listItem[0].id,
+          title: context.listItem[0].title,
+          content: context.listItem[0].description,
+          image: context.listItem[0].image
         }
       : null,
-    subItem2: content.listItem?.[1]
+    subItem2: context.listItem?.[1]
       ? {
-          id: content.listItem[1].id,
-          title: content.listItem[1].title,
-          content: content.listItem[1].description,
-          image: content.listItem[1].image
+          id: context.listItem[1].id,
+          title: context.listItem[1].title,
+          content: context.listItem[1].description,
+          image: context.listItem[1].image
         }
       : null,
-    subItem3: content.listItem?.[2]
+    subItem3: context.listItem?.[2]
       ? {
-          id: content.listItem[2].id,
-          title: content.listItem[1].title,
-          content: content.listItem[1].description,
-          image: content.listItem[2].image
+          id: context.listItem[2].id,
+          title: context.listItem[1].title,
+          content: context.listItem[1].description,
+          image: context.listItem[2].image
         }
       : null
   };
 
   const formData = new FormData();
   formData.append('data', JSON.stringify(object));
-  formData.append('image', file.value as Blob);
+  formData.append('image', finalImage.value as Blob);
   const { response } = useAxios<DataResponse>(
     'patch',
     '/home/section1',
@@ -131,7 +136,7 @@ const submitForm = () => {
         if (result.isConfirmed) {
           Swal.close();
           emits('update-content', {
-            image: selectedImage.value || ''
+            image: urlFile.value || ''
           });
           emits('close');
         }
@@ -154,14 +159,8 @@ const submitForm = () => {
       </div>
       <div :class="$style.camreason__modal__body">
         <div :class="$style.camreason__ctn">
-          <img :src="selectedImage" alt="meeting" />
+          <img v-if="urlFile" :src="urlFile" alt="company" />
           <div :class="$style.camreason__image_overlay">
-            <input
-              type="file"
-              ref="fileInput"
-              style="display: none"
-              @change="handleFileInputChange"
-            />
             <CamBtn @click="openFileInput" />
           </div>
         </div>
@@ -172,6 +171,17 @@ const submitForm = () => {
       </div>
     </div>
   </div>
+  <crop-image
+    :heightCrop="447"
+    :widthCrop="517"
+    :heightWrap="447"
+    :widthWrap="517"
+    :check="isOpenInput"
+    v-show="isCrop"
+    @close="isCrop = false"
+    @open="isCrop = true"
+    @crop="handleCroppedImage"
+  />
 </template>
 
 <style module scoped lang="scss">
