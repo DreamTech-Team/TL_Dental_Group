@@ -1,41 +1,109 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch, watchEffect, type Ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
+import { AxiosError } from 'axios';
+import { format } from 'date-fns';
 // import ModalAdd from './components/ModalAdd.vue';
 import Pagination from '@/components/Pagination/BasePagination.vue';
 import UpdateActivity from './ModalActivity/UpdateActivity.vue';
-import { activities } from '../Activity';
+// import { activities } from '../Activity';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 const searchText = ref('');
-const results = ref(activities);
 
-const currentPage = ref(1);
+const currentPage = ref(0);
 const pageSize = ref(10);
 const isModalOpen = ref(false);
+// const isLoading: Ref<boolean> = ref(false);
+// const response: Ref<DataResponse | null> = ref(null);
+// const error = ref<AxiosError | null>(null);
 const activeTab = ref('activity');
 
-const openModal = () => {
-  isModalOpen.value = true;
-};
+interface Item {
+  news: {
+    id: string;
+    title: string;
+    img: string;
+    slug: string;
+    summary: string;
+    detail: string;
+    detailMobile: string;
+    highlight: number;
+    createAt: string;
+  };
+  tags: [
+    {
+      id: string;
+      name: string;
+      slug: string;
+      createAt: string;
+    }
+  ];
+}
+
+const api = ref(`/news?pageSize=${pageSize.value}&page=${currentPage.value}`);
+const deps = ref([]);
+const { response, error, isLoading } = useAxios<DataResponse>('get', api.value, {}, {}, deps.value);
+
+watch(
+  currentPage,
+  () => {
+    console.log(12345);
+    const {
+      response: responseChanged,
+      error,
+      isLoading
+    } = useAxios<DataResponse>(
+      'get',
+      `/news?pageSize=${pageSize.value}&page=${currentPage.value}`,
+      {},
+      {},
+      deps.value
+    );
+    watch(responseChanged, () => {
+      response.value = responseChanged.value;
+    });
+  },
+  { immediate: false }
+);
+
+// watch(res, () => {
+//   response.value = res.value;
+// });
+
+const activitiesResList = ref();
+const activitiesRes = ref([
+  {
+    id: '',
+    title: '',
+    img: '',
+    slug: '',
+    summary: '',
+    detail: '',
+    detailMobile: '',
+    highlight: 1,
+    createAt: ''
+  }
+]);
+const uniqueTags = ref([
+  {
+    id: '',
+    name: '',
+    slug: '',
+    createAt: ''
+  }
+]);
 
 const closeModal = () => {
   isModalOpen.value = false;
 };
-interface SelectActivity {
-  id: number;
-  name: string;
-  tags: string[];
-  summary?: string;
-  description?: string;
-  date: string;
-}
 
-const selectedActivity = ref<Record<string, never> | SelectActivity>({});
+const selectedActivity = ref<Record<string, never> | Item>({});
 
 // Trong phần code xử lý sự kiện
-const editActivity = (activity: SelectActivity) => {
+const editActivity = (activity: Item) => {
   selectedActivity.value = activity;
   isModalOpen.value = true; // Mở modal
   console.log(activity);
@@ -43,10 +111,10 @@ const editActivity = (activity: SelectActivity) => {
 
 const filteredActivitiess = computed(() => {
   if (searchText.value.trim() === '') {
-    return results.value;
+    return response.value?.data?.data;
   } else {
-    const searchTerm = searchText.value.toLowerCase();
-    return results.value.filter((activity) => activity.name.toLowerCase().includes(searchTerm));
+    // const searchTerm = searchText.value.toLowerCase();
+    return response.value?.data?.data;
   }
 });
 
@@ -59,8 +127,9 @@ const scrollToTop = (top: number) => {
 };
 
 const handlePageChange = (page: number) => {
-  currentPage.value = page;
+  currentPage.value = page - 1;
   scrollToTop(0);
+  console.log('Vinh');
 };
 
 const displayNews = computed(() => {
@@ -76,7 +145,11 @@ const truncateText = (text: string, maxLength: number) => {
   return text;
 };
 
-const deleteActivity = (id: number) => {
+const formatDateTime = (dateTimeString: string, outputFormat = 'dd/MM/yyyy HH:mm:ss'): string => {
+  return format(new Date(dateTimeString), outputFormat);
+};
+
+const deleteActivity = async (id: string) => {
   Swal.fire({
     title: 'Bạn có chắc muốn xóa?',
     text: 'Dữ liệu sẽ không thể khôi phục sau khi xóa!',
@@ -86,23 +159,59 @@ const deleteActivity = (id: number) => {
     cancelButtonColor: '#d33',
     confirmButtonText: 'Xóa',
     cancelButtonText: 'Hủy'
-  }).then((result) => {
+  }).then(async (result) => {
     if (result.isConfirmed) {
-      results.value = results.value.filter((activity) => activity.id !== id);
+      try {
+        // Gọi API DELETE bằng cách sử dụng `useAxios`
+        const { response, error, isLoading } = useAxios<DataResponse>(
+          'delete',
+          `/news/${id}`, // Đặt endpoint URL xóa phần tử cụ thể dựa vào id
+          {},
+          {},
+          []
+        );
 
-      Swal.fire({
-        title: 'Xóa thành công',
-        icon: 'success',
-        confirmButtonText: 'Hoàn tất',
-        width: '30rem'
-      });
+        // Xóa phần tử trong activitiesResList
+        activitiesResList.value = activitiesResList.value.filter(
+          (item: { news: { id: string } }) => item.news.id !== id
+        );
+        console.log(activitiesResList.value);
 
-      setTimeout(function () {
-        Swal.close();
-      }, 1200);
+        Swal.fire({
+          title: 'Xóa thành công',
+          icon: 'success',
+          confirmButtonText: 'Hoàn tất',
+          width: '30rem'
+        });
+
+        setTimeout(function () {
+          Swal.close();
+        }, 1200);
+      } catch (error) {
+        console.error('Error deleting item:', error);
+
+        // Xử lý lỗi nếu cần thiết
+        Swal.fire({
+          title: 'Xóa không thành công',
+          text: 'Có lỗi xảy ra khi xóa!',
+          icon: 'error',
+          width: '30rem'
+        });
+      }
     }
   });
 };
+watch(response, () => {
+  activitiesResList.value = response?.value?.data?.data;
+  currentPage.value;
+  console.log(response.value?.data);
+  // console.log(currentPage.value);
+});
+
+// watchEffect(() => {
+//   console.log(currentPage.value);
+//   console.log(activitiesResList.value);
+// });
 </script>
 <template>
   <div>
@@ -129,17 +238,25 @@ const deleteActivity = (id: number) => {
         <div :class="$style.mn_activity_table_ctn">
           <table :class="$style.mn_activity_table">
             <tbody>
-              <template v-if="filteredActivitiess.length > 0">
-                <tr v-for="(item, index) in displayNews" :key="index">
-                  <td style="max-width: 5%">{{ index + 1 }}</td>
+              <template v-if="filteredActivitiess?.length > 0">
+                <tr v-for="(item, index) in activitiesResList" :key="index">
+                  <td style="width: 5%">{{ index + 1 }}</td>
                   <td style="max-width: 25%">
-                    {{ truncateText(item.name, 33) }}
+                    {{ truncateText(item?.news?.title, 25) }}
                   </td>
-                  <td style="width: 30%">{{ truncateText(item.tags.join(', '), 40) }}</td>
+                  <td style="width: 30%">
+                    <span v-for="(tag, idx) in item?.tags" :key="idx">
+                      {{ truncateText(tag.name, 40) }}
+                      <span v-if="idx !== item.tags.length - 1">{{ ', ' }}</span>
+                    </span>
+                  </td>
 
-                  <td style="width: 25%">{{ item.date }}</td>
+                  <td style="width: 25%">{{ formatDateTime(item?.news?.createAt) }}</td>
                   <td style="width: 15%">
-                    <button :class="$style['btn-room-trash']" @click="deleteActivity(item.id)">
+                    <button
+                      :class="$style['btn-room-trash']"
+                      @click="deleteActivity(item?.news?.id)"
+                    >
                       <font-awesome-icon :icon="faTrash" />
                     </button>
                     <button @click="editActivity(item)" :class="$style['edit-room-btn']">
@@ -159,7 +276,7 @@ const deleteActivity = (id: number) => {
       </div>
       <div :class="$style['mn_activity_pagination']">
         <pagination
-          :total="Math.ceil(filteredActivitiess.length / pageSize)"
+          :total="Math.ceil(filteredActivitiess?.length / pageSize)"
           :current-page="currentPage"
           :page-size="pageSize"
           @current-change="handlePageChange"

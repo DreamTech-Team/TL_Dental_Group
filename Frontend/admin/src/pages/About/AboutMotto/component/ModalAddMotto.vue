@@ -1,23 +1,48 @@
 <script setup lang="ts">
-import { Ref, ref } from 'vue';
+import { Ref, ref, watch, defineProps } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark, faCloudArrowUp, faRotate } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import styles from './ModalAddMotto.module.scss';
+import base64ToBlob from '@/utils/base64ToBlob';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-const emit = defineEmits(['close']);
+const _MAX_WORD_TITLE = 70;
+const _MAX_WORD_CONTENT = 250;
+
+const props = defineProps<{
+  change: (newData: object) => void;
+}>();
+
+const emit = defineEmits(['close', 'change']);
 
 const titleInput = ref('');
 const contentInput = ref('');
 const selectedImage: Ref<string | null> = ref(null);
+const countWordTitle = ref(_MAX_WORD_TITLE);
+const countWordContent = ref(_MAX_WORD_CONTENT);
+const dataAdded = ref<object>({
+  id: '',
+  title: '',
+  content: '',
+  image: '',
+  slug: '',
+  type: ''
+});
+const isPosted = ref(false);
 
 // Các hàm update dữ liệu cho thẻ input
 const updateTitle = (e: Event) => {
   const target = e.target as HTMLInputElement;
+  countWordTitle.value = _MAX_WORD_TITLE - target.value.length;
+
   titleInput.value = target.value;
 };
+
 const updateContent = (e: Event) => {
   const target = e.target as HTMLInputElement;
+  countWordContent.value = _MAX_WORD_CONTENT - target.value.length;
+
   contentInput.value = target.value;
 };
 
@@ -50,13 +75,57 @@ const submitForm = () => {
       }
     }).then((result) => {
       if (result.isConfirmed) {
+        if (selectedImage.value) {
+          // Tạo một đối tượng File từ dữ liệu base64
+          const fileData = base64ToBlob.covertBase64ToBlob(selectedImage.value);
+          const image = new File([fileData], 'image.png', { type: 'image/png' });
+
+          const deps = ref([]);
+
+          const object = {
+            title: titleInput.value,
+            content: contentInput.value
+          };
+
+          const formData = new FormData();
+          formData.append('data', JSON.stringify(object));
+          formData.append('image', image as Blob);
+          const { response } = useAxios<DataResponse>(
+            'post',
+            '/introduce/section1',
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            },
+            deps.value
+          );
+
+          watch(response, () => {
+            if (response.value?.status === 'ok') {
+              isPosted.value = true;
+
+              dataAdded.value = {
+                id: response.value?.data?.id,
+                title: response.value?.data?.title,
+                content: response.value?.data?.content,
+                image: response.value?.data?.image,
+                slug: response.value?.data?.slug,
+                type: response.value?.data?.type
+              };
+
+              props.change(dataAdded.value);
+            }
+          });
+        }
+
         Swal.close();
         emit('close');
       }
     });
   }
 };
-
 // Hàm chuyển đổi từ ArrayBuffer sang string
 const arrayBufferToString = (buffer: ArrayBuffer) => {
   const uintArray = new Uint16Array(buffer);
@@ -122,20 +191,30 @@ const addFile = (e: DragEvent) => {
         />
       </div>
       <div :class="$style.motto__modal__body">
-        <h4>Tiêu đề chính</h4>
+        <h4>
+          Tiêu đề chính<span>
+            (Bạn có thể viết <strong>{{ countWordTitle }}</strong> kí tự)</span
+          >
+        </h4>
         <input
           type="text"
           placeholder="Nhập tiêu đề..."
           :value="titleInput"
-          @change="updateTitle"
+          @input="updateTitle"
+          :maxlength="_MAX_WORD_TITLE"
         />
 
-        <h4>Mô tả</h4>
+        <h4>
+          Mô tả<span>
+            (Bạn có thể viết <strong>{{ countWordContent }}</strong> kí tự)</span
+          >
+        </h4>
         <input
           type="text"
           placeholder="Nhập mô tả..."
           :value="contentInput"
-          @change="updateContent"
+          @input="updateContent"
+          :maxlength="_MAX_WORD_CONTENT"
         />
 
         <h4>Ảnh minh họa</h4>

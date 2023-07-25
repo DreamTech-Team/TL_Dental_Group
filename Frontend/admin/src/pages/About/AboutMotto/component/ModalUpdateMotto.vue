@@ -1,38 +1,42 @@
 <script setup lang="ts">
-import { Ref, ref } from 'vue';
+import { Ref, ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark, faCloudArrowUp, faRotate } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import styles from './ModalUpdateMotto.module.scss';
+import base64ToBlob from '@/utils/base64ToBlob';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
+const _MAX_WORD_TITLE = 70;
+const _MAX_WORD_CONTENT = 250;
 const context = defineProps({
-  title: {
-    type: String,
-    required: true
-  },
-  content: {
-    type: String,
-    required: true
-  },
-  image: {
-    type: String,
+  item: {
+    type: Object,
     required: true
   }
 });
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'change']);
 
-const titleInput = ref(context.title);
-const contentInput = ref(context.content);
-const selectedImage: Ref<string | null> = ref(context.image);
+const titleInput = ref(context.item.title);
+const contentInput = ref(context.item.content);
+const selectedImage: Ref<string | null> = ref(context.item.image);
+const isChange = ref(false);
+const countWordTitle = ref(_MAX_WORD_TITLE - context.item.title.length);
+const countWordContent = ref(_MAX_WORD_CONTENT - context.item.content.length);
 
 // Các hàm update dữ liệu cho thẻ input
 const updateTitle = (e: Event) => {
   const target = e.target as HTMLInputElement;
+  countWordTitle.value = _MAX_WORD_TITLE - target.value.length;
+
   titleInput.value = target.value;
 };
+
 const updateContent = (e: Event) => {
   const target = e.target as HTMLInputElement;
+  countWordContent.value = _MAX_WORD_CONTENT - target.value.length;
+
   contentInput.value = target.value;
 };
 
@@ -65,8 +69,62 @@ const submitForm = () => {
       }
     }).then((result) => {
       if (result.isConfirmed) {
+        if (isChange.value && selectedImage.value) {
+          // Tạo một đối tượng File từ dữ liệu base64
+          const fileData = base64ToBlob.covertBase64ToBlob(selectedImage.value);
+          const image = new File([fileData], 'image.png', { type: 'image/png' });
+
+          const deps = ref([]);
+
+          const object = {
+            id: context.item.id,
+            title: titleInput.value,
+            content: contentInput.value,
+            image: context.item.image
+          };
+
+          const formData = new FormData();
+          formData.append('data', JSON.stringify(object));
+          formData.append('image', image as Blob);
+          const { response } = useAxios<DataResponse>(
+            'patch',
+            '/introduce/section1',
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            },
+            deps.value
+          );
+        } else {
+          const deps = ref([]);
+
+          const object = {
+            id: context.item.id,
+            title: titleInput.value,
+            content: contentInput.value,
+            image: context.item.image
+          };
+
+          const formData = new FormData();
+          formData.append('data', JSON.stringify(object));
+          formData.append('image', context.item.image);
+          const { response } = useAxios<DataResponse>(
+            'patch',
+            '/introduce/section1',
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            },
+            deps.value
+          );
+        }
         Swal.close();
         emit('close');
+        emit('change', context.item.id, titleInput.value, contentInput.value, selectedImage.value);
       }
     });
   }
@@ -97,6 +155,8 @@ const handleFileInputChange = (event: Event) => {
       } else if (typeof result === 'string') {
         selectedImage.value = result;
       }
+
+      isChange.value = true;
     };
 
     reader.readAsDataURL(file);
@@ -124,13 +184,28 @@ const handleChangeImage = () => {
         />
       </div>
       <div :class="$style.motto__modal__body">
-        <h4>Tiêu đề chính</h4>
-        <input type="text" placeholder="Nhập tiêu đề..." :value="titleInput" @input="updateTitle" />
+        <h4>
+          Tiêu đề chính<span>
+            (Bạn có thể viết <strong>{{ countWordTitle }}</strong> kí tự)</span
+          >
+        </h4>
+        <input
+          type="text"
+          placeholder="Nhập tiêu đề..."
+          :maxlength="_MAX_WORD_TITLE"
+          :value="titleInput"
+          @input="updateTitle"
+        />
 
-        <h4>Mô tả</h4>
+        <h4>
+          Mô tả<span>
+            (Bạn có thể viết <strong>{{ countWordContent }}</strong> kí tự)</span
+          >
+        </h4>
         <input
           type="text"
           placeholder="Nhập mô tả..."
+          :maxlength="_MAX_WORD_CONTENT"
           :value="contentInput"
           @input="updateContent"
         />

@@ -1,6 +1,7 @@
-import { ref, type Ref, watch } from 'vue';
+import { ref, type Ref, watch, watchEffect } from 'vue';
 import axios, { type AxiosRequestConfig, type AxiosResponse, AxiosError } from 'axios';
 import { axiosClient } from '@/api/axios';
+import { log } from 'console';
 
 export interface DataResponse {
   status: string;
@@ -9,7 +10,7 @@ export interface DataResponse {
   data: any; // Bổ sung kiểu dữ liệu phù hợp cho data, ví dụ: any[] hoặc object[]
 }
 
-interface UseAxiosResponse<DataResponse> {
+export interface UseAxiosResponse<DataResponse> {
   response: Ref<DataResponse | null>;
   error: Ref<AxiosError | null>;
   isLoading: Ref<boolean>;
@@ -27,6 +28,7 @@ const useAxios = <DataResponse>(
   const error = ref<AxiosError | null>(null);
 
   const axiosController = axios.CancelToken.source();
+  console.log(api);
 
   const fetchData = async () => {
     if (!isLoading.value) {
@@ -55,6 +57,8 @@ const useAxios = <DataResponse>(
     deps,
     () => {
       fetchData();
+      console.log(api);
+      console.log(deps);
     },
     { immediate: true }
   );

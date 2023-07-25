@@ -27,6 +27,7 @@
     "chart.js": "^4.3.0",
     "cors": "^2.8.5",
     "croppie": "^2.6.5",
+    "date-fns": "^2.30.0",
     "element-plus": "^2.3.7",
     "font-awesome-picker": "^2.0.0",
     "pinia": "^2.0.36",

@@ -1,19 +1,29 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watchEffect } from 'vue';
+import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 // import ModalAdd from './components/ModalAdd.vue';
 import Pagination from '@/components/Pagination/BasePagination.vue';
 import UpdateTag from './ModalTag/UpdateTag.vue';
-import { tags } from '../Activity';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 const searchText = ref('');
-const resultTags = ref(tags);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const isModalOpen = ref(false);
 const activeTab = ref('tags');
+const props = defineProps(['listTags', 'handleTagDeleted']);
+
+const deps = ref([]);
+// const {
+//   response: tagsListResponse,
+//   error,
+//   isLoading
+// } = useAxios<DataResponse>('get', '/tags', {}, {}, deps.value);
+
+const resultTags = ref(props.listTags);
 
 interface Tags {
   id: number;
@@ -30,22 +40,18 @@ const editTag = (tags: Tags) => {
   console.log(tags);
 };
 
-const openModal = () => {
-  isModalOpen.value = true;
-};
-
 const closeModal = () => {
   isModalOpen.value = false;
 };
 
-const filteredTags = computed(() => {
-  if (searchText.value.trim() === '') {
-    return resultTags.value;
-  } else {
-    const searchTerm = searchText.value.toLowerCase();
-    return resultTags.value.filter((tag) => tag.name.toLowerCase().includes(searchTerm));
-  }
-});
+// const filteredTags = computed(() => {
+//   if (searchText.value.trim() === '') {
+//     return resultTags.value;
+//   } else {
+//     const searchTerm = searchText.value.toLowerCase();
+//     return resultTags.value?.filter((tag) => tag.name.toLowerCase().includes(searchTerm));
+//   }
+// });
 
 //Pagination Handle
 const scrollToTop = (top: number) => {
@@ -60,11 +66,11 @@ const handlePageChange = (page: number) => {
   scrollToTop(0);
 };
 
-const displayTags = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return filteredTags.value.slice(start, end);
-});
+// const displayTags = computed(() => {
+//   const start = (currentPage.value - 1) * pageSize.value;
+//   const end = start + pageSize.value;
+//   return filteredTags.value.slice(start, end);
+// });
 
 const truncateText = (text: string, maxLength: number) => {
   if (text.length > maxLength) {
@@ -73,7 +79,15 @@ const truncateText = (text: string, maxLength: number) => {
   return text;
 };
 
-const deleteTag = (id: number) => {
+const formatDateTime = (dateTimeString: string, outputFormat = 'dd/MM/yyyy HH:mm:ss'): string => {
+  return format(new Date(dateTimeString), outputFormat);
+};
+
+// watchEffect(() => {
+//   console.log('list tags changed:', props.listTags);
+// });
+
+const deleteTag = async (id: string) => {
   Swal.fire({
     title: 'Bạn có chắc muốn xóa?',
     text: 'Dữ liệu sẽ không thể khôi phục sau khi xóa!',
@@ -83,23 +97,48 @@ const deleteTag = (id: number) => {
     cancelButtonColor: '#d33',
     confirmButtonText: 'Xóa',
     cancelButtonText: 'Hủy'
-  }).then((result) => {
+  }).then(async (result) => {
     if (result.isConfirmed) {
-      resultTags.value = resultTags.value.filter((tag) => tag.id !== id);
+      try {
+        // Gọi API DELETE bằng cách sử dụng `useAxios`
+        const { response, error, isLoading } = useAxios<DataResponse>(
+          'delete',
+          `/tags/${id}`, // Đặt endpoint URL xóa phần tử cụ thể dựa vào id
+          {},
+          {},
+          deps.value
+        );
 
-      Swal.fire({
-        title: 'Xóa thành công',
-        icon: 'success',
-        confirmButtonText: 'Hoàn tất',
-        width: '30rem'
-      });
+        props.handleTagDeleted(id);
 
-      setTimeout(function () {
-        Swal.close();
-      }, 1200);
+        Swal.fire({
+          title: 'Xóa thành công',
+          icon: 'success',
+          confirmButtonText: 'Hoàn tất',
+          width: '30rem'
+        });
+
+        setTimeout(function () {
+          Swal.close();
+        }, 1200);
+      } catch (error) {
+        console.error('Error deleting item:', error);
+
+        // Xử lý lỗi nếu cần thiết
+        Swal.fire({
+          title: 'Xóa không thành công',
+          text: 'Có lỗi xảy ra khi xóa!',
+          icon: 'error',
+          width: '30rem'
+        });
+      }
     }
   });
 };
+
+watchEffect(() => {
+  console.log(props.listTags?.value);
+});
 </script>
 <template>
   <div>
@@ -126,13 +165,13 @@ const deleteTag = (id: number) => {
         <div :class="$style.mn_activity_table_ctn">
           <table :class="$style.mn_activity_table">
             <tbody>
-              <template v-if="filteredTags.length > 0">
-                <tr v-for="(item, index) in displayTags" :key="index">
+              <template v-if="listTags?.length > 0">
+                <tr v-for="(item, index) in listTags" :key="index">
                   <td style="width: 5%">{{ index + 1 }}</td>
                   <td style="width: 25%">
                     {{ truncateText(item.name, 40) }}
                   </td>
-                  <td style="width: 30%">{{ item.createDate }}</td>
+                  <td style="width: 30%">{{ formatDateTime(item.createAt) }}</td>
                   <td style="width: 15%">
                     <button :class="$style['btn-room-trash']" @click="deleteTag(item.id)">
                       <font-awesome-icon :icon="faTrash" />
@@ -154,7 +193,7 @@ const deleteTag = (id: number) => {
       </div>
       <div :class="$style['mn_activity_pagination']">
         <pagination
-          :total="Math.ceil(filteredTags.length / pageSize)"
+          :total="Math.ceil(listTags?.length / pageSize)"
           :current-page="currentPage"
           :page-size="pageSize"
           @current-change="handlePageChange"

@@ -3,8 +3,9 @@ import { ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faComputerMouse, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 import Editor from '@tinymce/tinymce-vue';
-import Swal from 'sweetalert2';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import Swal from 'sweetalert2';
+import styles from './AboutThanks.module.scss';
 
 interface MyInputElement extends HTMLInputElement {
   getContent(): string;
@@ -45,18 +46,46 @@ const handleChangeContent = (e: Event) => {
 
 // Hàm cập nhật các giá trị khi thay đổi trong tiny(editor)
 const handleUpdateContent = () => {
-  isEdit.value = false;
-  contentLetter.value.content = content.value;
+  Swal.fire({
+    title: 'Bạn đã thay đổi dữ liệu xong?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    cancelButtonText: 'Hủy',
+    confirmButtonText: 'Lưu',
+    width: '50rem',
+    padding: '0 2rem 2rem 2rem',
+    customClass: {
+      confirmButton: styles['confirm-button'],
+      cancelButton: styles['cancel-button'],
+      title: styles['title']
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.close();
+      isEdit.value = false;
+      contentLetter.value.content = content.value;
 
-  const deps = ref([]);
+      const deps = ref([]);
 
-  const object = {
-    id: contentLetter.value.id,
-    content: contentLetter.value.content
-  };
+      const object = {
+        id: contentLetter.value.id,
+        content: contentLetter.value.content
+      };
 
-  const { response } = useAxios<DataResponse>('patch', '/introduce/letter', object, {}, deps.value);
+      const { response } = useAxios<DataResponse>(
+        'patch',
+        '/introduce/letter',
+        object,
+        {},
+        deps.value
+      );
+    }
+  });
 };
+// Hàm submit dữ liệu, đẩy dữ liệu lên database
+const submitForm = () => {};
 </script>
 <template>
   <div :class="$style.about__thanks">

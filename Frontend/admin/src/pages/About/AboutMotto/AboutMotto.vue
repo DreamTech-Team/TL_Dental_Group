@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Motto from '@/assets/imgs/About/Motto.png';
+import { onMounted, ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import {
   faPencil,
@@ -9,63 +9,24 @@ import {
   faChevronLeft,
   faPlus
 } from '@fortawesome/free-solid-svg-icons';
-import { onMounted, ref } from 'vue';
 import ModalAddMotto from './component/ModalAddMotto.vue';
 import ModalUpdateMotto from './component/ModalUpdateMotto.vue';
 import Swal from 'sweetalert2';
 import styles from './AboutMotto.module.scss';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-const mottoItems = [
-  {
-    title: 'Sự đổi mới sáng tạo 1',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 2',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 3',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 4',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 5',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 6',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 7',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  },
-  {
-    title: 'Sự đổi mới sáng tạo 8',
-    content:
-      'Apple luôn tập trung vào việc đổi mới và tạo ra các sản phẩm và dịch vụ đột phá. Công ty luôn khuyến khích nhân viên tìm kiếm cách tiếp cận vấn đề từ góc độ khác biệt và đưa ra giải pháp sáng tạo.',
-    img: Motto
-  }
-];
+interface AboutMotto {
+  id: string;
+  title: string;
+  content: string;
+  slug: string;
+  image: string;
+  type: string;
+}
 
+const variableChange = ref([]);
+const mottoItems = ref<AboutMotto[]>([]);
+const isOneItem = ref(false);
 const move = ref(0); // biến lưu chiều dài của một item khi bấm nút qua lại
 const moveEdit = ref(0); // biến lưu chiều dài của một item khi bấm nút qua lại khi trong trạng thái chỉnh sửa
 const items = ref(mottoItems); // biến để lấy dữ liệu để render
@@ -82,17 +43,41 @@ const widthItemEdit = ref(0);
 
 // Hàm lấy width của một thẻ trong trạng thái Edit
 const handleGetWidthItem = () => {
-  const widthItem = document.getElementById('1');
+  const widthItem = document.getElementById('0');
 
   if (widthItem) widthItemEdit.value = widthItem.offsetWidth;
 };
-onMounted(handleGetWidthItem);
+
+// Gọi hàm useAxios để lấy response, error, và isLoading
+const { response, error, isLoading } = useAxios<DataResponse>(
+  'get',
+  '/introduce/section1',
+  {},
+  {},
+  variableChange.value
+);
+
+// Truy xuất giá trị response.value và gán vào responseData
+watch(response, () => {
+  mottoItems.value = response?.value?.data;
+
+  // Xử lí trường hợp có 1 hoặc 2 item
+  if (mottoItems.value.length === 1) {
+    isOneItem.value = true;
+    isDisableRight.value = true;
+    isDisableLeft.value = true;
+    isDisableLeftEdit.value = true;
+    isDisableRightEdit.value = true;
+  } else if (mottoItems.value.length === 2) {
+    isDisableRight.value = true;
+  }
+});
 
 // Hàm bấm nút sang trái
 const handleClickLeft = () => {
   isDisableRight.value = false;
 
-  const widthItem = document.getElementById('1');
+  const widthItem = document.getElementById('0');
 
   if (widthItem) {
     if (move.value === 0) (move.value = widthItem.offsetWidth + 150), (isDisableLeft.value = true);
@@ -106,7 +91,7 @@ const handleClickLeft = () => {
 const handleClickRight = () => {
   isDisableLeft.value = false;
 
-  const widthItem = document.getElementById('1');
+  const widthItem = document.getElementById('0');
 
   if (widthItem) {
     if (move.value === (3 - items.value.length) * (widthItem.offsetWidth + 150))
@@ -144,7 +129,17 @@ const handleClickRightEdit = () => {
 
 // Hàm thao tác xóa đi một Item phương châm
 const handleRemoveItem = () => {
+  const deps = ref([]);
+
+  const { response, error } = useAxios<DataResponse>(
+    'delete',
+    '/introduce/section1/' + items.value[indexItems.value].id,
+    {},
+    {},
+    deps.value
+  );
   items.value.splice(indexItems.value, 1);
+
   indexItems.value--;
 
   if (indexItems.value < 0) {
@@ -196,9 +191,22 @@ const handleRemove = () => {
   }).then((result) => {
     if (result.isConfirmed) {
       handleRemoveItem();
-      // Swal.close();
     }
   });
+};
+
+const handleChangeUpdate = (id: string, title: string, content: string, image: string) => {
+  items.value.forEach((item, idx) => {
+    if (item.id === id) {
+      items.value[idx].title = title;
+      items.value[idx].content = content;
+      items.value[idx].image = image;
+    }
+  });
+};
+
+const handleChangeAdd = (dataAdded: AboutMotto) => {
+  items.value.unshift(dataAdded);
 };
 </script>
 
@@ -210,7 +218,10 @@ const handleRemove = () => {
       <div
         :class="$style['about__motto-slider']"
         id="motto-list"
-        :style="{ transform: 'translateX' + '(' + move + 'px' + ')' }"
+        :style="{
+          transform: 'translateX' + '(' + move + 'px' + ')',
+          justifyContent: isOneItem ? 'center' : ''
+        }"
       >
         <div
           :class="$style['about__motto-slider-item']"
@@ -218,7 +229,7 @@ const handleRemove = () => {
           :key="index"
           :id="'' + index"
         >
-          <img :src="item.img" alt="" />
+          <img :src="item.image" alt="" />
 
           <p :class="$style['about__motto-slider-item-title']">{{ item.title }}</p>
 
@@ -260,7 +271,7 @@ const handleRemove = () => {
 
     <div :class="$style['about__motto-wrapper']" v-if="isEdit">
       <div :class="$style['about__motto-left']">
-        <div>
+        <div :class="$style['about__motto-left-wrapper']">
           <div :class="$style['about__motto-left-button']">
             <button
               :class="$style['about__motto-left-button-left']"
@@ -287,9 +298,9 @@ const handleRemove = () => {
                 :class="$style['about__motto-slider1-item']"
                 v-for="(item, index) in items"
                 :key="index"
-                :id="'' + index"
+                :id="'itemedit' + index"
               >
-                <img :src="item.img" alt="" />
+                <img :src="item.image" alt="" />
 
                 <p :class="$style['about__motto-slider1-item-title']">{{ item.title }}</p>
 
@@ -340,29 +351,27 @@ const handleRemove = () => {
       </div>
     </div>
 
-    <button :class="$style['about__motto-button-first']" v-if="!isEdit" @click="isEdit = true">
+    <button
+      :class="$style['about__motto-button-first']"
+      v-if="!isEdit"
+      @click="(isEdit = true), handleGetWidthItem()"
+    >
       <font-awesome-icon :icon="faPencil" :class="$style['about__motto-button-ic']" />
       <span>Chỉnh sửa</span>
     </button>
 
     <button :class="$style['about__motto-button-left']" v-if="isEdit" @click="isEdit = false">
       <font-awesome-icon :icon="faClose" :class="$style['about__motto-button-ic']" />
-      <span>Hủy bỏ</span>
-    </button>
-
-    <button :class="$style['about__motto-button-right']" v-if="isEdit" @click="isEdit = false">
-      <font-awesome-icon :icon="faCheck" :class="$style['about__motto-button-ic']" />
-      <span>Xác nhận</span>
+      <span>Trở về</span>
     </button>
   </div>
 
-  <modal-add-motto v-if="isOpenAdd" @close="isOpenAdd = false" />
+  <modal-add-motto v-if="isOpenAdd" @close="isOpenAdd = false" :change="handleChangeAdd" />
   <modal-update-motto
     v-if="isOpenUpdate"
     @close="isOpenUpdate = false"
-    :title="items[indexItems].title"
-    :content="items[indexItems].content"
-    :image="items[indexItems].img"
+    @change="handleChangeUpdate"
+    :item="items[indexItems]"
   />
 </template>
 
