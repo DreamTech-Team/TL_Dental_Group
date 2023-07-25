@@ -1,43 +1,38 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, onUnmounted } from 'vue';
+import { ref, onMounted, computed, onUnmounted, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import EditBtn from '@/components/EditBtn/EditBtn.vue';
-import DCNK2 from '@/assets/imgs/Home/DCNK2.png';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import ModalCategory from './ModalCategory.vue';
 
 const isOpen = ref(false);
 
-const categories = ref([
-  {
-    title: 'DỤNG CỤ CHỈNH NHA ABC',
-    src: DCNK2
-  },
-  {
-    title: 'DỤNG CỤ CHỈNH NHA XYZ',
-    src: DCNK2
-  },
-  {
-    title: 'VẬT LIỆU CHỈNH NHA ABC',
-    src: DCNK2
-  },
-  {
-    title: 'MẪU HÀM TƯ VẤN XYZ1',
-    src: DCNK2
-  },
-  {
-    title: 'MẪU HÀM TƯ VẤN XYZ2',
-    src: DCNK2
-  },
-  {
-    title: 'MẪU HÀM TƯ VẤN XYZ3',
-    src: DCNK2
-  },
-  {
-    title: 'MẪU HÀM TƯ VẤN XYZ4',
-    src: DCNK2
-  }
-]);
+interface ItemRS {
+  id: string;
+  title: string;
+  img: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+}
+
+const categories = ref<ItemRS[]>([]);
+
+//GET DATA
+const deps = ref([]);
+const lenght = ref(0);
+const { response } = useAxios<DataResponse>('get', '/cate1?highlight=true', {}, {}, deps.value);
+
+watch(response, () => {
+  categories.value = response.value?.data.sort((a: ItemRS, b: ItemRS) => a.highlight - b.highlight);
+  lenght.value = categories.value.length;
+});
+
+//DATA UPDATE
+const onUpdateContent = (data: { listrs: ItemRS[] }) => {
+  categories.value = data.listrs;
+};
 
 const colors = [
   // eslint-disable-next-line max-len
@@ -51,6 +46,7 @@ const colors = [
 ];
 
 //Properties
+const isPhone = ref(false);
 const wItem = ref(0);
 const tranfX = ref(0);
 let resizeListener: () => void;
@@ -83,18 +79,30 @@ const getCategoryColor = (index: number) => {
 onMounted(() => {
   const container = document.getElementById('category-wrapper');
   if (container) {
-    wItem.value = container.offsetWidth / 4;
+    if (window.innerWidth < 739) {
+      isPhone.value = true;
+      wItem.value = container.offsetWidth / 2;
+    } else {
+      wItem.value = container.offsetWidth / 4;
+    }
   }
 
   resizeListener = function () {
     const container = document.getElementById('category-wrapper');
     if (container) {
-      wItem.value = container.offsetWidth / 4;
+      if (window.innerWidth < 739) {
+        wItem.value = container.offsetWidth / 2;
+        isPhone.value = true;
+      } else {
+        wItem.value = container.offsetWidth / 4;
+      }
       tranfX.value = 0;
     }
   };
 
-  window.addEventListener('resize', resizeListener);
+  if (window.innerWidth >= 739) {
+    window.addEventListener('resize', resizeListener);
+  }
 });
 
 onUnmounted(() => {
@@ -121,22 +129,31 @@ onUnmounted(() => {
             <span>{{ item.title }}</span>
             <div :class="$style['home__category-ctn']">
               <div :class="$style['home__category-img']">
-                <img :src="item.src" :alt="item.title" />
+                <img :src="item.img" :alt="item.title" />
               </div>
             </div>
           </div>
         </div>
-        <button :class="$style['home__category-left']" @click="scrollLeft">
+        <button v-show="tranfX !== 0" :class="$style['home__category-left']" @click="scrollLeft">
           <font-awesome-icon :icon="faChevronLeft" :class="$style['home__category-ic']" />
         </button>
-        <button :class="$style['home__category-right']" @click="scrollRight">
+        <button
+          v-show="(!isPhone && lenght > 4) || (isPhone && lenght > 2)"
+          :class="$style['home__category-right']"
+          @click="scrollRight"
+        >
           <font-awesome-icon :icon="faChevronRight" :class="$style['home__category-ic']" />
         </button>
       </div>
     </div>
     <EditBtn style="top: -10px" @click="isOpen = true" />
   </div>
-  <ModalCategory v-if="isOpen" @close="isOpen = false" />
+  <ModalCategory
+    v-if="isOpen"
+    @close="isOpen = false"
+    :list-item="categories"
+    @update-content="onUpdateContent"
+  />
 </template>
 
 <style module scoped lang="scss">

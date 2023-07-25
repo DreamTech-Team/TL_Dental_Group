@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import Swal from 'sweetalert2';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 const content = defineProps({
   ceo: {
@@ -17,7 +18,12 @@ const content = defineProps({
   }
 });
 
-const emit = defineEmits(['inFocus', 'close']);
+const emits = defineEmits<{
+  // eslint-disable-next-line no-unused-vars
+  (e: 'close'): void;
+  // eslint-disable-next-line no-unused-vars
+  (e: 'update-content', data: { ceo: string; address: string; day: string }): void;
+}>();
 
 const convertToDate = (dateString: string): Date | null => {
   const parts: string[] = dateString.split('/');
@@ -35,6 +41,19 @@ const convertToDate = (dateString: string): Date | null => {
 
   const dateObject: Date = new Date(year, month, day);
   return dateObject;
+};
+
+const formatDate = (inputDate: string) => {
+  const dateParts: string[] = inputDate.split('-');
+  if (dateParts.length !== 3) {
+    throw new Error('Invalid date format');
+  }
+
+  const year: string = dateParts[0];
+  const month: string = dateParts[1];
+  const day: string = dateParts[2];
+
+  return `${day}/${month}/${year}`;
 };
 
 //Validate form
@@ -79,15 +98,38 @@ const submitForm = () => {
       width: '30rem'
     });
   } else {
-    Swal.fire({
-      title: 'Cập nhật thành công',
-      icon: 'success',
-      confirmButtonText: 'Hoàn tất',
-      width: '30rem'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.close();
-        emit('close');
+    const deps = ref([]);
+    const object = {
+      fullnameCEO: CEO.value,
+      addressCEO: Address.value,
+      inaugurationCEO: formatDate(formattedDate.value)
+    };
+    const { response } = useAxios<DataResponse>(
+      'patch',
+      '/information/ceo',
+      object,
+      {},
+      deps.value
+    );
+
+    watch(response, () => {
+      if (response.value?.status === 'ok') {
+        Swal.fire({
+          title: 'Cập nhật thành công',
+          icon: 'success',
+          confirmButtonText: 'Hoàn tất',
+          width: '30rem'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.close();
+            emits('update-content', {
+              ceo: CEO.value,
+              address: Address.value,
+              day: formatDate(formattedDate.value)
+            });
+            emits('close');
+          }
+        });
       }
     });
   }

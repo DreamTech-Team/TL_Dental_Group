@@ -25,13 +25,56 @@ watch(response, () => {
 });
 
 interface Company {
-  id: string;
-  name: string;
-  logo: string;
-  description: string;
-  highlight: number;
-  slug: string;
-  createAt: string;
+  outstandingProduct: {
+    id: string;
+    name: string;
+    slug: string;
+    price: number;
+    priceSale: number;
+    summary: string;
+    description: string;
+    mainImg: string;
+    imgs: string;
+    highlight: number;
+    createAt: string;
+    fkCategory: {
+      id: string;
+      companyId: {
+        id: string;
+        name: string;
+        logo: string;
+        description: string;
+        highlight: number;
+        slug: string;
+        createAt: string;
+        outstandingProductId: string;
+      };
+      cate1Id: {
+        id: string;
+        title: string;
+        img: string;
+        highlight: number;
+        slug: string;
+        createAt: string;
+      };
+      cate2Id: {
+        id: string;
+        title: string;
+        slug: string;
+        createAt: string;
+      };
+    };
+  };
+  company: {
+    id: string;
+    name: string;
+    logo: string;
+    description: string;
+    highlight: number;
+    slug: string;
+    createAt: string;
+    outstandingProductId: string;
+  };
 }
 
 interface Item {
@@ -39,14 +82,16 @@ interface Item {
   alt: string;
   width: string;
   height: string;
+  name: string;
+  product: string;
 }
 
 const isOpen = ref(false);
 
 const companies = ref<Company[]>([]);
 const deps1 = ref([]);
-const results = useAxios<DataResponse>('get', '/company', {}, {}, deps1.value);
-const bannerItems = ref([{ src: '', alt: '', width: '0', height: '0' }]);
+const results = useAxios<DataResponse>('get', '/company?highlight=true', {}, {}, deps1.value);
+const bannerItems = ref([{ src: '', alt: '', width: '0', height: '0', name: '', product: '' }]);
 
 const calculateWidths = () => {
   return new Promise<void>((resolve) => {
@@ -188,24 +233,21 @@ const moveLine = (index: number) => {
 watch(
   results.response,
   async () => {
-    companies.value = results.response.value?.data;
-
-    if (companies.value) {
-      const highlightedCompanies: Company[] = companies.value.filter(
-        (company) => company.highlight !== 0
-      );
+    if (results.response.value?.data.length > 0) {
       const randomHighlightedCompanies: Company[] =
-        highlightedCompanies.length >= 4
-          ? getRandomItems(highlightedCompanies, 4)
-          : highlightedCompanies;
+        results.response.value?.data >= 4
+          ? getRandomItems(results.response.value?.data, 4)
+          : results.response.value?.data;
       companies.value = randomHighlightedCompanies;
 
-      bannerItems.value = companies.value.map((company) => {
+      bannerItems.value = companies.value.map((company: Company) => {
         return {
-          src: company.logo,
-          alt: company.name,
+          src: company.company.logo,
+          alt: company.company.name,
           width: '',
-          height: '30'
+          height: '30',
+          name: company.outstandingProduct.name,
+          product: company.outstandingProduct.mainImg
         };
       });
 
@@ -258,9 +300,12 @@ onUnmounted(() => {
             <div :class="$style['home__banner-logo']">
               <img :src="selectedItem.src" :alt="selectedItem.alt" width="127" height="30" />
             </div>
-            <div :class="$style['home__banner-product']"></div>
+            <div
+              :class="$style['home__banner-product']"
+              :style="{ backgroundImage: `url(${selectedItem.product})` }"
+            ></div>
           </div>
-          <p>Trụ Implant Highness Hàn Quốc</p>
+          <p>{{ selectedItem.name }}</p>
         </div>
       </div>
     </div>

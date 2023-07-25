@@ -1,6 +1,8 @@
+<!-- eslint-disable no-unused-vars -->
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import Swal from 'sweetalert2';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 const content = defineProps({
   phone: {
@@ -25,7 +27,15 @@ const content = defineProps({
   }
 });
 
-const emit = defineEmits(['inFocus', 'close']);
+const emits = defineEmits<{
+  // eslint-disable-next-line no-unused-vars
+  (e: 'close'): void;
+  // eslint-disable-next-line no-unused-vars
+  (
+    e: 'update-content',
+    data: { phone: string; hotline: string; email: string; facebook: string; zalo: string }
+  ): void;
+}>();
 
 //Validate form
 const Phone = ref(content.phone);
@@ -58,15 +68,42 @@ const updateInfor = (e: Event, tag: string) => {
 };
 
 const submitForm = () => {
-  Swal.fire({
-    title: 'Cập nhật thành công',
-    icon: 'success',
-    confirmButtonText: 'Hoàn tất',
-    width: '30rem'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.close();
-      emit('close');
+  const deps = ref([]);
+  const object = {
+    phone: Phone.value,
+    hotline: Hotline.value,
+    email: Email.value,
+    facebook: Facebook.value,
+    zalo: Zalo.value
+  };
+  const { response } = useAxios<DataResponse>(
+    'patch',
+    '/information/contact',
+    object,
+    {},
+    deps.value
+  );
+
+  watch(response, () => {
+    if (response.value?.status === 'ok') {
+      Swal.fire({
+        title: 'Cập nhật thành công',
+        icon: 'success',
+        confirmButtonText: 'Hoàn tất',
+        width: '30rem'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.close();
+          emits('update-content', {
+            phone: Phone.value,
+            hotline: Hotline.value,
+            email: Email.value,
+            facebook: Facebook.value || '',
+            zalo: Zalo.value || ''
+          });
+          emits('close');
+        }
+      });
     }
   });
 };
