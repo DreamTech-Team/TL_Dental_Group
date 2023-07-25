@@ -97,7 +97,7 @@ public class ProductController {
                                                  @RequestParam(value = "imgs", required = false) List<MultipartFile> imgs,
                                                  @RequestParam(value = "mainImg", required = false) MultipartFile mainImg,
                                                  @RequestParam("data") String data,
-                                                 @RequestParam(value = "removeImgs", required = false) String removeImgs) {
+                                                 @RequestParam(value = "removeImgs", required = false) List<String> removeImgs) {
         try {
             // Convert String to JSON
             ObjectMapper objectMapper = new ObjectMapper();
@@ -149,11 +149,10 @@ public class ProductController {
 
                 if (removeImgs != null) {
                     // Remove images at old imgs
-                    List<String> imgsRemove = Utils.convertStringToImages(removeImgs);
-                    for (int i = 0; i < imgsRemove.size(); i++) {
-                        int index = oldImgs.indexOf(imgsRemove.get(i));
+                    for (int i = 0; i < removeImgs.size(); i++) {
+                        int index = oldImgs.indexOf(removeImgs.get(i));
                         if (index != -1) {
-                            storageService.deleteFile(imgsRemove.get(i));
+                            storageService.deleteFile(removeImgs.get(i));
                             oldImgs.remove(index);
                         }
                     }
