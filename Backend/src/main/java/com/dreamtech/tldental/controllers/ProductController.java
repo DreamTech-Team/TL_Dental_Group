@@ -157,6 +157,8 @@ public class ProductController {
                             oldImgs.remove(index);
                         }
                     }
+                }
+                if (imgs != null) {
                     // Upload new imgs
                     for (int i = 0; i < imgs.size(); i++) {
                         if (imgs.get(i).getSize() != 0) {
