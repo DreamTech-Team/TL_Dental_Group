@@ -35,7 +35,8 @@ public class NewsController {
 
     // GET ALL NEWS WITH FILTER
     @GetMapping("")
-    ResponseEntity<ResponseObject> getFilter(@RequestParam(required = false, defaultValue = "12") String pageSize,
+    ResponseEntity<ResponseObject> getFilter(@RequestParam(value = "key", required = false) String key,
+                                             @RequestParam(required = false, defaultValue = "12") String pageSize,
                                              @RequestParam(required = false, defaultValue = "0") String page,
                                              @RequestParam(required = false) List<String> filterTags,
                                              @RequestParam(required = false, defaultValue = "desc") String sort) {
@@ -45,10 +46,10 @@ public class NewsController {
         List<Object[]> newsList;
         int total;
         if (filterTags == null) {
-            newsList = repository.findFilteredNews(PageRequest
+            newsList = repository.findFilteredNews(key, PageRequest
                     .of(Integer.parseInt(page), Integer.parseInt(pageSize), sortByCreateAt));
         } else {
-            newsList = repository.findFilteredNewsByTags(filterTags, PageRequest
+            newsList = repository.findFilteredNewsByTags(key, filterTags, PageRequest
                     .of(Integer.parseInt(page), Integer.parseInt(pageSize), sortByCreateAt));
         }
 
@@ -62,12 +63,13 @@ public class NewsController {
     }
 
     @GetMapping("/total")
-    ResponseEntity<ResponseObject> getTotal(@RequestParam(required = false) List<String> filterTags) {
+    ResponseEntity<ResponseObject> getTotal(@RequestParam(value = "key", required = false) String key,
+                                            @RequestParam(required = false) List<String> filterTags) {
         List<Object[]> newsList;
         if (filterTags == null) {
-            newsList = repository.findFilteredNews(null);
+            newsList = repository.findFilteredNews(key, null);
         } else {
-            newsList = repository.findFilteredNewsByTags(filterTags, null);
+            newsList = repository.findFilteredNewsByTags(key, filterTags, null);
         }
 
         // Handle data

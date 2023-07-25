@@ -10,8 +10,12 @@ import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Optional;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+
 
 @Entity
+@Indexed
 @Table(name="Product")
 public class Product {
     @Id
@@ -27,6 +31,7 @@ public class Product {
     @Min(value = 0, message = "Price must be greater than or equal to 0")
     private int price;
 
+    @FullTextField
     @Column(name = "price_sale")
     @Min(value = 0, message = "Price must be greater than or equal to 0")
     private int priceSale;

@@ -43,6 +43,7 @@ public class ProductController {
     ResponseEntity<ResponseObject> getAllProducts(@RequestParam(value = "company", required = false) String company,
                                                   @RequestParam(value = "cate1", required = false) String cate1,
                                                   @RequestParam(value = "cate2", required = false) String cate2,
+                                                  @RequestParam(value = "key", required = false) String key,
                                                   @RequestParam(required = false, defaultValue = "12") String pageSize,
                                                   @RequestParam(required = false, defaultValue = "0") String page,
                                                   @RequestParam(required = false, defaultValue = "desc") String sort) {
@@ -51,7 +52,7 @@ public class ProductController {
             Sort.Direction sortDirection = sort.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
             Sort sortByCreateAt = Sort.by(sortDirection, "createAt");
 
-            List<Object> newsList = repository.findFilteredProducts(company, cate1, cate2, PageRequest
+            List<Object> newsList = repository.findFilteredProducts(key, company, cate1, cate2, PageRequest
                     .of(Integer.parseInt(page), Integer.parseInt(pageSize), sortByCreateAt));
 
             int total = newsList.size();
@@ -69,13 +70,40 @@ public class ProductController {
     @GetMapping("/total")
     ResponseEntity<ResponseObject> getTotal(@RequestParam(value = "company", required = false) String company,
                                             @RequestParam(value = "cate1", required = false) String cate1,
-                                            @RequestParam(value = "cate2", required = false) String cate2) {
-        List<Object> newsList = repository.findFilteredProducts(company, cate1, cate2, null);
+                                            @RequestParam(value = "cate2", required = false) String cate2,
+                                            @RequestParam(value = "key", required = false) String key) {
+        List<Object> newsList = repository.findFilteredProducts(key, company, cate1, cate2, null);
         int total = newsList.size();
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject("ok", "Query total successfully", total)
         );
+    }
+
+    // SEARCH BY NAME OR COMPANY
+    @GetMapping("/search")
+    ResponseEntity<ResponseObject> searchProducts(@RequestParam(value = "key", required = false) String key,
+                                                  @RequestParam(required = false, defaultValue = "12") String pageSize,
+                                                  @RequestParam(required = false, defaultValue = "0") String page,
+                                                  @RequestParam(required = false, defaultValue = "desc") String sort) {
+        try {
+            // HANDLE FILTER
+            Sort.Direction sortDirection = sort.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+            Sort sortByCreateAt = Sort.by(sortDirection, "createAt");
+
+            List<Object> newsList = repository.searchProductsByNameOrCompany(key, PageRequest
+                    .of(Integer.parseInt(page), Integer.parseInt(pageSize), sortByCreateAt));
+
+            int total = newsList.size();
+
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Query product successfully", new DataPageObject(total, page, pageSize, newsList))
+            );
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                    new ResponseObject("failed", exception.getMessage(), "")
+            );
+        }
     }
 
     // GET DETAIL
@@ -180,7 +208,7 @@ public class ProductController {
             }
 
         } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                     new ResponseObject("failed", exception.getMessage(), ""));
         }
     }
