@@ -2,25 +2,48 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faSortDown, faXmark, faArrowDownZA, faTags } from '@fortawesome/free-solid-svg-icons';
 import { ref, computed, onMounted, watch } from 'vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+interface Item {
+  id: string;
+  name: string;
+  slug: string;
+  createAt: string;
+}
+
+const deps = ref([]);
+
+const emits = defineEmits<{
+  // eslint-disable-next-line no-unused-vars
+  (e: 'update-content', data: { listrs: Item[] }): void;
+  // eslint-disable-next-line no-unused-vars
+  (e: 'update-sort', data: { sort: string }): void;
+}>();
+
+//Array Available
+const availableSorts = ref<string[]>(['Mới nhất', 'Phổ biến']);
+const availableItems = ref<Item[]>([]);
+const selectedItems = ref<Item[]>([]);
+
+const { response } = useAxios<DataResponse>('get', '/tags', {}, {}, deps.value);
+watch(response, () => {
+  availableItems.value = response.value?.data.map((item: Item) => {
+    return {
+      name: item.name,
+      slug: item.slug
+    };
+  });
+});
 
 const activeBtn = ref(-1);
 const activeSort = ref(0);
 const activeIndex = ref(0);
 const lineWidth = ref(0);
 const activeTab = ref<HTMLElement | null>(null);
+
 //Open and Close Modal
 const isCustomSelectListOpen = ref(false);
 const isCustomSelectListOpen1 = ref(false);
-
-//Array Available
-const availableSorts = ref<string[]>([
-  'Mới nhất',
-  'Phổ biến',
-  'Tên tin tức từ A - Z',
-  'Tên tin tức từ Z - A'
-]);
-const availableItems = ref<string[]>(['Hoạt động', 'Tin tức', 'Tư vấn', 'Hội thảo']);
-const selectedItems = ref<string[]>([]);
 
 //Change Status Select Box
 const handleSelect = () => {
@@ -47,15 +70,21 @@ const selectItem1 = (index: number) => {
   }, 250);
 };
 
-const selectItem = (item: string) => {
+const selectItem = (item: Item) => {
   selectedItems.value.push(item);
   availableItems.value = availableItems.value.filter((i) => i !== item);
   isCustomSelectListOpen.value = false; //Close Modal
+  emits('update-content', {
+    listrs: selectedItems.value
+  });
 };
 
-const removeItem = (item: string) => {
+const removeItem = (item: Item) => {
   selectedItems.value = selectedItems.value.filter((i) => i !== item);
   availableItems.value.push(item);
+  emits('update-content', {
+    listrs: selectedItems.value
+  });
 };
 
 //Calculate active tab
@@ -80,6 +109,10 @@ const lineTransform = computed(() => {
 
 const moveLine = (index: number) => {
   activeIndex.value = index;
+
+  emits('update-sort', {
+    sort: availableSorts.value[index]
+  });
 
   setTimeout(() => {
     activeTab.value = document.getElementById('tabActive');
@@ -117,14 +150,7 @@ onMounted(() => {
             :class="$style[activeIndex === 1 ? 'news__tabs-item--active' : 'news__tabs-item']"
             @click="moveLine(1)"
           >
-            Tên tin tức từ A đến Z
-          </div>
-          <div
-            :id="activeIndex === 2 ? 'tabActive' : ''"
-            :class="$style[activeIndex === 2 ? 'news__tabs-item--active' : 'news__tabs-item']"
-            @click="moveLine(2)"
-          >
-            Tên tin tức từ Z đến A
+            Phổ biến
           </div>
           <div
             id="line_active"
@@ -147,7 +173,7 @@ onMounted(() => {
                 :key="index"
                 @click.stop="selectItem(item)"
               >
-                {{ item }}
+                {{ item.name }}
               </li>
             </ul>
           </div>
@@ -158,7 +184,7 @@ onMounted(() => {
             v-for="(item, index) in selectedItems"
             :key="index"
           >
-            {{ item }}
+            {{ item.name }}
             <div :class="$style['news__item-cancel']" @click.stop="removeItem(item)">
               <font-awesome-icon :icon="faXmark" :class="$style['cancel_ic']" />
             </div>
@@ -203,7 +229,7 @@ onMounted(() => {
                 :key="index"
                 @click.stop="selectItem(item)"
               >
-                {{ item }}
+                {{ item.name }}
               </li>
             </ul>
           </div>

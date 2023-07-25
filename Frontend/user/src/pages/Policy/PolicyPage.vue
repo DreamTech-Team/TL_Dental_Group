@@ -1,12 +1,47 @@
 <script setup lang="ts">
-import background from '@/assets/imgs/Policy/bg.png';
-import { listPolicy } from './PolicyHandle';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+interface Policy {
+  title: string;
+  content: string;
+}
+
+interface ItemPolicy {
+  id: string;
+  name: string;
+  symbol: string;
+  slug: string;
+  detail: string;
+  createAt: string;
+}
+
+//Properties
+const banner = ref('');
+const listPolicy = ref<Policy[]>([]);
+
+//GET BANNER
+const deps = ref([]);
+const getBanner = useAxios<DataResponse>('get', '/policy/header', {}, {}, deps.value);
+watch(getBanner.response, () => {
+  banner.value = getBanner.response.value?.data?.image;
+});
+
+//GET POLICY
+const getPolicies = useAxios<DataResponse>('get', '/policy', {}, {}, deps.value);
+watch(getPolicies.response, () => {
+  listPolicy.value = getPolicies.response.value?.data.map((item: ItemPolicy) => {
+    return {
+      title: item.name,
+      content: item.detail
+    };
+  });
+});
 
 const selectedItem = ref(0);
 const showNav = ref(false);
 
-const handleSelected = (index: any) => {
+const handleSelected = (index: number) => {
   selectedItem.value = Number(index);
   console.log(index);
 };
@@ -18,7 +53,7 @@ const handleActiveNav = () => {
 <template>
   <div :class="$style.container">
     <div :class="$style.container__bg">
-      <img :src="background" alt="none" />
+      <img :src="banner" alt="banner" />
     </div>
     <div :class="$style.container__content">
       <div :class="$style['container__content-nav']">

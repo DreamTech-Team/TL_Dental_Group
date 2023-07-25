@@ -30,6 +30,7 @@
         flex: 2;
 
         img {
+          object-fit: cover;
           width: 100%;
           height: 100%;
           border-top-right-radius: 40%;
@@ -126,7 +127,7 @@
       }
     }
 
-    &-pagination{
+    &-pagination {
       display: flex;
       align-items: center;
       justify-content: center;

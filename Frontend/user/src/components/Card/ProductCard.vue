@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import LogoNoBg from '@/assets/imgs/logo_nobg.png';
-import ProductPic from '@/assets/imgs/Product/product.png';
-import LogoCompany from '@/assets/imgs/Product/logoCompany.png';
 import OkSticker from '@/assets/imgs/Product/GroupOk.svg';
 import Insurance from '@/assets/imgs/Product/GroupInsurance.svg';
 import SPSticker from '@/assets/imgs/Product/GroupSupport.svg';
 import { useRouter } from 'vue-router';
-import { type PropType } from 'vue';
+import { type PropType, ref, watch } from 'vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 export interface Product {
   nameProduct: string;
@@ -14,7 +12,17 @@ export interface Product {
   description: string;
   tag: string;
   company: string;
+  image: string;
+  brand: string;
 }
+
+const Logo = ref('');
+const deps = ref([]);
+const { response } = useAxios<DataResponse>('get', '/information?type=LOGO', {}, {}, deps.value);
+
+watch(response, () => {
+  Logo.value = response.value?.data?.logo.content;
+});
 
 const router = useRouter();
 
@@ -55,13 +63,21 @@ defineProps({
         </div>
 
         <div :class="$style['card__header--title']">
-          <img :class="$style['card__header--title-logo']" :src="LogoNoBg" alt="logononbg" />
+          <img :class="$style['card__header--title-logo']" :src="Logo" alt="logononbg" />
           <div :class="$style['card__header--title-content']">
             {{ product.tag }} {{ product.company }}
           </div>
         </div>
-        <div>
-          <img :class="$style['card__header--picture']" :src="ProductPic" alt="product" />
+        <div
+          style="
+            widows: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <img :class="$style['card__header--picture']" :src="product.image" alt="product" />
         </div>
       </div>
     </div>
@@ -70,7 +86,7 @@ defineProps({
         {{ product.nameProduct }}
       </p>
       <div :class="$style['card__body--info']">
-        <img :class="$style['card__body--info-company']" :src="LogoCompany" alt="Logo company" />
+        <img :class="$style['card__body--info-company']" :src="product.brand" alt="Logo company" />
         <p :class="$style['card__body--info-price']">{{ product.price }}</p>
       </div>
     </div>
