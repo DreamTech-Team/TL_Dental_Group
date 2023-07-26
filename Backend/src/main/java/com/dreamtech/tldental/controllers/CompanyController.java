@@ -235,6 +235,7 @@ public class CompanyController {
             tempObj.put("company", (Company) result[0]);
             tempObj.put("outstandingProduct", (Product) result[1]);
             combinedList.add(tempObj);
+            tempObj = new HashMap<>();
         }
         return combinedList;
     }
