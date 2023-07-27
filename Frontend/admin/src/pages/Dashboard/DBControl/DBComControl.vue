@@ -4,6 +4,34 @@ import Icon2 from '@/assets/icons/IconDB2.png';
 import Icon3 from '@/assets/icons/IconDB3.png';
 import Icon4 from '@/assets/icons/IconDB4.png';
 import { ref, computed, onMounted, watch } from 'vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+//GET DATA
+const deps = ref([]);
+const lengthArray = ref([]);
+const totalProduct = ref();
+const getProducts = useAxios<DataResponse>('get', '/products', {}, {}, deps.value);
+const getCompanies = useAxios<DataResponse>('get', '/company', {}, {}, deps.value);
+const getActivites = useAxios<DataResponse>('get', '/news', {}, {}, deps.value);
+
+const products = ref();
+const companies = ref();
+const activities = ref();
+
+watch(getProducts.response, () => {
+  totalProduct.value = getProducts.response.value?.data;
+  products.value = totalProduct.value?.total;
+});
+
+watch(getCompanies.response, () => {
+  lengthArray.value = getCompanies.response.value?.data;
+  companies.value = lengthArray.value.length;
+});
+
+watch(getActivites.response, () => {
+  totalProduct.value = getActivites.response.value?.data;
+  activities.value = totalProduct.value?.total;
+});
 
 const activeIndex = ref(0);
 const lineWidth = ref(0);
@@ -62,7 +90,7 @@ onMounted(() => {
     <div :class="$style.dashboard_control_upper">
       <div :class="$style['dashboard_control-item']" style="background-color: #ff9f43">
         <div :class="$style['dashboard_control-item-left']">
-          <h3 :class="$style['dashboard_control-item-left-title']">2000</h3>
+          <h3 :class="$style['dashboard_control-item-left-title']">{{ products }}</h3>
           <span>Sản phẩm</span>
         </div>
         <div :class="$style['dashboard_control-item-right']">
@@ -71,7 +99,7 @@ onMounted(() => {
       </div>
       <div :class="$style['dashboard_control-item']" style="background-color: #00c2da">
         <div :class="$style['dashboard_control-item-left']">
-          <h3 :class="$style['dashboard_control-item-left-title']">3</h3>
+          <h3 :class="$style['dashboard_control-item-left-title']">{{ companies }}</h3>
           <span>Đối tác</span>
         </div>
         <div :class="$style['dashboard_control-item-right']">
@@ -80,7 +108,7 @@ onMounted(() => {
       </div>
       <div :class="$style['dashboard_control-item']" style="background-color: #1b2850">
         <div :class="$style['dashboard_control-item-left']">
-          <h3 :class="$style['dashboard_control-item-left-title']">400</h3>
+          <h3 :class="$style['dashboard_control-item-left-title']">{{ activities }}</h3>
           <span>Hoạt động</span>
         </div>
         <div :class="$style['dashboard_control-item-right']">

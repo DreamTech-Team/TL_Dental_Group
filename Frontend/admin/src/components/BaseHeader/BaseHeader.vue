@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import {
-  faPhone,
-  faEnvelope,
-  faArrowRightFromBracket,
-  faCircleUser
-} from '@fortawesome/free-solid-svg-icons';
+import { faPhone, faEnvelope, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import Avatar from '@/assets/imgs/adminavt.png';
 import { ref, onMounted, onUnmounted } from 'vue';
 
@@ -55,10 +50,6 @@ onUnmounted(() => {
               <h4>Anh Khoi</h4>
               <p>Admin</p>
             </div>
-          </li>
-          <li :class="$style['header__list-item']">
-            <font-awesome-icon :icon="faCircleUser" :class="$style['person__ic']" />
-            <p>Cá nhân</p>
           </li>
           <li :class="$style['header__list-item']">
             <font-awesome-icon :icon="faArrowRightFromBracket" :class="$style['person__ic']" />

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import Swal from 'sweetalert2';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 const content = defineProps({
   namecomp: {
@@ -17,7 +18,12 @@ const content = defineProps({
   }
 });
 
-const emit = defineEmits(['inFocus', 'close']);
+const emits = defineEmits<{
+  // eslint-disable-next-line no-unused-vars
+  (e: 'close'): void;
+  // eslint-disable-next-line no-unused-vars
+  (e: 'update-content', data: { namecomp: string; slogan: string; years: string }): void;
+}>();
 
 //Validate form
 const Comp = ref(content.namecomp);
@@ -51,15 +57,38 @@ const submitForm = () => {
       width: '30rem'
     });
   } else {
-    Swal.fire({
-      title: 'Cập nhật thành công',
-      icon: 'success',
-      confirmButtonText: 'Hoàn tất',
-      width: '30rem'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.close();
-        emit('close');
+    const deps = ref([]);
+    const object = {
+      name: Comp.value,
+      slogan: Slogan.value,
+      duringTime: Years.value + ' ' + Tags.value
+    };
+    const { response } = useAxios<DataResponse>(
+      'patch',
+      '/information/general',
+      object,
+      {},
+      deps.value
+    );
+
+    watch(response, () => {
+      if (response.value?.status === 'ok') {
+        Swal.fire({
+          title: 'Cập nhật thành công',
+          icon: 'success',
+          confirmButtonText: 'Hoàn tất',
+          width: '30rem'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.close();
+            emits('update-content', {
+              namecomp: Comp.value,
+              slogan: Slogan.value,
+              years: Years.value + ' ' + Tags.value
+            });
+            emits('close');
+          }
+        });
       }
     });
   }

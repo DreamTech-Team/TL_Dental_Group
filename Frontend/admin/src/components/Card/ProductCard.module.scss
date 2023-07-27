@@ -11,6 +11,7 @@
   border-radius: 1.2rem;
   background-color: rgb(255, 255, 255);
   filter: drop-shadow(0px 1px 5px rgba(0, 0, 0, 0.1));
+  cursor: pointer;
 
   &__header {
     width: 100%;
@@ -18,6 +19,7 @@
     background: linear-gradient(244.87deg, #6b5ab0 -26.72%, #4592ec 39.12%, #2a3c97 92.91%);
     border-radius: 10px 10px 0px 0px;
     position: relative;
+
     &--container {
       background: #ffffff;
       width: 90%;
@@ -29,66 +31,74 @@
       transform: translate(-50%, -50%);
       border-radius: 4px 4px 0 0;
       z-index: 1;
-    }
 
-    &--genuine {
-      width: 5.5rem;
-      display: flex;
-      position: absolute;
-      flex-direction: column;
-      top: 17%;
-      right: 7%;
-      align-items: center;
-      &-sticker {
-        width: 100%;
-        height: 100%;
-      }
-      &-text {
-        font-style: normal;
-        font-weight: 600;
-        font-size: 6px;
-        color: #fc5151;
+      .card__header--genuine {
+        width: 5.5rem;
+        display: flex;
+        position: absolute;
+        flex-direction: column;
+        top: 17%;
+        right: 4%;
         align-items: center;
+        &-sticker {
+          width: 100%;
+          height: 100%;
+        }
+        &-text {
+          font-style: normal;
+          font-weight: 600;
+          font-size: 6px;
+          color: #fc5151;
+          align-items: center;
+        }
       }
-    }
-
-    &--insurance {
-      display: flex;
-      position: absolute;
-      flex-direction: column;
-      top: 40%;
-      right: 7%;
-      align-items: center;
-      width: 5.5rem;
-      &-sticker {
-        width: 100%;
-        height: 100%;
+  
+      .card__header--insurance {
+        display: flex;
+        position: absolute;
+        flex-direction: column;
+        top: 40%;
+        right: 4%;
+        align-items: center;
+        width: 5.5rem;
+        &-sticker {
+          width: 100%;
+          height: 100%;
+        }
+        &-text {
+          font-style: normal;
+          font-weight: 600;
+          font-size: 6px;
+          color: #fc5151;
+        }
       }
-      &-text {
-        font-style: normal;
-        font-weight: 600;
-        font-size: 6px;
-        color: #fc5151;
+  
+      .card__header--support {
+        display: flex;
+        position: absolute;
+        flex-direction: column;
+        top: 63%;
+        right: 4%;
+        align-items: center;
+        width: 5.5rem;
+        &-sticker {
+          width: 100%;
+          height: 100%;
+        }
+        &-text {
+          font-style: normal;
+          font-weight: 600;
+          font-size: 6px;
+          color: #fc5151;
+        }
       }
-    }
-
-    &--support {
-      display: flex;
-      position: absolute;
-      flex-direction: column;
-      top: 63%;
-      right: 7%;
-      align-items: center;
-      width: 5.5rem;
-      &-sticker {
-        width: 100%;
-        height: 100%;
-      }
-      &-text {
-        font-style: normal;
-        font-weight: 600;
-        font-size: 6px;
-        color: #fc5151;
+  
+      .card__header--genuine,
+      .card__header--insurance,
+      .card__header--support {
+        p {
+          font-size: 6px !important;
+        }
       }
     }
 
@@ -105,6 +115,8 @@
 
       &-confirm {
         position: relative;
+        width: 100%;
+        height: 100%;
 
         &::before {
           position: absolute;
@@ -118,25 +130,28 @@
           left: -43px;
         }
       }
+
+      .card__header--txtconfirm {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        color: #ffffff;
+        text-transform: uppercase;
+        font-weight: 700;
+        top: -24px;
+        right: 5px;
+        z-index: 2;
+        font-size: 1.2rem;
+      }
     }
 
-    &--txtconfirm {
-      position: absolute;
-      color: #ffffff;
-      text-transform: uppercase;
-      font-weight: 700;
-      top: 98%;
-      right: 7%;
-      z-index: 2;
-      font-size: 1.2rem;
-    }
     &--title {
       display: flex;
       justify-content: space-evenly;
       align-items: center;
       &-logo {
-        width: 3rem;
-        height: 2.8rem;
+        width: auto;
+        height: 2rem;
         margin: 0.5rem 1rem 0.5rem 1.5rem;
         margin-left: 1rem;
       }
@@ -144,7 +159,7 @@
         color: #262e5d;
         font-style: normal;
         font-weight: 600;
-        font-size: 10px;
+        font-size: 11px;
         line-height: 22px;
         flex: 5;
         text-align: right;
@@ -152,14 +167,15 @@
       }
     }
     &--picture {
-      width: 100%;
-      height: 100%;
+      display: grid;
+      aspect-ratio: 1/1;
+      width: 50%;
+      margin-bottom: 20%;
     }
   }
 
   &__body {
     width: 100%;
-    // height: 32%;
     border-radius: 1.2rem;
     display: flex;
     flex-direction: column;
@@ -171,9 +187,8 @@
       padding: 1rem 1.6rem;
       font-style: normal;
       font-weight: 500;
-      font-size: 16px;
-      // line-height: 135%;
       margin-bottom: 0.5rem;
+      text-align: left;
       height: 5rem;
       width: 100%;
       overflow: hidden;
@@ -185,13 +200,14 @@
     &--info {
       display: flex;
       flex-direction: row;
-      justify-content: space-around;
+      justify-content: space-between;
       margin: 1.5rem 0;
+      padding: 0 1.6rem;
       margin-top: 2rem;
 
       &-company {
-        width: 7.3rem;
-        height: 2.6rem;
+        width: auto;
+        height: 3rem;
       }
       &-price {
         font-style: normal;
