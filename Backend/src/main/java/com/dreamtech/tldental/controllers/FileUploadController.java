@@ -35,7 +35,7 @@ public class FileUploadController {
     }
 
     @DeleteMapping("")
-    public ResponseEntity<ResponseObject> deleteFile(@RequestBody String url) {
+    public ResponseEntity<ResponseObject> deleteFile(@RequestParam String url) {
         try {
             boolean isDeleted = storageService.deleteFile(url);
 

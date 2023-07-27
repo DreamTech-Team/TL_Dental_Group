@@ -99,7 +99,7 @@ public class CategoryFKController {
                     new ResponseObject("ok", "Insert category successfully", resCategory)
             );
         } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObject("failed", exception.getMessage(), "")
             );
         }
@@ -152,7 +152,7 @@ public class CategoryFKController {
                 );
             }
         } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObject("failed", exception.getMessage(), "")
             );
         }

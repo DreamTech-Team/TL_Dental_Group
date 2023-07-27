@@ -66,7 +66,7 @@ public class Category_2Controller {
                     new ResponseObject("ok", "Insert company successfully", repository.save(data))
             );
         } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObject("failed", exception.getMessage(), "")
             );
         }

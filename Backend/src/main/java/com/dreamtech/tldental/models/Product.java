@@ -31,10 +31,10 @@ public class Product {
     @Min(value = 0, message = "Price must be greater than or equal to 0")
     private int priceSale;
 
-    @Column(length = 300)
+    @Column(length = 10000)
     private String summary;
 
-    @Column(length = 1000)
+    @Column(length = 1000000)
     private String description;
 
     @Column(name = "main_img", nullable = false)

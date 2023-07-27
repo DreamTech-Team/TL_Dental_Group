@@ -30,18 +30,22 @@ public class CompanyController {
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAll(@RequestParam(required = false) boolean highlight) {
         try {
-            List <Object> data;
+
             if (highlight) {
                 List<Object[]> res = companyRepository.findHighlightCompany();
-                data = handleDataCompany(res);
+                List <Object> data = handleDataCompany(res);
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject("ok", "Query company successfully", data)
+                );
             } else {
-                data = Collections.singletonList(companyRepository.findAll());
+                List<Company> data = companyRepository.findAll();
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject("ok", "Query company successfully", data)
+                );
             }
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Query company successfully", data)
-            );
+
         } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObject("failed", exception.getMessage(), "")
             );
         }
@@ -89,7 +93,7 @@ public class CompanyController {
                     new ResponseObject("ok", "Insert company successfully", companyRepository.save(companyData))
             );
         } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObject("failed", exception.getMessage(), "")
             );
         }
@@ -171,7 +175,7 @@ public class CompanyController {
                 );
             }
             if (highlight != 0 && foundCompany.getOutstandingProductId() == null) {
-                return ResponseEntity.status(HttpStatus.OK).body(
+                return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                         new ResponseObject("failed", "Please update outstanding product before update highlight!", "")
                 );
             } else {
@@ -231,6 +235,7 @@ public class CompanyController {
             tempObj.put("company", (Company) result[0]);
             tempObj.put("outstandingProduct", (Product) result[1]);
             combinedList.add(tempObj);
+            tempObj = new HashMap<>();
         }
         return combinedList;
     }
