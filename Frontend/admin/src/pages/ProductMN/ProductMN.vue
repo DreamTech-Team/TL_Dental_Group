@@ -67,6 +67,8 @@ const isOpen1 = ref(false); //Open Modal Update
 const searchText = ref('');
 const results = ref(products); //Final Render
 
+const debounceTimer = ref<number | null>(null); //searchData
+
 const currentPage = ref(1);
 const pageSize = ref(10);
 
@@ -126,14 +128,44 @@ const onUpdateContent2 = (data: { productAdd: ProductItem }) => {
   });
 };
 
+//Function call API Search
+const searchProduct = () => {
+  const searchProduct = useAxios<DataResponse>(
+    'get',
+    `/products/search?key=${searchText.value}`,
+    {},
+    {},
+    deps.value
+  );
+  watch(searchProduct.response, () => {
+    tempArrays.value = searchProduct.response.value?.data?.data;
+    results.value = tempArrays.value.map((item: ProductItem) => {
+      return {
+        id: item.id,
+        name: item.name,
+        src: item.mainImg,
+        company: item.fkCategory.companyId.name,
+        price: formatNumberWithCommas(item.price) + ' VNĐ'
+      };
+    });
+  });
+};
+
 //Search Products
-const filteredProducts = computed(() => {
-  if (searchText.value.trim() === '') {
-    return results.value;
-  } else {
-    const searchTerm = searchText.value.toLowerCase();
-    return results.value.filter((product) => product.name.toLowerCase().includes(searchTerm));
+watch(searchText, () => {
+  if (debounceTimer.value) {
+    clearTimeout(debounceTimer.value);
   }
+
+  // Create a new timeout to call API after 1 second
+  debounceTimer.value = setTimeout(() => {
+    searchProduct();
+  }, 500);
+});
+
+// Computed property for displaying filtered products
+const filteredProducts = computed(() => {
+  return results.value;
 });
 
 //Pagination Handle
@@ -149,7 +181,7 @@ const handlePageChange = (page: number) => {
   scrollToTop(0);
 };
 
-const displayNews = computed(() => {
+const displayProducts = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
   return filteredProducts.value.slice(start, end);
@@ -222,7 +254,7 @@ const deleteProduct = (id: string) => {
         <table :class="$style.mn_product_table">
           <tbody>
             <template v-if="filteredProducts.length > 0">
-              <tr v-for="(item, index) in displayNews" :key="index">
+              <tr v-for="(item, index) in displayProducts" :key="index">
                 <td style="width: 8%">{{ index + 1 }}</td>
                 <td style="width: 40%">
                   <div :class="$style['table_item']">

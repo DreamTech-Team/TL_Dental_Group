@@ -1,7 +1,6 @@
-import { ref, type Ref, watch, watchEffect } from 'vue';
+import { ref, type Ref, watch } from 'vue';
 import axios, { type AxiosRequestConfig, type AxiosResponse, AxiosError } from 'axios';
 import { axiosClient } from '@/api/axios';
-import { log } from 'console';
 
 export interface DataResponse {
   status: string;
@@ -28,7 +27,6 @@ const useAxios = <DataResponse>(
   const error = ref<AxiosError | null>(null);
 
   const axiosController = axios.CancelToken.source();
-  console.log(api);
 
   const fetchData = async () => {
     if (!isLoading.value) {
@@ -44,7 +42,6 @@ const useAxios = <DataResponse>(
         }
       } catch (err: unknown) {
         if (err instanceof AxiosError) {
-          console.log(err);
           error.value = err;
         }
       } finally {
@@ -57,8 +54,6 @@ const useAxios = <DataResponse>(
     deps,
     () => {
       fetchData();
-      console.log(api);
-      console.log(deps);
     },
     { immediate: true }
   );

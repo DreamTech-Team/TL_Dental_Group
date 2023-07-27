@@ -356,6 +356,7 @@ const handleSelectedCate2Change = (event: Event) => {
   cate2ID.value = (event.target as HTMLSelectElement).value;
 };
 
+//Upload Image TinyMCE
 interface BlobInfo {
   blob: () => Blob;
   filename: () => string;
@@ -367,7 +368,7 @@ const example_image_upload_handler = (blobInfo: BlobInfo, progress: ProgressFunc
   new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.withCredentials = false;
-    xhr.open('POST', 'postAcceptor.php');
+    xhr.open('POST', 'https://dry-ants-production.up.railway.app/api/v1/fileUpload');
 
     xhr.upload.onprogress = (e) => {
       progress((e.loaded / e.total) * 100);
@@ -384,14 +385,9 @@ const example_image_upload_handler = (blobInfo: BlobInfo, progress: ProgressFunc
         return;
       }
 
-      const json = JSON.parse(xhr.responseText);
+      const json = ref<DataResponse>(JSON.parse(xhr.responseText));
 
-      if (!json || typeof json.location != 'string') {
-        reject('Invalid JSON: ' + xhr.responseText);
-        return;
-      }
-
-      resolve(json.location);
+      resolve(json.value.data);
     };
 
     xhr.onerror = () => {
@@ -399,7 +395,7 @@ const example_image_upload_handler = (blobInfo: BlobInfo, progress: ProgressFunc
     };
 
     const formData = new FormData();
-    formData.append('file', blobInfo.blob(), blobInfo.filename());
+    formData.append('file', blobInfo.blob());
 
     xhr.send(formData);
   });
