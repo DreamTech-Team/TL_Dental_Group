@@ -28,7 +28,7 @@ const useAxios = <DataResponse>(
   const error = ref<AxiosError | null>(null);
 
   const axiosController = axios.CancelToken.source();
-  console.log(api);
+  // console.log(api);
 
   const fetchData = async () => {
     if (!isLoading.value) {
@@ -57,8 +57,8 @@ const useAxios = <DataResponse>(
     deps,
     () => {
       fetchData();
-      console.log(api);
-      console.log(deps);
+      // console.log(api);
+      // console.log(deps);
     },
     { immediate: true }
   );
