@@ -15,6 +15,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 7;
   }
 
   &__modal {
@@ -178,6 +179,19 @@
               border-radius: 0;
               background-color: #818181;
               border-radius: 1rem;
+            }
+
+            &-empty {
+              height: 5rem;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              border-bottom: 1px solid #ccc;
+
+              p {
+                font-size: $text-base;
+                color: #818181;
+              }
             }
           }
         }

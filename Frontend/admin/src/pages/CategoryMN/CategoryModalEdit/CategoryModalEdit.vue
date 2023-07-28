@@ -1,6 +1,6 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
-import { ref, watch, type Ref, type PropType } from 'vue';
+import { ref, watch, type Ref, type PropType, computed } from 'vue';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
@@ -27,10 +27,10 @@ interface Cate1Object {
 
 const props = defineProps({
   infSelected: { type: Object, required: true },
-  cateFull: { type: Object, require: true },
+  cateFull: { type: Object as unknown as PropType<Cate1Object[]>, require: true },
   cateCurrent: { type: Object as unknown as PropType<Cate1Object[]>, require: true },
   handleUpdate: { type: Function, require: false },
-  typeEdit: { type: Number, required: true }
+  numCate: { type: Number, required: true }
 });
 
 const emit = defineEmits(['close']);
@@ -40,6 +40,8 @@ const listCateFull = ref(props.cateFull);
 const listCateCurrent = ref(props.cateCurrent);
 const listChange: Ref<{ add: Cate1Object[]; delete: Cate1Object[] }> = ref({ add: [], delete: [] });
 const paramAxios = ref();
+const searchText = ref('');
+const itemCateEdit = ref();
 
 //Hàm xóa một phần tử của mảng
 const removeElementFromArray = (arr: any, elementId: string) => {
@@ -59,6 +61,8 @@ const removeElementFromArray = (arr: any, elementId: string) => {
 
 //Hàm thêm cate
 const handlePushCate = (cate: Cate1Object) => {
+  searchText.value = '';
+
   if (Array.isArray(listCateCurrent.value)) {
     listCateCurrent.value = [...listCateCurrent.value, cate];
   } else {
@@ -75,6 +79,8 @@ const handlePushCate = (cate: Cate1Object) => {
 
 //Hàm xóa cate
 const handlePopCate = (cate: Cate1Object) => {
+  searchText.value = '';
+
   listCateFull.value?.push(cate);
   listCateCurrent.value = removeElementFromArray(listCateCurrent.value, cate.id);
 
@@ -83,6 +89,17 @@ const handlePopCate = (cate: Cate1Object) => {
   listChange.value.add = removeElementFromArray(listChange.value.add, cate.id);
 
   // console.log(listChange.value.add, listChange.value.delete);
+};
+
+const handleAddCate = (newCate: any) => {
+  // console.log(newCate);
+  // eslint-disable-next-line vue/no-mutating-props
+  props.cateFull?.push(newCate);
+};
+
+const handleOpenEditItemCate = (item: Cate1Object) => {
+  itemCateEdit.value = item;
+  openAddCategory.value = true;
 };
 
 const handleModalCancel = () => {
@@ -125,7 +142,7 @@ const handleModalUpdate = () => {
       if (listChange.value.add.length > 0) {
         listChange.value.add.forEach((item) => {
           const obj =
-            props.typeEdit === 1
+            props.numCate === 1
               ? { companyId: props.infSelected.company.id, cate1Id: item.id, cate2Id: '' }
               : {
                   companyId: props.infSelected.company.id,
@@ -137,7 +154,7 @@ const handleModalUpdate = () => {
 
           watch(postPushCate.response, (value) => {
             if (value?.status === 'ok')
-              listPushCate.push(props.typeEdit === 1 ? value?.data.cate1Id : value?.data.cate2Id);
+              listPushCate.push(props.numCate === 1 ? value?.data.cate1Id : value?.data.cate2Id);
           });
         });
       }
@@ -146,7 +163,7 @@ const handleModalUpdate = () => {
       if (listChange.value.delete.length > 0) {
         listChange.value.delete.forEach((item) => {
           const linkDelete =
-            props.typeEdit === 1
+            props.numCate === 1
               ? `/cate?cate1Id=${item.id}&companyId=${props.infSelected.company.id}`
               : // eslint-disable-next-line max-len
                 `/cate?cate1Id=${props.infSelected.cate1.id}&cate2Id=${item.id}&companyId=${props.infSelected.company.id}`;
@@ -179,7 +196,7 @@ const handleModalUpdate = () => {
         }
       }).then((result) => {
         if (result.dismiss === Swal.DismissReason.timer) {
-          if (props.handleUpdate) props.handleUpdate(listPushCate, listPopCate, props.typeEdit);
+          if (props.handleUpdate) props.handleUpdate(listPushCate, listPopCate, props.numCate);
 
           emit('close');
           Swal.fire({
@@ -206,18 +223,44 @@ const handleModalUpdate = () => {
     }
   });
 };
+
+const removeAccents = (str: string) => {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+};
+
+const filteredProducts = computed(() => {
+  if (searchText.value.trim() === '') {
+    return props.cateFull;
+  } else {
+    const searchTerm = searchText.value.toLowerCase();
+    return props.cateFull?.filter((datebase: Cate1Object) =>
+      removeAccents(datebase.title.toLowerCase()).includes(removeAccents(searchTerm))
+    );
+  }
+});
+
+watch(filteredProducts, (value) => (listCateFull.value = value));
 </script>
 <template>
   <div :class="$style.container">
     <div :class="$style.container__add" v-if="openAddCategory">
-      <category-add-item />
+      <category-add-item
+        :numCate="numCate"
+        :cateFull="cateFull"
+        :handleAddCate="handleAddCate"
+        :data="itemCateEdit"
+        @close="
+          () => {
+            openAddCategory = false;
+            itemCateEdit = null;
+          }
+        "
+      />
     </div>
     <div :class="$style.container__modal">
       <div :class="$style['container__modal-heading']">
         <div class=""></div>
-        <div :class="$style['container__modal-heading-title']">
-          Thêm danh mục cấp {{ typeEdit }}
-        </div>
+        <div :class="$style['container__modal-heading-title']">Thêm danh mục cấp {{ numCate }}</div>
         <div :class="$style['container__modal-heading-exit']" @click="handleModalCancel">
           <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none">
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -239,7 +282,7 @@ const handleModalUpdate = () => {
               Các danh mục có thể thêm
             </div>
             <div :class="$style['container__modal-body-left-heading-add']">
-              <button>
+              <button @click="openAddCategory = true">
                 <font-awesome-icon :icon="faPlus" />
                 Tạo Danh Mục
               </button>
@@ -249,7 +292,7 @@ const handleModalUpdate = () => {
             <div :class="$style['container__modal-body-left-block-customize']">
               <div :class="$style['container__modal-body-left-block-customize-search']">
                 <font-awesome-icon :icon="faMagnifyingGlass" :class="$style['icon-search']" />
-                <input type="text" placeholder="Tìm kiếm" />
+                <input type="text" placeholder="Tìm kiếm" v-model="searchText" />
               </div>
               <div
                 :class="[
@@ -268,7 +311,15 @@ const handleModalUpdate = () => {
                   :open-edit="openEditCategory"
                   :data="item"
                   :handle-btn="handlePushCate"
+                  :numCate="numCate"
+                  @open-modal-edit="handleOpenEditItemCate(item)"
                 />
+              </div>
+              <div
+                v-if="listCateFull?.length === 0"
+                :class="$style['container__modal-body-left-block-items-empty']"
+              >
+                <p>Danh sách danh mục trống</p>
               </div>
             </div>
           </div>
@@ -280,6 +331,12 @@ const handleModalUpdate = () => {
           <div :class="$style['container__modal-body-right-block']">
             <div v-for="(item, index) in listCateCurrent" :key="index">
               <CategoryItem :type="'minus'" :data="item" :handle-btn="handlePopCate" />
+            </div>
+            <div
+              v-if="listCateCurrent?.length === 0"
+              :class="$style['container__modal-body-left-block-items-empty']"
+            >
+              <p>Không có danh mục</p>
             </div>
           </div>
         </div>

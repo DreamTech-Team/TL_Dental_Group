@@ -2,7 +2,7 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faTrash, faPen, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
-import { ic_logo } from '@/assets/imgs/Recruitment/RecruitmentImgs';
+import { ref } from 'vue';
 
 const props = defineProps({
   openEdit: { type: Boolean, required: false },
@@ -10,6 +10,8 @@ const props = defineProps({
   data: { type: Object, require: true },
   handleBtn: { type: Function, required: true }
 });
+
+const emit = defineEmits(['open-modal-edit']);
 </script>
 <template>
   <div :class="$style.container">
@@ -21,7 +23,10 @@ const props = defineProps({
       <button :class="$style['btn-room-trash']">
         <font-awesome-icon :icon="faTrash" />
       </button>
-      <button :class="[$style['btn-room-edit'], $style['container__right-btn']]">
+      <button
+        :class="[$style['btn-room-edit'], $style['container__right-btn']]"
+        @click="emit('open-modal-edit')"
+      >
         <font-awesome-icon :icon="faPen" />
       </button>
     </div>

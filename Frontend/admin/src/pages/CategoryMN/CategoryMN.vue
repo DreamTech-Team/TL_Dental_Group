@@ -28,6 +28,11 @@ interface CompanyObject {
   outstandingProductId: string;
 }
 
+interface CheckCate1 {
+  id: string;
+  isEmpty: boolean;
+}
+
 const itemSelected = ref({
   company: {
     id: '',
@@ -61,7 +66,8 @@ const listCategoryEdit: Ref<{ fullCate: Cate1Object[]; currentCate: Cate1Object[
   fullCate: [],
   currentCate: []
 });
-const typeEdit = ref(1);
+const checkCate1: Ref<CheckCate1[]> = ref([]);
+const numCate = ref(1);
 
 // Gọi hàm useAxios để lấy response, error, và isLoading
 const getCompany = useAxios<DataResponse>('get', '/company', {}, {}, listCompany.value.lst);
@@ -80,6 +86,10 @@ const getCategoryFull2 = useAxios<DataResponse>(
   listCategoryFull.value.cate1
 );
 
+// function findElementFromArrayStartingFromIndex(arr, callback, startIndex) {
+//   return arr.slice(startIndex).find(callback);
+// }
+
 //Hàm mở cate1 khi select company
 const handleSelectCompany = (infCompapy: any) => {
   itemSelected.value.company = infCompapy;
@@ -96,11 +106,20 @@ const handleSelectCompany = (infCompapy: any) => {
     watch(getCategories.response, (value) => {
       if (value?.data) {
         const dataCate = value?.data;
-        const cate1IdArray = [];
+        const cate1IdArray: any[] = [];
         for (let index = 0; index < dataCate.length; index++) {
           const element = dataCate[index];
           cate1IdArray.push(element.cate1Id);
+          checkCate1.value.push({ id: element.id, isEmpty: false });
         }
+
+        checkCate1.value = checkCate1.value.filter((element, index, arr) => {
+          return arr.findIndex((e) => e.id === element.id) === index;
+        });
+
+        checkCate1.value.forEach((element, index) => {
+          cate1IdArray.findIndex((e) => e.id === element.id);
+        });
 
         listCategory1.value.lst = cate1IdArray.filter((element, index, arr) => {
           return arr.findIndex((e) => e.id === element.id) === index;
@@ -187,7 +206,7 @@ const handleOpenEditCategory1 = () => {
 
     listCategoryEdit.value.currentCate = listCategory1.value.lst;
     openModalAdd.value = true;
-    typeEdit.value = 1;
+    numCate.value = 1;
 
     // console.log(listCategoryEdit.value.fullCate);
   } else {
@@ -212,7 +231,7 @@ const handleOpenEditCategory2 = () => {
 
     listCategoryEdit.value.currentCate = listCategory2.value.lst;
     openModalAdd.value = true;
-    typeEdit.value = 2;
+    numCate.value = 2;
 
     // console.log(listCategoryEdit.value.fullCate);
   } else {
@@ -238,7 +257,7 @@ const removeDuplicatesFromArray = (arr1: any, arr2: any) => {
 };
 
 //Hàm update cate sau khi chỉnh sửa
-const handleUpdateCate = (itemsAdd: any, itemsDelete: any, type: number) => {
+const handleUpdateCateCompany = (itemsAdd: any, itemsDelete: any, type: number) => {
   let tmp = type === 1 ? [...listCategory1.value.lst] : [...listCategory2.value.lst];
   tmp = removeDuplicatesFromArray(tmp, itemsDelete).concat(itemsAdd);
 
@@ -285,11 +304,11 @@ watch(getCategoryFull2.response, (value) => {
   <div :class="$style.container">
     <div :class="$style.container__modal" v-if="openModalAdd">
       <category-modal-edit
-        :typeEdit="typeEdit"
+        :numCate="numCate"
         :inf-selected="itemSelected"
         :cate-full="listCategoryEdit.fullCate"
         :cate-current="listCategoryEdit.currentCate"
-        :handle-update="handleUpdateCate"
+        :handle-update="handleUpdateCateCompany"
         @close="openModalAdd = false"
       />
     </div>
