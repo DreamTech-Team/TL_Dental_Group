@@ -12,19 +12,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dreamtech.tldental.models.ContentPage;
-import com.dreamtech.tldental.models.HomeSection1;
 import com.dreamtech.tldental.models.RecruitSection1;
 import com.dreamtech.tldental.models.RecruitSection2;
+import com.dreamtech.tldental.models.Recruitment;
 import com.dreamtech.tldental.models.ResponseObject;
 import com.dreamtech.tldental.repositories.ContentPageRepository;
+import com.dreamtech.tldental.repositories.RecruitmentRepository;
 import com.dreamtech.tldental.services.IStorageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -40,6 +43,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class RecruitmentController {
     @Autowired
     private ContentPageRepository contentPageRepository;
+    
+    @Autowired
+    private RecruitmentRepository recruitmentRepository;
 
     @Autowired
     private IStorageService storageService;
@@ -301,6 +307,58 @@ public class RecruitmentController {
                     new ResponseObject("ok", "Update Section 2 Successfully", "")
                 );
             }
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+            new ResponseObject("failed", "Cannot found your data", "")
+        );
+    }
+
+    @GetMapping(value="/")
+    public ResponseEntity<ResponseObject> getRecruitment() {
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+            new ResponseObject("ok", "Get recruitment successfully", recruitmentRepository.findAll())
+        );
+    }
+
+    @PostMapping(value="/")
+    public ResponseEntity<ResponseObject> addRecruitment(@RequestBody Recruitment entity) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+            new ResponseObject("ok", "Add recruitment successfully", recruitmentRepository.save(entity))
+        );
+    }
+
+    @PatchMapping(value="/")
+    public ResponseEntity<ResponseObject> updateRecruitment(@RequestBody Recruitment entity) {
+        Optional<Recruitment> foundRecruitment = recruitmentRepository.findById(entity.getId());
+
+        if (foundRecruitment.isPresent()) {
+            Recruitment recruitment = foundRecruitment.get();
+
+            BeanUtils.copyProperties(entity, recruitment);
+
+            return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Update recruitment successfully", recruitmentRepository.save(recruitment))
+            );
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+            new ResponseObject("failed", "Cannot found your data", "")
+        );
+    }
+
+    @DeleteMapping(value="/{id}")
+    public ResponseEntity<ResponseObject> deleteRecruitment(@PathVariable String id) {
+        Optional<Recruitment> foundRecruitment = recruitmentRepository.findById(id);
+
+        if (foundRecruitment.isPresent()) {
+            recruitmentRepository.deleteById(id);
+
+            return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Delete recruitment successfully", "")
+            );
         }
 
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
