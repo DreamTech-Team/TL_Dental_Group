@@ -320,6 +320,7 @@ const updateForm = () => {
       );
       watch(response, () => {
         if (response.value?.status === 'ok') {
+          feedbacks.value[selectedItem.value].id = response.value.data?.id;
           emits('update-content', {
             listrs: feedbacks.value
           });

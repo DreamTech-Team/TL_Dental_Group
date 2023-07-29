@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import LogoNoBg from '@/assets/imgs/logo_nobg.png';
-import ProductPic from '@/assets/imgs/Product/product.png';
-import LogoCompany from '@/assets/imgs/Product/logoCompany.png';
 import OkSticker from '@/assets/imgs/Product/GroupOk.svg';
 import Insurance from '@/assets/imgs/Product/GroupInsurance.svg';
-import SupportSticker from '@/assets/imgs/Product/GroupSupport.svg';
-import { type PropType } from 'vue';
+import SPSticker from '@/assets/imgs/Product/GroupSupport.svg';
+import { type PropType, ref, watch } from 'vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 export interface Product {
   nameProduct: string;
-  price: string | number;
-  description: string;
+  price: number;
+  summary: string;
   tag: string;
   company: string;
+  image: string;
+  brand: string;
 }
 
 defineProps({
@@ -21,11 +21,25 @@ defineProps({
     required: true
   }
 });
+
+//Get Logo Company
+const logoValue = ref('');
+const deps = ref([]);
+const { response } = useAxios<DataResponse>('get', '/information?type=LOGO', {}, {}, deps.value);
+
+watch(response, () => {
+  logoValue.value = response.value?.data?.logo.content;
+});
+
+//Function 1000 to 1.000
+const formatNumberWithCommas = (num: number) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+};
 </script>
 <template>
   <div :class="$style.card">
     <div :class="$style.card__show">
-      <p :class="$style['card__show--info']">{{ product.description }}</p>
+      <p :class="$style['card__show--info']" v-html="product.summary"></p>
       <div :class="$style['card__show--button']">Xem chi tiết</div>
     </div>
     <div :class="$style.card__header">
@@ -39,25 +53,30 @@ defineProps({
           <p :class="$style['card__header--insurance-text']">Bảo hành 12 tháng</p>
         </div>
         <div :class="$style['card__header--support']">
-          <img
-            :class="$style['card__header--insurance-sticker']"
-            :src="SupportSticker"
-            alt="sticker"
-          />
-          <p :class="$style['card__header--insurance-text']">Hỗ trợ đổi trả</p>
+          <img :class="$style['card__header--support-sticker']" :src="SPSticker" alt="sticker" />
+          <p :class="$style['card__header--support-text']">Hỗ trợ đổi trả</p>
         </div>
         <div :class="$style['card__header--wgenuine']">
           <div :class="$style['card__header--wgenuine-confirm']"></div>
+          <div :class="$style['card__header--txtconfirm']">Chính hãng</div>
         </div>
-        <p :class="$style['card__header--txtconfirm']">Chính hãng</p>
+
         <div :class="$style['card__header--title']">
-          <img :class="$style['card__header--title-logo']" :src="LogoNoBg" alt="logononbg" />
+          <img :class="$style['card__header--title-logo']" :src="logoValue" alt="logononbg" />
           <div :class="$style['card__header--title-content']">
             {{ product.tag }} {{ product.company }}
           </div>
         </div>
-        <div>
-          <img :class="$style['card__header--picture']" :src="ProductPic" alt="product" />
+        <div
+          style="
+            widows: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <img :class="$style['card__header--picture']" :src="product.image" alt="product" />
         </div>
       </div>
     </div>
@@ -66,8 +85,10 @@ defineProps({
         {{ product.nameProduct }}
       </p>
       <div :class="$style['card__body--info']">
-        <img :class="$style['card__body--info-company']" :src="LogoCompany" alt="Logo company" />
-        <p :class="$style['card__body--info-price']">{{ product.price }}</p>
+        <img :class="$style['card__body--info-company']" :src="product.brand" alt="Logo company" />
+        <p :class="$style['card__body--info-price']">
+          {{ formatNumberWithCommas(product.price) }}đ
+        </p>
       </div>
     </div>
   </div>

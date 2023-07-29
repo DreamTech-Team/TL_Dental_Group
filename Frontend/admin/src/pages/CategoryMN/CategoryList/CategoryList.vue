@@ -1,158 +1,28 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-const database = [
-  {
-    name: 'Cong ty ABC',
-    category1: [
-      {
-        name: 'Vat lieu chinh nha ABC',
-        category2: [
-          'Mac cai chinh nha',
-          'Thun chinh nha',
-          'Hook chinh nha',
-          'Day thun chinh nha',
-          'Lo xo chinh nha',
-          'Kem chinh nha'
-        ]
-      }
-    ]
-  },
-  {
-    name: 'Cong ty ABCD',
-    category1: [
-      {
-        name: 'Vat lieu chinh nha ABC',
-        category2: ['Mac cai chinh nha', 'Thun chinh nha', 'Hook chinh nha', 'Day thun chinh nha']
-      }
-    ]
-  },
-  {
-    name: 'Cong ty ABCDE',
-    category1: [
-      {
-        name: 'Vat lieu chinh nha ABC',
-        category2: ['Hook chinh nha', 'Day thun chinh nha', 'Lo xo chinh nha', 'Kem chinh nha']
-      }
-    ]
-  },
-  {
-    name: 'Cong ty ABCDEF',
-    category1: [
-      {
-        name: 'Vat lieu chinh nha ABC',
-        category2: ['Mac cai chinh nha', 'Thun chinh nha', 'Lo xo chinh nha', 'Kem chinh nha']
-      }
-    ]
-  },
-  {
-    name: 'Cong ty ABC',
-    category1: [
-      {
-        name: 'Vat lieu chinh nha ABC',
-        category2: [
-          'Mac cai chinh nha',
-          'Thun chinh nha',
-          'Hook chinh nha',
-          'Day thun chinh nha',
-          'Lo xo chinh nha',
-          'Kem chinh nha'
-        ]
-      }
-    ]
-  },
-  {
-    name: 'Cong ty ABCD',
-    category1: [
-      {
-        name: 'Vat lieu chinh nha ABC',
-        category2: ['Mac cai chinh nha', 'Thun chinh nha', 'Hook chinh nha', 'Day thun chinh nha']
-      }
-    ]
-  },
-  {
-    name: 'Cong ty ABCDE',
-    category1: [
-      {
-        name: 'Vat lieu chinh nha ABC',
-        category2: ['Hook chinh nha', 'Day thun chinh nha', 'Lo xo chinh nha', 'Kem chinh nha']
-      }
-    ]
-  },
-  {
-    name: 'Cong ty ABCDEF',
-    category1: [
-      {
-        name: 'Vat lieu chinh nha ABC',
-        category2: ['Mac cai chinh nha', 'Thun chinh nha', 'Lo xo chinh nha', 'Kem chinh nha']
-      }
-    ]
-  },
-  {
-    name: 'Cong ty ABC',
-    category1: [
-      {
-        name: 'Vat lieu chinh nha ABC',
-        category2: [
-          'Mac cai chinh nha',
-          'Thun chinh nha',
-          'Hook chinh nha',
-          'Day thun chinh nha',
-          'Lo xo chinh nha',
-          'Kem chinh nha'
-        ]
-      }
-    ]
-  },
-  {
-    name: 'Cong ty ABCD',
-    category1: [
-      {
-        name: 'Vat lieu chinh nha ABC',
-        category2: ['Mac cai chinh nha', 'Thun chinh nha', 'Hook chinh nha', 'Day thun chinh nha']
-      }
-    ]
-  },
-  {
-    name: 'Cong ty ABCDE',
-    category1: [
-      {
-        name: 'Vat lieu chinh nha ABC',
-        category2: ['Hook chinh nha', 'Day thun chinh nha', 'Lo xo chinh nha', 'Kem chinh nha']
-      }
-    ]
-  },
-  {
-    name: 'Cong ty ABCDEF',
-    category1: [
-      {
-        name: 'Vat lieu chinh nha ABC',
-        category2: ['Mac cai chinh nha', 'Thun chinh nha', 'Lo xo chinh nha', 'Kem chinh nha']
-      }
-    ]
-  }
-];
 
 const props = defineProps({
   cateType: { type: Number, required: true },
   data: { type: Object, require: true },
   isEmptyItems: { type: Boolean, required: true },
-  handleSelected: { type: Function, required: true }
+  handleSelected: { type: Function, required: false },
+  openEdit: { type: Function, required: false }
 });
 
 const emptyItem = '<<Trống>>';
 
 const selectedItem = ref(-1);
-const addItem = ref(false);
 const listItem = ref();
 
 const handleClickItem = (index: number, item: object) => {
-  if (selectedItem.value === index) {
-    selectedItem.value = -1;
-    props.handleSelected(null);
-  } else {
-    selectedItem.value = index;
-    props.handleSelected(item);
-  }
+  if (props.handleSelected)
+    if (selectedItem.value === index) {
+      selectedItem.value = -1;
+      props.handleSelected(null);
+    } else {
+      selectedItem.value = index;
+      props.handleSelected(item);
+    }
 };
 
 watch(
@@ -206,7 +76,7 @@ watch(
       </div>
     </div>
     <div :class="$style['container-add']">
-      <div :class="$style['container-add-block']" @click="addItem = true">
+      <div :class="$style['container-add-block']" @click="props.openEdit">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
           <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>

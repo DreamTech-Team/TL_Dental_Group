@@ -22,9 +22,9 @@ axiosClient.interceptors.response.use(
     }
     return response;
   },
-  (error) => {
-    if (error && error.response && error.response.data) {
-      return Promise.reject(error.response.data);
+  (error: AxiosResponse) => {
+    if (error && error.data) {
+      return Promise.reject(error);
     }
     return Promise.reject(error);
   }

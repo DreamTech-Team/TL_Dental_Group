@@ -1,88 +1,106 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, onUnmounted } from 'vue';
+import { ref, watch, onMounted, computed, onUnmounted } from 'vue';
 import ProductCard from '@/components/Card/ProductCard.vue';
 import EditBtn from '@/components/EditBtn/EditBtn.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import ModalTrend from './ModalTrend.vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  priceSale: number;
+  summary: string;
+  description: string;
+  mainImg: string;
+  imgs: string;
+  highlight: number;
+  createAt: string;
+  fkCategory: {
+    id: string;
+    companyId: {
+      id: string;
+      name: string;
+      logo: string;
+      description: string;
+      highlight: number;
+      slug: string;
+      createAt: string;
+      outstandingProductId: string;
+    };
+    cate1Id: {
+      id: string;
+      title: string;
+      img: string;
+      highlight: 3;
+      slug: string;
+      createAt: string;
+    };
+    cate2Id: {
+      id: string;
+      title: string;
+      slug: string;
+      createAt: string;
+    };
+  };
+}
+
+interface Item {
+  nameProduct: string;
+  price: number;
+  summary: string;
+  tag: string;
+  company: string;
+  image: string;
+  brand: string;
+}
+const tempproducts = ref<Product[]>([]);
+const products = ref<Item[]>([]);
+
+//GET DATA
+const deps = ref([]);
+const lenght = ref(0);
+const { response } = useAxios<DataResponse>('get', '/products/highlight', {}, {}, deps.value);
+
+const updateShowResults = () => {
+  products.value = tempproducts.value.map((item: Product) => {
+    return {
+      nameProduct: item.name,
+      price: item.price,
+      summary: item.summary,
+      tag: item.fkCategory.cate1Id.title,
+      company: item.fkCategory.companyId.name,
+      image: item.mainImg,
+      brand: item.fkCategory.companyId.logo
+    };
+  });
+  lenght.value = products.value.length;
+};
+
+watch(response, () => {
+  tempproducts.value = response.value?.data.sort(
+    (a: Product, b: Product) => a.highlight - b.highlight
+  );
+  updateShowResults();
+});
+
+//DATA UPDATE
+const onUpdateContent = (data: { listrs: Product[] }) => {
+  tempproducts.value = data.listrs;
+  updateShowResults();
+};
 
 const isOpen = ref(false);
-
-const products = [
-  {
-    nameProduct:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép) Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép)',
-    price: '4.000.000đ',
-    description:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO THÔNG TIN SẢN PHẨM - Kẹp gắp đầu cong để gắp mắc cài R6,7 và button.',
-    tag: 'Vật liệu chỉnh nha',
-    company: 'TL Group'
-  },
-  {
-    nameProduct:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép) Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép)',
-    price: '4.000.000đ',
-    description:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO THÔNG TIN SẢN PHẨM - Kẹp gắp đầu cong để gắp mắc cài R6,7 và button.',
-    tag: 'Vật liệu chỉnh nha',
-    company: 'TL Group'
-  },
-  {
-    nameProduct:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép) Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép)',
-    price: '4.000.000đ',
-    description:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO THÔNG TIN SẢN PHẨM - Kẹp gắp đầu cong để gắp mắc cài R6,7 và button.',
-    tag: 'Vật liệu chỉnh nha',
-    company: 'TL Group'
-  },
-  {
-    nameProduct:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép) Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép)',
-    price: '4.000.000đ',
-    description:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO THÔNG TIN SẢN PHẨM - Kẹp gắp đầu cong để gắp mắc cài R6,7 và button.',
-    tag: 'Vật liệu chỉnh nha',
-    company: 'TL Group'
-  },
-  {
-    nameProduct:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép) Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép)',
-    price: '4.000.000đ',
-    description:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO THÔNG TIN SẢN PHẨM - Kẹp gắp đầu cong để gắp mắc cài R6,7 và button.',
-    tag: 'Vật liệu chỉnh nha',
-    company: 'TL Group'
-  },
-  {
-    nameProduct:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép) Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép)',
-    price: '4.000.000đ',
-    description:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO THÔNG TIN SẢN PHẨM - Kẹp gắp đầu cong để gắp mắc cài R6,7 và button.',
-    tag: 'Vật liệu chỉnh nha',
-    company: 'TL Group'
-  }
-];
 
 const wItem = ref(0);
 const tranfX = ref(0);
 let resizeListener: () => void;
 
 const widthComputed = computed(() => {
-  return wItem.value * products.length + 'px';
+  return wItem.value * products.value.length + 'px';
 });
 
 const widthItemComputed = computed(() => {
@@ -94,7 +112,7 @@ const scrollLeft = () => {
 };
 
 const scrollRight = () => {
-  if (-tranfX.value + wItem.value * 4 < wItem.value * products.length) {
+  if (-tranfX.value + wItem.value * 4 < wItem.value * products.value.length) {
     tranfX.value -= wItem.value;
   } else {
     tranfX.value = 0;
@@ -139,20 +157,25 @@ onUnmounted(() => {
             :key="index"
             :product="item"
             :class="$style['home__trend-item']"
-            :style="{ width: widthItemComputed }"
+            :style="{ width: widthItemComputed, 'max-width': widthItemComputed }"
           />
         </div>
       </div>
-      <button :class="$style['home__trend-left']" @click="scrollLeft">
+      <button v-show="tranfX != 0" :class="$style['home__trend-left']" @click="scrollLeft">
         <font-awesome-icon :icon="faChevronLeft" :class="$style['home__trend-ic']" />
       </button>
-      <button :class="$style['home__trend-right']" @click="scrollRight">
+      <button v-show="lenght > 4" :class="$style['home__trend-right']" @click="scrollRight">
         <font-awesome-icon :icon="faChevronRight" :class="$style['home__trend-ic']" />
       </button>
     </div>
     <EditBtn style="top: 30px" @click="isOpen = true" />
   </div>
-  <ModalTrend v-if="isOpen" @close="isOpen = false" />
+  <ModalTrend
+    v-if="isOpen"
+    @close="isOpen = false"
+    :list-item="tempproducts"
+    @update-content="onUpdateContent"
+  />
 </template>
 
 <style module scoped lang="scss">

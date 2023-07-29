@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import Swal from 'sweetalert2';
 import Camera from '@/assets/icons/Camera.png';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+interface MyFile extends File {
+  name: string;
+}
 
 const context = defineProps({
   image: {
@@ -10,9 +15,15 @@ const context = defineProps({
   }
 });
 
-const emit = defineEmits(['inFocus', 'close']);
+const emits = defineEmits<{
+  // eslint-disable-next-line no-unused-vars
+  (e: 'close'): void;
+  // eslint-disable-next-line no-unused-vars
+  (e: 'update-content', data: { image: string }): void;
+}>();
 const selectedImage = ref(context.image);
 const fileInput = ref<HTMLInputElement | null>(null);
+const file = ref<MyFile | null>(null);
 
 //Open file image
 const openFileInput = () => {
@@ -22,32 +33,53 @@ const openFileInput = () => {
 //Choose image
 const handleFileInputChange = (event: Event) => {
   const inputElement = event.target as HTMLInputElement;
-  const file = inputElement.files?.[0];
+  file.value = inputElement.files?.[0] || null;
 
-  if (file) {
+  if (file.value) {
     const reader = new FileReader();
     reader.onload = () => {
       selectedImage.value = reader.result as string;
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(file.value);
   }
 };
 
 const resetImg = () => {
-  selectedImage.value = context.image;
-  emit('close');
+  emits('close');
 };
 
 const submitForm = () => {
-  Swal.fire({
-    title: 'Cập nhật thành công',
-    icon: 'success',
-    confirmButtonText: 'Hoàn tất',
-    width: '30rem'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.close();
-      emit('close');
+  const deps = ref([]);
+  const formData = new FormData();
+  formData.append('logo', file.value as Blob);
+  const { response } = useAxios<DataResponse>(
+    'patch',
+    '/information/logo',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    },
+    deps.value
+  );
+
+  watch(response, () => {
+    if (response.value?.status === 'ok') {
+      Swal.fire({
+        title: 'Cập nhật thành công',
+        icon: 'success',
+        confirmButtonText: 'Hoàn tất',
+        width: '30rem'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.close();
+          emits('update-content', {
+            image: selectedImage.value || ''
+          });
+          emits('close');
+        }
+      });
     }
   });
 };
