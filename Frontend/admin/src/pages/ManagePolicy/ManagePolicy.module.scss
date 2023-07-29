@@ -139,35 +139,6 @@
       &-customize {
         width: 15%;
       }
-
-      .edit-room-btn,
-      .btn-room-trash {
-        width: 40px;
-        height: 40px;
-        border-radius: 1rem;
-        border: none;
-        color: white;
-        transition: all 0.3s ease;
-      }
-
-      .edit-room-btn {
-        background-color: #08c;
-        border: 0.5px solid #08c;
-
-        &:hover {
-          background-color: white;
-          color: #08c;
-        }
-      }
-
-      .btn-room-trash {
-        margin-right: 8px;
-        background-color: #ff4e4e;
-
-        &:hover {
-          background-color: rgb(163, 163, 163);
-        }
-      }
     }
   }
 

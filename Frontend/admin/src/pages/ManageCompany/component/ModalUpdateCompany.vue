@@ -1,38 +1,43 @@
 <script setup lang="ts">
-import { Ref, ref } from 'vue';
+import { PropType, Ref, ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark, faRotate, faPencil } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import styles from './ModalUpdateCompany.module.scss';
 import ModalAddProduct from './ModalAddProduct.vue';
+import base64ToBlob from '@/utils/base64ToBlob';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+interface ManageCompany {
+  id: string;
+  name: string;
+  logo: string;
+  description: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+  outstandingProductId: string;
+}
 
 const context = defineProps({
-  name: {
-    type: String,
+  item: {
+    type: Object,
     required: true
   },
-  description: {
-    type: String,
-    required: true
-  },
-  logo: {
-    type: String,
-    required: true
-  },
-  nameProduct: {
-    type: String,
+  change: {
+    type: Function as PropType<(newData: ManageCompany) => void>,
     required: true
   }
 });
 
 const emit = defineEmits(['close']);
 
-const nameCompanyInput = ref(context.name);
-const descriptionInput = ref(context.description);
-const imgLogo = ref(context.logo);
-const productInput = ref(context.nameProduct);
-const selectedlogo: Ref<string | null> = ref(context.logo);
+const nameCompanyInput = ref(context.item.name);
+const descriptionInput = ref(context.item.description);
+const productInput = ref(context.item.nameProduct);
+const selectedlogo: Ref<string | null> = ref(context.item.logo);
 const isOpen = ref(false);
+const isChange = ref(false);
 
 // Các hàm update dữ liệu cho thẻ input
 const updateTitle = (e: Event) => {
@@ -81,6 +86,76 @@ const submitForm = () => {
       }
     }).then((result) => {
       if (result.isConfirmed) {
+        if (isChange.value && selectedlogo.value) {
+          // Tạo một đối tượng File từ dữ liệu base64
+          const fileData = base64ToBlob.covertBase64ToBlob(selectedlogo.value);
+          const image = new File([fileData], 'image.png', { type: 'image/png' });
+
+          const deps = ref([]);
+
+          const object = {
+            id: context.item.id,
+            name: nameCompanyInput.value,
+            description: descriptionInput.value,
+            highlight: context.item.highlight
+          };
+
+          const formData = new FormData();
+          formData.append('logo', image as Blob);
+          formData.append('data', JSON.stringify(object));
+          const { response } = useAxios<DataResponse>(
+            'patch',
+            '/company/' + context.item.id,
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            },
+            deps.value
+          );
+
+          watch(response, () => {
+            if (response) {
+              if (response.value?.status === 'ok') {
+                context.change(response.value?.data);
+              }
+            }
+          });
+        } else {
+          const deps = ref([]);
+
+          const object = {
+            id: context.item.id,
+            name: nameCompanyInput.value,
+            description: descriptionInput.value,
+            highlight: context.item.highlight
+          };
+
+          const formData = new FormData();
+          formData.append('logo', context.item.logo);
+          formData.append('data', JSON.stringify(object));
+          const { response } = useAxios<DataResponse>(
+            'patch',
+            '/company/' + context.item.id,
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            },
+            deps.value
+          );
+
+          watch(response, () => {
+            if (response) {
+              if (response.value?.status === 'ok') {
+                context.change(response.value?.data);
+              }
+            }
+          });
+        }
+
         Swal.close();
         emit('close');
       }
@@ -113,6 +188,8 @@ const handleFileInputChange = (event: Event) => {
       } else if (typeof result === 'string') {
         selectedlogo.value = result;
       }
+
+      isChange.value = true;
     };
 
     reader.readAsDataURL(file);
@@ -161,9 +238,6 @@ const handleChangelogo = () => {
           <div v-if="selectedlogo">
             <img :src="selectedlogo" />
           </div>
-          <div v-else>
-            <img :src="imgLogo" />
-          </div>
 
           <div :class="$style['about__mottomodal-button-wrapper']">
             <button :class="$style['about__mottomodal-button']" @click="handleChangelogo">
@@ -174,7 +248,7 @@ const handleChangelogo = () => {
             <input
               type="file"
               style="display: none"
-              id="input_file_modal"
+              id="input_file_modalupdate"
               accept="logo/*"
               @change="handleFileInputChange"
             />
@@ -197,7 +271,7 @@ const handleChangelogo = () => {
 
         <div :class="$style['modal__buttons']">
           <button @click="$emit('close')">Hủy</button>
-          <button @click="submitForm">Thêm công ty</button>
+          <button @click="submitForm">Cập nhật</button>
         </div>
       </div>
     </div>
