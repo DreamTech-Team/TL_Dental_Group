@@ -12,6 +12,7 @@ interface Company {
   createAt: string;
 }
 
+//Get all companies
 const companies = ref<Company[]>([]);
 const deps = ref([]);
 const { response } = useAxios<DataResponse>('get', '/company', {}, {}, deps.value);

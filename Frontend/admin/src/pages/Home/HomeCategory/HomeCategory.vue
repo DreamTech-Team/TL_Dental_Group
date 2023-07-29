@@ -6,8 +6,6 @@ import EditBtn from '@/components/EditBtn/EditBtn.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import ModalCategory from './ModalCategory.vue';
 
-const isOpen = ref(false);
-
 interface ItemRS {
   id: string;
   title: string;
@@ -17,23 +15,7 @@ interface ItemRS {
   createAt: string;
 }
 
-const categories = ref<ItemRS[]>([]);
-
-//GET DATA
-const deps = ref([]);
-const lenght = ref(0);
-const { response } = useAxios<DataResponse>('get', '/cate1?highlight=true', {}, {}, deps.value);
-
-watch(response, () => {
-  categories.value = response.value?.data.sort((a: ItemRS, b: ItemRS) => a.highlight - b.highlight);
-  lenght.value = categories.value.length;
-});
-
-//DATA UPDATE
-const onUpdateContent = (data: { listrs: ItemRS[] }) => {
-  categories.value = data.listrs;
-};
-
+//Data colors
 const colors = [
   // eslint-disable-next-line max-len
   `linear-gradient(143.33deg, #A300F0 24.48%, rgba(246, 76, 218, 0.547363) 78.16%, rgba(173, 0, 255, 0.74) 103.49%)`,
@@ -45,17 +27,36 @@ const colors = [
   `linear-gradient(143.33deg, #0168C8 24.48%, rgba(246, 76, 218, 0.547363) 78.16%, rgba(173, 0, 255, 0.74) 103.49%)`
 ];
 
+const isOpen = ref(false); //Modal status
+const categories = ref<ItemRS[]>([]);
+
 //Properties
-const isPhone = ref(false);
 const wItem = ref(0);
 const tranfX = ref(0);
 let resizeListener: () => void;
 
-//Render category
+//GET DATA
+const deps = ref([]);
+const lenght = ref(0);
+const { response } = useAxios<DataResponse>('get', '/cate1?highlight=true', {}, {}, deps.value);
+
+//Get categories width highlight sorted
+watch(response, () => {
+  categories.value = response.value?.data.sort((a: ItemRS, b: ItemRS) => a.highlight - b.highlight);
+  lenght.value = categories.value.length;
+});
+
+//handle emit from modal
+const onUpdateContent = (data: { listrs: ItemRS[] }) => {
+  categories.value = data.listrs;
+};
+
+//Calculate width list
 const widthComputed = computed(() => {
   return wItem.value * categories.value.length + 'px';
 });
 
+//Calculate width item
 const widthItemComputed = computed(() => {
   return wItem.value + 'px';
 });
@@ -72,6 +73,7 @@ const scrollRight = () => {
   }
 };
 
+//Get color for each category
 const getCategoryColor = (index: number) => {
   return colors[index % colors.length];
 };
@@ -79,23 +81,13 @@ const getCategoryColor = (index: number) => {
 onMounted(() => {
   const container = document.getElementById('category-wrapper');
   if (container) {
-    if (window.innerWidth < 739) {
-      isPhone.value = true;
-      wItem.value = container.offsetWidth / 2;
-    } else {
-      wItem.value = container.offsetWidth / 4;
-    }
+    wItem.value = container.offsetWidth / 4;
   }
 
   resizeListener = function () {
     const container = document.getElementById('category-wrapper');
     if (container) {
-      if (window.innerWidth < 739) {
-        wItem.value = container.offsetWidth / 2;
-        isPhone.value = true;
-      } else {
-        wItem.value = container.offsetWidth / 4;
-      }
+      wItem.value = container.offsetWidth / 4;
       tranfX.value = 0;
     }
   };
@@ -137,11 +129,7 @@ onUnmounted(() => {
         <button v-show="tranfX !== 0" :class="$style['home__category-left']" @click="scrollLeft">
           <font-awesome-icon :icon="faChevronLeft" :class="$style['home__category-ic']" />
         </button>
-        <button
-          v-show="(!isPhone && lenght > 4) || (isPhone && lenght > 2)"
-          :class="$style['home__category-right']"
-          @click="scrollRight"
-        >
+        <button v-show="lenght > 4" :class="$style['home__category-right']" @click="scrollRight">
           <font-awesome-icon :icon="faChevronRight" :class="$style['home__category-ic']" />
         </button>
       </div>

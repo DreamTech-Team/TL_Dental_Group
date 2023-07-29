@@ -6,6 +6,7 @@ import { ref } from 'vue';
 
 const updateStatus = ref('1');
 
+//Switch Tab
 const handleUpdateStatus = (newStatus: string) => {
   updateStatus.value = newStatus;
 };

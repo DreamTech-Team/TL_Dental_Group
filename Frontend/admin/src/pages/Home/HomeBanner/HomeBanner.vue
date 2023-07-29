@@ -4,26 +4,6 @@ import EditBtn from '@/components/EditBtn/EditBtn.vue';
 import ModalBanner from './ModalBanner.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-//GET DATA
-const deps = ref([]);
-const { response } = useAxios<DataResponse>('get', '/home/header', {}, {}, deps.value);
-
-const content = ref({
-  id: '',
-  title: '',
-  context: ''
-});
-
-const onUpdateContent = (data: object) => {
-  content.value = { ...content.value, ...data };
-};
-
-watch(response, () => {
-  content.value.id = response.value?.data?.id;
-  content.value.title = response.value?.data?.title;
-  content.value.context = response.value?.data?.content;
-});
-
 interface Company {
   outstandingProduct: {
     id: string;
@@ -86,13 +66,38 @@ interface Item {
   product: string;
 }
 
+//Modal Status
 const isOpen = ref(false);
 
+//Get information for header
+const deps = ref([]);
+const { response } = useAxios<DataResponse>('get', '/home/header', {}, {}, deps.value);
+
+const content = ref({
+  id: '',
+  title: '',
+  context: ''
+});
+
+//Get data from axios
+watch(response, () => {
+  content.value.id = response.value?.data?.id;
+  content.value.title = response.value?.data?.title;
+  content.value.context = response.value?.data?.content;
+});
+
+//Handle data from modal
+const onUpdateContent = (data: object) => {
+  content.value = { ...content.value, ...data };
+};
+
+//Get all highlight compaines
 const companies = ref<Company[]>([]);
 const deps1 = ref([]);
 const results = useAxios<DataResponse>('get', '/company?highlight=true', {}, {}, deps1.value);
 const bannerItems = ref([{ src: '', alt: '', width: '0', height: '0', name: '', product: '' }]);
 
+//Calculate width for each company logo
 const calculateWidths = () => {
   return new Promise<void>((resolve) => {
     const imagePromises = bannerItems.value.map((item: Item) => {
@@ -114,6 +119,7 @@ const calculateWidths = () => {
   });
 };
 
+//Function Random
 const getRandomItems = (array: Company[], count: number) => {
   const shuffled = array.slice();
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -123,7 +129,7 @@ const getRandomItems = (array: Company[], count: number) => {
   return shuffled.slice(0, count);
 };
 
-//WEB
+//Properties
 const activeIndex = ref(0);
 const activeBanner = ref(bannerItems.value[0]);
 const showBannerBg = ref(true);
@@ -230,6 +236,7 @@ const moveLine = (index: number) => {
   }
 };
 
+//Get highlight products
 watch(
   results.response,
   async () => {
