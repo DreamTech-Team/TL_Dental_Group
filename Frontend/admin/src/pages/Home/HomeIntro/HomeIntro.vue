@@ -6,7 +6,11 @@ import ModalIntro from './ModalIntro.vue';
 import ModalCam from './CamIntro.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-//GET DATA
+//Status modal
+const isOpen = ref(false);
+const isOpenCam = ref(false);
+
+//GET information
 const deps = ref([]);
 const nameComp = ref([]);
 const { response } = useAxios<DataResponse>('get', '/home/section3', {}, {}, deps.value);
@@ -33,9 +37,6 @@ watch(response, () => {
 watch(getLogo.response, () => {
   nameComp.value = getLogo.response.value?.data?.name.content;
 });
-
-const isOpen = ref(false);
-const isOpenCam = ref(false);
 </script>
 <template>
   <div :class="$style.home__intro">

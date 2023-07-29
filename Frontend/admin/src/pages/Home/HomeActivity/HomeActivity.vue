@@ -2,7 +2,6 @@
 import { ref, watch, onMounted, onUnmounted } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-//GET DATA
 interface Item {
   news: {
     id: string;
@@ -24,14 +23,22 @@ interface Item {
     }
   ];
 }
+
+//Properties
 let resizeListener: () => void;
+
+//Get hightlights news
 const deps = ref([]);
 const { response } = useAxios<DataResponse>('get', '/news/highlight', {}, {}, deps.value);
+
+//Properties
 const sourceElement = ref<HTMLElement | null>(null);
 const itemWidth = ref(0);
 const tags = ref('all');
 const feedbacks = ref<Item[]>([]);
 const selectedItem = ref(-1);
+
+//Init structure data
 const activities = ref([
   {
     id: '',
@@ -54,6 +61,7 @@ const uniqueTags = ref([
   }
 ]);
 
+//Filter news by Tag
 const filterTags = (selectedTag: string) => {
   if (selectedTag === 'all') {
     if (window.innerWidth < 739) {
@@ -76,12 +84,13 @@ const filterTags = (selectedTag: string) => {
   }
 };
 
+//Change Tags
 const setTags = (temp: string) => {
   tags.value = temp;
   filterTags(temp);
 };
 
-const HandleClick = (index: number) => {
+const handleClick = (index: number) => {
   selectedItem.value = index;
 };
 
@@ -107,20 +116,12 @@ onMounted(() => {
   const width = sourceElement.value?.clientWidth;
 
   if (width !== undefined) {
-    if (window.innerWidth >= 739) {
-      itemWidth.value = (width - 200) / 4;
-    } else {
-      itemWidth.value = (width - 35) / 2;
-    }
+    itemWidth.value = (width - 200) / 4;
   }
 
   resizeListener = function () {
     if (width !== undefined) {
-      if (window.innerWidth >= 739) {
-        itemWidth.value = (width - 200) / 4;
-      } else {
-        itemWidth.value = (width - 35) / 2;
-      }
+      itemWidth.value = (width - 200) / 4;
     }
   };
 });
@@ -163,7 +164,7 @@ onUnmounted(() => {
         :key="index"
         :class="$style['home__activities-item']"
         :style="{ width: itemWidth + 'px' }"
-        @click="HandleClick(index)"
+        @click="handleClick(index)"
       >
         <img :src="activity.img" alt="activity" />
         <div

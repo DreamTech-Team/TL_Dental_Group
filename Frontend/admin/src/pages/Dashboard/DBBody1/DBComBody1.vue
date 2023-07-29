@@ -14,6 +14,17 @@ const getPart2 = useAxios<DataResponse>('get', '/information?type=CEO', {}, {}, 
 const getPart3 = useAxios<DataResponse>('get', '/information?type=CONTACT', {}, {}, deps.value);
 const getPart4 = useAxios<DataResponse>('get', '/information?type=LOGO', {}, {}, deps.value);
 
+//Properties
+const sourceElement = ref<HTMLElement | null>(null);
+const targetElement = ref<HTMLElement | null>(null); //For 4 parts same height
+
+//Open status
+const isOpen1 = ref(false);
+const isOpen2 = ref(false);
+const isOpen3 = ref(false);
+const isOpen4 = ref(false);
+
+//Init data structure
 const part1 = ref({
   namecomp: '',
   slogan: '',
@@ -38,6 +49,7 @@ const part4 = ref({
   image: ''
 });
 
+//Functions handle emits from modal
 const onUpdateContent1 = (data: object) => {
   part1.value = { ...part1.value, ...data };
 };
@@ -54,13 +66,7 @@ const onUpdateContent4 = (data: object) => {
   part4.value = { ...part4.value, ...data };
 };
 
-const sourceElement = ref<HTMLElement | null>(null);
-const targetElement = ref<HTMLElement | null>(null);
-const isOpen1 = ref(false);
-const isOpen2 = ref(false);
-const isOpen3 = ref(false);
-const isOpen4 = ref(false);
-
+//Set information from axios
 watch(getPart1.response, () => {
   part1.value.namecomp = getPart1.response.value?.data?.name.content ?? '';
   part1.value.years = getPart1.response.value?.data?.duringTime.content ?? '';

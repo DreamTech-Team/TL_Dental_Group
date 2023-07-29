@@ -112,6 +112,7 @@ const initListSelected = () => {
   selectedProducts.value.sort((a: Product, b: Product) => a.highlight - b.highlight);
 };
 
+//Function when check
 const toggleCheck = (index: number) => {
   const item: Product = listProducts.value[index];
   item.check = !item.check;
@@ -132,6 +133,7 @@ const toggleCheck = (index: number) => {
   }
 };
 
+//Remove when selected
 const removeFromSelected = (slug: string) => {
   Swal.fire({
     title: 'Bạn có chắc muốn xóa?',
@@ -189,6 +191,7 @@ const removeFromSelected = (slug: string) => {
   });
 };
 
+//Confirm update
 const updateHighlight = () => {
   let highlightCounter = 1;
 
@@ -247,6 +250,7 @@ const updateHighlight = () => {
   });
 };
 
+//Get data from axios
 watch(response, () => {
   containers.value = response.value?.data?.data;
   listProducts.value = response.value?.data?.data.map((item: ItemRS) => {

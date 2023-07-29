@@ -6,11 +6,6 @@ import EditBtn from '@/components/EditBtn/EditBtn.vue';
 import ModalFBack from './ModalFBack.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-//GET DATA
-const deps = ref([]);
-const lenght = ref(0);
-const { response } = useAxios<DataResponse>('get', '/home/reviews', {}, {}, deps.value);
-
 interface ItemRS {
   id: string;
   image: string;
@@ -20,6 +15,7 @@ interface ItemRS {
   rating: number;
 }
 
+//Init structure for contents
 const content = ref<ItemRS[]>([
   {
     id: '',
@@ -31,31 +27,18 @@ const content = ref<ItemRS[]>([
   }
 ]);
 
-const onUpdateContent = (data: { listrs: ItemRS[] }) => {
-  content.value = data.listrs;
-};
-
-watch(response, () => {
-  content.value = response.value?.data;
-  lenght.value = content.value.length;
-});
-
-const roundNumber = (number: number, decimalPlaces: number) => {
-  const factor = Math.pow(10, decimalPlaces);
-  return Math.round(number * factor) / factor;
-};
-
-//Logic
+//Properties
 const isOpen = ref(false);
-
 const wItem = ref(0);
 const tranfX = ref(0);
 let resizeListener: () => void;
 
+//Calculate width list
 const widthComputed = computed(() => {
   return wItem.value * content.value.length + 'px';
 });
 
+//Calculate width item
 const widthItemComputed = computed(() => {
   return wItem.value + 'px';
 });
@@ -70,6 +53,27 @@ const scrollRight = () => {
   } else {
     tranfX.value = 0;
   }
+};
+
+//Get all reviews
+const deps = ref([]);
+const lenght = ref(0);
+const { response } = useAxios<DataResponse>('get', '/home/reviews', {}, {}, deps.value);
+
+watch(response, () => {
+  content.value = response.value?.data;
+  lenght.value = content.value.length;
+});
+
+//Handle emit from modal
+const onUpdateContent = (data: { listrs: ItemRS[] }) => {
+  content.value = data.listrs;
+};
+
+//Function 4.2 to 4.0
+const roundNumber = (number: number, decimalPlaces: number) => {
+  const factor = Math.pow(10, decimalPlaces);
+  return Math.round(number * factor) / factor;
 };
 
 onMounted(() => {
