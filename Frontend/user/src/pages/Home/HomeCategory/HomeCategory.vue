@@ -13,20 +13,10 @@ interface Category {
   createAt: string;
 }
 
+//Init data structure
 const categories = ref<Category[]>([]);
 
-//GET DATA
-const deps = ref([]);
-const lenght = ref(0);
-const { response } = useAxios<DataResponse>('get', '/cate1?highlight=true', {}, {}, deps.value);
-
-watch(response, () => {
-  categories.value = response.value?.data.sort(
-    (a: Category, b: Category) => a.highlight - b.highlight
-  );
-  lenght.value = categories.value.length;
-});
-
+//Data colors
 const colors = [
   // eslint-disable-next-line max-len
   `linear-gradient(143.33deg, #A300F0 24.48%, rgba(246, 76, 218, 0.547363) 78.16%, rgba(173, 0, 255, 0.74) 103.49%)`,
@@ -38,7 +28,7 @@ const colors = [
   `linear-gradient(143.33deg, #0168C8 24.48%, rgba(246, 76, 218, 0.547363) 78.16%, rgba(173, 0, 255, 0.74) 103.49%)`
 ];
 
-//Handle Scroll
+//Properties
 const isPhone = ref(false);
 const MIN_SWIPE_DISTANCE_CM = 3;
 const TOUCH_SENSITIVITY = 10;
@@ -104,6 +94,18 @@ const handleTouchend = (e: TouchEvent) => {
   touchendX.value = e.changedTouches[0].screenX;
   checkDirection();
 };
+
+//Get cate 1 highlight
+const deps = ref([]);
+const lenght = ref(0);
+const { response } = useAxios<DataResponse>('get', '/cate1?highlight=true', {}, {}, deps.value);
+
+watch(response, () => {
+  categories.value = response.value?.data.sort(
+    (a: Category, b: Category) => a.highlight - b.highlight
+  );
+  lenght.value = categories.value.length;
+});
 
 onMounted(() => {
   const container = document.getElementById('category-wrapper');

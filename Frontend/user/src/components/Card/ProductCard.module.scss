@@ -302,7 +302,7 @@
   .card {
     display: flex;
     position: static;
-    min-height: 280px;
+    min-height: 250px;
     flex-direction: column;
     height: max-content;
     border: 1px solid $primary_50;
@@ -471,7 +471,8 @@
         display: grid;
         aspect-ratio: 1/1;
         width: 50%;
-        margin-bottom: 20%;
+        margin-bottom: 15%;
+        margin-top: 5%;
       }
     }
 
@@ -494,7 +495,7 @@
         margin-bottom: 0.5rem;
         margin-top: 0.5rem;
         text-align: left;
-        height: 4.2rem;
+        height: 2.8rem;
         width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -508,6 +509,7 @@
         align-items: center;
         justify-content: space-between;
         margin: 0.5rem 0;
+        padding: 0;
         margin-top: 1rem;
         height: max-content;
 

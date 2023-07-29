@@ -125,11 +125,11 @@
     margin-top: 50px;
     background-color: #f2faff;
     padding-top: 40px;
-  
+
     &-title {
       display: block;
       width: 100%;
-  
+
       h3 {
         font-weight: 600;
         font-size: $text-2xl-mobile;
@@ -137,7 +137,7 @@
         letter-spacing: 0.15em;
         color: $primary_900;
       }
-  
+
       .home__trend-line {
         display: block;
         margin: auto;
@@ -149,7 +149,7 @@
         border: 3px solid linear-gradient(270deg, #ff7e36 0%, #3c96ff 100%);
       }
     }
-  
+
     &-ctn {
       display: flex;
       position: relative;
@@ -157,7 +157,7 @@
       justify-content: center;
       width: 100%;
       margin-top: 30px;
-  
+
       .home__trend-wrapper {
         overflow-x: auto;
         scroll-behavior: smooth;
@@ -167,7 +167,7 @@
         overflow-y: visible;
         overflow-x: hidden;
         margin: auto;
-  
+
         .home__trend-list {
           display: flex;
           height: max-content;
@@ -176,7 +176,7 @@
           justify-content: flex-start;
           flex-wrap: nowrap;
           scroll-behavior: smooth;
-  
+
           .home__trend-item {
             display: block;
             margin-left: 5px;
@@ -198,12 +198,12 @@
         top: calc(50% - 35px);
         left: 2%;
         transition: all 0.3s ease;
-  
+
         &:hover {
           transform: none;
         }
       }
-  
+
       .home__trend-right {
         display: flex;
         align-items: center;
@@ -217,12 +217,12 @@
         right: 2%;
         transition: all 0.3s ease;
         border: none;
-  
+
         &:hover {
           transform: none;
         }
       }
-  
+
       .home__trend-ic {
         text-decoration: none;
         color: $text_500;

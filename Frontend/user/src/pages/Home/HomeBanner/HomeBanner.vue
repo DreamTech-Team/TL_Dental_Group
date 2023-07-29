@@ -2,20 +2,6 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-//GET DATA
-const deps = ref([]);
-const { response } = useAxios<DataResponse>('get', '/home/header', {}, {}, deps.value);
-
-const content = ref({
-  title: '',
-  context: ''
-});
-
-watch(response, () => {
-  content.value.title = response.value?.data?.title;
-  content.value.context = response.value?.data?.content;
-});
-
 interface Company {
   outstandingProduct: {
     id: string;
@@ -78,40 +64,8 @@ interface Item {
   product: string;
 }
 
-const companies = ref<Company[]>([]);
-const deps1 = ref([]);
-const results = useAxios<DataResponse>('get', '/company?highlight=true', {}, {}, deps1.value);
+//Define data structure
 const bannerItems = ref([{ src: '', alt: '', width: '0', height: '0', name: '', product: '' }]);
-
-const calculateWidths = () => {
-  return new Promise<void>((resolve) => {
-    const imagePromises = bannerItems.value.map((item: Item) => {
-      return new Promise<void>((resolve) => {
-        const image = new Image();
-        image.onload = () => {
-          const aspectRatio = image.width / image.height;
-          const newWidth = 30 * aspectRatio;
-          item.width = newWidth.toFixed(2);
-          resolve();
-        };
-        image.src = item.src;
-      });
-    });
-
-    Promise.all(imagePromises).then(() => {
-      resolve();
-    });
-  });
-};
-
-const getRandomItems = (array: Company[], count: number) => {
-  const shuffled = array.slice();
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled.slice(0, count);
-};
 
 //Scroll Properties
 const MIN_SWIPE_DISTANCE_CM = 3.5;
@@ -353,6 +307,58 @@ const moveLine = (index: number) => {
   }
 };
 
+//Get information
+const deps = ref([]);
+const { response } = useAxios<DataResponse>('get', '/home/header', {}, {}, deps.value);
+
+const content = ref({
+  title: '',
+  context: ''
+});
+
+watch(response, () => {
+  content.value.title = response.value?.data?.title;
+  content.value.context = response.value?.data?.content;
+});
+
+//Get highlight compaines
+const companies = ref<Company[]>([]);
+const deps1 = ref([]);
+const results = useAxios<DataResponse>('get', '/company?highlight=true', {}, {}, deps1.value);
+
+//Calculate width for each logo
+const calculateWidths = () => {
+  return new Promise<void>((resolve) => {
+    const imagePromises = bannerItems.value.map((item: Item) => {
+      return new Promise<void>((resolve) => {
+        const image = new Image();
+        image.onload = () => {
+          const aspectRatio = image.width / image.height;
+          const newWidth = 30 * aspectRatio;
+          item.width = newWidth.toFixed(2);
+          resolve();
+        };
+        image.src = item.src;
+      });
+    });
+
+    Promise.all(imagePromises).then(() => {
+      resolve();
+    });
+  });
+};
+
+//Random item
+const getRandomItems = (array: Company[], count: number) => {
+  const shuffled = array.slice();
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, count);
+};
+
+//Handle data from axios
 watch(
   results.response,
   async () => {
