@@ -30,17 +30,26 @@ interface DataCompany {
   company: ManageCompany;
 }
 
+interface Products {
+  id: string;
+  name: string;
+  description: string;
+}
+
 const variableChangeCompany = ref([]);
 const variableChangeCompanyHighlight = ref([]);
+const variableChangeProduct = ref([]);
 const data = ref<DataCompany[]>([]);
 const companyRender = ref<ManageCompany[]>([]);
 const featuredProducts = ref<ManageOutstanding[]>([]);
+const products = ref<Products[]>([]);
 const isOpenAdd = ref(false);
 const isOpenUpdate = ref(false);
 const searchText = ref('');
 const currentPage = ref(1);
 const pageSize = ref(10);
 const indexRow = ref(0);
+const indexProduct = ref(0);
 
 // Gọi hàm useAxios để lấy response, error, và isLoading
 const getCompany = useAxios<DataResponse>('get', '/company', {}, {}, variableChangeCompany.value);
@@ -53,13 +62,14 @@ const getCompanyHighlight = useAxios<DataResponse>(
   {},
   variableChangeCompanyHighlight.value
 );
+// Gọi hàm useAxios để lấy response, error, và isLoading
+const getProducts = useAxios<DataResponse>('get', '/products', {}, {}, variableChangeProduct.value);
 
 // Truy xuất giá trị response.value và gán vào responseData
 watch(getCompany.response, () => {
-  console.log(getCompany.response.value?.data);
-
   companyRender.value = getCompany.response.value?.data;
 });
+
 watch(getCompanyHighlight.response, () => {
   data.value = getCompanyHighlight.response.value?.data;
   data.value.forEach((item) => {
@@ -67,6 +77,11 @@ watch(getCompanyHighlight.response, () => {
       featuredProducts.value.push(item.outstandingProduct);
     }
   });
+});
+
+// Truy xuất giá trị response.value và gán vào responseData
+watch(getProducts.response, () => {
+  products.value = getProducts.response.value?.data?.data;
 });
 
 // Hàm xử lí search
@@ -101,8 +116,17 @@ const handlePageChange = (page: number) => {
 };
 
 // Xử lí mở modal chỉnh sửa một công ty
-const handleUpdateModal = (idx: number) => {
+const handleUpdateModal = (idx: number, id: string) => {
   isOpenUpdate.value = true;
+
+  if (id !== null) {
+    products.value.forEach((item, idx) => {
+      if (item.id === id) indexProduct.value = idx;
+      else indexProduct.value = -1;
+    });
+  } else {
+    indexProduct.value = -1;
+  }
 
   indexRow.value = idx;
 };
@@ -111,13 +135,7 @@ const handleUpdateModal = (idx: number) => {
 const deleteCompany = (id: string) => {
   const deps = ref([]);
 
-  const { response, error } = useAxios<DataResponse>(
-    'delete',
-    '/company/' + id,
-    {},
-    {},
-    deps.value
-  );
+  const { response } = useAxios<DataResponse>('delete', '/company/' + id, {}, {}, deps.value);
 
   Swal.fire({
     title: 'Bạn có chắc muốn xóa công ty này không?',
@@ -237,7 +255,7 @@ const handleChangeUpdate = (dataUpdated: ManageCompany) => {
               <font-awesome-icon :icon="faTrash" :class="$style['mn_company--table-ic']" />
             </button>
 
-            <button @click="handleUpdateModal(index)">
+            <button @click="handleUpdateModal(index, company.outstandingProductId)">
               <font-awesome-icon :icon="faPen" :class="$style['mn_company--table-ic']" />
             </button>
           </div>
@@ -267,6 +285,8 @@ const handleChangeUpdate = (dataUpdated: ManageCompany) => {
     v-if="isOpenUpdate"
     @close="isOpenUpdate = false"
     :item="companyRender[indexRow]"
+    :productOutstanding="indexProduct !== -1 ? products[indexProduct] : {}"
+    :products="products"
     :change="handleChangeUpdate"
   />
 </template>

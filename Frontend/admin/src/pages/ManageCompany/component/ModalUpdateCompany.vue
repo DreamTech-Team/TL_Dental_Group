@@ -24,6 +24,14 @@ const context = defineProps({
     type: Object,
     required: true
   },
+  productOutstanding: {
+    type: Object,
+    required: true
+  },
+  products: {
+    type: Array,
+    required: true
+  },
   change: {
     type: Function as PropType<(newData: ManageCompany) => void>,
     required: true
@@ -34,7 +42,7 @@ const emit = defineEmits(['close']);
 
 const nameCompanyInput = ref(context.item.name);
 const descriptionInput = ref(context.item.description);
-const productInput = ref(context.item.nameProduct);
+const productInput = ref(context.productOutstanding.name);
 const selectedlogo: Ref<string | null> = ref(context.item.logo);
 const isOpen = ref(false);
 const isChange = ref(false);
@@ -262,6 +270,8 @@ const handleChangelogo = () => {
             placeholder="Đang trống"
             :value="productInput"
             @change="updateProduct"
+            readonly
+            :style="{ cursor: 'auto' }"
           />
 
           <button @click="isOpen = true">
@@ -277,7 +287,12 @@ const handleChangelogo = () => {
     </div>
   </div>
 
-  <modal-add-product v-else @close="isOpen = false" />
+  <modal-add-product
+    v-else
+    @close="isOpen = false"
+    :product="context.productOutstanding"
+    :products="context.products"
+  />
 </template>
 
 <style module scoped lang="scss">

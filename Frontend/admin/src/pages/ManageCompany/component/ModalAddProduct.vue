@@ -1,14 +1,41 @@
 <script setup lang="ts">
-import { Ref, ref } from 'vue';
+import { Ref, ref, computed } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark, faCloudArrowUp, faRotate } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import styles from './ModalAddProduct.module.scss';
+
+interface Products {
+  id: string;
+  name: string;
+  description: string;
+}
+const context = defineProps({
+  product: {
+    type: Object,
+    required: true
+  },
+  products: {
+    type: Array,
+    required: true
+  }
+});
+
 const emit = defineEmits(['close']);
 
-const titleInput = ref('');
-const contentInput = ref('');
-const selectedImage: Ref<string | null> = ref(null);
+const titleInput = ref(context.product.name);
+const contentInput = ref(context.product.description);
+const selectedImage: Ref<string | null> = ref(context.product.mainImg);
+const dataSearchTerm = ref('');
+const listData = ref<Products[]>(context.products);
+
+const filteredItems = computed(() => {
+  const searchTerm = dataSearchTerm.value.toLowerCase().trim();
+  if (!searchTerm) {
+    return listData.value; // Nếu không có từ khóa tìm kiếm, trả về toàn bộ danh sách
+  }
+  return listData.value.filter((item) => item.name.toLowerCase().includes(searchTerm));
+});
 
 // Các hàm update dữ liệu cho thẻ input
 const updateTitle = (e: Event) => {
@@ -124,10 +151,14 @@ const addFile = (e: DragEvent) => {
         <h4>Tên sản phẩm</h4>
         <input
           type="text"
+          v-model="dataSearchTerm"
           placeholder="Nhập tên sản phẩm..."
-          :value="titleInput"
-          @change="updateTitle"
+          @input="updateTitle"
         />
+
+        <ul>
+          <li v-for="item in filteredItems" :key="item.id">{{ item.name }}</li>
+        </ul>
 
         <h4>Mô tả</h4>
         <input
@@ -181,7 +212,9 @@ const addFile = (e: DragEvent) => {
 
         <div :class="$style['modal__buttons']">
           <button @click="$emit('close')">Hủy</button>
-          <button @click="submitForm">Thêm</button>
+          <button @click="submitForm">
+            {{ Object.keys(context.product).length === 0 ? 'Thêm' : 'Cập nhật' }}
+          </button>
         </div>
       </div>
     </div>
