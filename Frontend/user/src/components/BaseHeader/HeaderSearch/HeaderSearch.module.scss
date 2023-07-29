@@ -1,5 +1,5 @@
 @import '@/styles/base';
-@import "@/styles/responsive";
+@import '@/styles/responsive';
 
 .header-search {
   position: relative;
@@ -28,7 +28,7 @@
 
   &__wrapper {
     background-color: white;
-    height: 70px;
+    height: 68px;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -37,7 +37,7 @@
     overflow: hidden;
     display: flex;
     align-items: center;
-    transition: all .5s ease-in-out;
+    transition: all 0.5s ease-in-out;
   }
 
   &__input {
@@ -68,25 +68,24 @@
 @include responsize_resolution() {
   .header-search {
     flex: 1;
-  
+
     &__icon {
       float: right;
 
       &:hover {
-       
       }
-  
+
       &-svg {
       }
     }
-  
+
     &__wrapper {
     }
-  
+
     &__input {
       input {
       }
-  
+
       &-icon {
       }
     }
@@ -96,25 +95,24 @@
 @include responsive_tablet() {
   .header-search {
     flex: 1;
-  
+
     &__icon {
       float: right;
 
       &:hover {
-       
       }
-  
+
       &-svg {
       }
     }
-  
+
     &__wrapper {
     }
-  
+
     &__input {
       input {
       }
-  
+
       &-icon {
       }
     }
@@ -125,25 +123,24 @@
   .header-search {
     flex: 1;
     display: none;
-  
+
     &__icon {
       float: right;
 
       &:hover {
-       
       }
-  
+
       &-svg {
       }
     }
-  
+
     &__wrapper {
     }
-  
+
     &__input {
       input {
       }
-  
+
       &-icon {
       }
     }
