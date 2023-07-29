@@ -1,13 +1,124 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue';
+import { ref, nextTick, watch } from 'vue';
 import IcDownCategory from '@/assets/icons/IcsortDown.svg';
 import { category } from '../Category/Category';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import { data } from '@/pages/RecruitmentDetails/RecruitmentDetailsHandle';
 
+interface ListCategory1 {
+  id: string;
+  title: string;
+  img: string;
+  highlight: number;
+  slug: string;
+}
+
+interface ListCategory2 {
+  id: string;
+  title: string;
+  slug: string;
+}
+
+interface ListCategories {
+  id: string;
+  cate1Id: ListCategory1;
+  cate2Id: ListCategory2;
+}
+
+interface DataRender {
+  title: string;
+  data: { name: string }[];
+}
+
+const valueChange = ref([]);
 const isAnimationVisible = ref(false);
 const selectedItem = ref(-1);
 const selectedCategoryItem = ref({ categoryIndex: -1, itemIndex: -1 });
+const dataRender = ref<DataRender[]>([]);
+const listCategories = ref<ListCategories[]>([]);
+const listCategory1 = ref<ListCategory1[]>([]);
+const listCategory2 = ref<ListCategory2[]>([]);
+
+const { response } = useAxios<DataResponse>('get', '/cate', {}, {}, valueChange.value);
+
+watch(response, () => {
+  if (response.value?.data) {
+    response.value?.data.forEach((item: ListCategories) => {
+      listCategory1.value.push(item.cate1Id);
+      listCategory2.value.push(item.cate2Id);
+    });
+
+    const uniqueElementsSet = new Set<string>();
+    const duplicatesPositions: { [key: string]: number[] } = {};
+    const duplicatesPositions1: { [key: string]: number[] } = {};
+
+    listCategory1.value.forEach((item, index) => {
+      const { id } = item;
+
+      if (uniqueElementsSet.has(id)) {
+        if (!duplicatesPositions[id]) {
+          duplicatesPositions[id] = [index];
+        } else {
+          duplicatesPositions[id].push(index);
+        }
+      } else {
+        uniqueElementsSet.add(id);
+        duplicatesPositions1[id] = [index];
+        duplicatesPositions1[id].push(index);
+      }
+    });
+
+    Object.keys(duplicatesPositions).forEach((id) => {
+      duplicatesPositions[id].push(duplicatesPositions1[id][0]);
+      delete duplicatesPositions1[id];
+    });
+
+    const uniqueElementsArray = Array.from(uniqueElementsSet).map((id) => {
+      return listCategory1.value.find((item) => item.id === id);
+    });
+
+    uniqueElementsArray.forEach((item) => {
+      if (item) {
+        const object = {
+          title: '',
+          data: [
+            {
+              name: ''
+            }
+          ]
+        };
+        const dataCate2: { name: string }[] = [];
+
+        if (duplicatesPositions1[item.id]) {
+          object.title = item.title;
+
+          if (listCategory2.value[duplicatesPositions1[item.id][0]] !== null) {
+            dataCate2.push({ name: listCategory2.value[duplicatesPositions1[item.id][0]].title });
+          }
+
+          object.data = dataCate2;
+
+          dataRender.value.push(object);
+        }
+        if (duplicatesPositions[item.id]) {
+          object.title = item.title;
+
+          duplicatesPositions[item.id].forEach((replace) => {
+            if (listCategory2.value[replace] !== null) {
+              dataCate2.push({ name: listCategory2.value[replace].title });
+            }
+          });
+
+          object.data = dataCate2;
+
+          dataRender.value.push(object);
+        }
+      }
+    });
+  }
+});
 
 const toggleAnimation = (index: number) => {
   if (isAnimationVisible.value && selectedItem.value == index) {
@@ -57,7 +168,7 @@ const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
 <template>
   <div id="dropdown-container" :class="$style.category">
     <div :class="$style['category__title']">Danh mục</div>
-    <div :class="[$style['category__firstX']]" v-for="(item, index) in category" :key="index">
+    <div :class="[$style['category__firstX']]" v-for="(item, index) in dataRender" :key="index">
       <div
         @click="toggleAnimation(index)"
         :class="[
