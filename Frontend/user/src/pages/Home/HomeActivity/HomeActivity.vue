@@ -25,13 +25,8 @@ interface Item {
     }
   ];
 }
-let resizeListener: () => void;
-const deps = ref([]);
-const { response } = useAxios<DataResponse>('get', '/news/highlight', {}, {}, deps.value);
-const sourceElement = ref<HTMLElement | null>(null);
-const itemWidth = ref(0);
-const tags = ref('all');
-const feedbacks = ref<Item[]>([]);
+
+//Init data structure
 const activities = ref([
   {
     id: '',
@@ -54,6 +49,18 @@ const uniqueTags = ref([
   }
 ]);
 
+//Properties
+let resizeListener: () => void;
+const selectedItem = ref(-1);
+const sourceElement = ref<HTMLElement | null>(null);
+const itemWidth = ref(0);
+const tags = ref('all');
+const feedbacks = ref<Item[]>([]);
+
+//Get highlight news
+const deps = ref([]);
+const { response } = useAxios<DataResponse>('get', '/news/highlight', {}, {}, deps.value);
+
 watch(response, () => {
   feedbacks.value = response.value?.data;
   if (window.innerWidth < 739) {
@@ -71,8 +78,8 @@ watch(response, () => {
 
   uniqueTags.value = Array.from(uniqueTagsMap.values());
 });
-const selectedItem = ref(-1);
 
+//Function filter tags by news
 const filterTags = (selectedTag: string) => {
   if (selectedTag === 'all') {
     if (window.innerWidth < 739) {
@@ -102,11 +109,11 @@ const setTags = (temp: string) => {
   filterTags(temp);
 };
 
-const HandleClick = (index: number) => {
+const handleClick = (index: number) => {
   selectedItem.value = index;
 };
 
-const SeeAll = () => {
+const seeAll = () => {
   router.push('/tintuc');
 };
 
@@ -141,7 +148,7 @@ onUnmounted(() => {
 <template>
   <div :class="$style.home__activities">
     <h3>CÁC HOẠT ĐỘNG CỦA CÔNG TY</h3>
-    <button :class="$style['home__activities-button']" @click="SeeAll">Xem tất cả</button>
+    <button :class="$style['home__activities-button']" @click="seeAll">Xem tất cả</button>
     <div :class="$style['home__activities-list']">
       <button
         @click="setTags('all')"
@@ -170,7 +177,7 @@ onUnmounted(() => {
         :key="index"
         :class="$style['home__activities-item']"
         :style="{ width: itemWidth + 'px' }"
-        @click="HandleClick(index)"
+        @click="handleClick(index)"
       >
         <img :src="activity.img" alt="activity" />
         <div

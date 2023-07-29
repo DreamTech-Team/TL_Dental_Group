@@ -2,33 +2,18 @@
 import OkSticker from '@/assets/imgs/Product/GroupOk.svg';
 import Insurance from '@/assets/imgs/Product/GroupInsurance.svg';
 import SPSticker from '@/assets/imgs/Product/GroupSupport.svg';
-import { useRouter } from 'vue-router';
 import { type PropType, ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 export interface Product {
   nameProduct: string;
-  price: string | number;
-  description: string;
+  price: number;
+  summary: string;
   tag: string;
   company: string;
   image: string;
   brand: string;
 }
-
-const Logo = ref('');
-const deps = ref([]);
-const { response } = useAxios<DataResponse>('get', '/information?type=LOGO', {}, {}, deps.value);
-
-watch(response, () => {
-  Logo.value = response.value?.data?.logo.content;
-});
-
-const router = useRouter();
-
-const goToDetailPage = () => {
-  router.push('/chitiet');
-};
 
 defineProps({
   product: {
@@ -36,11 +21,25 @@ defineProps({
     required: true
   }
 });
+
+//Get Logo Company
+const logoValue = ref('');
+const deps = ref([]);
+const { response } = useAxios<DataResponse>('get', '/information?type=LOGO', {}, {}, deps.value);
+
+watch(response, () => {
+  logoValue.value = response.value?.data?.logo.content;
+});
+
+//Function 1000 to 1.000
+const formatNumberWithCommas = (num: number) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+};
 </script>
 <template>
-  <div :class="$style.card" @click="goToDetailPage">
+  <div :class="$style.card">
     <div :class="$style.card__show">
-      <p :class="$style['card__show--info']">{{ product.description }}</p>
+      <p :class="$style['card__show--info']" v-html="product.summary"></p>
       <div :class="$style['card__show--button']">Xem chi tiết</div>
     </div>
     <div :class="$style.card__header">
@@ -63,7 +62,7 @@ defineProps({
         </div>
 
         <div :class="$style['card__header--title']">
-          <img :class="$style['card__header--title-logo']" :src="Logo" alt="logononbg" />
+          <img :class="$style['card__header--title-logo']" :src="logoValue" alt="logononbg" />
           <div :class="$style['card__header--title-content']">
             {{ product.tag }} {{ product.company }}
           </div>
@@ -87,7 +86,9 @@ defineProps({
       </p>
       <div :class="$style['card__body--info']">
         <img :class="$style['card__body--info-company']" :src="product.brand" alt="Logo company" />
-        <p :class="$style['card__body--info-price']">{{ product.price }}</p>
+        <p :class="$style['card__body--info-price']">
+          {{ formatNumberWithCommas(product.price) }}đ
+        </p>
       </div>
     </div>
   </div>

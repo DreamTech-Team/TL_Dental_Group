@@ -48,39 +48,19 @@ interface Product {
 
 interface Item {
   nameProduct: string;
-  price: string;
-  description: string;
+  price: number;
+  summary: string;
   tag: string;
   company: string;
   image: string;
   brand: string;
 }
+
+//Init data structure
 const tempproducts = ref([]);
 const products = ref<Item[]>([]);
-//GET DATA
-const deps = ref([]);
-const lenght = ref(0);
-const { response } = useAxios<DataResponse>('get', '/products/highlight', {}, {}, deps.value);
 
-watch(response, () => {
-  tempproducts.value = response.value?.data.sort(
-    (a: Product, b: Product) => a.highlight - b.highlight
-  );
-  products.value = tempproducts.value.map((item: Product) => {
-    return {
-      nameProduct: item.name,
-      price: item.price.toString() + 'đ',
-      description: item.description,
-      tag: item.fkCategory.cate1Id.title,
-      company: item.fkCategory.companyId.name,
-      image: item.mainImg,
-      brand: item.fkCategory.companyId.logo
-    };
-  });
-  lenght.value = products.value.length;
-});
-
-//Scroll Properties
+//Properties
 const isPhone = ref(false);
 const MIN_SWIPE_DISTANCE_CM = 3;
 const TOUCH_SENSITIVITY = 20;
@@ -143,6 +123,33 @@ const handleTouchend = (e: TouchEvent) => {
   checkDirection();
 };
 
+//Get product highlight
+const deps = ref([]);
+const lenght = ref(0);
+const { response } = useAxios<DataResponse>('get', '/products/highlight', {}, {}, deps.value);
+
+const updateShowResults = () => {
+  products.value = tempproducts.value.map((item: Product) => {
+    return {
+      nameProduct: item.name,
+      price: item.price,
+      summary: item.summary,
+      tag: item.fkCategory.cate1Id.title,
+      company: item.fkCategory.companyId.name,
+      image: item.mainImg,
+      brand: item.fkCategory.companyId.logo
+    };
+  });
+  lenght.value = products.value.length;
+};
+
+watch(response, () => {
+  tempproducts.value = response.value?.data.sort(
+    (a: Product, b: Product) => a.highlight - b.highlight
+  );
+  updateShowResults();
+});
+
 onMounted(() => {
   const container = document.getElementById('trend-wrapper');
   if (container) {
@@ -198,14 +205,18 @@ onUnmounted(() => {
             :key="index"
             :product="item"
             :class="$style['home__trend-item']"
-            :style="{ width: widthItemComputed }"
+            :style="{ width: widthItemComputed, 'max-width': widthItemComputed }"
           />
         </div>
       </div>
-      <button :class="$style['home__trend-left']" @click="scrollLeft">
+      <button v-show="tranfX != 0" :class="$style['home__trend-left']" @click="scrollLeft">
         <font-awesome-icon :icon="faChevronLeft" :class="$style['home__trend-ic']" />
       </button>
-      <button :class="$style['home__trend-right']" @click="scrollRight">
+      <button
+        v-show="(!isPhone && lenght > 4) || (isPhone && lenght > 2)"
+        :class="$style['home__trend-right']"
+        @click="scrollRight"
+      >
         <font-awesome-icon :icon="faChevronRight" :class="$style['home__trend-ic']" />
       </button>
     </div>
