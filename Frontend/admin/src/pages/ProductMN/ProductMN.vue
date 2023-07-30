@@ -137,6 +137,8 @@ const searchProduct = () => {
     {},
     deps.value
   );
+  console.log(searchProduct.response.value?.data?.data);
+
   watch(searchProduct.response, () => {
     tempArrays.value = searchProduct.response.value?.data?.data;
     results.value = tempArrays.value.map((item: ProductItem) => {

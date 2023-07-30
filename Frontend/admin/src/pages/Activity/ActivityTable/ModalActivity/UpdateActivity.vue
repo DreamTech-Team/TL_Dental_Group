@@ -1,53 +1,104 @@
 <script setup lang="ts">
 import Editor from '@tinymce/tinymce-vue';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import type { CSSProperties } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faPlus, faMagnifyingGlass, faMinus, faXmark } from '@fortawesome/free-solid-svg-icons';
-
-import { tags } from '../../Activity';
+import {
+  faPlus,
+  faMagnifyingGlass,
+  faMinus,
+  faXmark,
+  faDownload
+} from '@fortawesome/free-solid-svg-icons';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import imageAct from '../../../../assets/imgs/Activity/image.png';
-import icPhoto from '../../../../assets/icons/camera.svg';
-
 import { type PropType } from 'vue';
-interface Tags {
-  id: number;
-  name: string;
-  createDate: string;
-}
-const currentStep = ref(1);
+import { id } from 'element-plus/lib/locale/index.js';
+import Swal from 'sweetalert2';
+import CropImage from '@/components/CropImage/CropImage.vue';
 
-interface selectActivity {
-  id: number;
+interface Tags {
+  id: string;
   name: string;
-  createDate: string;
-  tags: Tags;
-  summary: string;
-  description: string;
-  date: string;
+  slug: string;
+  createAt: string;
 }
+
+interface News {
+  news: {
+    id: string;
+    title: string;
+    img: string;
+    slug: string;
+    summary: string;
+    detail: string;
+    detailMobile: string;
+    highlight: number;
+    createAt: string;
+  };
+  tags: [
+    {
+      id: string;
+      name: string;
+      slug: string;
+      createAt: string;
+    }
+  ];
+}
+
+interface MyErrorResponse {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
+interface TextAreaValue {
+  level: {
+    content: string;
+  };
+}
+
+const deps = ref([]);
+const {
+  response: tagsResponsive,
+  error: errorTags,
+  isLoading: loadingTags
+} = useAxios<DataResponse>('get', '/tags', {}, {}, deps.value);
 
 export interface CloseModalFn {
   (...payload: any[]): void;
 }
 
 const props = defineProps({
-  selectedActivity: {
-    type: Object, // Kiểu dữ liệu của prop
-    required: true // Bắt buộc phải truyền giá trị cho prop
-  },
   closeModal: {
     type: Function as PropType<CloseModalFn>,
     required: true
+  },
+  selectedActivity: {
+    type: Object, // Kiểu dữ liệu của prop
+    required: true // Bắt buộc phải truyền giá trị cho prop
   }
+  // change: {
+  //   type: Function as PropType<(newData: News) => void>,
+  //   required: true
+  // }
 });
 
-const inputId = ref('imageInput');
-const imageActivity = ref(imageAct);
-const listTags = ref<Tags[]>(tags);
-
 const searchInput = ref('');
-const _content = ref(``);
+const currentStep = ref(1);
+const isOpenInput = ref(false);
+const indexCur = ref(1);
+const listTags = ref<Array<Tags>>([]);
+const isCrop = ref(false);
+
+//SUB Images
+const subFile = ref();
+const subfileData = ref();
+const imgsFile = ref();
+const subImageSrc = ref<string[]>([]);
+const subImagesFile = ref<File[]>([]);
 
 const nextStep = () => {
   currentStep.value = 2;
@@ -57,51 +108,156 @@ const prevStep = () => {
   currentStep.value = 1;
 };
 
-const textareaStyle: CSSProperties = {
-  resize: 'none',
-  height: '150px',
-  maxHeight: '300px',
-  borderRadius: '4px',
-  padding: '8px',
-  fontSize: '16px',
-  fontFamily: 'Arial, sans-serif',
-  border: '1px solid #ccc',
-  marginBottom: '16px'
-};
-
-const activityTitle = ref(props.selectedActivity.name);
-const activitySummary = ref(props.selectedActivity.summary);
-const activityContent = ref(props.selectedActivity.description);
-// const selectedTags = ref<Tags[]>(props.selectedActivity.tags.slice());
-// const selectedTags = ref<Tags[]>([...props.selectedActivity.tags]);
-const selectedTags = ref<Tags[]>(
-  props.selectedActivity.tags.map((tag: string, index: number) => ({
-    id: index + 1,
-    name: tag,
-    createDate: '' // Thêm giá trị createDate tương ứng
-  }))
+//Step 1
+const activityTitle = ref(props.selectedActivity.news?.title);
+const imageActivity = ref(imageAct);
+const mainFile = ref(props.selectedActivity.news?.img);
+const fileData = ref();
+const avatarFile = ref();
+const selectedTags = ref<Tags[]>(props.selectedActivity?.tags);
+const listIdTags = ref<string[]>(
+  props.selectedActivity?.tags.map((item: Tags) => {
+    return item.id;
+  })
 );
+const valueSummary = ref<string | undefined>('');
+const summaryInput = ref<TextAreaValue>({
+  level: {
+    content: props.selectedActivity.news.summary
+  }
+});
 
-const logTag = () => {
-  console.log(selectedTags);
+//Handle add step 1
+const updateSummary = (content: TextAreaValue) => {
+  summaryInput.value.level.content = content.level.content;
+  valueSummary.value = content.level.content;
 };
 
-const handleImageChange = (event: Event) => {
-  const file = (event.target as HTMLInputElement).files?.[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const imageUrl = URL.createObjectURL(file);
-      imageActivity.value = imageUrl;
-    };
-    reader.readAsDataURL(file);
+watch(tagsResponsive, () => {
+  listTags.value = tagsResponsive?.value?.data;
+  // console.log(listTags.value);
+});
+
+const filteredTags = computed(() => {
+  const searchTerm = searchInput.value.toLowerCase();
+  return listTags.value.filter((item) => item.name.toLowerCase().includes(searchTerm));
+});
+
+const resetMainIMG = () => {
+  mainFile.value = '';
+};
+
+const base64ToBlob = (base64Data: string) => {
+  const byteString = atob(base64Data.split(',')[1]);
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  return new Blob([ab], { type: 'image/png' });
+};
+
+const handleCroppedImage = (result: string) => {
+  if (result) {
+    mainFile.value = result;
+    fileData.value = base64ToBlob(result);
+    avatarFile.value = new File([fileData.value], 'image.png', { type: 'image/png' });
   }
 };
 
+//Step 2
+
+const valueDescription = ref<string | undefined>('');
+const descriptionInput = ref<TextAreaValue>({
+  level: {
+    content: props.selectedActivity.news?.detail
+  }
+});
+
+//Handle add step 2
+const updateDescription = (content: TextAreaValue) => {
+  descriptionInput.value.level.content = content.level.content;
+  valueDescription.value = content.level.content;
+};
+
+//Upload Image TinyMCE
+interface BlobInfo {
+  blob: () => Blob;
+  filename: () => string;
+}
+// eslint-disable-next-line no-unused-vars
+type ProgressFunction = (percentage: number) => void;
+
+const example_image_upload_handler = (blobInfo: BlobInfo, progress: ProgressFunction) =>
+  new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.withCredentials = false;
+    xhr.open('POST', 'https://dry-ants-production.up.railway.app/api/v1/fileUpload');
+
+    xhr.upload.onprogress = (e) => {
+      progress((e.loaded / e.total) * 100);
+    };
+
+    xhr.onload = () => {
+      if (xhr.status === 403) {
+        reject({ message: 'HTTP Error: ' + xhr.status, remove: true });
+        return;
+      }
+
+      if (xhr.status < 200 || xhr.status >= 300) {
+        reject('HTTP Error: ' + xhr.status);
+        return;
+      }
+
+      const json = ref<DataResponse>(JSON.parse(xhr.responseText));
+
+      resolve(json.value.data);
+    };
+
+    xhr.onerror = () => {
+      reject('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
+    };
+
+    const formData = new FormData();
+    formData.append('file', blobInfo.blob());
+
+    xhr.send(formData);
+  });
+
+//Open file image
+const openFileInput = () => {
+  console.log('jdsjbjsabdasd');
+  isOpenInput.value = !isOpenInput.value;
+};
+
+const emits = defineEmits<{
+  // eslint-disable-next-line no-unused-vars
+  (e: 'close'): void;
+  // eslint-disable-next-line no-unused-vars
+  (e: 'update', newsAdd: News): void;
+}>();
+
+//SWEET ARLERT
+const alertDialog = (context: string, page: number) => {
+  Swal.fire({
+    title: context,
+    icon: 'error',
+    showCancelButton: false,
+    width: '30rem'
+  });
+  setTimeout(function () {
+    Swal.close();
+  }, 1200);
+  indexCur.value = page;
+};
+
+//Handle change image in step 2
 const selectedTag = (tag: Tags) => {
   if (!selectedTags.value.includes(tag)) {
     selectedTags.value.push(tag);
-    console.log(selectedTags);
+    // console.log(selectedTags);
+    listIdTags.value.push(tag.id);
+    // console.log(listIdTags);
   }
 };
 
@@ -113,26 +269,109 @@ const isTagSelected = (tag: Tags) => {
   return selectedTags.value.some((selectedTag) => selectedTag.name === tag.name);
 };
 
-const handleChangeContent = (e: { target: { getContent: () => string } }) => {
-  _content.value = e.target.getContent();
-  console.log(_content.value);
+//Tạo form submit
+const submitForm = () => {
+  if (activityTitle.value.length <= 7) {
+    activityTitle.value = '';
+    alertDialog('Tên không hợp lệ', 1);
+    return;
+  }
+
+  if (summaryInput.value.level.content.length <= 5) {
+    alertDialog('Tóm tắt quá ngắn', 1);
+    return;
+  }
+  if (!mainFile.value) {
+    alertDialog('Bạn chưa chọn ảnh bìa', 1);
+    return;
+  }
+  if (listIdTags.value.length === 0) {
+    alertDialog('Bạn chưa chọn tags', 1);
+    return;
+  }
+  if (descriptionInput.value.level.content.length <= 5) {
+    alertDialog('Mô tả quá ngắn', 2);
+    return;
+  } else {
+    const object = {
+      id: props.selectedActivity.news?.id,
+      title: activityTitle.value, //step 1
+      summary: summaryInput.value.level.content, //step 1
+      img: props.selectedActivity.news?.img,
+      detail: descriptionInput.value.level.content, //step 2
+      highlight: 0,
+      detailMobile: ''
+    };
+    // console.log(listIdTags.value.toString());
+
+    const formData = new FormData();
+    // tags: listIdTags.value //step 1
+    formData.append('img', avatarFile.value as Blob); // step 1
+    // listIdTags.value.forEach((item: string) => {
+    //   console.log(item);
+    //   formData.append('tags', '[' + item.replace(/"/g, '') + ']');
+    // });
+    formData.append(
+      'tags',
+      listIdTags.value
+        .map((item) => {
+          return item.replace(/"/g, '');
+        })
+        .toString()
+        .replace(/"/g, '')
+    );
+    //["id1"]
+    formData.append('data', JSON.stringify(object));
+    // console.log(formData);
+
+    const updateNews = useAxios<DataResponse>(
+      'patch',
+      `/news/${props.selectedActivity.news?.id}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      },
+      deps.value
+    );
+    watch(updateNews.response, () => {
+      if (updateNews.response.value?.status === 'ok') {
+        Swal.fire({
+          title: 'Thêm thành công',
+          icon: 'success',
+          confirmButtonText: 'Hoàn tất',
+          width: '30rem'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.close();
+            emits('close');
+            props.closeModal();
+            emits('update', updateNews.response.value?.data);
+          }
+        });
+      }
+    });
+
+    watch(updateNews.error, () => {
+      const errorValue: MyErrorResponse | null = updateNews.error.value as MyErrorResponse | null;
+      if (errorValue !== null) {
+        if (errorValue?.response?.data?.message === 'News name already taken') {
+          alertDialog('Tên sản tin tức đã tồn tại', 1);
+          return;
+        }
+      }
+    });
+  }
 };
-
-const filteredTags = computed(() => {
-  const searchTerm = searchInput.value.toLowerCase();
-  return listTags.value.filter((item) => item.name.toLowerCase().includes(searchTerm));
-});
-
-// Tạo các biến tính toán
-const computedListTags = computed(() => listTags.value);
-const computedSelectedTags = computed(() => selectedTags.value);
 </script>
 <template>
   <div :class="$style.activity_container">
     <div :class="$style['activity_container--title']">
-      <p @click="logTag">CHỈNH SỬA HOẠT ĐỘNG</p>
+      <p>CẬP NHẬT HOẠT ĐỘNG</p>
       <font-awesome-icon @click="closeModal" :icon="faXmark" :class="$style.activity_cancel" />
     </div>
+    <!-- Step1 -->
     <div v-if="currentStep === 1" :class="$style.wrap_step1">
       <div :class="$style['wrap_step1--wrap']">
         <div :class="$style['wrap_step1--wrap-left']">
@@ -151,31 +390,45 @@ const computedSelectedTags = computed(() => selectedTags.value);
             <label :class="$style['wrap_title--text']" for="activity-summary"
               >Nội dung tóm tắt</label
             >
-            <textarea
-              :style="textareaStyle"
-              id="activity-summary"
-              v-model="activitySummary"
-              placeholder="Nhập nội dung tóm tắt"
-              :class="$style['custom-textarea']"
-            ></textarea>
+            <editor
+              id="uuid11"
+              allowedEvents="onChange"
+              :onchange="updateSummary"
+              api-key="y70bvcufdhcs3t72wuylxllnf0jyum0u7nf31vzvgvdliy26"
+              :initial-value="summaryInput.level.content"
+              :value="summaryInput.level.content"
+              :init="{
+                selector: 'textarea#uuid11',
+                placeholder: 'Nhập tóm tắt',
+                height: 270,
+                menubar: false,
+                plugins: 'advlist lists link image fullscreen',
+                toolbar:
+                  'undo italic bold | \
+                alignleft aligncenter alignright alignjustify | \
+                | forecolor bullist fullscreen |'
+              }"
+            />
           </div>
 
           <div :class="$style.activity_image">
             <p>Cập nhật ảnh bìa</p>
-            <div :class="$style.activity_frame_image">
-              <img :src="imageActivity" alt="Image" :class="$style.image" />
-              <label :for="inputId" :class="$style.add_image">
-                <img :src="icPhoto" alt="ic" :class="$style.ic_photo" />
-              </label>
-              <input
-                type="file"
-                @change="handleImageChange"
-                :id="inputId"
-                :class="$style.ic_photo_input"
-                ref="imageInput"
-                :style="{ opacity: 0, position: 'absolute' }"
-              />
+            <div v-if="!mainFile" :class="$style['adding__modal-upload']" @click="openFileInput">
+              <font-awesome-icon :icon="faDownload" :class="$style['adding__modal-upload-ic']" />
+              <span>Chọn file</span>
             </div>
+            <template v-if="mainFile">
+              <div :class="$style['adding__item-ctn']">
+                <img v-if="mainFile" :src="mainFile" alt="SP" :class="$style['item_img']" />
+                <span>Main_photo.png</span>
+                <button @click="resetMainIMG">
+                  <font-awesome-icon :icon="faXmark" :class="$style['adding__item-ic']" />
+                </button>
+              </div>
+              <div :class="$style['adding__item-button']">
+                <button @click="openFileInput">CHỈNH SỬA</button>
+              </div>
+            </template>
           </div>
         </div>
         <div :class="$style['wrap_step1--wrap-right']">
@@ -245,10 +498,10 @@ const computedSelectedTags = computed(() => selectedTags.value);
       <div :class="$style.wrap_step2_editer">
         <editor
           allowedEvents="onChange"
-          @change="handleChangeContent"
+          :onchange="updateDescription"
           api-key="y70bvcufdhcs3t72wuylxllnf0jyum0u7nf31vzvgvdliy26"
-          :initial-value="activityContent"
-          :value="activityContent"
+          :initial-value="descriptionInput.level.content"
+          :value="descriptionInput.level.content"
           :init="{
             selector: 'textarea',
             placeholder: 'Nhập mô tả chi tiết',
@@ -256,18 +509,17 @@ const computedSelectedTags = computed(() => selectedTags.value);
             menubar: false,
             image_title: true,
             automatic_uploads: true,
-            file_picker_types: 'image',
-            plugins: [
-              'advlist autolink lists link image charmap print preview anchor',
-              'searchreplace visualblocks code fullscreen',
-              'insertdatetime media table paste code help wordcount',
-              'image'
-            ],
+
+            plugins: 'advlist lists link image fullscreen',
             toolbar:
-              'undo redo | formatselect | bold italic forecolor backcolor |\
-           alignleft aligncenter alignright alignjustify | \
-           bullist numlist outdent indent | removeformat | help | image',
-            images_file_types: 'jpg,svg,webp',
+              'undo italic bold image | \
+                alignleft aligncenter alignright alignjustify | \
+                | forecolor bullist fullscreen |',
+            images_file_types: 'jpg,svg,webp,png',
+            file_picker_types: 'file image media',
+            resize_img_proportional: true,
+            block_unsupported_drop: false,
+            images_upload_handler: example_image_upload_handler,
             color_map: [
               '000000',
               'Black',
@@ -289,10 +541,21 @@ const computedSelectedTags = computed(() => selectedTags.value);
       </div>
       <div :class="$style.wrap_step2_btn">
         <button :class="$style.wrap_step2_btn_back" @click="prevStep">Quay lại</button>
-        <button :class="$style.wrap_step2_btn_done">Hoàn tất</button>
+        <button :class="$style.wrap_step2_btn_done" @click="submitForm">Cập nhật</button>
       </div>
     </div>
   </div>
+  <crop-image
+    :heightCrop="296"
+    :widthCrop="367"
+    :heightWrap="296"
+    :widthWrap="367"
+    :check="isOpenInput"
+    v-show="isCrop"
+    @close="isCrop = false"
+    @open="isCrop = true"
+    @crop="handleCroppedImage"
+  />
 </template>
 
 <style module scoped lang="scss">

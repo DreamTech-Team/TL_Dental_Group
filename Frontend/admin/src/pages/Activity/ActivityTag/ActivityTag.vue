@@ -1,35 +1,39 @@
 <script setup lang="ts">
-import { ref, computed, watchEffect } from 'vue';
+import { ref, computed, watchEffect, watch } from 'vue';
 import { format } from 'date-fns';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 // import ModalAdd from './components/ModalAdd.vue';
-import Pagination from '@/components/Pagination/BasePagination.vue';
 import UpdateTag from './ModalTag/UpdateTag.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
-
-const searchText = ref('');
-const currentPage = ref(1);
-const pageSize = ref(10);
-const isModalOpen = ref(false);
-const activeTab = ref('tags');
-const props = defineProps(['listTags', 'handleTagDeleted']);
-
-const deps = ref([]);
-// const {
-//   response: tagsListResponse,
-//   error,
-//   isLoading
-// } = useAxios<DataResponse>('get', '/tags', {}, {}, deps.value);
-
-const resultTags = ref(props.listTags);
+import { flattedChildren } from 'element-plus/es/utils';
 
 interface Tags {
-  id: number;
+  id: string;
   name: string;
-  createDate: string;
+  slug: string;
+  createAt: string;
 }
+
+interface MyErrorResponse {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
+const searchKeyword = ref('');
+const isModalOpen = ref(false);
+const activeTab = ref('tags');
+// const props = defineProps(['listTags', 'handleTagDeleted']);
+const props = defineProps<{
+  listTags: Tags[];
+  handleTagDeleted: (id: string) => void;
+}>();
+const deps = ref([]);
+const resultTags = ref(props.listTags);
 
 const selectedTag = ref<Record<string, never> | Tags>({});
 
@@ -44,34 +48,6 @@ const closeModal = () => {
   isModalOpen.value = false;
 };
 
-// const filteredTags = computed(() => {
-//   if (searchText.value.trim() === '') {
-//     return resultTags.value;
-//   } else {
-//     const searchTerm = searchText.value.toLowerCase();
-//     return resultTags.value?.filter((tag) => tag.name.toLowerCase().includes(searchTerm));
-//   }
-// });
-
-//Pagination Handle
-const scrollToTop = (top: number) => {
-  window.scrollTo({
-    top: top,
-    behavior: 'smooth'
-  });
-};
-
-const handlePageChange = (page: number) => {
-  currentPage.value = page;
-  scrollToTop(0);
-};
-
-// const displayTags = computed(() => {
-//   const start = (currentPage.value - 1) * pageSize.value;
-//   const end = start + pageSize.value;
-//   return filteredTags.value.slice(start, end);
-// });
-
 const truncateText = (text: string, maxLength: number) => {
   if (text.length > maxLength) {
     return text.slice(0, maxLength) + '...';
@@ -83,9 +59,27 @@ const formatDateTime = (dateTimeString: string, outputFormat = 'dd/MM/yyyy HH:mm
   return format(new Date(dateTimeString), outputFormat);
 };
 
-// watchEffect(() => {
-//   console.log('list tags changed:', props.listTags);
-// });
+const handleChangeAdd = (dataAdded: Tags) => {
+  console.log(resultTags);
+
+  // resultTags.value.unshift(dataAdded);
+  resultTags.value.forEach((item) => {
+    if (item.id === dataAdded.id) {
+      item.name = dataAdded.name;
+    }
+  });
+};
+
+watch(props.listTags, () => {
+  resultTags.value = props.listTags;
+});
+
+const filteredTags = computed(() => {
+  // Lọc danh sách Tags dựa trên từ khoá tìm kiếm
+  return props.listTags.filter((tag) =>
+    tag.name.toLowerCase().includes(searchKeyword.value.toLowerCase())
+  );
+});
 
 const deleteTag = async (id: string) => {
   Swal.fire({
@@ -101,7 +95,7 @@ const deleteTag = async (id: string) => {
     if (result.isConfirmed) {
       try {
         // Gọi API DELETE bằng cách sử dụng `useAxios`
-        const { response, error, isLoading } = useAxios<DataResponse>(
+        const deleteTagRes = useAxios<DataResponse>(
           'delete',
           `/tags/${id}`, // Đặt endpoint URL xóa phần tử cụ thể dựa vào id
           {},
@@ -109,22 +103,43 @@ const deleteTag = async (id: string) => {
           deps.value
         );
 
-        props.handleTagDeleted(id);
+        watch(deleteTagRes.response, () => {
+          console.log(deleteTagRes.response.value);
 
-        Swal.fire({
-          title: 'Xóa thành công',
-          icon: 'success',
-          confirmButtonText: 'Hoàn tất',
-          width: '30rem'
+          if (deleteTagRes.response.value?.status === 'ok') {
+            props.handleTagDeleted(id);
+            console.log('vinh' + props.listTags);
+            Swal.fire({
+              title: 'Thêm thành công',
+              icon: 'success',
+              confirmButtonText: 'Hoàn tất',
+              width: '30rem'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                Swal.close();
+              }
+            });
+          }
         });
 
-        setTimeout(function () {
-          Swal.close();
-        }, 1200);
+        watch(deleteTagRes.error, () => {
+          const errorValue: MyErrorResponse | null = deleteTagRes.error
+            .value as MyErrorResponse | null;
+          if (errorValue !== null) {
+            if (errorValue?.response?.data?.message === "Tag's name already taken") {
+              Swal.fire({
+                title: 'Tag đã tồn tại',
+                icon: 'error',
+                confirmButtonText: 'Đóng',
+                width: '50rem',
+                padding: '0 2rem 2rem 2rem'
+              });
+              return;
+            }
+          }
+        });
       } catch (error) {
         console.error('Error deleting item:', error);
-
-        // Xử lý lỗi nếu cần thiết
         Swal.fire({
           title: 'Xóa không thành công',
           text: 'Có lỗi xảy ra khi xóa!',
@@ -135,10 +150,6 @@ const deleteTag = async (id: string) => {
     }
   });
 };
-
-watchEffect(() => {
-  console.log(props.listTags?.value);
-});
 </script>
 <template>
   <div>
@@ -147,7 +158,7 @@ watchEffect(() => {
         <span></span>
         <div :class="$style['mn_activity_control-input1']">
           <font-awesome-icon :icon="faMagnifyingGlass" :class="$style['mn_activity_control-ic2']" />
-          <input v-model="searchText" placeholder="Tìm kiếm" />
+          <input v-model="searchKeyword" placeholder="Tìm kiếm" />
         </div>
       </div>
       <div :class="$style.mn_activity_body">
@@ -157,7 +168,7 @@ watchEffect(() => {
               <th style="width: 5%">STT</th>
               <th style="width: 25%">Tên tag</th>
               <th style="width: 30%">Ngày tạo tag</th>
-              <th style="width: 15%">Chỉnh sửa</th>
+              <th style="width: 16%">Chỉnh sửa</th>
             </tr>
           </thead>
         </table>
@@ -165,8 +176,8 @@ watchEffect(() => {
         <div :class="$style.mn_activity_table_ctn">
           <table :class="$style.mn_activity_table">
             <tbody>
-              <template v-if="listTags?.length > 0">
-                <tr v-for="(item, index) in listTags" :key="index">
+              <template v-if="filteredTags?.length > 0">
+                <tr v-for="(item, index) in filteredTags" :key="index">
                   <td style="width: 5%">{{ index + 1 }}</td>
                   <td style="width: 25%">
                     {{ truncateText(item.name, 40) }}
@@ -191,14 +202,6 @@ watchEffect(() => {
           </table>
         </div>
       </div>
-      <div :class="$style['mn_activity_pagination']">
-        <pagination
-          :total="Math.ceil(listTags?.length / pageSize)"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          @current-change="handlePageChange"
-        />
-      </div>
     </div>
 
     <div :class="$style.activity_overlay" v-if="isModalOpen">
@@ -208,6 +211,7 @@ watchEffect(() => {
         v-if="activeTab === 'tags'"
         @click.stop
         @close="closeModal"
+        :change="handleChangeAdd"
       />
     </div>
   </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, watchEffect, type Ref } from 'vue';
+import { ref, computed, watch, watchEffect, type Ref, PropType } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
@@ -9,19 +9,9 @@ import { format } from 'date-fns';
 import Pagination from '@/components/Pagination/BasePagination.vue';
 import UpdateActivity from './ModalActivity/UpdateActivity.vue';
 // import { activities } from '../Activity';
-import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import useAxios, { DataResponse } from '@/hooks/useAxios';
 
-const searchText = ref('');
-
-const currentPage = ref(0);
-const pageSize = ref(10);
-const isModalOpen = ref(false);
-// const isLoading: Ref<boolean> = ref(false);
-// const response: Ref<DataResponse | null> = ref(null);
-// const error = ref<AxiosError | null>(null);
-const activeTab = ref('activity');
-
-interface Item {
+interface News {
   news: {
     id: string;
     title: string;
@@ -42,80 +32,140 @@ interface Item {
     }
   ];
 }
+interface Tags {
+  id: string;
+  name: string;
+  slug: string;
+  createAt: string;
+}
 
-const api = ref(`/news?pageSize=${pageSize.value}&page=${currentPage.value}`);
-const deps = ref([]);
-const { response, error, isLoading } = useAxios<DataResponse>('get', api.value, {}, {}, deps.value);
+interface dataUpdate {
+  createAt: string;
+  detail: string;
+  detailMobile: string;
+  highlight: 0;
+  id: string;
+  img: string;
+  slug: string;
+  summary: string;
+  title: string;
+}
 
-watch(
-  currentPage,
-  () => {
-    console.log(12345);
-    const {
-      response: responseChanged,
-      error,
-      isLoading
-    } = useAxios<DataResponse>(
-      'get',
-      `/news?pageSize=${pageSize.value}&page=${currentPage.value}`,
-      {},
-      {},
-      deps.value
-    );
-    watch(responseChanged, () => {
-      response.value = responseChanged.value;
-    });
+const props = defineProps({
+  change: {
+    type: Function,
+    required: true
   },
-  { immediate: false }
-);
+  dataNews: {
+    type: Array as PropType<News[]>,
+    required: true
+  },
+  totalPage: {
+    type: Number,
+    required: false
+  }
+});
 
-// watch(res, () => {
-//   response.value = res.value;
+const emits = defineEmits<{
+  // eslint-disable-next-line no-unused-vars
+  (e: 'close'): void;
+  // eslint-disable-next-line no-unused-vars
+  (e: 'update-content', data: { newsAdd: News }): void;
+  // eslint-disable-next-line no-unused-vars
+  (e: 'current-page', numberPage: number): void;
+}>();
+
+// watch(props, () => {
+//   activitiesResList.value = props.dataNews;
+//   console.log(props.dataNews);
 // });
 
-const activitiesResList = ref();
-const activitiesRes = ref([
-  {
-    id: '',
-    title: '',
-    img: '',
-    slug: '',
-    summary: '',
-    detail: '',
-    detailMobile: '',
-    highlight: 1,
-    createAt: ''
-  }
-]);
-const uniqueTags = ref([
-  {
-    id: '',
-    name: '',
-    slug: '',
-    createAt: ''
-  }
-]);
+const searchText = ref('');
+const currentPage = ref(0);
+const pageSize = ref(10);
+const isModalOpen = ref(false);
+const activeTab = ref('activity');
+
+const deps = ref([]);
+const depsTag = ref([]);
+const debounceTimer = ref<number | null>(null);
+const resultListTags = ref<Array<Tags>>([]);
+
+const activitiesResList = ref<News[]>(props.dataNews);
+watch(props, () => {
+  activitiesResList.value = props.dataNews;
+  currentPage.value;
+});
+
+const {
+  response: tagsList,
+  error: tagError,
+  isLoading: tagLoading
+} = useAxios<DataResponse>('get', '/tags', {}, {}, depsTag.value);
+
+watch(tagsList, () => {
+  resultListTags.value = tagsList?.value?.data;
+});
 
 const closeModal = () => {
   isModalOpen.value = false;
 };
 
-const selectedActivity = ref<Record<string, never> | Item>({});
+const selectedActivity = ref<Record<string, never> | News>({});
 
 // Trong phần code xử lý sự kiện
-const editActivity = (activity: Item) => {
+const editActivity = (activity: News) => {
   selectedActivity.value = activity;
   isModalOpen.value = true; // Mở modal
   console.log(activity);
 };
 
-const filteredActivitiess = computed(() => {
-  if (searchText.value.trim() === '') {
-    return response.value?.data?.data;
-  } else {
-    // const searchTerm = searchText.value.toLowerCase();
-    return response.value?.data?.data;
+//Function call API Search
+const searchNews = () => {
+  const searchNews = useAxios<DataResponse>(
+    'get',
+    `/news?key=${searchText.value}`,
+    {},
+    {},
+    deps.value
+  );
+
+  watch(searchNews.response, () => {
+    activitiesResList.value = searchNews.response.value?.data?.data;
+    // console.log(activitiesResList.value);
+  });
+};
+
+const handleUpdateNews = (data: dataUpdate) => {
+  console.log(data);
+
+  console.log('vinh đẹp trai');
+  activitiesResList.value.forEach((item) => {
+    if (item.news.id === data.id) {
+      // Cập nhật các thuộc tính của 'item.news' từ 'data.news'
+      item.news.title = data.title;
+      item.news.img = data.img;
+      item.news.slug = data.slug;
+      item.news.summary = data.summary;
+      item.news.detail = data.detail;
+    }
+  });
+};
+
+watch(activitiesResList, () => {
+  console.log('vinhlog' + activitiesResList.value);
+});
+
+//Search Products
+watch(searchText, () => {
+  if (debounceTimer.value) {
+    clearTimeout(debounceTimer.value);
   }
+
+  // Create a new timeout to call API after 1 second
+  debounceTimer.value = setTimeout(() => {
+    searchNews();
+  }, 500);
 });
 
 //Pagination Handle
@@ -129,15 +179,11 @@ const scrollToTop = (top: number) => {
 const handlePageChange = (page: number) => {
   currentPage.value = page - 1;
   scrollToTop(0);
-  console.log('Vinh');
+  emits('current-page', currentPage.value);
+  // console.log(currentPage.value);
 };
 
-const displayNews = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return filteredActivitiess.value.slice(start, end);
-});
-
+//Hàm giới hạn chiều dài khung
 const truncateText = (text: string, maxLength: number) => {
   if (text.length > maxLength) {
     return text.slice(0, maxLength) + '...';
@@ -161,57 +207,44 @@ const deleteActivity = async (id: string) => {
     cancelButtonText: 'Hủy'
   }).then(async (result) => {
     if (result.isConfirmed) {
-      try {
-        // Gọi API DELETE bằng cách sử dụng `useAxios`
-        const { response, error, isLoading } = useAxios<DataResponse>(
-          'delete',
-          `/news/${id}`, // Đặt endpoint URL xóa phần tử cụ thể dựa vào id
-          {},
-          {},
-          []
-        );
+      // Gọi API DELETE bằng cách sử dụng `useAxios`
+      const deleteNews = useAxios<DataResponse>(
+        'delete',
+        `/news/${id}`, // Đặt endpoint URL xóa phần tử cụ thể dựa vào id
+        {},
+        {},
+        deps.value
+      );
 
-        // Xóa phần tử trong activitiesResList
-        activitiesResList.value = activitiesResList.value.filter(
-          (item: { news: { id: string } }) => item.news.id !== id
-        );
-        console.log(activitiesResList.value);
+      watch(deleteNews.response, () => {
+        // console.log(deleteNews.response.value);
 
-        Swal.fire({
-          title: 'Xóa thành công',
-          icon: 'success',
-          confirmButtonText: 'Hoàn tất',
-          width: '30rem'
-        });
+        if (deleteNews.response.value?.status === 'ok') {
+          // Xóa phần tử trong activitiesResList
+          if (activitiesResList.value) {
+            activitiesResList.value = activitiesResList.value.filter(
+              (item: { news: { id: string } }) => item.news.id !== id
+            );
+          }
+          props.change(id);
 
-        setTimeout(function () {
-          Swal.close();
-        }, 1200);
-      } catch (error) {
-        console.error('Error deleting item:', error);
-
-        // Xử lý lỗi nếu cần thiết
-        Swal.fire({
-          title: 'Xóa không thành công',
-          text: 'Có lỗi xảy ra khi xóa!',
-          icon: 'error',
-          width: '30rem'
-        });
-      }
+          Swal.fire({
+            title: 'Xóa thành công',
+            icon: 'success',
+            confirmButtonText: 'Hoàn tất',
+            width: '30rem'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              setTimeout(function () {
+                Swal.close();
+              }, 1200);
+            }
+          });
+        }
+      });
     }
   });
 };
-watch(response, () => {
-  activitiesResList.value = response?.value?.data?.data;
-  currentPage.value;
-  console.log(response.value?.data);
-  // console.log(currentPage.value);
-});
-
-// watchEffect(() => {
-//   console.log(currentPage.value);
-//   console.log(activitiesResList.value);
-// });
 </script>
 <template>
   <div>
@@ -228,21 +261,21 @@ watch(response, () => {
           <thead>
             <tr>
               <th style="width: 5%">STT</th>
-              <th style="width: 25%">Tên hoạt động</th>
+              <th style="width: 30%">Tên hoạt động</th>
               <th style="width: 30%">Tags</th>
-              <th style="width: 25%">Thời gian diễn ra</th>
-              <th style="width: 15%">Chỉnh sửa</th>
+              <th style="width: 18%">Thời gian diễn ra</th>
+              <th style="width: 17%">Chỉnh sửa</th>
             </tr>
           </thead>
         </table>
         <div :class="$style.mn_activity_table_ctn">
           <table :class="$style.mn_activity_table">
             <tbody>
-              <template v-if="filteredActivitiess?.length > 0">
+              <template v-if="activitiesResList?.length > 0">
                 <tr v-for="(item, index) in activitiesResList" :key="index">
                   <td style="width: 5%">{{ index + 1 }}</td>
-                  <td style="max-width: 25%">
-                    {{ truncateText(item?.news?.title, 25) }}
+                  <td style="max-width: 30%">
+                    {{ truncateText(item?.news?.title, 50) }}
                   </td>
                   <td style="width: 30%">
                     <span v-for="(tag, idx) in item?.tags" :key="idx">
@@ -251,7 +284,7 @@ watch(response, () => {
                     </span>
                   </td>
 
-                  <td style="width: 25%">{{ formatDateTime(item?.news?.createAt) }}</td>
+                  <td style="width: 20%">{{ formatDateTime(item?.news?.createAt) }}</td>
                   <td style="width: 15%">
                     <button
                       :class="$style['btn-room-trash']"
@@ -276,7 +309,7 @@ watch(response, () => {
       </div>
       <div :class="$style['mn_activity_pagination']">
         <pagination
-          :total="Math.ceil(filteredActivitiess?.length / pageSize)"
+          :total="props.totalPage ? props.totalPage : 0"
           :current-page="currentPage"
           :page-size="pageSize"
           @current-change="handlePageChange"
@@ -291,6 +324,7 @@ watch(response, () => {
         v-if="activeTab === 'activity'"
         @click.stop
         @close="closeModal"
+        @update="handleUpdateNews"
       />
     </div>
   </div>

@@ -85,5 +85,41 @@
     .button:active {
       background-color: $primary_700;
     }
+
+    .button_destroy {
+      background-color: #fff;
+      color: $text_900;
+      font-size: 16px;
+      font-weight: 500;
+      padding: 9px 29px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      border: 1px solid $text_900;
+      margin-right: 5px;
+    }
+
+    .button_destroy:hover {
+      background-color: #000000;
+      color: #fff;
+      border: 2px solid $text_900;
+      padding: 8px 28px;
+    }
+
+    .button_destroy:active {
+      background-color: #5e5e5e;
+    }
   }
+}
+
+.title {
+  font-size: $text-xl !important;
+}
+
+.confirm-button {
+  font-size: $text-lg !important;
+}
+
+.cancel-button {
+  font-size: $text-lg !important;
 }
