@@ -39,6 +39,18 @@ interface Tags {
   createAt: string;
 }
 
+interface dataUpdate {
+  createAt: string;
+  detail: string;
+  detailMobile: string;
+  highlight: 0;
+  id: string;
+  img: string;
+  slug: string;
+  summary: string;
+  title: string;
+}
+
 const props = defineProps({
   change: {
     type: Function,
@@ -105,7 +117,7 @@ const selectedActivity = ref<Record<string, never> | News>({});
 const editActivity = (activity: News) => {
   selectedActivity.value = activity;
   isModalOpen.value = true; // Mở modal
-  // console.log(activity);
+  console.log(activity);
 };
 
 //Function call API Search
@@ -121,6 +133,22 @@ const searchNews = () => {
   watch(searchNews.response, () => {
     activitiesResList.value = searchNews.response.value?.data?.data;
     // console.log(activitiesResList.value);
+  });
+};
+
+const handleUpdateNews = (data: dataUpdate) => {
+  console.log(data);
+
+  console.log('vinh đẹp trai');
+  activitiesResList.value.forEach((item) => {
+    if (item.news.id === data.id) {
+      // Cập nhật các thuộc tính của 'item.news' từ 'data.news'
+      item.news.title = data.title;
+      item.news.img = data.img;
+      item.news.slug = data.slug;
+      item.news.summary = data.summary;
+      item.news.detail = data.detail;
+    }
   });
 };
 
@@ -189,7 +217,7 @@ const deleteActivity = async (id: string) => {
       );
 
       watch(deleteNews.response, () => {
-        console.log(deleteNews.response.value);
+        // console.log(deleteNews.response.value);
 
         if (deleteNews.response.value?.status === 'ok') {
           // Xóa phần tử trong activitiesResList
@@ -247,7 +275,7 @@ const deleteActivity = async (id: string) => {
                 <tr v-for="(item, index) in activitiesResList" :key="index">
                   <td style="width: 5%">{{ index + 1 }}</td>
                   <td style="max-width: 30%">
-                    {{ truncateText(item?.news?.title, 30) }}
+                    {{ truncateText(item?.news?.title, 50) }}
                   </td>
                   <td style="width: 30%">
                     <span v-for="(tag, idx) in item?.tags" :key="idx">
@@ -296,6 +324,7 @@ const deleteActivity = async (id: string) => {
         v-if="activeTab === 'activity'"
         @click.stop
         @close="closeModal"
+        @update="handleUpdateNews"
       />
     </div>
   </div>

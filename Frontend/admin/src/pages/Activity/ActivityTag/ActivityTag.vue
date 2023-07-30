@@ -150,10 +150,6 @@ const deleteTag = async (id: string) => {
     }
   });
 };
-
-// watchEffect(() => {
-//   console.log('kcsdkfsdkfksdhfkj' + resultTags.value);
-// });
 </script>
 <template>
   <div>

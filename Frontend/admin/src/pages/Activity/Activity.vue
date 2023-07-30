@@ -52,7 +52,7 @@ const {
 
 watch(dataNews, () => {
   listNews.value = dataNews?.value?.data?.data;
-  console.log(listNews.value);
+  // console.log(listNews.value);
 });
 
 //Call API tổng news
@@ -117,7 +117,7 @@ const handleTagDeleted = (deletedTagId: string) => {
 const handleNewsDeleted = (deletedNewsId: string) => {
   totalActivity.value = totalActivity.value - 1;
   listNews.value = listNews.value.filter((item) => item.news.id !== deletedNewsId);
-  console.log('vinh ' + deletedNewsId);
+  // console.log('vinh ' + deletedNewsId);
 };
 
 const handleChangeAdd = (dataAdded: Tags) => {
@@ -126,7 +126,7 @@ const handleChangeAdd = (dataAdded: Tags) => {
 
 const handleUpdateData = (data: { newsAdd: News }) => {
   listNews.value.unshift(data.newsAdd);
-  console.log('data add ' + data.newsAdd);
+  // console.log('data add ' + data.newsAdd);
 };
 
 watchEffect(() => {
