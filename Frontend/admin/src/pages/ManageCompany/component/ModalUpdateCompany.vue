@@ -19,6 +19,18 @@ interface ManageCompany {
   outstandingProductId: string;
 }
 
+interface Products {
+  id: string;
+  name: string;
+  description: string;
+  mainImg: string;
+  fkCategory: {
+    companyId: {
+      slug: string;
+    };
+  };
+}
+
 const context = defineProps({
   item: {
     type: Object,
@@ -32,6 +44,10 @@ const context = defineProps({
     type: Array,
     required: true
   },
+  slugCompany: {
+    type: String,
+    required: true
+  },
   change: {
     type: Function as PropType<(newData: ManageCompany) => void>,
     required: true
@@ -40,12 +56,23 @@ const context = defineProps({
 
 const emit = defineEmits(['close']);
 
+const variableChange = ref([]);
 const nameCompanyInput = ref(context.item.name);
 const descriptionInput = ref(context.item.description);
 const productInput = ref(context.productOutstanding.name);
+const productOutstand = ref(context.productOutstanding);
 const selectedlogo: Ref<string | null> = ref(context.item.logo);
+const productCompany = ref<Products[]>(
+  (context.products as Products[]).filter((item) => {
+    return item.fkCategory.companyId.slug === context.slugCompany;
+  })
+);
 const isOpen = ref(false);
 const isChange = ref(false);
+const isPatchProduct = ref(false);
+const idProduct = ref('');
+
+console.log(productCompany.value);
 
 // Các hàm update dữ liệu cho thẻ input
 const updateTitle = (e: Event) => {
@@ -105,7 +132,9 @@ const submitForm = () => {
             id: context.item.id,
             name: nameCompanyInput.value,
             description: descriptionInput.value,
-            highlight: context.item.highlight
+            highlight: context.item.highlight,
+            outstandingProductId: context.item.outstandingProductId,
+            slug: context.item.slug
           };
 
           const formData = new FormData();
@@ -137,7 +166,9 @@ const submitForm = () => {
             id: context.item.id,
             name: nameCompanyInput.value,
             description: descriptionInput.value,
-            highlight: context.item.highlight
+            highlight: context.item.highlight,
+            outstandingProductId: context.item.outstandingProductId,
+            slug: context.item.slug
           };
 
           const formData = new FormData();
@@ -162,6 +193,23 @@ const submitForm = () => {
               }
             }
           });
+        }
+
+        if (isPatchProduct.value) {
+          // Gọi hàm useAxios để lấy response, error, và isLoading
+          const formData = new FormData();
+          formData.append('idProduct', idProduct.value);
+          const { response, error, isLoading } = useAxios<DataResponse>(
+            'patch',
+            '/company/outstanding/' + context.slugCompany,
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            },
+            variableChange.value
+          );
         }
 
         Swal.close();
@@ -210,6 +258,21 @@ const handleChangelogo = () => {
   if (inputElement) {
     inputElement.click();
   }
+};
+
+const handleDataProduct = (
+  _idProduct: string,
+  nameProduct: string,
+  descriptionProduct: string,
+  image: string
+) => {
+  isPatchProduct.value = true;
+
+  productOutstand.value.name = nameProduct;
+  productOutstand.value.description = descriptionProduct;
+  productOutstand.value.mainImg = image;
+  idProduct.value = _idProduct;
+  productInput.value = nameProduct;
 };
 </script>
 
@@ -290,8 +353,10 @@ const handleChangelogo = () => {
   <modal-add-product
     v-else
     @close="isOpen = false"
-    :product="context.productOutstanding"
-    :products="context.products"
+    @results="handleDataProduct"
+    :product="productOutstand"
+    :products="productCompany"
+    :slug-company="context.slugCompany"
   />
 </template>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faTrash, faPen, faSearch } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
@@ -34,8 +34,15 @@ interface Products {
   id: string;
   name: string;
   description: string;
+  mainImg: string;
+  fkCategory: {
+    companyId: {
+      slug: string;
+    };
+  };
 }
 
+const variableChange = ref([]);
 const variableChangeCompany = ref([]);
 const variableChangeCompanyHighlight = ref([]);
 const variableChangeProduct = ref([]);
@@ -49,7 +56,12 @@ const searchText = ref('');
 const currentPage = ref(1);
 const pageSize = ref(10);
 const indexRow = ref(0);
-const indexProduct = ref(0);
+const indexProduct = ref(-1);
+const slugCompany = ref('');
+const outstandingRender = ref({
+  image: '',
+  name: ''
+});
 
 // Gọi hàm useAxios để lấy response, error, và isLoading
 const getCompany = useAxios<DataResponse>('get', '/company', {}, {}, variableChangeCompany.value);
@@ -72,6 +84,7 @@ watch(getCompany.response, () => {
 
 watch(getCompanyHighlight.response, () => {
   data.value = getCompanyHighlight.response.value?.data;
+
   data.value.forEach((item) => {
     if (item.outstandingProduct) {
       featuredProducts.value.push(item.outstandingProduct);
@@ -116,18 +129,20 @@ const handlePageChange = (page: number) => {
 };
 
 // Xử lí mở modal chỉnh sửa một công ty
-const handleUpdateModal = (idx: number, id: string) => {
+const handleUpdateModal = (idx: number, id: string, slug: string) => {
   isOpenUpdate.value = true;
 
   if (id !== null) {
     products.value.forEach((item, idx) => {
-      if (item.id === id) indexProduct.value = idx;
-      else indexProduct.value = -1;
+      if (item.id === id) {
+        indexProduct.value = idx;
+      }
     });
   } else {
     indexProduct.value = -1;
   }
 
+  slugCompany.value = slug;
   indexRow.value = idx;
 };
 
@@ -187,13 +202,40 @@ const handleChangeUpdate = (dataUpdated: ManageCompany) => {
   });
 };
 
-// const handleCheckOutstanding = (id: string, index: number) => {
-//   if (featuredProducts.value[index].id === id) {
-//     return true;
-//   }
+const handleUpdateHighLight = (index: number) => {
+  const checkbox = document.getElementById(`myCheckbox${index}`);
 
-//   return false;
-// };
+  if (checkbox instanceof HTMLInputElement) {
+    // Gọi hàm useAxios để lấy response, error, và isLoading
+    const { response, error, isLoading } = useAxios<DataResponse>(
+      'patch',
+      '/company/highlight/' +
+        companyRender.value[index].slug +
+        '?' +
+        'highlight=' +
+        (checkbox.checked ? 1 : 0),
+      {},
+      {},
+      variableChange.value
+    );
+  }
+};
+
+const handleRenderOutstanđing = (index: number) => {
+  if (companyRender.value[index].outstandingProductId !== null) {
+    products.value.forEach((item) => {
+      if (item.id === companyRender.value[index].outstandingProductId) {
+        outstandingRender.value = {
+          image: item.mainImg,
+          name: item.name
+        };
+      }
+    });
+
+    return true;
+  }
+  return false;
+};
 </script>
 <template>
   <div :class="$style.mn_company">
@@ -227,10 +269,11 @@ const handleChangeUpdate = (dataUpdated: ManageCompany) => {
       <div :class="$style['mn_company--table-titlebar']">
         <p style="width: 8%">STT</p>
         <p style="width: 12%">Tên công ty</p>
-        <p style="width: 30%">Mô tả công ty</p>
+        <p style="width: 28%">Mô tả công ty</p>
         <p style="width: 8%">Logo</p>
-        <p style="width: 30%">Sản phẩm nổi bật</p>
+        <p style="width: 28%">Sản phẩm nổi bật</p>
         <p style="width: 12%">Chỉnh sửa</p>
+        <p style="width: 4%"></p>
       </div>
 
       <div :class="$style['mn_company--table-list']" v-if="filteredProducts.length > 0">
@@ -245,9 +288,9 @@ const handleChangeUpdate = (dataUpdated: ManageCompany) => {
           <div :class="$style['mn_company--table-row-4']">
             <img :src="company.logo" alt="" />
           </div>
-          <div :class="$style['mn_company--table-row-5']" v-if="company.highlight !== 0">
-            <img :src="company.logo" alt="" />
-            <p>{{ company.name }}</p>
+          <div :class="$style['mn_company--table-row-5']" v-if="handleRenderOutstanđing(index)">
+            <img :src="outstandingRender.image" alt="" />
+            <p>{{ outstandingRender.name }}</p>
           </div>
           <div :class="$style['mn_company--table-row-5']" v-else></div>
           <div :class="$style['mn_company--table-row-6']">
@@ -255,10 +298,18 @@ const handleChangeUpdate = (dataUpdated: ManageCompany) => {
               <font-awesome-icon :icon="faTrash" :class="$style['mn_company--table-ic']" />
             </button>
 
-            <button @click="handleUpdateModal(index, company.outstandingProductId)">
+            <button @click="handleUpdateModal(index, company.outstandingProductId, company.slug)">
               <font-awesome-icon :icon="faPen" :class="$style['mn_company--table-ic']" />
             </button>
           </div>
+          <input
+            type="checkbox"
+            style="width: 4%"
+            :id="`myCheckbox${index}`"
+            @change="handleUpdateHighLight(index)"
+            :disabled="company.outstandingProductId === null ? true : false"
+            :checked="company.highlight !== 0 ? true : false"
+          />
         </div>
       </div>
       <div :class="$style['mn_company--table-row-notfonund']" v-else>
@@ -287,6 +338,7 @@ const handleChangeUpdate = (dataUpdated: ManageCompany) => {
     :item="companyRender[indexRow]"
     :productOutstanding="indexProduct !== -1 ? products[indexProduct] : {}"
     :products="products"
+    :slug-company="slugCompany"
     :change="handleChangeUpdate"
   />
 </template>

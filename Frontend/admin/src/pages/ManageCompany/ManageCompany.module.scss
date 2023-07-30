@@ -160,14 +160,14 @@
                     // max-width: 28.5rem;
                 }   
                 &-3{
-                    width: 30%;
+                    width: 28%;
                 }
                 &-4{
                     width: 8%;
                     text-align: center;
                 }
                 &-5{
-                    width: 30%;
+                    width: 28%;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -213,6 +213,13 @@
                             color: #FF4E4E;
                         }
                     }
+                }
+
+                input{
+                    height: 2rem;
+                }
+                input:checked{
+                    background-color: #262E5D;
                 }
             }
         }
