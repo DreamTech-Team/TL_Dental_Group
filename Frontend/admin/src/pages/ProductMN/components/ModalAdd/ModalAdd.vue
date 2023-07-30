@@ -211,6 +211,7 @@ const base64ToBlob = (base64Data: string) => {
   return new Blob([ab], { type: 'image/png' });
 };
 
+//Function crop Image
 const handleCroppedImage = (result: string) => {
   if (result) {
     mainFile.value = result;
@@ -229,6 +230,7 @@ const listHeight = computed(() => {
   }
 });
 
+//Reset main image to null
 const resetMainIMG = () => {
   mainFile.value = '';
 };
@@ -250,6 +252,7 @@ const deleteImage = (index: number) => {
   subImageSrc.value.splice(index, 1);
 };
 
+//Crop for sub images
 const handleCroppedSubImage = (result: string) => {
   if (result) {
     subFile.value = result;
@@ -260,6 +263,7 @@ const handleCroppedSubImage = (result: string) => {
   }
 };
 
+//Switch role crop Image
 const finalCrop = (result: string) => {
   if (flag.value === 1) {
     handleCroppedImage(result);
@@ -544,7 +548,7 @@ watch(selectedCompany, () => {
           <h4>Hình ảnh đại diện</h4>
           <div v-if="!mainFile" :class="$style['adding__modal-upload']" @click="openFileInput">
             <font-awesome-icon :icon="faDownload" :class="$style['adding__modal-upload-ic']" />
-            <span>Chọn file hoặc kéo vào đây</span>
+            <span>Click để chọn file ảnh</span>
           </div>
           <template v-if="mainFile">
             <div :class="$style['adding__item-ctn']">
@@ -565,7 +569,7 @@ watch(selectedCompany, () => {
             @click="openFileInput2"
           >
             <font-awesome-icon :icon="faDownload" :class="$style['adding__modal-upload-ic']" />
-            <span>Chọn file hoặc kéo vào đây</span>
+            <span>Click để chọn file ảnh</span>
           </div>
           <template v-if="subImageSrc.length > 0">
             <div :class="$style['adding__img-list']" :style="{ maxHeight: listHeight }">

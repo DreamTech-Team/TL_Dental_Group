@@ -19,7 +19,6 @@ interface AboutMotto {
   id: string;
   title: string;
   content: string;
-  slug: string;
   image: string;
   type: string;
 }
@@ -164,6 +163,22 @@ const handleRemoveItem = () => {
     }
   }).then((result) => {
     if (result.isConfirmed) {
+      // Xử lí trường hợp có 1 hoặc 2 item
+      if (items.value.length === 1) {
+        isOneItem.value = true;
+        isDisableRight.value = true;
+        isDisableLeft.value = true;
+        isDisableLeftEdit.value = true;
+        isDisableRightEdit.value = true;
+      } else if (items.value.length === 2) {
+        if (indexItems.value === 1) {
+          isDisableRight.value = true;
+          move.value += widthItemEdit.value + 150;
+        } else if (indexItems.value === 0) {
+          isDisableRight.value = true;
+          move.value -= widthItemEdit.value + 150;
+        }
+      }
       Swal.close();
     }
   });
@@ -195,18 +210,37 @@ const handleRemove = () => {
   });
 };
 
-const handleChangeUpdate = (id: string, title: string, content: string, image: string) => {
+const handleChangeUpdate = (dataUpdated: AboutMotto) => {
   items.value.forEach((item, idx) => {
-    if (item.id === id) {
-      items.value[idx].title = title;
-      items.value[idx].content = content;
-      items.value[idx].image = image;
+    if (item.id === dataUpdated.id) {
+      items.value[idx].title = dataUpdated.title;
+      items.value[idx].content = dataUpdated.content;
+      items.value[idx].image = dataUpdated.image;
     }
   });
 };
 
 const handleChangeAdd = (dataAdded: AboutMotto) => {
   items.value.unshift(dataAdded);
+
+  // Xử lí trường hợp có 1 hoặc 2 item
+  if (items.value.length === 1) {
+    isOneItem.value = true;
+    isDisableRight.value = true;
+    isDisableLeft.value = true;
+    isDisableLeftEdit.value = true;
+    isDisableRightEdit.value = true;
+  } else if (items.value.length === 2) {
+    isDisableLeft.value = false;
+    isDisableRightEdit.value = false;
+    isOneItem.value = false;
+  } else if (items.value.length === 3) {
+    isDisableLeft.value = false;
+    isDisableRight.value = false;
+    isDisableRightEdit.value = false;
+    isDisableLeftEdit.value = false;
+    isOneItem.value = false;
+  }
 };
 </script>
 
@@ -370,7 +404,7 @@ const handleChangeAdd = (dataAdded: AboutMotto) => {
   <modal-update-motto
     v-if="isOpenUpdate"
     @close="isOpenUpdate = false"
-    @change="handleChangeUpdate"
+    :change="handleChangeUpdate"
     :item="items[indexItems]"
   />
 </template>

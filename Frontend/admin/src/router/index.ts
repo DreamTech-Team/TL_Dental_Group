@@ -20,12 +20,12 @@ const ManagePolicyEdit = () => import('@/pages/ManagePolicyEdit/ManagePolicyEdit
 
 const routes = [
   {
-    path: '/',
+    path: '/home',
     name: 'home',
     component: HomePage
   },
   {
-    path: '/home',
+    path: '/dashboard',
     redirect: { path: '/' }
   },
   {
@@ -59,7 +59,7 @@ const routes = [
     component: CategoryMN
   },
   {
-    path: '/dashboard',
+    path: '/',
     name: 'dashboard',
     component: Dashboard
   },

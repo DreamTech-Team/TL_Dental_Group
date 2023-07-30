@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Ref, ref, watch, defineProps } from 'vue';
+import { Ref, ref, watch, defineProps, PropType } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark, faCloudArrowUp, faRotate } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
@@ -10,11 +10,21 @@ import useAxios, { type DataResponse } from '@/hooks/useAxios';
 const _MAX_WORD_TITLE = 70;
 const _MAX_WORD_CONTENT = 250;
 
-const props = defineProps<{
-  change: (newData: object) => void;
-}>();
+interface AboutMotto {
+  id: string;
+  title: string;
+  content: string;
+  image: string;
+  type: string;
+}
 
-const emit = defineEmits(['close', 'change']);
+const props = defineProps({
+  change: {
+    type: Function as PropType<(newData: ManageCompany) => void>,
+    required: true
+  }
+});
+const emit = defineEmits(['close']);
 
 const titleInput = ref('');
 const contentInput = ref('');
@@ -29,7 +39,6 @@ const dataAdded = ref<object>({
   slug: '',
   type: ''
 });
-const isPosted = ref(false);
 
 // Các hàm update dữ liệu cho thẻ input
 const updateTitle = (e: Event) => {
@@ -104,8 +113,6 @@ const submitForm = () => {
 
           watch(response, () => {
             if (response.value?.status === 'ok') {
-              isPosted.value = true;
-
               dataAdded.value = {
                 id: response.value?.data?.id,
                 title: response.value?.data?.title,
