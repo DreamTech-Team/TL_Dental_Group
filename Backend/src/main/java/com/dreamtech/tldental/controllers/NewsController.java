@@ -36,6 +36,7 @@ public class NewsController {
     // GET ALL NEWS WITH FILTER
     @GetMapping("")
     ResponseEntity<ResponseObject> getFilter(@RequestParam(value = "key", required = false) String key,
+                                             @RequestParam(value = "outstanding", required = false) boolean outstanding,
                                              @RequestParam(required = false, defaultValue = "12") String pageSize,
                                              @RequestParam(required = false, defaultValue = "0") String page,
                                              @RequestParam(required = false) List<String> filterTags,
@@ -108,13 +109,11 @@ public class NewsController {
     @PostMapping("")
     ResponseEntity<ResponseObject> createNews(@RequestPart("img") MultipartFile img,
                                               @RequestParam ("data") String data,
-                                              @RequestParam ("tags") String tags) {
+                                              @RequestParam ("tags") List<String> tags) {
         try {
             // Convert String to JSON
             ObjectMapper objectMapper = new ObjectMapper();
             News newsData = objectMapper.readValue(data, News.class);
-
-            List<String> tagsId = Utils.convertStringToImages(tags);
 
             // Check existed item
             List<News> foundNews = repository.findByTitle(newsData.getTitle().trim());
@@ -139,8 +138,8 @@ public class NewsController {
             News resNews = repository.save(newsData);
 
             // Create FK_TAGS_NEWS
-            for (int i = 0; i < tagsId.size(); i++) {
-                fkTagsNewsRepository.save(new TagsNewsFK(resNews.getId(), tagsId.get(i)));
+            for (int i = 0; i < tags.size(); i++) {
+                fkTagsNewsRepository.save(new TagsNewsFK(resNews.getId(), tags.get(i)));
             }
 
             return ResponseEntity.status(HttpStatus.OK).body(
