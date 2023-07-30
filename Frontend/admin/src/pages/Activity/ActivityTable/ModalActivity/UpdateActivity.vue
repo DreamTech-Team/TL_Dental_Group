@@ -11,9 +11,10 @@ import icPhoto from '../../../../assets/icons/camera.svg';
 
 import { type PropType } from 'vue';
 interface Tags {
-  id: number;
+  id: string;
   name: string;
-  createDate: string;
+  slug: string;
+  createAt: string;
 }
 const currentStep = ref(1);
 
@@ -31,6 +32,10 @@ export interface CloseModalFn {
   (...payload: any[]): void;
 }
 
+export interface ModalOpen {
+  (...payload: any[]): void;
+}
+
 const props = defineProps({
   selectedActivity: {
     type: Object, // Kiểu dữ liệu của prop
@@ -44,7 +49,7 @@ const props = defineProps({
 
 const inputId = ref('imageInput');
 const imageActivity = ref(imageAct);
-const listTags = ref<Tags[]>(tags);
+const listTags = ref<Tags[]>();
 
 const searchInput = ref('');
 const _content = ref(``);
