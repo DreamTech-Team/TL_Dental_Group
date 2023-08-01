@@ -41,7 +41,7 @@ const handleCurrentChange = (val: number) => {
           :disabled="disabled"
           :background="background"
           layout="prev, pager, next, jumper"
-          :total="39"
+          :total="total"
           :class="$style['custom-pagination']"
         />
       </div>

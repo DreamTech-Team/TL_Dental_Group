@@ -16,7 +16,6 @@ const Forgot = () => import('@/pages/Authen/ForgotPage.vue');
 const ManageCustomer = () => import('@/pages/ManageCustomer/ManageCustomer.vue');
 const ManageUI = () => import('@/pages/ManageUI/ManageUI.vue');
 const ManagePolicy = () => import('@/pages/ManagePolicy/ManagePolicy.vue');
-const ManagePolicyEdit = () => import('@/pages/ManagePolicyEdit/ManagePolicyEdit.vue');
 
 const routes = [
   {
@@ -92,11 +91,11 @@ const routes = [
     name: 'mnpolicy',
     component: ManagePolicy
   },
-  {
-    path: '/mnpolicy/:catchAll(.*)*',
-    name: 'mnpolicyedit',
-    component: ManagePolicyEdit
-  },
+  // {
+  //   path: '/mnpolicy/:catchAll(.*)*',
+  //   name: 'mnpolicyedit',
+  //   component: ManagePolicyEdit
+  // },
   {
     path: '/mncustomer',
     name: 'mncustomer',

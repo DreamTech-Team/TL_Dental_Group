@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-mutating-props -->
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
 import { ref, watch, type Ref, type PropType, computed } from 'vue';
@@ -91,15 +92,78 @@ const handlePopCate = (cate: Cate1Object) => {
   // console.log(listChange.value.add, listChange.value.delete);
 };
 
-const handleAddCate = (newCate: any) => {
+const handleAddCate = (newCate: any, typeUpdate = 'add') => {
   // console.log(newCate);
-  // eslint-disable-next-line vue/no-mutating-props
-  props.cateFull?.push(newCate);
+  if (typeUpdate === 'add')
+    // eslint-disable-next-line vue/no-mutating-props
+    props.cateFull?.push(newCate);
+  else {
+    props.cateFull?.splice(
+      props.cateFull?.findIndex((e) => e.id === newCate.id),
+      1,
+      newCate
+    );
+  }
 };
 
 const handleOpenEditItemCate = (item: Cate1Object) => {
   itemCateEdit.value = item;
   openAddCategory.value = true;
+};
+
+const hanldeDeleteCate = (item: Cate1Object) => {
+  Swal.fire({
+    title: `Bạn có chắc chắn muốn xóa danh mục "${item.title}" không?`,
+    icon: 'warning',
+    showDenyButton: true,
+    confirmButtonText: 'Hủy',
+    denyButtonText: 'Đồng ý',
+    customClass: {
+      popup: styles['container-popup'],
+      confirmButton: styles['confirm-button'],
+      denyButton: styles['deny-button']
+    }
+  }).then((result) => {
+    if (result.isDenied) {
+      const deleteCate = useAxios<DataResponse>(
+        'delete',
+        `/cate${props.numCate}/${item.id}`,
+        {},
+        {},
+        paramAxios.value
+      );
+
+      watch(deleteCate.response, (value) => {
+        console.log(value);
+        props.cateFull?.splice(
+          props.cateFull?.findIndex((e) => e.id === item.id),
+          1
+        );
+        Swal.fire({
+          title: 'Xóa danh mục thành công!',
+          icon: 'success',
+          customClass: {
+            popup: styles['container-popup'],
+            confirmButton: styles['confirm-button'],
+            denyButton: styles['deny-button']
+          }
+        });
+      });
+
+      watch(deleteCate.error, (value) => {
+        console.log(value);
+        Swal.fire({
+          title: 'Danh mục đã được liên kết với công ty khác!',
+          icon: 'error',
+          customClass: {
+            popup: styles['container-popup'],
+            confirmButton: styles['confirm-button'],
+            denyButton: styles['deny-button']
+          }
+        });
+      });
+    }
+  });
 };
 
 const handleModalCancel = () => {
@@ -282,7 +346,14 @@ watch(filteredProducts, (value) => (listCateFull.value = value));
               Các danh mục có thể thêm
             </div>
             <div :class="$style['container__modal-body-left-heading-add']">
-              <button @click="openAddCategory = true">
+              <button
+                @click="
+                  () => {
+                    openAddCategory = true;
+                    openEditCategory = false;
+                  }
+                "
+              >
                 <font-awesome-icon :icon="faPlus" />
                 Tạo Danh Mục
               </button>
@@ -313,6 +384,7 @@ watch(filteredProducts, (value) => (listCateFull.value = value));
                   :handle-btn="handlePushCate"
                   :numCate="numCate"
                   @open-modal-edit="handleOpenEditItemCate(item)"
+                  @delete-element="hanldeDeleteCate(item)"
                 />
               </div>
               <div

@@ -134,6 +134,11 @@
 
       &-icon {
         width: 17%;
+
+        img {
+          height: 4rem;
+          width: 4rem;
+        }
       }
 
       &-customize {
@@ -148,4 +153,53 @@
     align-items: center;
     justify-content: center;
   }
+}
+
+.btn-room-edit,
+.btn-room-trash {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 1rem;
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-room-edit {
+  background-color: #08c;
+  border: 0.5px solid #08c;
+  margin-left: 1rem;
+
+  &:hover {
+    background-color: white;
+    color: #08c;
+  }
+}
+
+.btn-room-trash {
+  background-color: #ff4e4e;
+
+  &:hover {
+    filter: brightness(85%);
+  }
+}
+
+.container {
+  &-popup {
+    width: 50rem;
+    height: 20rem;
+  }
+  &-loader {
+    height: 5em;
+    width: 5em;
+    border-width: 0.5em;
+  }
+}
+
+.confirm-button {
+  font-size: $text-lg !important;
+}
+
+.deny-button {
+  font-size: $text-lg !important;
 }
