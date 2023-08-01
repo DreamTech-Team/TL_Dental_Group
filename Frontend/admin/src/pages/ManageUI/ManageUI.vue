@@ -18,7 +18,7 @@ const componentUI = [
     icon: faHouse,
     color:
       'linear-gradient(220deg, #0094E8 12%, rgba(102, 209, 255, 0.65) 88%, rgba(0, 162, 232, 0.00) 100%)',
-    path: ''
+    path: 'home'
   },
   {
     title: 'Giới thiệu',

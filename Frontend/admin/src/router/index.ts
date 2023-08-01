@@ -19,12 +19,12 @@ const ManagePolicy = () => import('@/pages/ManagePolicy/ManagePolicy.vue');
 
 const routes = [
   {
-    path: '/',
+    path: '/home',
     name: 'home',
     component: HomePage
   },
   {
-    path: '/home',
+    path: '/dashboard',
     redirect: { path: '/' }
   },
   {
@@ -58,7 +58,7 @@ const routes = [
     component: CategoryMN
   },
   {
-    path: '/dashboard',
+    path: '/',
     name: 'dashboard',
     component: Dashboard
   },

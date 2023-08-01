@@ -57,10 +57,38 @@ interface Item {
   image: string;
   brand: string;
 }
+
+//Init data container
 const tempproducts = ref<Product[]>([]);
 const products = ref<Item[]>([]);
 
-//GET DATA
+//Properties
+const isOpen = ref(false);
+const wItem = ref(0);
+const tranfX = ref(0);
+let resizeListener: () => void;
+
+const widthComputed = computed(() => {
+  return wItem.value * products.value.length + 'px';
+});
+
+const widthItemComputed = computed(() => {
+  return wItem.value + 'px';
+});
+
+const scrollLeft = () => {
+  if (tranfX.value < 0) tranfX.value += wItem.value;
+};
+
+const scrollRight = () => {
+  if (-tranfX.value + wItem.value * 4 < wItem.value * products.value.length) {
+    tranfX.value -= wItem.value;
+  } else {
+    tranfX.value = 0;
+  }
+};
+
+//Get highlight products
 const deps = ref([]);
 const lenght = ref(0);
 const { response } = useAxios<DataResponse>('get', '/products/highlight', {}, {}, deps.value);
@@ -87,36 +115,10 @@ watch(response, () => {
   updateShowResults();
 });
 
-//DATA UPDATE
+//Handler data from emit
 const onUpdateContent = (data: { listrs: Product[] }) => {
   tempproducts.value = data.listrs;
   updateShowResults();
-};
-
-const isOpen = ref(false);
-
-const wItem = ref(0);
-const tranfX = ref(0);
-let resizeListener: () => void;
-
-const widthComputed = computed(() => {
-  return wItem.value * products.value.length + 'px';
-});
-
-const widthItemComputed = computed(() => {
-  return wItem.value + 'px';
-});
-
-const scrollLeft = () => {
-  if (tranfX.value < 0) tranfX.value += wItem.value;
-};
-
-const scrollRight = () => {
-  if (-tranfX.value + wItem.value * 4 < wItem.value * products.value.length) {
-    tranfX.value -= wItem.value;
-  } else {
-    tranfX.value = 0;
-  }
 };
 
 onMounted(() => {

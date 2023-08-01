@@ -14,25 +14,30 @@ const getProducts = useAxios<DataResponse>('get', '/products', {}, {}, deps.valu
 const getCompanies = useAxios<DataResponse>('get', '/company', {}, {}, deps.value);
 const getActivites = useAxios<DataResponse>('get', '/news', {}, {}, deps.value);
 
+//Init value stored data
 const products = ref();
 const companies = ref();
 const activities = ref();
 
+//Get total products
 watch(getProducts.response, () => {
   totalProduct.value = getProducts.response.value?.data;
   products.value = totalProduct.value?.total;
 });
 
+//Get total companies
 watch(getCompanies.response, () => {
   lengthArray.value = getCompanies.response.value?.data;
   companies.value = lengthArray.value.length;
 });
 
+//Get total activities
 watch(getActivites.response, () => {
   totalProduct.value = getActivites.response.value?.data;
   activities.value = totalProduct.value?.total;
 });
 
+//Properties
 const activeIndex = ref(0);
 const lineWidth = ref(0);
 const activeTab = ref<HTMLElement | null>(null);
@@ -44,6 +49,7 @@ const activeTabWidth = computed(() => {
   return 0;
 });
 
+//Calculate translateX
 const lineTransform = computed(() => {
   if (activeTab.value) {
     const activeTabWidthValue = activeTabWidth.value;

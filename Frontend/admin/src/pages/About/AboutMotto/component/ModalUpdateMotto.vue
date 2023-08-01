@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Ref, ref, watch } from 'vue';
+import { PropType, Ref, ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark, faCloudArrowUp, faRotate } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
@@ -9,14 +9,27 @@ import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 const _MAX_WORD_TITLE = 70;
 const _MAX_WORD_CONTENT = 250;
+
+interface AboutMotto {
+  id: string;
+  title: string;
+  content: string;
+  image: string;
+  type: string;
+}
+
 const context = defineProps({
   item: {
     type: Object,
     required: true
+  },
+  change: {
+    type: Function as PropType<(newData: AboutMotto) => void>,
+    required: true
   }
 });
 
-const emit = defineEmits(['close', 'change']);
+const emit = defineEmits(['close']);
 
 const titleInput = ref(context.item.title);
 const contentInput = ref(context.item.content);
@@ -97,6 +110,14 @@ const submitForm = () => {
             },
             deps.value
           );
+
+          watch(response, () => {
+            if (response) {
+              if (response.value?.status === 'ok') {
+                context.change(response.value?.data);
+              }
+            }
+          });
         } else {
           const deps = ref([]);
 
@@ -121,10 +142,17 @@ const submitForm = () => {
             },
             deps.value
           );
+
+          watch(response, () => {
+            if (response) {
+              if (response.value?.status === 'ok') {
+                context.change(response.value?.data);
+              }
+            }
+          });
         }
         Swal.close();
         emit('close');
-        emit('change', context.item.id, titleInput.value, contentInput.value, selectedImage.value);
       }
     });
   }

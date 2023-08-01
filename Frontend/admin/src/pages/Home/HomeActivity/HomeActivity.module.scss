@@ -11,11 +11,11 @@
     line-height: 33px;
   }
 
-  .home__activities-button{
+  .home__activities-button {
     padding: 10px 10px;
-    background: #EFFEFF;
+    background: #effeff;
     border-radius: 20px;
-    color: #0CBBC7;
+    color: #0cbbc7;
     border: none;
     font-size: $text-base;
     margin-top: 17px;
@@ -53,7 +53,7 @@
     padding-right: 80px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-wrap: wrap;
 
     .home__activities-item {
@@ -66,6 +66,7 @@
       background-color: #0168c8;
       margin-bottom: 10px;
       cursor: pointer;
+      margin-right: 10px;
 
       img {
         width: 100%;
@@ -89,17 +90,17 @@
         top: 0;
         animation: fade-in 0.5s forwards;
 
-        .home__activities-text{
+        .home__activities-text {
           width: max-content;
           height: max-content;
-          
+
           h4 {
             font-weight: 500;
             font-size: $text-xl;
             color: white;
             margin-bottom: 30px;
           }
-  
+
           span {
             font-weight: 400;
             font-size: $text-xl;

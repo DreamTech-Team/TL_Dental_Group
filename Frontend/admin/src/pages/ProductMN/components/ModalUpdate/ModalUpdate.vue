@@ -297,6 +297,7 @@ const deleteImage = (index: number) => {
   }
 };
 
+//Crop for sub images
 const handleCroppedSubImage = (result: string) => {
   if (result) {
     subFile.value = result;
@@ -307,6 +308,7 @@ const handleCroppedSubImage = (result: string) => {
   }
 };
 
+//Switch role crop Image
 const finalCrop = (result: string) => {
   if (flag.value === 1) {
     handleCroppedImage(result);
@@ -364,6 +366,7 @@ interface BlobInfo {
 // eslint-disable-next-line no-unused-vars
 type ProgressFunction = (percentage: number) => void;
 
+//Get URL from Server TinyMCE
 const example_image_upload_handler = (blobInfo: BlobInfo, progress: ProgressFunction) =>
   new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -521,6 +524,7 @@ const submitForm = () => {
   });
 };
 
+//Render Data
 watch(selectedCompany, () => {
   const getCategories1 = useAxios<DataResponse>(
     'get',
@@ -636,9 +640,9 @@ watch(selectedCompany, () => {
               placeholder: 'Nhập mô tả chi tiết',
               height: 220,
               menubar: false,
-              plugins: 'advlist lists link image fullscreen',
+              plugins: 'advlist lists link fullscreen',
               toolbar:
-                'undo italic bold image | \
+                'undo italic bold | \
                 alignleft aligncenter alignright alignjustify | \
                 | forecolor bullist fullscreen |',
               images_file_types: 'jpg,svg,webp,png',
@@ -653,7 +657,7 @@ watch(selectedCompany, () => {
           <h4>Hình ảnh đại diện</h4>
           <div v-if="!mainFile" :class="$style['adding__modal-upload']" @click="openFileInput">
             <font-awesome-icon :icon="faDownload" :class="$style['adding__modal-upload-ic']" />
-            <span>Chọn file hoặc kéo vào đây</span>
+            <span>Click để chọn file ảnh</span>
           </div>
           <template v-if="mainFile">
             <div :class="$style['adding__item-ctn']">
@@ -674,7 +678,7 @@ watch(selectedCompany, () => {
             @click="openFileInput2"
           >
             <font-awesome-icon :icon="faDownload" :class="$style['adding__modal-upload-ic']" />
-            <span>Chọn file hoặc kéo vào đây</span>
+            <span>Click để chọn file ảnh</span>
           </div>
           <template v-if="subImageSrc.length > 0">
             <div :class="$style['adding__img-list']" :style="{ maxHeight: listHeight }">

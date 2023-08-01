@@ -67,7 +67,7 @@ const isOpen1 = ref(false); //Open Modal Update
 const searchText = ref('');
 const results = ref(products); //Final Render
 
-const debounceTimer = ref<number | null>(null); //searchData
+const debounceTimer = ref<number | null>(null); //searchData delay
 
 const currentPage = ref(1);
 const pageSize = ref(10);
@@ -137,6 +137,8 @@ const searchProduct = () => {
     {},
     deps.value
   );
+  console.log(searchProduct.response.value?.data?.data);
+
   watch(searchProduct.response, () => {
     tempArrays.value = searchProduct.response.value?.data?.data;
     results.value = tempArrays.value.map((item: ProductItem) => {
@@ -187,11 +189,13 @@ const displayProducts = computed(() => {
   return filteredProducts.value.slice(start, end);
 });
 
+//Open modal Update
 const updateProduct = (id: string) => {
   chosenObject.value = tempArrays.value.find((obj: ProductItem) => obj.id === id);
   isOpen1.value = true;
 };
 
+//Delete Product
 const deleteProduct = (id: string) => {
   Swal.fire({
     title: 'Bạn có chắc muốn xóa?',

@@ -77,13 +77,15 @@
 
             .add_image {
               position: absolute;
-              width: 50px;
+              width: 100%;
               height: 50px;
               border-radius: 5px;
-              background-color: #60606049;
+              // background-color: #60606049;
               display: flex;
               justify-content: center;
               align-items: center;
+              flex-direction: column;
+              padding-top: 10px;
               cursor: pointer;
 
               .ic_photo {
@@ -96,6 +98,9 @@
               width: 50px;
               height: 50px;
               cursor: pointer;
+            }
+            .upload_drag-txt {
+              font-size: x-small;
             }
           }
         }
@@ -395,5 +400,97 @@
         }
       }
     }
+  }
+}
+
+.adding__modal-upload {
+  width: 100%;
+  height: 140px;
+  border: 0.25px solid black;
+  border-style: dashed;
+  margin-top: 1rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+
+  .adding__modal-upload-ic {
+    font-size: 2.5rem;
+    color: #9e9e9e;
+  }
+
+  span {
+    margin-top: 5px;
+    font-size: $text-base;
+    color: #9e9e9e;
+  }
+}
+
+.adding__item-ctn {
+  width: 100%;
+  height: 40px;
+  background-color: #f8f5f5;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding: 5px 14px;
+  padding-right: 20px;
+  position: relative;
+
+  img {
+    height: 100%;
+    width: auto;
+    margin-right: 8px;
+  }
+
+  span {
+    font-size: 1.4rem;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+  }
+
+  button {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #d9d9d9;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+
+    .adding__item-ic {
+      color: black;
+      font-size: 10px;
+    }
+  }
+}
+
+.adding__item-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 8px;
+
+  button {
+    width: 120px;
+    height: 30px;
+    box-shadow: 0px 4px 5px 0px rgba(48, 79, 254, 0.2), 0px 3px 14px 0px rgba(48, 79, 254, 0.12),
+      0px 8px 10px 0px rgba(48, 79, 254, 0.14);
+    color: white;
+    border: none;
+    background-color: rgba(0, 210, 255, 1);
+    border-radius: 5px;
   }
 }

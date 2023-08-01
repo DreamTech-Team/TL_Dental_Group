@@ -1,38 +1,78 @@
 <script setup lang="ts">
-import { Ref, ref } from 'vue';
+import { PropType, Ref, ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark, faRotate, faPencil } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import styles from './ModalUpdateCompany.module.scss';
 import ModalAddProduct from './ModalAddProduct.vue';
+import base64ToBlob from '@/utils/base64ToBlob';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+interface ManageCompany {
+  id: string;
+  name: string;
+  logo: string;
+  description: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+  outstandingProductId: string;
+}
+
+interface Products {
+  id: string;
+  name: string;
+  description: string;
+  mainImg: string;
+  fkCategory: {
+    companyId: {
+      slug: string;
+    };
+  };
+}
 
 const context = defineProps({
-  name: {
+  item: {
+    type: Object,
+    required: true
+  },
+  productOutstanding: {
+    type: Object,
+    required: true
+  },
+  products: {
+    type: Array,
+    required: true
+  },
+  slugCompany: {
     type: String,
     required: true
   },
-  description: {
-    type: String,
-    required: true
-  },
-  logo: {
-    type: String,
-    required: true
-  },
-  nameProduct: {
-    type: String,
+  change: {
+    type: Function as PropType<(newData: ManageCompany) => void>,
     required: true
   }
 });
 
 const emit = defineEmits(['close']);
 
-const nameCompanyInput = ref(context.name);
-const descriptionInput = ref(context.description);
-const imgLogo = ref(context.logo);
-const productInput = ref(context.nameProduct);
-const selectedlogo: Ref<string | null> = ref(context.logo);
+const variableChange = ref([]);
+const nameCompanyInput = ref(context.item.name);
+const descriptionInput = ref(context.item.description);
+const productInput = ref(context.productOutstanding.name);
+const productOutstand = ref(context.productOutstanding);
+const selectedlogo: Ref<string | null> = ref(context.item.logo);
+const productCompany = ref<Products[]>(
+  (context.products as Products[]).filter((item) => {
+    return item.fkCategory.companyId.slug === context.slugCompany;
+  })
+);
 const isOpen = ref(false);
+const isChange = ref(false);
+const isPatchProduct = ref(false);
+const idProduct = ref('');
+
+console.log(productCompany.value);
 
 // Các hàm update dữ liệu cho thẻ input
 const updateTitle = (e: Event) => {
@@ -81,6 +121,97 @@ const submitForm = () => {
       }
     }).then((result) => {
       if (result.isConfirmed) {
+        if (isChange.value && selectedlogo.value) {
+          // Tạo một đối tượng File từ dữ liệu base64
+          const fileData = base64ToBlob.covertBase64ToBlob(selectedlogo.value);
+          const image = new File([fileData], 'image.png', { type: 'image/png' });
+
+          const deps = ref([]);
+
+          const object = {
+            id: context.item.id,
+            name: nameCompanyInput.value,
+            description: descriptionInput.value,
+            highlight: context.item.highlight,
+            outstandingProductId: context.item.outstandingProductId,
+            slug: context.item.slug
+          };
+
+          const formData = new FormData();
+          formData.append('logo', image as Blob);
+          formData.append('data', JSON.stringify(object));
+          const { response } = useAxios<DataResponse>(
+            'patch',
+            '/company/' + context.item.id,
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            },
+            deps.value
+          );
+
+          watch(response, () => {
+            if (response) {
+              if (response.value?.status === 'ok') {
+                context.change(response.value?.data);
+              }
+            }
+          });
+        } else {
+          const deps = ref([]);
+
+          const object = {
+            id: context.item.id,
+            name: nameCompanyInput.value,
+            description: descriptionInput.value,
+            highlight: context.item.highlight,
+            outstandingProductId: context.item.outstandingProductId,
+            slug: context.item.slug
+          };
+
+          const formData = new FormData();
+          formData.append('logo', context.item.logo);
+          formData.append('data', JSON.stringify(object));
+          const { response } = useAxios<DataResponse>(
+            'patch',
+            '/company/' + context.item.id,
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            },
+            deps.value
+          );
+
+          watch(response, () => {
+            if (response) {
+              if (response.value?.status === 'ok') {
+                context.change(response.value?.data);
+              }
+            }
+          });
+        }
+
+        if (isPatchProduct.value) {
+          // Gọi hàm useAxios để lấy response, error, và isLoading
+          const formData = new FormData();
+          formData.append('idProduct', idProduct.value);
+          const { response, error, isLoading } = useAxios<DataResponse>(
+            'patch',
+            '/company/outstanding/' + context.slugCompany,
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            },
+            variableChange.value
+          );
+        }
+
         Swal.close();
         emit('close');
       }
@@ -113,6 +244,8 @@ const handleFileInputChange = (event: Event) => {
       } else if (typeof result === 'string') {
         selectedlogo.value = result;
       }
+
+      isChange.value = true;
     };
 
     reader.readAsDataURL(file);
@@ -125,6 +258,21 @@ const handleChangelogo = () => {
   if (inputElement) {
     inputElement.click();
   }
+};
+
+const handleDataProduct = (
+  _idProduct: string,
+  nameProduct: string,
+  descriptionProduct: string,
+  image: string
+) => {
+  isPatchProduct.value = true;
+
+  productOutstand.value.name = nameProduct;
+  productOutstand.value.description = descriptionProduct;
+  productOutstand.value.mainImg = image;
+  idProduct.value = _idProduct;
+  productInput.value = nameProduct;
 };
 </script>
 
@@ -161,9 +309,6 @@ const handleChangelogo = () => {
           <div v-if="selectedlogo">
             <img :src="selectedlogo" />
           </div>
-          <div v-else>
-            <img :src="imgLogo" />
-          </div>
 
           <div :class="$style['about__mottomodal-button-wrapper']">
             <button :class="$style['about__mottomodal-button']" @click="handleChangelogo">
@@ -174,7 +319,7 @@ const handleChangelogo = () => {
             <input
               type="file"
               style="display: none"
-              id="input_file_modal"
+              id="input_file_modalupdate"
               accept="logo/*"
               @change="handleFileInputChange"
             />
@@ -188,6 +333,8 @@ const handleChangelogo = () => {
             placeholder="Đang trống"
             :value="productInput"
             @change="updateProduct"
+            readonly
+            :style="{ cursor: 'auto' }"
           />
 
           <button @click="isOpen = true">
@@ -197,13 +344,20 @@ const handleChangelogo = () => {
 
         <div :class="$style['modal__buttons']">
           <button @click="$emit('close')">Hủy</button>
-          <button @click="submitForm">Thêm công ty</button>
+          <button @click="submitForm">Cập nhật</button>
         </div>
       </div>
     </div>
   </div>
 
-  <modal-add-product v-else @close="isOpen = false" />
+  <modal-add-product
+    v-else
+    @close="isOpen = false"
+    @results="handleDataProduct"
+    :product="productOutstand"
+    :products="productCompany"
+    :slug-company="context.slugCompany"
+  />
 </template>
 
 <style module scoped lang="scss">

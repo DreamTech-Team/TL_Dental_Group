@@ -1,17 +1,46 @@
 <script setup lang="ts">
-import { Ref, ref } from 'vue';
+import { Ref, ref, watch, defineProps, PropType } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faXmark, faCloudArrowUp, faRotate, faPencil } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faCloudArrowUp, faRotate } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import ModalAddProduct from './ModalAddProduct.vue';
 import styles from './ModalAddCompany.module.scss';
+import base64ToBlob from '@/utils/base64ToBlob';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
+interface ManageCompany {
+  id: string;
+  name: string;
+  logo: string;
+  description: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+  outstandingProductId: string;
+}
+
+const props = defineProps({
+  changeAddedCompany: {
+    type: Function as PropType<(newData: ManageCompany) => void>,
+    required: true
+  }
+});
 const emit = defineEmits(['close']);
 
 const titleInput = ref('');
 const contentInput = ref('');
 const selectedImage: Ref<string | null> = ref(null);
 const isOpen = ref(false);
+const dataAdded = ref<ManageCompany>({
+  id: '',
+  name: '',
+  logo: '',
+  description: '',
+  highlight: 0,
+  slug: '',
+  createAt: '',
+  outstandingProductId: ''
+});
 
 // Các hàm update dữ liệu cho thẻ input
 const updateTitle = (e: Event) => {
@@ -39,6 +68,50 @@ const submitForm = () => {
       }
     });
   } else {
+    if (selectedImage.value) {
+      // Tạo một đối tượng File từ dữ liệu base64
+      const fileData = base64ToBlob.covertBase64ToBlob(selectedImage.value);
+      const image = new File([fileData], 'image.png', { type: 'image/png' });
+
+      const deps = ref([]);
+
+      const object = {
+        name: titleInput.value,
+        description: contentInput.value,
+        highlight: 0
+      };
+
+      const formData = new FormData();
+      formData.append('logo', image as Blob);
+      formData.append('data', JSON.stringify(object));
+      const { response } = useAxios<DataResponse>(
+        'post',
+        '/company',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        },
+        deps.value
+      );
+
+      watch(response, () => {
+        if (response.value) {
+          dataAdded.value = {
+            id: response.value?.data?.id,
+            name: response.value?.data?.name,
+            logo: response.value?.data?.logo,
+            description: response.value?.data?.description,
+            highlight: response.value?.data?.highlight,
+            slug: response.value?.data?.slug,
+            createAt: response.value?.data?.createAt,
+            outstandingProductId: response.value?.data?.outstandingProductId
+          };
+          props.changeAddedCompany(dataAdded.value);
+        }
+      });
+    }
     Swal.fire({
       title: 'Thêm thành công',
       icon: 'success',

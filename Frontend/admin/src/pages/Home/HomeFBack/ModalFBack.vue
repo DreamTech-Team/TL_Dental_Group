@@ -25,6 +25,7 @@ interface ItemRS {
   rating: number;
 }
 
+//Prop
 const content = defineProps({
   listItem: {
     type: Array as PropType<ItemRS[]>,
@@ -32,25 +33,8 @@ const content = defineProps({
   }
 });
 
-const emits = defineEmits<{
-  // eslint-disable-next-line no-unused-vars
-  (e: 'close'): void;
-  // eslint-disable-next-line no-unused-vars
-  (
-    // eslint-disable-next-line no-unused-vars
-    e: 'update-content',
-    // eslint-disable-next-line no-unused-vars
-    data: { listrs: ItemRS[] }
-  ): void;
-}>();
-
-const roundNumber = (number: number, decimalPlaces: number) => {
-  const factor = Math.pow(10, decimalPlaces);
-  return Math.round(number * factor) / factor;
-};
-
+//Properties
 const feedbacks = ref(content.listItem?.length ? content.listItem : []);
-
 const selectedItem = ref(0);
 const currentItem = ref(-1);
 const rating = ref(feedbacks.value[selectedItem.value].rating);
@@ -63,9 +47,26 @@ const isCrop = ref(false);
 const isOpenInput = ref(false);
 const fileData = ref();
 const finalImage = ref();
+const addStatus = ref(false); //Adding new one
 
-//Adding new one
-const addStatus = ref(false);
+//Emit to parent
+const emits = defineEmits<{
+  // eslint-disable-next-line no-unused-vars
+  (e: 'close'): void;
+  // eslint-disable-next-line no-unused-vars
+  (
+    // eslint-disable-next-line no-unused-vars
+    e: 'update-content',
+    // eslint-disable-next-line no-unused-vars
+    data: { listrs: ItemRS[] }
+  ): void;
+}>();
+
+//Function 4.2 to 4.0
+const roundNumber = (number: number, decimalPlaces: number) => {
+  const factor = Math.pow(10, decimalPlaces);
+  return Math.round(number * factor) / factor;
+};
 
 //Rating
 const setRating = (index: number) => {
@@ -124,6 +125,7 @@ const isName = ref(false);
 const isPos = ref(false);
 const isCont = ref(false);
 
+//Ref to focus when wrong
 const nameInput = ref<HTMLInputElement | null>(null);
 const posInput = ref<HTMLInputElement | null>(null);
 const speechInput = ref<HTMLInputElement | null>(null);
@@ -143,6 +145,7 @@ const base64ToBlob = (base64Data: string) => {
   return new Blob([ab], { type: 'image/png' });
 };
 
+//Function crop image
 const handleCroppedImage = (result: string) => {
   if (result) {
     urlFile.value = result;
@@ -152,6 +155,7 @@ const handleCroppedImage = (result: string) => {
   }
 };
 
+//Delete Item
 const deleteItem = () => {
   Swal.fire({
     title: 'Bạn có chắc muốn xóa?',
@@ -206,6 +210,7 @@ const deleteItem = () => {
   });
 };
 
+//Validate before handling
 const validateInform = () => {
   if (nameInput.value && fullname.value.length <= 5) {
     nameInput.value.focus();
@@ -250,6 +255,7 @@ const validateInform = () => {
   feedbacks.value[selectedItem.value].rating = rating.value;
 };
 
+//Adding and updating
 const updateForm = () => {
   validateInform();
 
@@ -340,6 +346,7 @@ const updateForm = () => {
   }
 };
 
+//Create new temp item
 const addItem = () => {
   Swal.fire({
     title: 'Lưu dữ liệu hiện tại và thêm mới?',

@@ -6,7 +6,11 @@ import ModalMotto from './ModalMotto.vue';
 import ModalCam from './CamMotto.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-//GET DATA
+//Status modal
+const isOpen = ref(false);
+const isOpenCam = ref(false);
+
+//Get information
 const deps = ref([]);
 const { response } = useAxios<DataResponse>('get', '/home/section2', {}, {}, deps.value);
 
@@ -27,9 +31,6 @@ watch(response, () => {
   content.value.context = response.value?.data?.content;
   content.value.image = response.value?.data?.image;
 });
-
-const isOpen = ref(false);
-const isOpenCam = ref(false);
 </script>
 <template>
   <div :class="$style.home__motto">

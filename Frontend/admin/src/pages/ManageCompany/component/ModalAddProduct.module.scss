@@ -59,6 +59,32 @@
             margin-bottom: 10px;
         }
 
+        div{
+          position: relative;
+          
+          ul{
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            border-radius: 4px;
+            background-color: #fff;
+            list-style: none;
+            height: 100px;
+            overflow-y: scroll;
+            box-shadow: 0px 2px 6px rgba($color: #000000, $alpha: 0.5);
+
+            li {
+              font-size: $text-sm;
+              padding: 0.4rem 2rem;
+            }
+            li:hover{
+              background-color: #bcb9b9;
+              cursor: pointer;
+            }
+          }
+        }
+
         input {
             width: 100%;
             height: 45px;
@@ -81,7 +107,6 @@
           padding: 6rem 4rem;
           border: 1px dashed $primary_700;
           border-radius: 5px;
-          cursor: pointer;
           position: relative;
 
           .upload-ic{
@@ -95,17 +120,6 @@
             color: $primary_700;
           }
 
-          div{
-            width: 100%;
-            height: 100%;
-
-            img{
-              width: 100%;
-              height: 100%;
-              border-radius: 8px;
-              object-fit: contain;
-            }
-          }
 
           .about__mottomodal-button-wrapper{
             position: absolute;
@@ -167,80 +181,15 @@
           }          
         }
         .wrapper1{
-          position: relative;
           width: 100%;
-          height: 196px;
+          height: 19.6rem;
 
-          div{
+          img{
             width: 100%;
             height: 100%;
-
-            img{
-              width: 100%;
-              height: 100%;
-              border-radius: 8px;
-              object-fit: contain;
-            }
+            border-radius: 8px;
+            object-fit: contain;
           }
-
-          .about__mottomodal-button-wrapper{
-            position: absolute;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease-out;
-            border-radius: 8px;
-            z-index: 10;
-
-            .about__mottomodal-button{
-                padding: 1rem 2rem;
-                border-radius: 1rem;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background-color: $primary_600;
-                border: none;
-                margin: 1.4rem;
-                transition: 0.3s all ease;
-                display: none;
-
-                &-ic{
-                    margin-right: 0.6rem;
-                    font-size: $text-2xl;
-                    color: #fff;
-                }
-
-                span{
-                    font-size: $text-lg;
-                    font-weight: 500;
-                    color: #fff;
-                }
-            }
-
-            .about__mottomodal-button:hover{
-                background-color: #fff;
-                transition: 0.3s all ease;
-
-                .about__mottomodal-button-ic{
-                    color: $primary_600;
-                }
-
-                span{
-                    color: $primary_600;
-                }
-            }
-        }
-        .about__mottomodal-button-wrapper:hover{
-            border-radius: 8px;
-            background-color: rgba($color: #000000, $alpha: 0.8);
-        }
-
-        .about__mottomodal-button-wrapper:hover .about__mottomodal-button{
-            display: flex;
-        }
         }
 
         .modal__buttons {
