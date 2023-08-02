@@ -15,47 +15,6 @@ interface MyErrorResponse {
   };
 }
 
-interface ProductItem {
-  id: string;
-  name: string;
-  slug: string;
-  price: number;
-  priceSale: number;
-  summary: string;
-  description: string;
-  mainImg: string;
-  imgs: string;
-  highlight: number;
-  createAt: string;
-  fkCategory: {
-    id: string;
-    companyId: {
-      id: string;
-      name: string;
-      logo: string;
-      description: string;
-      highlight: number;
-      slug: string;
-      createAt: string;
-      outstandingProductId: string;
-    };
-    cate1Id: {
-      id: string;
-      title: string;
-      img: string;
-      highlight: 3;
-      slug: string;
-      createAt: string;
-    };
-    cate2Id: {
-      id: string;
-      title: string;
-      slug: string;
-      createAt: string;
-    };
-  };
-}
-
 interface DataCompany {
   id: string;
   name: string;
@@ -130,7 +89,7 @@ const emits = defineEmits<{
   // eslint-disable-next-line no-unused-vars
   (e: 'close'): void;
   // eslint-disable-next-line no-unused-vars
-  (e: 'update-content', data: { productAdd: ProductItem }): void;
+  (e: 'update-content'): void;
 }>();
 
 //Properties
@@ -402,9 +361,7 @@ const submitForm = () => {
         }).then((result) => {
           if (result.isConfirmed) {
             Swal.close();
-            emits('update-content', {
-              productAdd: createProduct.response.value?.data
-            });
+            emits('update-content');
             emits('close');
           }
         });

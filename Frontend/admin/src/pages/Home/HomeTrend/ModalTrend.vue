@@ -94,6 +94,14 @@ const drag = ref(false);
 //list selected categories
 const selectedProducts = ref<Product[]>([]);
 
+//Limit Character
+const truncateText = (text: string, maxLength: number) => {
+  if (text && text.length > maxLength) {
+    return text.slice(0, maxLength) + '...';
+  }
+  return text;
+};
+
 //Handle modal
 const initListSelected = () => {
   listProducts.value.forEach((item) => {
@@ -309,7 +317,7 @@ watch(response, () => {
                   <td style="width: 45%; text-align: left">
                     <div :class="$style['item__infor']">
                       <img :src="item.src" alt="img" />
-                      <p>{{ item.name }}</p>
+                      <p>{{ truncateText(item.name, 25) }}</p>
                     </div>
                   </td>
                   <td style="width: 25%">{{ item.category }}</td>

@@ -87,6 +87,7 @@
       width: 100%;
       height: calc(100vh - 400px);
       overflow-y: auto;
+      scroll-behavior: smooth;
 
       .mn_product_table {
         border-collapse: collapse;
