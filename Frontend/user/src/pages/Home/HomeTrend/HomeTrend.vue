@@ -54,6 +54,7 @@ interface Item {
   company: string;
   image: string;
   brand: string;
+  slug: string;
 }
 
 //Init data structure
@@ -137,7 +138,8 @@ const updateShowResults = () => {
       tag: item.fkCategory.cate1Id.title,
       company: item.fkCategory.companyId.name,
       image: item.mainImg,
-      brand: item.fkCategory.companyId.logo
+      brand: item.fkCategory.companyId.logo,
+      slug: item.slug
     };
   });
   lenght.value = products.value.length;

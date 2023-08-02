@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue';
-import router from '@/router/index';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import { RouterLink } from 'vue-router';
 
 //GET DATA
 interface Item {
@@ -113,10 +113,6 @@ const handleClick = (index: number) => {
   selectedItem.value = index;
 };
 
-const seeAll = () => {
-  router.push('/tintuc');
-};
-
 onMounted(() => {
   const width = sourceElement.value?.clientWidth;
 
@@ -148,7 +144,9 @@ onUnmounted(() => {
 <template>
   <div :class="$style.home__activities">
     <h3>CÁC HOẠT ĐỘNG CỦA CÔNG TY</h3>
-    <button :class="$style['home__activities-button']" @click="seeAll">Xem tất cả</button>
+    <div :class="$style['home__activities-button']">
+      <router-link :class="$style['home__activities-link']" to="/tintuc"> Xem tất cả </router-link>
+    </div>
     <div :class="$style['home__activities-list']">
       <button
         @click="setTags('all')"

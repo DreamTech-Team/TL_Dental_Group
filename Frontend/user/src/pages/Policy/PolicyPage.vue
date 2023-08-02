@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import { useRoute } from 'vue-router';
+import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
 
 interface Policy {
   title: string;
@@ -19,6 +21,7 @@ interface ItemPolicy {
 //Properties
 const banner = ref('');
 const listPolicy = ref<Policy[]>([]);
+const route = useRoute();
 
 //GET BANNER
 const deps = ref([]);
@@ -55,6 +58,7 @@ const handleActiveNav = () => {
     <div :class="$style.container__bg">
       <img :src="banner" alt="banner" />
     </div>
+    <bread-crumb :tags="route.path" />
     <div :class="$style.container__content">
       <div :class="$style['container__content-nav']">
         <div

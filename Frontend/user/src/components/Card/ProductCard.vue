@@ -4,6 +4,7 @@ import Insurance from '@/assets/imgs/Product/GroupInsurance.svg';
 import SPSticker from '@/assets/imgs/Product/GroupSupport.svg';
 import { type PropType, ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import router from '@/router/index';
 
 export interface Product {
   nameProduct: string;
@@ -13,6 +14,7 @@ export interface Product {
   company: string;
   image: string;
   brand: string;
+  slug: string;
 }
 
 defineProps({
@@ -35,12 +37,19 @@ watch(response, () => {
 const formatNumberWithCommas = (num: number) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
+
+//Go to detail Page
+const linkDetail = (slug: string) => {
+  router.push(`/chitiet/${slug}`);
+};
 </script>
 <template>
   <div :class="$style.card">
     <div :class="$style.card__show">
       <p :class="$style['card__show--info']" v-html="product.summary"></p>
-      <div :class="$style['card__show--button']">Xem chi tiết</div>
+      <div :class="$style['card__show--button']" @click="linkDetail(product.slug)">
+        Xem chi tiết
+      </div>
     </div>
     <div :class="$style.card__header">
       <div :class="$style['card__header--container']">

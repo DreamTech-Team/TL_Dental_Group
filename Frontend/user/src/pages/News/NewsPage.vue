@@ -13,25 +13,62 @@ interface Item {
 }
 
 const path = ref('');
+const sort = ref('desc');
 const deps = ref([]);
 const dataContext = ref([]);
 const currentPage = ref(0);
-const { response } = useAxios<DataResponse>('get', '/news?sort=desc', {}, {}, deps.value);
+const totalPage = ref(0);
 
+//Get total
+const getTotal = useAxios<DataResponse>('get', '/news/total', {}, {}, deps.value);
+watch(getTotal.response, () => {
+  totalPage.value = getTotal.response.value?.data;
+});
+
+//Get default data
+const { response } = useAxios<DataResponse>(
+  'get',
+  `/news?sort=${sort.value}&page=${currentPage.value}&pageSize=8`,
+  {},
+  {},
+  deps.value
+);
+watch(response, () => {
+  dataContext.value = response.value?.data?.data;
+});
+
+//Sort
 const onUpdateSort = (data: { sort: string }) => {
   console.log(data.sort);
 };
 
-const onUpdateContent = (data: { listrs: Item[] }) => {
+//Update when change slug
+const onUpdateSlug = (data: { listrs: Item[] }) => {
   const slugs = data.listrs.map((item) => item.slug);
   path.value = slugs.map((slug) => `filterTags=${slug}`).join('&');
-  // console.log(path.value);
+
+  const updateSlug = useAxios<DataResponse>(
+    'get',
+    `/news?${path.value}&sort=${sort.value}&page=${currentPage.value}&pageSize=8`,
+    {},
+    {},
+    deps.value
+  );
+
+  watch(updateSlug.response, () => {
+    dataContext.value = updateSlug.response.value?.data?.data;
+  });
 };
 
-watch(path, () => {
+//Update current page
+const updateCurrentPage = (currentIdx: number) => {
+  currentPage.value = currentIdx;
+};
+
+watch(currentPage, () => {
   const { response } = useAxios<DataResponse>(
     'get',
-    `/news?${path.value}&sort=desc`,
+    `/news?${path.value}&sort=${sort.value}&page=${currentPage.value}&pageSize=8`,
     {},
     {},
     deps.value
@@ -41,17 +78,19 @@ watch(path, () => {
     dataContext.value = response.value?.data?.data;
   });
 });
-
-watch(response, () => {
-  dataContext.value = response.value?.data?.data;
-  currentPage.value = parseInt(response.value?.data?.page);
-});
 </script>
 <template>
   <div :class="$style.news">
     <banner />
-    <control @update-content="onUpdateContent" @update-sort="onUpdateSort" />
-    <context v-if="dataContext.length > 0" :list-item="dataContext" :prs-page="currentPage" />
+    <control @update-slug="onUpdateSlug" @update-sort="onUpdateSort" />
+    <context
+      :list-item="dataContext"
+      :sort-status="sort"
+      :path="path"
+      :prs-page="currentPage"
+      :totalPage="totalPage"
+      @current-page="updateCurrentPage"
+    />
   </div>
 </template>
 

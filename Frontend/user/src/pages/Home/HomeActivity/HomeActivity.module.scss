@@ -4,6 +4,10 @@
 .home__activities {
   margin-top: 100px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   h3 {
     font-weight: 500;
@@ -20,6 +24,19 @@
     font-size: $text-base;
     margin-top: 17px;
     margin-bottom: 25px;
+    width: max-content;
+
+    .home__activities-link{
+      padding: 10px 10px;
+      background: #effeff;
+      border-radius: 20px;
+      color: #0cbbc7;
+      border: none;
+      font-size: $text-base;
+      margin-top: 17px;
+      margin-bottom: 25px;
+      width: max-content;
+    }
   }
 
   &-list {
@@ -139,6 +156,12 @@
       font-size: $text-base-mobile;
       margin-top: 5px;
       margin-bottom: 15px;
+
+      .home__activities-link{
+        font-size: $text-base-mobile;
+        margin-top: 5px;
+        margin-bottom: 15px;
+      }
     }
 
     &-list {

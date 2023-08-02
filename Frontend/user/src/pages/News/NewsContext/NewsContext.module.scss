@@ -132,6 +132,10 @@
       align-items: center;
       justify-content: center;
     }
+
+    button {
+      display: none;
+    }
   }
 
   &-right {
@@ -261,6 +265,19 @@
 
       &-pagination {
         display: none;
+      }
+
+      button {
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: auto;
+        font-size: 18px;
+        font-weight: 500;
+        color: #0088cc;
+        background-color: white;
+        border: none;
       }
     }
 

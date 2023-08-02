@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import router from '@/router/index';
 
 interface Company {
   outstandingProduct: {
@@ -65,7 +66,9 @@ interface Item {
 }
 
 //Define data structure
-const bannerItems = ref([{ src: '', alt: '', width: '0', height: '0', name: '', product: '' }]);
+const bannerItems = ref([
+  { src: '', alt: '', width: '0', height: '0', name: '', product: '', slug: '' }
+]);
 
 //Scroll Properties
 const MIN_SWIPE_DISTANCE_CM = 3.5;
@@ -93,6 +96,11 @@ const widthComputed = computed(() => {
 const widthItemComputed = computed(() => {
   return widthItemMB.value + 'px';
 });
+
+//Go to detail Page
+const linkDetail = (slug: string) => {
+  router.push(`/chitiet/${slug}`);
+};
 
 //Scroll Handle
 const scrollRight = () => {
@@ -363,7 +371,6 @@ watch(
   results.response,
   async () => {
     if (results.response.value?.data.length > 0) {
-      console.log(results.response.value?.data);
       const randomHighlightedCompanies: Company[] =
         results.response.value?.data >= 4
           ? getRandomItems(results.response.value?.data, 4)
@@ -377,7 +384,8 @@ watch(
           width: '',
           height: '30',
           name: company.outstandingProduct.name,
-          product: company.outstandingProduct.mainImg
+          product: company.outstandingProduct.mainImg,
+          slug: company.outstandingProduct.slug
         };
       });
 
@@ -451,7 +459,7 @@ onUnmounted(() => {
         :style="{ background: !mobilestatus ? bannerBgColor : '' }"
       >
         <div :class="$style['home__banner-radial']">
-          <div :class="$style['home__banner-circle']">
+          <div :class="$style['home__banner-circle']" @click="linkDetail(selectedItem.slug)">
             <div :class="$style['home__banner-logo']">
               <img :src="selectedItem.src" :alt="selectedItem.alt" width="127" height="30" />
             </div>
@@ -484,19 +492,22 @@ onUnmounted(() => {
         :style="{ width: widthItemComputed }"
       >
         <div :class="$style['home__bannerMB-left']">
-          <h2>TL Dental Group</h2>
-          <p>Nhà cung cấp thiết bị y tế chính hãng, uy tín hàng đầu Việt Nam.</p>
+          <h2>{{ content.title }}</h2>
+          <p>{{ content.context }}</p>
         </div>
         <div :class="$style['home__bannerMB-right']">
           <div v-if="showBannerBg" :class="$style['home__bannerMB-bg']">
             <div :class="$style['home__bannerMB-radial']">
-              <div :class="$style['home__bannerMB-circle']">
+              <div :class="$style['home__bannerMB-circle']" @click="linkDetail(item.slug)">
                 <div :class="$style['home__bannerMB-logo']">
                   <img :src="item.src" :alt="item.alt" width="60" height="30" />
                 </div>
-                <div :class="$style['home__bannerMB-product']"></div>
+                <div
+                  :class="$style['home__bannerMB-product']"
+                  :style="{ backgroundImage: `url(${item.product})` }"
+                ></div>
               </div>
-              <p>Trụ Implant Highness Hàn Quốc</p>
+              <p>{{ item.name }}</p>
             </div>
           </div>
         </div>

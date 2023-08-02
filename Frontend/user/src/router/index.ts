@@ -33,7 +33,7 @@ const routes = [
     component: ProductPage
   },
   {
-    path: '/chitiet',
+    path: '/chitiet/:catchAll(.*)*',
     name: 'chitiet',
     component: DetailPage
   },

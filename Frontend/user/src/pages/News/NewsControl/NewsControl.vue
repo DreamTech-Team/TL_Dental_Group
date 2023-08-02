@@ -15,7 +15,7 @@ const deps = ref([]);
 
 const emits = defineEmits<{
   // eslint-disable-next-line no-unused-vars
-  (e: 'update-content', data: { listrs: Item[] }): void;
+  (e: 'update-slug', data: { listrs: Item[] }): void;
   // eslint-disable-next-line no-unused-vars
   (e: 'update-sort', data: { sort: string }): void;
 }>();
@@ -74,7 +74,7 @@ const selectItem = (item: Item) => {
   selectedItems.value.push(item);
   availableItems.value = availableItems.value.filter((i) => i !== item);
   isCustomSelectListOpen.value = false; //Close Modal
-  emits('update-content', {
+  emits('update-slug', {
     listrs: selectedItems.value
   });
 };
@@ -82,7 +82,7 @@ const selectItem = (item: Item) => {
 const removeItem = (item: Item) => {
   selectedItems.value = selectedItems.value.filter((i) => i !== item);
   availableItems.value.push(item);
-  emits('update-content', {
+  emits('update-slug', {
     listrs: selectedItems.value
   });
 };
@@ -244,7 +244,7 @@ onMounted(() => {
               v-for="(item, index) in selectedItems"
               :key="index"
             >
-              {{ item }}
+              {{ item.name }}
               <div :class="$style['news__item-cancel']" @click.stop="removeItem(item)">
                 <font-awesome-icon :icon="faXmark" :class="$style['cancel_ic']" />
               </div>

@@ -17,9 +17,78 @@ import Product1 from '@/assets/imgs/Product/Rectangle2061.png';
 import Product2 from '@/assets/imgs/Product/Rectangle2062.png';
 import Product3 from '@/assets/imgs/Product/Rectangle2063.png';
 import Product4 from '@/assets/imgs/Product/Rectangle2064.png';
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, watch, onMounted, onUnmounted, computed } from 'vue';
+import { useRoute } from 'vue-router';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-const pathBC = 'dung-cu-nha-khoa/kep-chinh-nha/kep-gap-mac-cai-R6,7-kep-gap-Tube-PMC-ORTHOR';
+interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  priceSale: number;
+  summary: string;
+  description: string;
+  mainImg: string;
+  imgs: string;
+  highlight: number;
+  createAt: string;
+  fkCategory: {
+    id: string;
+    companyId: {
+      id: string;
+      name: string;
+      logo: string;
+      description: string;
+      highlight: number;
+      slug: string;
+      createAt: string;
+      outstandingProductId: string;
+    };
+    cate1Id: {
+      id: string;
+      title: string;
+      img: string;
+      highlight: 3;
+      slug: string;
+      createAt: string;
+    };
+    cate2Id: {
+      id: string;
+      title: string;
+      slug: string;
+      createAt: string;
+    };
+  };
+}
+
+const route = useRoute();
+const inforProduct = ref<Product>();
+const pathBC = ref();
+
+const deps = ref([]);
+const { response } = useAxios<DataResponse>(
+  'get',
+  `/products/${route.params.catchAll[0]}`, //Params slug product
+  {},
+  {},
+  deps.value
+);
+
+//Create path for breadcrumb
+watch(response, () => {
+  inforProduct.value = response.value?.data;
+  // eslint-disable-next-line max-len
+  pathBC.value =
+    'sanpham' +
+    '/' +
+    inforProduct.value?.fkCategory.cate1Id.slug +
+    '/' +
+    inforProduct.value?.fkCategory.cate2Id.slug +
+    '/' +
+    inforProduct.value?.slug;
+});
+
 const images = [DetailImage, Product1, Product2, Product3, Product4];
 const isDesktop = ref(false);
 

@@ -7,12 +7,13 @@ import AboutBusinessItems from './AboutBusinessItems/AboutBusinessItems.vue';
 import AboutPolicy from './AboutPolicy/AboutPolicy.vue';
 import AboutFacility from './AboutFacility/AboutFacility.vue';
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
+import { useRoute } from 'vue-router';
 
-const pathAbout = 'gioithieu';
+const route = useRoute();
 </script>
 <template>
   <div :class="$style.about">
-    <bread-crumb :tags="pathAbout" />
+    <bread-crumb :tags="route.path" />
     <about-header />
     <about-thanks />
     <about-infoCompany />
