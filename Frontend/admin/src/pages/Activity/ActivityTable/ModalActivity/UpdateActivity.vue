@@ -46,6 +46,18 @@ interface News {
   ];
 }
 
+interface dataUpdate {
+  createAt: string;
+  detail: string;
+  detailMobile: string;
+  highlight: 0;
+  id: string;
+  img: string;
+  slug: string;
+  summary: string;
+  title: string;
+}
+
 interface MyErrorResponse {
   response?: {
     data?: {
@@ -234,7 +246,7 @@ const emits = defineEmits<{
   // eslint-disable-next-line no-unused-vars
   (e: 'close'): void;
   // eslint-disable-next-line no-unused-vars
-  (e: 'update', newsAdd: News): void;
+  (e: 'update', newsAdd: dataUpdate): void;
 }>();
 
 //SWEET ARLERT
@@ -311,15 +323,10 @@ const submitForm = () => {
     //   console.log(item);
     //   formData.append('tags', '[' + item.replace(/"/g, '') + ']');
     // });
-    formData.append(
-      'tags',
-      listIdTags.value
-        .map((item) => {
-          return item.replace(/"/g, '');
-        })
-        .toString()
-        .replace(/"/g, '')
-    );
+    listIdTags.value.map((item) => {
+      formData.append('tags', item);
+    });
+
     //["id1"]
     formData.append('data', JSON.stringify(object));
     // console.log(formData);
@@ -347,6 +354,7 @@ const submitForm = () => {
             Swal.close();
             emits('close');
             props.closeModal();
+            // console.log(updateNews.response.value?.data);
             emits('update', updateNews.response.value?.data);
           }
         });
