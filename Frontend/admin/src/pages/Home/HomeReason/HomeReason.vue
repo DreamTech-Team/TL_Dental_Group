@@ -6,7 +6,6 @@ import CamBtn from '@/components/ImageBtn/ImageBtn.vue';
 import ModalCam from './CamReason.vue';
 import ModalReason from './ModalReason.vue';
 import ModalSVG from './SVGReason.vue';
-import SVG from '@/assets/icons/white_check.png';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 //GET DATA
@@ -21,28 +20,24 @@ const content = ref({
   listrs: [
     {
       id: '',
-      image: SVG,
+      image: '',
       title: '',
       description: ''
     },
     {
       id: '',
-      image: SVG,
+      image: '',
       title: '',
       description: ''
     },
     {
       id: '',
-      image: SVG,
+      image: '',
       title: '',
       description: ''
     }
   ]
 });
-
-const onUpdateContent = (data: object) => {
-  content.value = { ...content.value, ...data };
-};
 
 watch(response, () => {
   content.value.id = response.value?.data?.heading?.id;
@@ -51,12 +46,15 @@ watch(response, () => {
   content.value.description = response.value?.data?.heading?.content;
   content.value.listrs[0].id = response.value?.data?.subItem1?.id;
   content.value.listrs[0].title = response.value?.data?.subItem1?.title;
+  content.value.listrs[0].image = response.value?.data?.subItem1?.image;
   content.value.listrs[0].description = response.value?.data?.subItem1?.content;
   content.value.listrs[1].id = response.value?.data?.subItem2?.id;
   content.value.listrs[1].title = response.value?.data?.subItem2?.title;
+  content.value.listrs[1].image = response.value?.data?.subItem2?.image;
   content.value.listrs[1].description = response.value?.data?.subItem2?.content;
   content.value.listrs[2].id = response.value?.data?.subItem3?.id;
   content.value.listrs[2].title = response.value?.data?.subItem3?.title;
+  content.value.listrs[2].image = response.value?.data?.subItem3?.image;
   content.value.listrs[2].description = response.value?.data?.subItem3?.content;
 });
 
@@ -64,6 +62,14 @@ const selectedSVG = ref(0);
 const isOpen = ref(false);
 const isOpenCam = ref(false);
 const isOpenSVG = ref(false);
+
+const onUpdateContent = (data: object) => {
+  content.value = { ...content.value, ...data };
+};
+
+const onUpdateSVG = (svg: string) => {
+  content.value.listrs[selectedSVG.value].image = svg;
+};
 
 const updateSVG = (index: number) => {
   selectedSVG.value = index;
@@ -114,7 +120,7 @@ const updateSVG = (index: number) => {
   />
   <ModalSVG
     v-if="isOpenSVG"
-    @update-content="onUpdateContent"
+    @update-content="onUpdateSVG"
     :uuid="content.id"
     :title="content.title"
     :description="content.description"
