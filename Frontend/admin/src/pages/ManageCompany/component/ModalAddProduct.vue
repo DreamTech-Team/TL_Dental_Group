@@ -13,7 +13,7 @@ interface Products {
   mainImg: string;
   fkCategory: {
     companyId: {
-      slug: string;
+      id: string;
     };
   };
 }
@@ -26,7 +26,7 @@ const context = defineProps({
     type: Array,
     required: true
   },
-  slugCompany: {
+  idCompany: {
     type: String,
     required: true
   }

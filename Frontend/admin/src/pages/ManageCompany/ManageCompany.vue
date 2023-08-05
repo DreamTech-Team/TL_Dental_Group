@@ -37,7 +37,7 @@ interface Products {
   mainImg: string;
   fkCategory: {
     companyId: {
-      slug: string;
+      id: string;
     };
   };
 }
@@ -57,7 +57,7 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const indexRow = ref(0);
 const indexProduct = ref(-1);
-const slugCompany = ref('');
+const idCompany = ref('');
 const outstandingRender = ref({
   image: '',
   name: ''
@@ -129,12 +129,12 @@ const handlePageChange = (page: number) => {
 };
 
 // Xử lí mở modal chỉnh sửa một công ty
-const handleUpdateModal = (idx: number, id: string, slug: string) => {
+const handleUpdateModal = (idx: number, idOut: string, idCom: string) => {
   isOpenUpdate.value = true;
 
-  if (id !== null) {
+  if (idOut !== null) {
     products.value.forEach((item, idx) => {
-      if (item.id === id) {
+      if (item.id === idOut) {
         indexProduct.value = idx;
       }
     });
@@ -142,7 +142,7 @@ const handleUpdateModal = (idx: number, id: string, slug: string) => {
     indexProduct.value = -1;
   }
 
-  slugCompany.value = slug;
+  idCompany.value = idCom;
   indexRow.value = idx;
 };
 
@@ -202,6 +202,21 @@ const handleChangeUpdate = (dataUpdated: ManageCompany) => {
   });
 };
 
+const handleChangeUpdateOutstanding = (outstanding: ManageCompany) => {
+  if (outstanding.outstandingProductId !== null) {
+    console.log('haah');
+
+    products.value.forEach((item) => {
+      if (item.id === outstanding.outstandingProductId) {
+        outstandingRender.value = {
+          image: item.mainImg,
+          name: item.name
+        };
+      }
+    });
+  }
+};
+
 const handleUpdateHighLight = (index: number) => {
   const checkbox = document.getElementById(`myCheckbox${index}`);
 
@@ -221,7 +236,7 @@ const handleUpdateHighLight = (index: number) => {
   }
 };
 
-const handleRenderOutstanđing = (index: number) => {
+const handleRenderOutstanding = (index: number) => {
   if (companyRender.value[index].outstandingProductId !== null) {
     products.value.forEach((item) => {
       if (item.id === companyRender.value[index].outstandingProductId) {
@@ -231,6 +246,8 @@ const handleRenderOutstanđing = (index: number) => {
         };
       }
     });
+
+    console.log(outstandingRender.value);
 
     return true;
   }
@@ -288,7 +305,7 @@ const handleRenderOutstanđing = (index: number) => {
           <div :class="$style['mn_company--table-row-4']">
             <img :src="company.logo" alt="" />
           </div>
-          <div :class="$style['mn_company--table-row-5']" v-if="handleRenderOutstanđing(index)">
+          <div :class="$style['mn_company--table-row-5']" v-if="handleRenderOutstanding(index)">
             <img :src="outstandingRender.image" alt="" />
             <p>{{ outstandingRender.name }}</p>
           </div>
@@ -298,7 +315,7 @@ const handleRenderOutstanđing = (index: number) => {
               <font-awesome-icon :icon="faTrash" :class="$style['mn_company--table-ic']" />
             </button>
 
-            <button @click="handleUpdateModal(index, company.outstandingProductId, company.slug)">
+            <button @click="handleUpdateModal(index, company.outstandingProductId, company.id)">
               <font-awesome-icon :icon="faPen" :class="$style['mn_company--table-ic']" />
             </button>
           </div>
@@ -338,8 +355,9 @@ const handleRenderOutstanđing = (index: number) => {
     :item="companyRender[indexRow]"
     :productOutstanding="indexProduct !== -1 ? products[indexProduct] : {}"
     :products="products"
-    :slug-company="slugCompany"
+    :idCompany="idCompany"
     :change="handleChangeUpdate"
+    :changeOutstanding="handleChangeUpdateOutstanding"
   />
 </template>
 

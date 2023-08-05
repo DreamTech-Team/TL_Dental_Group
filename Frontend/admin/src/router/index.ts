@@ -17,6 +17,7 @@ const ManageCustomer = () => import('@/pages/ManageCustomer/ManageCustomer.vue')
 const ManageUI = () => import('@/pages/ManageUI/ManageUI.vue');
 const ManagePolicy = () => import('@/pages/ManagePolicy/ManagePolicy.vue');
 const ManagePolicyEdit = () => import('@/pages/ManagePolicyEdit/ManagePolicyEdit.vue');
+const UpdateBanner = () => import('@/pages/UpdateBanner/UpdateBanner.vue');
 
 const routes = [
   {
@@ -106,6 +107,11 @@ const routes = [
     path: '/mnui',
     name: 'mnui',
     component: ManageUI
+  },
+  {
+    path: '/mnbanner',
+    name: 'mnbanner',
+    component: UpdateBanner
   }
 ];
 
