@@ -252,9 +252,9 @@ public class ProductController {
 
     // CREATE PRODUCT
     @PostMapping("")
-    ResponseEntity<ResponseObject> createProduct(@RequestParam("imgs") List<MultipartFile> imgs,
-                                                 @RequestParam("mainImg") MultipartFile mainImg,
-                                                 @RequestParam ("data") String data){
+    ResponseEntity<ResponseObject> createProduct(@RequestParam(value = "imgs", required = true) List<MultipartFile> imgs,
+                                                 @RequestParam(value = "mainImg", required = true) MultipartFile mainImg,
+                                                 @RequestParam (value = "data", required = true) String data){
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             ProductData obj = objectMapper.readValue(data, ProductData.class);
@@ -285,11 +285,12 @@ public class ProductController {
             product.setName(product.getName().trim());
 
             List<String> imgList = new ArrayList<>();
+            imgList.add(mainImgFileName);
             for (int i = 0; i < imgs.size(); i++) {
-                String fileName = storageService.storeFile(mainImg);
+                String fileName = storageService.storeFile(imgs.get(i));
                 imgList.add(fileName);
             }
-//            imgList.add(mainImgFileName);
+
             product.setImgs(imgList.toString());
 
             return ResponseEntity.status(HttpStatus.OK).body(
