@@ -93,11 +93,11 @@ const routes = [
     name: 'mnpolicy',
     component: ManagePolicy
   },
-  {
-    path: '/mnpolicy/:catchAll(.*)*',
-    name: 'mnpolicyedit',
-    component: ManagePolicyEdit
-  },
+  // {
+  //   path: '/mnpolicy/:catchAll(.*)*',
+  //   name: 'mnpolicyedit',
+  //   component: ManagePolicyEdit
+  // },
   {
     path: '/mncustomer',
     name: 'mncustomer',

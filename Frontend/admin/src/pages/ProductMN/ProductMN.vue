@@ -66,20 +66,35 @@ const isOpen = ref(false); //Open Modal Add
 const isOpen1 = ref(false); //Open Modal Update
 const searchText = ref('');
 const results = ref(products); //Final Render
+const scrollContainer = ref<HTMLElement | null>(null); //Scroll table to top when change page
 
 const debounceTimer = ref<number | null>(null); //searchData delay
 
-const currentPage = ref(1);
-const pageSize = ref(10);
+const totalPage = ref(0);
+const currentPage = ref(0);
 
 //Function 1000 to 1.000
 const formatNumberWithCommas = (num: number) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 
-//GET DATA
 const deps = ref([]);
-const { response } = useAxios<DataResponse>('get', '/products?sort="asc"', {}, {}, deps.value);
+
+//Get total
+const getTotal = useAxios<DataResponse>('get', '/products/total', {}, {}, deps.value);
+
+watch(getTotal.response, () => {
+  totalPage.value = getTotal.response.value?.data;
+});
+
+//GET DATA
+const { response } = useAxios<DataResponse>(
+  'get',
+  `/products?page=${currentPage.value}&pageSize=10`,
+  {},
+  {},
+  deps.value
+);
 
 //Convert array to compatible with data
 watch(response, () => {
@@ -96,23 +111,12 @@ watch(response, () => {
 });
 
 //Data from Modal Add
-const onUpdateContent = (data: { productAdd: ProductItem }) => {
-  tempArrays.value.push(data.productAdd);
-
-  const newObject = {
-    id: data.productAdd.id,
-    name: data.productAdd.name,
-    src: data.productAdd.mainImg,
-    company: data.productAdd.fkCategory.companyId.name,
-    price: formatNumberWithCommas(data.productAdd.price) + ' VNĐ'
-  };
-
-  results.value.push(newObject);
+const onUpdateContent = () => {
+  window.location.reload();
 };
 
 //Data from Modal Update
 const onUpdateContent2 = (data: { productAdd: ProductItem }) => {
-  console.log(data.productAdd);
   results.value.forEach((item) => {
     if (item.id === data.productAdd.id) {
       item.name = data.productAdd.name;
@@ -137,7 +141,6 @@ const searchProduct = () => {
     {},
     deps.value
   );
-  console.log(searchProduct.response.value?.data?.data);
 
   watch(searchProduct.response, () => {
     tempArrays.value = searchProduct.response.value?.data?.data;
@@ -171,22 +174,48 @@ const filteredProducts = computed(() => {
 });
 
 //Pagination Handle
-const scrollToTop = (top: number) => {
-  window.scrollTo({
-    top: top,
-    behavior: 'smooth'
-  });
+const scrollToTop = () => {
+  if (scrollContainer.value && scrollContainer.value instanceof HTMLElement) {
+    scrollContainer.value.scrollTop = 0;
+  }
 };
 
+//Change Page
 const handlePageChange = (page: number) => {
-  currentPage.value = page;
-  scrollToTop(0);
+  currentPage.value = page - 1;
+  scrollToTop();
 };
 
-const displayProducts = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return filteredProducts.value.slice(start, end);
+//Limit Character
+const truncateText = (text: string, maxLength: number) => {
+  if (text && text.length > maxLength) {
+    return text.slice(0, maxLength) + '...';
+  }
+  return text;
+};
+
+watch(currentPage, () => {
+  const { response } = useAxios<DataResponse>(
+    'get',
+    `/products?page=${currentPage.value}&pageSize=10`,
+    {},
+    {},
+    deps.value
+  );
+
+  //Convert array to compatible with data
+  watch(response, () => {
+    tempArrays.value = response.value?.data?.data;
+    results.value = tempArrays.value.map((item: ProductItem) => {
+      return {
+        id: item.id,
+        name: item.name,
+        src: item.mainImg,
+        company: item.fkCategory.companyId.name,
+        price: formatNumberWithCommas(item.price) + ' VNĐ'
+      };
+    });
+  });
 });
 
 //Open modal Update
@@ -212,7 +241,6 @@ const deleteProduct = (id: string) => {
 
       watch(deleteProduct.response, () => {
         if (deleteProduct.response.value?.status === 'ok') {
-          results.value = results.value.filter((product) => product.id !== id);
           Swal.fire({
             title: 'Xóa thành công',
             icon: 'success',
@@ -221,6 +249,27 @@ const deleteProduct = (id: string) => {
           }).then((result) => {
             if (result.isConfirmed) {
               Swal.close();
+              const { response } = useAxios<DataResponse>(
+                'get',
+                `/products?page=${currentPage.value}&pageSize=10`,
+                {},
+                {},
+                deps.value
+              );
+
+              //Convert array to compatible with data
+              watch(response, () => {
+                tempArrays.value = response.value?.data?.data;
+                results.value = tempArrays.value.map((item: ProductItem) => {
+                  return {
+                    id: item.id,
+                    name: item.name,
+                    src: item.mainImg,
+                    company: item.fkCategory.companyId.name,
+                    price: formatNumberWithCommas(item.price) + ' VNĐ'
+                  };
+                });
+              });
             }
           });
         }
@@ -254,16 +303,16 @@ const deleteProduct = (id: string) => {
           </tr>
         </thead>
       </table>
-      <div :class="$style.mn_product_table_ctn">
+      <div :class="$style.mn_product_table_ctn" ref="scrollContainer">
         <table :class="$style.mn_product_table">
           <tbody>
             <template v-if="filteredProducts.length > 0">
-              <tr v-for="(item, index) in displayProducts" :key="index">
-                <td style="width: 8%">{{ index + 1 }}</td>
+              <tr v-for="(item, index) in filteredProducts" :key="index">
+                <td style="width: 8%">{{ currentPage * 10 + index + 1 }}</td>
                 <td style="width: 40%">
                   <div :class="$style['table_item']">
                     <img :src="item.src" alt="SP" :class="$style['table_img']" />
-                    <span>{{ item.name }}</span>
+                    <span>{{ truncateText(item.name, 50) }}</span>
                   </div>
                 </td>
                 <td style="width: 14%">{{ item.company }}</td>
@@ -290,9 +339,9 @@ const deleteProduct = (id: string) => {
 
     <div :class="$style['mn_product_pagination']">
       <pagination
-        :total="Math.ceil(filteredProducts.length / pageSize)"
+        :total="totalPage"
         :current-page="currentPage"
-        :page-size="pageSize"
+        :page-size="10"
         @current-change="handlePageChange"
       />
     </div>
@@ -304,7 +353,6 @@ const deleteProduct = (id: string) => {
     :update-object="chosenObject ? chosenObject : null"
     @update-content="onUpdateContent2"
   />
-  <!-- <ModalUpdate v-if="isOpen1" @close="isOpen1 = false" :updateObject="chosenObject" /> -->
 </template>
 
 <style module scoped lang="scss">
