@@ -109,7 +109,7 @@ public class HomePageController {
     }    
 
     @PostMapping(value="/section1")
-    public ResponseEntity<ResponseObject> addSection1(@RequestParam("image") MultipartFile image, @RequestParam ("data") String data) throws JsonMappingException, JsonProcessingException {
+    public ResponseEntity<ResponseObject> addSection1(@RequestParam("image") MultipartFile image, @RequestParam ("data") String data, @RequestParam(name = "icon1", required = false) MultipartFile icon1, @RequestParam(name = "icon2", required = false) MultipartFile icon2, @RequestParam(name = "icon3", required = false) MultipartFile icon3) throws JsonMappingException, JsonProcessingException {
 
         Optional<ContentPage> Section1Heading = contentPageRepository.findHomePageByTypeName("home::section1_heading");
         Optional<ContentPage> Section1SubItem1 = contentPageRepository.findHomePageByTypeName("home::section1_subitem1");
@@ -134,13 +134,34 @@ public class HomePageController {
 
         entity.getHeading().setImage(imageFile);
 
+        if (icon1 != null) {
+            storageService.deleteFile(entity.getSubItem1().getImage());
+            
+            String iconFile = storageService.storeFile(icon1);
+            entity.getSubItem1().setImage(iconFile);
+        }
+        
+        if (icon2 != null) {
+            storageService.deleteFile(entity.getSubItem2().getImage());
+            
+            String iconFile = storageService.storeFile(icon2);
+            entity.getSubItem2().setImage(iconFile);
+        }
+        
+        if (icon3 != null) {
+            storageService.deleteFile(entity.getSubItem3().getImage());
+            
+            String iconFile = storageService.storeFile(icon3);
+            entity.getSubItem3().setImage(iconFile);
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(
             new ResponseObject("ok", "Add Header Successfully", contentPageRepository.saveAll(Arrays.asList(entity.getHeading(), entity.getSubItem1(), entity.getSubItem2(), entity.getSubItem3())))
         );
     }
 
     @PatchMapping(value="/section1")
-    public ResponseEntity<ResponseObject> updateSection1(@RequestParam(name = "image", required = false) MultipartFile image, @RequestParam("data") String data) throws JsonMappingException, JsonProcessingException {
+    public ResponseEntity<ResponseObject> updateSection1(@RequestParam(name = "image", required = false) MultipartFile image, @RequestParam("data") String data, @RequestParam(name = "icon1", required = false) MultipartFile icon1, @RequestParam(name = "icon2", required = false) MultipartFile icon2, @RequestParam(name = "icon3", required = false) MultipartFile icon3) throws JsonMappingException, JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         HomeSection1 entity = objectMapper.readValue(data, HomeSection1.class);
         
@@ -175,6 +196,30 @@ public class HomePageController {
                     
                     String imageFile = storageService.storeFile(image);
                     section1Heading.setImage(imageFile);
+                }
+
+                if (icon1 != null) {
+                    if (section1SubItem1.getImage() != null)
+                        storageService.deleteFile(section1SubItem1.getImage());
+                    
+                    String iconFile = storageService.storeFile(icon1);
+                    section1SubItem1.setImage(iconFile);
+                }
+               
+                if (icon2 != null) {
+                    if (section1SubItem2.getImage() != null)
+                        storageService.deleteFile(section1SubItem2.getImage());
+                    
+                    String iconFile = storageService.storeFile(icon2);
+                    section1SubItem2.setImage(iconFile);
+                }
+               
+                if (icon3 != null) {
+                    if (section1SubItem3.getImage() != null)
+                        storageService.deleteFile(section1SubItem3.getImage());
+                    
+                    String iconFile = storageService.storeFile(icon3);
+                    section1SubItem3.setImage(iconFile);
                 }
 
                 return ResponseEntity.status(HttpStatus.OK).body(
