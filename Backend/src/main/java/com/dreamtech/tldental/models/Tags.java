@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 
 import java.text.Normalizer;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 @Entity
 @Table(name="Tags")
@@ -22,6 +24,9 @@ public class Tags {
 
     @Column(name = "create_at")
     private LocalDateTime createAt;
+
+    @ManyToMany(mappedBy = "tags")
+    private Set<News> news = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {

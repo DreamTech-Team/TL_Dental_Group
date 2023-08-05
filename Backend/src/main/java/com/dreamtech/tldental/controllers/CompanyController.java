@@ -192,32 +192,32 @@ public class CompanyController {
     }
 
     // UPDATE OUTSTANDING COMPANY
-    @PatchMapping("/outstanding/{slug}")
-    ResponseEntity<ResponseObject> updateOutstandingCompany(@PathVariable String slug,
+    @PatchMapping("/outstanding/{id}")
+    ResponseEntity<ResponseObject> updateOutstandingCompany(@PathVariable String id,
                                                             @RequestParam("idProduct") String idProduct) {
         try {
-            Company foundCompany = companyRepository.findBySlug(slug);
+            Optional<Company> foundCompany = companyRepository.findById(id);
             Optional<Product> foundProduct = productRepository.findById(idProduct);
-            if (!foundProduct.isPresent()) {
+            if (!foundProduct.isPresent() || !foundCompany.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new ResponseObject("failed", "Can not find product with id = "+idProduct, "")
+                        new ResponseObject("failed", "Can not find product or company!", "")
                 );
-            } else if (foundProduct.get().getFkCategory().getCompanyId().getId() != foundCompany.getId()) {
+            } else if (foundProduct.get().getFkCategory().getCompanyId().getId() != foundCompany.get().getId()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new ResponseObject("failed", "This product is not belong to " + foundCompany.getName(), "")
+                        new ResponseObject("failed", "This product is not belong to " + foundCompany.get().getName(), "")
                 );
             }
 
             if (foundCompany == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new ResponseObject("failed", "Can not find company with slug = "+slug, "")
+                        new ResponseObject("failed", "Can not find company with id = "+id, "")
                 );
             }
 
-            foundCompany.setHighlight(1);
-            foundCompany.setOutstandingProductId(idProduct);
+            foundCompany.get().setHighlight(1);
+            foundCompany.get().setOutstandingProductId(idProduct);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Update outstanding company successfully", companyRepository.save(foundCompany))
+                    new ResponseObject("ok", "Update outstanding company successfully", companyRepository.save(foundCompany.get()))
             );
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
