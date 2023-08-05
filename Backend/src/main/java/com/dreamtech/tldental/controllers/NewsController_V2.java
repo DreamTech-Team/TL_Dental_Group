@@ -37,6 +37,7 @@ public class NewsController_V2 {
     @GetMapping("")
     ResponseEntity<ResponseObject> getFilter(@RequestParam(value = "key", required = false, defaultValue = "") String key,
                                              @RequestParam(value = "outstanding", required = false) boolean outstanding,
+                                             @RequestParam(value = "popular", required = false) boolean popular,
                                              @RequestParam(required = false, defaultValue = "12") String pageSize,
                                              @RequestParam(required = false, defaultValue = "0") String page,
                                              @RequestParam(required = false) List<String> filterTags,
@@ -56,6 +57,11 @@ public class NewsController_V2 {
         if (outstanding == true) {
             newsList = newsList.stream()
                     .filter(news -> news.getHighlight() == 1)
+                    .collect(Collectors.toList());
+        }
+        if (popular == true) {
+            newsList = newsList.stream()
+                    .filter(news -> news.getTags().size() > 1)
                     .collect(Collectors.toList());
         }
 
