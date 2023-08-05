@@ -9,6 +9,8 @@ import javax.swing.text.html.Option;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.dreamtech.tldental.models.ContentPage;
+import com.dreamtech.tldental.models.DataPageObject;
 import com.dreamtech.tldental.models.RecruitSection1;
 import com.dreamtech.tldental.models.RecruitSection2;
 import com.dreamtech.tldental.models.Recruitment;
@@ -314,12 +317,29 @@ public class RecruitmentController {
         );
     }
 
-    @GetMapping(value="/")
-    public ResponseEntity<ResponseObject> getRecruitment() {
+    @GetMapping("/")
+    ResponseEntity<ResponseObject> getRecruitment(@RequestParam(value = "q", required = false) String query,
+                                                  @RequestParam(required = false, defaultValue = "12") String pageSize,
+                                                  @RequestParam(required = false, defaultValue = "0") String page,
+                                                  @RequestParam(required = false, defaultValue = "desc") String sort) {
+        try {
+            // HANDLE FILTER
+            Sort.Direction sortDirection = sort.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+            Sort sortByCreateAt = Sort.by(sortDirection, "createAt");
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-            new ResponseObject("ok", "Get recruitment successfully", recruitmentRepository.findAll())
-        );
+            List<Recruitment> newsList = recruitmentRepository.searchRecruitment(query, PageRequest
+                    .of(Integer.parseInt(page), Integer.parseInt(pageSize), sortByCreateAt));
+
+            int total = newsList.size();
+            
+            return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Get recruitment successfully", new DataPageObject(total, page, pageSize, newsList))
+            );
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                    new ResponseObject("failed", exception.getMessage(), "")
+            );
+        }
     }
 
     @PostMapping(value="/")
