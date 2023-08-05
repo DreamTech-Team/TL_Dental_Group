@@ -1,11 +1,8 @@
 package com.dreamtech.tldental.controllers;
 
-import java.io.Console;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import javax.swing.text.html.Option;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
