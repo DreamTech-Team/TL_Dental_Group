@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 
 import java.text.Normalizer;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -37,7 +39,7 @@ public class News {
     private int highlight;
 
     @Column(name = "create_at")
-    private LocalDateTime createAt;
+    private ZonedDateTime createAt;
 
     @ManyToMany
     @JoinTable(
@@ -49,7 +51,7 @@ public class News {
 
     @PrePersist
     protected void onCreate() {
-        createAt = LocalDateTime.now();
+        createAt = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         this.slug = Utils.generateSlug(title);
     }
 
@@ -158,11 +160,11 @@ public class News {
         this.highlight = highlight;
     }
 
-    public LocalDateTime getCreateAt() {
+    public ZonedDateTime getCreateAt() {
         return createAt;
     }
 
-    public void setCreateAt(LocalDateTime createAt) {
+    public void setCreateAt(ZonedDateTime createAt) {
         this.createAt = createAt;
     }
 }

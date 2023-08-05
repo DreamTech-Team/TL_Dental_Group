@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Min;
 
 import java.text.Normalizer;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -45,7 +47,7 @@ public class Product {
     private int highlight;
 
     @Column(name = "create_at")
-    private LocalDateTime createAt;
+    private ZonedDateTime createAt;
 
     @ManyToOne
     @JoinColumn(name = "fk_category", nullable = false)
@@ -53,7 +55,7 @@ public class Product {
 
     @PrePersist
     protected void onCreate() {
-        createAt = LocalDateTime.now();
+        createAt = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         this.slug = Utils.generateSlug(name);
     }
 
@@ -162,11 +164,11 @@ public class Product {
         this.highlight = highlight;
     }
 
-    public LocalDateTime getCreateAt() {
+    public ZonedDateTime getCreateAt() {
         return createAt;
     }
 
-    public void setCreateAt(LocalDateTime createAt) {
+    public void setCreateAt(ZonedDateTime createAt) {
         this.createAt = createAt;
     }
 
