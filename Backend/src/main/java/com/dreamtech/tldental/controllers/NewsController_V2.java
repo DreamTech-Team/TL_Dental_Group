@@ -231,7 +231,7 @@ public class NewsController_V2 {
     // GET ALL HIGHLIGHT NEWS
     @GetMapping("/highlight")
     ResponseEntity<ResponseObject> getHighlightNews() {
-        List<Object[]> foundNews = repository.findHighlightNews();
+        List<News> foundNews = repository.findHighlightNews();
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject("ok", "Get all highlight news successfully", foundNews)
         );

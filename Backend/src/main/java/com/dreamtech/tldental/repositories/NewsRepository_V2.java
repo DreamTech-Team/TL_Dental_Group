@@ -20,7 +20,7 @@ public interface NewsRepository_V2 extends JpaRepository<News, String> {
     Long countByTitleContainingIgnoreCaseAndTagsSlugIn(String title, List<String> tagSlugs);
     Long countByTitleContainingIgnoreCase(String title);
     @Query("SELECT n FROM News n WHERE n.highlight <> 0")
-    List<Object[]> findHighlightNews();
+    List<News> findHighlightNews();
 
     @Query("SELECT n FROM News n WHERE EXTRACT(MONTH FROM n.createAt) = :month")
     List<Object[]> findNewsByMonth(@Param("month") int month);
