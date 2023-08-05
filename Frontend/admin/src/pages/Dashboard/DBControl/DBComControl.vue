@@ -10,9 +10,9 @@ import useAxios, { type DataResponse } from '@/hooks/useAxios';
 const deps = ref([]);
 const lengthArray = ref([]);
 const totalProduct = ref();
-const getProducts = useAxios<DataResponse>('get', '/products', {}, {}, deps.value);
+const getProducts = useAxios<DataResponse>('get', '/products/total', {}, {}, deps.value);
 const getCompanies = useAxios<DataResponse>('get', '/company', {}, {}, deps.value);
-const getActivites = useAxios<DataResponse>('get', '/news', {}, {}, deps.value);
+const getActivites = useAxios<DataResponse>('get', '/news/total', {}, {}, deps.value);
 
 //Init value stored data
 const products = ref();
@@ -22,7 +22,7 @@ const activities = ref();
 //Get total products
 watch(getProducts.response, () => {
   totalProduct.value = getProducts.response.value?.data;
-  products.value = totalProduct.value?.total;
+  products.value = totalProduct.value;
 });
 
 //Get total companies
@@ -34,7 +34,7 @@ watch(getCompanies.response, () => {
 //Get total activities
 watch(getActivites.response, () => {
   totalProduct.value = getActivites.response.value?.data;
-  activities.value = totalProduct.value?.total;
+  activities.value = totalProduct.value;
 });
 
 //Properties

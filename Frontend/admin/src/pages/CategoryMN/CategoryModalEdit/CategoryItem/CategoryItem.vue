@@ -11,7 +11,7 @@ const props = defineProps({
   handleBtn: { type: Function, required: true }
 });
 
-const emit = defineEmits(['open-modal-edit']);
+const emit = defineEmits(['open-modal-edit', 'delete-element']);
 </script>
 <template>
   <div :class="$style.container">
@@ -20,7 +20,7 @@ const emit = defineEmits(['open-modal-edit']);
       <p>{{ props.data?.title }}</p>
     </div>
     <div :class="$style.container__right" v-if="props.openEdit">
-      <button :class="$style['btn-room-trash']">
+      <button :class="$style['btn-room-trash']" @click="emit('delete-element')">
         <font-awesome-icon :icon="faTrash" />
       </button>
       <button

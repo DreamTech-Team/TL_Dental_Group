@@ -50,7 +50,6 @@ const handleCurrentChange = (val: number) => {
           :background="background"
           layout="prev, pager, next, jumper"
           :total="totals"
-          :class="$style['custom-pagination']"
         />
       </div>
     </el-config-provider>
