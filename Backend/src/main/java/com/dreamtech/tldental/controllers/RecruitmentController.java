@@ -342,6 +342,27 @@ public class RecruitmentController {
         }
     }
 
+    @GetMapping("/{id}")
+    ResponseEntity<ResponseObject> getById(@PathVariable("id") String id) {
+        try {
+            Optional<Recruitment> recruitment = recruitmentRepository.findById(id);
+
+            if (recruitment.isPresent()) {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok", "Get recruitment successfully", recruitment.get())
+                );
+            }
+
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                new ResponseObject("failed", "Cannot found your data", "")
+            );
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                    new ResponseObject("failed", exception.getMessage(), "")
+            );
+        }
+    }
+
     @PostMapping(value="/")
     public ResponseEntity<ResponseObject> addRecruitment(@RequestBody Recruitment entity) {
 
