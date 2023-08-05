@@ -3,6 +3,8 @@ package com.dreamtech.tldental.models;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Entity
 @Table(name="InformationCompany")
@@ -18,16 +20,16 @@ public class InformationCompany {
     private String type;
 
     @Column(name = "create_at")
-    private LocalDateTime createAt;
+    private ZonedDateTime createAt;
 
     @PrePersist
     protected void onCreate() {
-        createAt = LocalDateTime.now();
+        createAt = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
     }
 
     @PreUpdate
     protected void onUpdate() {
-        createAt = LocalDateTime.now();
+        createAt = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
     }
 
     public InformationCompany() {
@@ -73,11 +75,11 @@ public class InformationCompany {
         this.content = content;
     }
 
-    public LocalDateTime getCreateAt() {
+    public ZonedDateTime getCreateAt() {
         return createAt;
     }
 
-    public void setCreateAt(LocalDateTime createAt) {
+    public void setCreateAt(ZonedDateTime createAt) {
         this.createAt = createAt;
     }
 }

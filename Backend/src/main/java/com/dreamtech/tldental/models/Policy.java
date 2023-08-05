@@ -4,6 +4,8 @@ import com.dreamtech.tldental.utils.Utils;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 
 @Entity
@@ -26,11 +28,11 @@ public class Policy {
     private String detail;
 
     @Column(name = "create_at")
-    private LocalDateTime createAt;
+    private ZonedDateTime createAt;
 
     @PrePersist
     protected void onCreate() {
-        createAt = LocalDateTime.now();
+        createAt = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         this.slug = Utils.generateSlug(name);
     }
 
@@ -100,11 +102,11 @@ public class Policy {
         this.detail = detail;
     }
 
-    public LocalDateTime getCreateAt() {
+    public ZonedDateTime getCreateAt() {
         return createAt;
     }
 
-    public void setCreateAt(LocalDateTime createAt) {
+    public void setCreateAt(ZonedDateTime createAt) {
         this.createAt = createAt;
     }
 }

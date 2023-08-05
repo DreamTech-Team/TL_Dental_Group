@@ -2,6 +2,7 @@ package com.dreamtech.tldental.controllers;
 
 import com.dreamtech.tldental.models.*;
 import com.dreamtech.tldental.repositories.CategoryFKRepository;
+import com.dreamtech.tldental.repositories.CompanyRepository;
 import com.dreamtech.tldental.repositories.ContentPageRepository;
 import com.dreamtech.tldental.repositories.ProductRepository;
 import com.dreamtech.tldental.services.IStorageService;
@@ -24,6 +25,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -32,11 +37,20 @@ public class ProductController {
     @Autowired
     private ProductRepository repository;
     @Autowired
+    private CompanyRepository companyRepository;
+    @Autowired
     private CategoryFKRepository categoryFKRepository;
     @Autowired
     private ContentPageRepository contentPageRepository;
     @Autowired
     private IStorageService storageService;
+
+    private final Executor executor;
+
+    @Autowired
+    public ProductController() {
+        this.executor = Executors.newFixedThreadPool(5);
+    }
 
     // GET ALL WITH FILTER
     @GetMapping("")
@@ -161,39 +175,59 @@ public class ProductController {
                 existingProduct.setPrice(updatedProduct.getPrice());
                 existingProduct.setPriceSale(updatedProduct.getPriceSale());
 
-                // Check main image was changed
-                if (mainImg != null && mainImg.getSize() != 0) {
-                    String oldMainImgUrl = existingProduct.getMainImg();
-                    int index = oldImgs.indexOf(oldMainImgUrl);
-                    if (index != -1) {
-                        oldImgs.remove(index);
-                    }
-
-                    storageService.deleteFile(oldMainImgUrl);
-                    String mainImgFileName = storageService.storeFile(mainImg);
-                    existingProduct.setMainImg(mainImgFileName);
-                    oldImgs.add(0, mainImgFileName);
-                }
-
-                if (removeImgs != null) {
-                    // Remove images at old imgs
-                    for (int i = 0; i < removeImgs.size(); i++) {
-                        int index = oldImgs.indexOf(removeImgs.get(i));
+                // Thực hiện các công việc trong đa luồng
+                CompletableFuture<Void> mainImageFuture = CompletableFuture.runAsync(() -> {
+                    // Check main image was changed
+                    if (mainImg != null && mainImg.getSize() != 0) {
+                        String oldMainImgUrl = existingProduct.getMainImg();
+                        int index = oldImgs.indexOf(oldMainImgUrl);
                         if (index != -1) {
-                            storageService.deleteFile(removeImgs.get(i));
                             oldImgs.remove(index);
                         }
+
+                        storageService.deleteFile(oldMainImgUrl);
+                        String mainImgFileName = storageService.storeFile(mainImg);
+                        existingProduct.setMainImg(mainImgFileName);
+                        oldImgs.add(0, mainImgFileName);
                     }
-                }
+                }, executor);
+
+                CompletableFuture<Void> removeImagesFuture = CompletableFuture.runAsync(() -> {
+                    if (removeImgs != null) {
+                        // Remove images at old imgs
+                        for (int i = 0; i < removeImgs.size(); i++) {
+                            int index = oldImgs.indexOf(removeImgs.get(i));
+                            if (index != -1) {
+                                storageService.deleteFile(removeImgs.get(i));
+                                oldImgs.remove(index);
+                            }
+                        }
+                    }
+                }, executor);
+
+                List<CompletableFuture<Void>> uploadImageFutures = new ArrayList<>();
                 if (imgs != null) {
                     // Upload new imgs
                     for (int i = 0; i < imgs.size(); i++) {
-                        if (imgs.get(i).getSize() != 0) {
-                            String fileName = storageService.storeFile(imgs.get(i));
-                            oldImgs.add(fileName);
-                        }
+                        final int index = i;
+                        CompletableFuture<Void> uploadImageFuture = CompletableFuture.runAsync(() -> {
+                            if (imgs.get(index).getSize() != 0) {
+                                String fileName = storageService.storeFile(imgs.get(index));
+                                oldImgs.add(fileName);
+                            }
+                        }, executor);
+                        uploadImageFutures.add(uploadImageFuture);
                     }
                 }
+
+                // Đợi tất cả các luồng đa nhiệm hoàn thành
+                CompletableFuture<Void> allFutures = CompletableFuture.allOf(
+                        mainImageFuture,
+                        removeImagesFuture,
+                        CompletableFuture.allOf(uploadImageFutures.toArray(new CompletableFuture[0]))
+                );
+                allFutures.join();
+
                 existingProduct.setImgs(oldImgs.toString());
 
                 Product savedProduct = repository.save(existingProduct);
@@ -216,12 +250,17 @@ public class ProductController {
     // DELETE PRODUCT
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseObject> deleteProduct(@PathVariable String id) {
-        System.out.println(id);
         try {
             Optional<Product> foundProduct = repository.findById(id);
-            System.out.println(foundProduct);
 
             if (foundProduct.isPresent()) {
+                Company company = companyRepository.findByOutstandingProductId(foundProduct.get().getId());
+                if (company != null) {
+                    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
+                            new ResponseObject("failed", "Failed to delete product. Exist a company has this product!", "")
+                    );
+                }
+
                 // Delete images on cloudinary
                 if (foundProduct.get().getImgs().length() > 2) {
                     List<String> imgs = Utils.convertStringToImages(foundProduct.get().getImgs());
@@ -282,15 +321,25 @@ public class ProductController {
             }
             String mainImgFileName = storageService.storeFile(mainImg);
             product.setMainImg(mainImgFileName);
+
             product.setName(product.getName().trim());
 
-            List<String> imgList = new ArrayList<>();
-            imgList.add(mainImgFileName);
+            List<CompletableFuture<String>> futures = new ArrayList<>();
+            // Thực hiện đa luồng cho việc tải lên ảnh mới
             for (int i = 0; i < imgs.size(); i++) {
-                String fileName = storageService.storeFile(imgs.get(i));
-                imgList.add(fileName);
+                int index = i;
+                CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+                    String fileName = storageService.storeFile(imgs.get(index));
+                    return fileName;
+                }, executor);
+                futures.add(future);
             }
+            // Đợi tất cả các luồng đa nhiệm hoàn thành và lấy kết quả
+            List<String> imgList = futures.stream()
+                    .map(CompletableFuture::join)
+                    .collect(Collectors.toList());
 
+            imgList.add(0, mainImgFileName);
             product.setImgs(imgList.toString());
 
             return ResponseEntity.status(HttpStatus.OK).body(

@@ -1,6 +1,8 @@
 package com.dreamtech.tldental.models;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import com.dreamtech.tldental.utils.Utils;
 
@@ -47,11 +49,11 @@ public class Recruitment {
     private String slug;
 
     @Column(name = "create_at")
-    private LocalDateTime createAt;
+    private ZonedDateTime createAt;
 
     @PrePersist
     protected void onCreate() {
-        createAt = LocalDateTime.now();
+        createAt = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         this.slug = Utils.generateSlug(title);
     }
 
@@ -84,7 +86,7 @@ public class Recruitment {
 
     public Recruitment(String id, String title, String position, String location, String department,
             String working_form, String description, String requirements, String benefit, String contact,
-            String treatment, String slug, LocalDateTime createAt) {
+            String treatment, String slug, ZonedDateTime createAt) {
         this.id = id;
         this.title = title;
         this.position = position;
@@ -196,11 +198,11 @@ public class Recruitment {
         this.slug = slug;
     }
 
-    public LocalDateTime getCreateAt() {
+    public ZonedDateTime getCreateAt() {
         return createAt;
     }
 
-    public void setCreateAt(LocalDateTime createAt) {
+    public void setCreateAt(ZonedDateTime createAt) {
         this.createAt = createAt;
     }
 
