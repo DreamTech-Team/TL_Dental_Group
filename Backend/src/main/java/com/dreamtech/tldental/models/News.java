@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 
 import java.text.Normalizer;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 @Entity
 @Table(name="News")
@@ -36,6 +38,14 @@ public class News {
 
     @Column(name = "create_at")
     private LocalDateTime createAt;
+
+    @ManyToMany
+    @JoinTable(
+            name = "news_tags",
+            joinColumns = @JoinColumn(name = "news_id"),
+            inverseJoinColumns = @JoinColumn(name = "tags_id")
+    )
+    private Set<Tags> tags = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {
@@ -71,8 +81,17 @@ public class News {
                 ", detail='" + detail + '\'' +
                 ", detailMobile='" + detailMobile + '\'' +
                 ", highlight=" + highlight +
+                ", tags=" + tags +
                 ", createAt=" + createAt +
                 '}';
+    }
+
+    public Set<Tags> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tags> tags) {
+        this.tags = tags;
     }
 
     public String getId() {

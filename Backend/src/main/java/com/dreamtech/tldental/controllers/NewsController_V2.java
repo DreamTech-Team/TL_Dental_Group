@@ -1,14 +1,13 @@
 package com.dreamtech.tldental.controllers;
 
 import com.dreamtech.tldental.models.*;
-import com.dreamtech.tldental.repositories.ContentPageRepository;
-import com.dreamtech.tldental.repositories.NewsRepository;
-import com.dreamtech.tldental.repositories.TagsNewsFKRepository;
+import com.dreamtech.tldental.repositories.*;
 import com.dreamtech.tldental.services.IStorageService;
-import com.dreamtech.tldental.utils.Utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -19,15 +18,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/v2/news")
-public class NewsController {
+@RequestMapping("/api/v1/news")
+public class NewsController_V2 {
     @Autowired
-    private NewsRepository repository;
+    private NewsRepository_V2 repository;
     @Autowired
-    private TagsNewsFKRepository fkTagsNewsRepository;
+    private TagsRepository tagsRepository;
     @Autowired
     private ContentPageRepository contentPageRepository;
     @Autowired
@@ -35,7 +35,7 @@ public class NewsController {
 
     // GET ALL NEWS WITH FILTER
     @GetMapping("")
-    ResponseEntity<ResponseObject> getFilter(@RequestParam(value = "key", required = false) String key,
+    ResponseEntity<ResponseObject> getFilter(@RequestParam(value = "key", required = false, defaultValue = "") String key,
                                              @RequestParam(value = "outstanding", required = false) boolean outstanding,
                                              @RequestParam(required = false, defaultValue = "12") String pageSize,
                                              @RequestParam(required = false, defaultValue = "0") String page,
@@ -44,38 +44,35 @@ public class NewsController {
         Sort.Direction sortDirection = sort.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Sort sortByCreateAt = Sort.by(sortDirection, "createAt");
 
-        List<Object[]> newsList;
-        int total;
+        List<News> newsList = null;
         if (filterTags == null) {
-            newsList = repository.findFilteredNews(key, PageRequest
+            newsList = repository.findByTitleContainingIgnoreCase(key, PageRequest
                     .of(Integer.parseInt(page), Integer.parseInt(pageSize), sortByCreateAt));
         } else {
-            newsList = repository.findFilteredNewsByTags(key, filterTags, PageRequest
+            newsList = repository.findByTitleContainingIgnoreCaseAndTagsSlugIn(key, filterTags, PageRequest
                     .of(Integer.parseInt(page), Integer.parseInt(pageSize), sortByCreateAt));
         }
 
-        // Handle data
-        List<Object> combinedList = handleDataNews(newsList);
-        total = combinedList.size();
+        if (outstanding == true) {
+            newsList = newsList.stream()
+                    .filter(news -> news.getHighlight() == 1)
+                    .collect(Collectors.toList());
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Query news successfully", new DataPageObject(total, page, pageSize, combinedList))
+                new ResponseObject("ok", "Query news successfully", new DataPageObject(newsList.size(), page, pageSize, newsList))
         );
     }
 
     @GetMapping("/total")
-    ResponseEntity<ResponseObject> getTotal(@RequestParam(value = "key", required = false) String key,
+    ResponseEntity<ResponseObject> getTotal(@RequestParam(value = "key", required = false, defaultValue = "") String key,
                                             @RequestParam(required = false) List<String> filterTags) {
-        List<Object[]> newsList;
+        Long total = 0L;
         if (filterTags == null) {
-            newsList = repository.findFilteredNews(key, null);
+            total = repository.countByTitleContainingIgnoreCase(key);
         } else {
-            newsList = repository.findFilteredNewsByTags(key, filterTags, null);
+            total = repository.countByTitleContainingIgnoreCaseAndTagsSlugIn(key, filterTags);
         }
-
-        // Handle data
-        List<Object> combinedList = handleDataNews(newsList);
-        int total = combinedList.size();
 
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject("ok", "Query total successfully", total)
@@ -86,9 +83,8 @@ public class NewsController {
     @GetMapping("/month")
     ResponseEntity<ResponseObject> getNewsByMonth(@RequestParam int month) {
         List<Object[]> foundNews = repository.findNewsByMonth(month);
-        List<Object> data = handleDataNews(foundNews);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Get news by month (" + month + ") successfully", data)
+                new ResponseObject("ok", "Get news by month (" + month + ") successfully", foundNews)
         );
     }
 
@@ -134,13 +130,16 @@ public class NewsController {
             newsData.setImg(mainImgFileName);
             newsData.setTitle(newsData.getTitle().trim());
 
-            // Create News
-            News resNews = repository.save(newsData);
-
             // Create FK_TAGS_NEWS
             for (int i = 0; i < tags.size(); i++) {
-                fkTagsNewsRepository.save(new TagsNewsFK(resNews.getId(), tags.get(i)));
+                Tags tag = tagsRepository.findById(tags.get(i)).orElse(null);
+                if (tag != null) {
+                    newsData.getTags().add(tag);
+                }
             }
+
+            // Create News
+            News resNews = repository.save(newsData);
 
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObject("ok", "Insert news successfully", resNews)
@@ -160,9 +159,9 @@ public class NewsController {
                                               @RequestParam(value = "tags", required = false) List<String> tags) throws JsonProcessingException {
         // Convert String to JSON
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         News newsData = objectMapper.readValue(data, News.class);
-
-        System.out.println(tags.get(0));
 
         Optional<News> foundNews = repository.findById(id);
         if (foundNews.isPresent()) {
@@ -173,10 +172,13 @@ public class NewsController {
 
             // Update FK_NEWS_TAGS if it was changed
             if (tags.size() > 0) {
-                fkTagsNewsRepository.deleteByFkNews(foundNews.get().getId());
+                newsData.getTags().clear();
                 // Create FK_TAGS_NEWS
                 for (int i = 0; i < tags.size(); i++) {
-                    fkTagsNewsRepository.save(new TagsNewsFK(foundNews.get().getId(), tags.get(i)));
+                    Tags tag = tagsRepository.findById(tags.get(i)).orElse(null);
+                    if (tag != null) {
+                        newsData.getTags().add(tag);
+                    }
                 }
             }
 
@@ -208,11 +210,9 @@ public class NewsController {
         if (foundNews.isPresent()) {
             storageService.deleteFile(foundNews.get().getImg());
 
-            fkTagsNewsRepository.deleteByFkNews(foundNews.get().getId());
-
             repository.deleteById(id);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Deleted news successfully", foundNews)
+                    new ResponseObject("ok", "Deleted news successfully", "")
             );
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
@@ -226,9 +226,8 @@ public class NewsController {
     @GetMapping("/highlight")
     ResponseEntity<ResponseObject> getHighlightNews() {
         List<Object[]> foundNews = repository.findHighlightNews();
-        List<Object> data = handleDataNews(foundNews);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Get all highlight news successfully", data)
+                new ResponseObject("ok", "Get all highlight news successfully", foundNews)
         );
     }
 
@@ -238,7 +237,6 @@ public class NewsController {
                                                    @RequestParam int highlight) {
         Optional<News> foundNews = Optional.ofNullable(repository.findBySlug(slug));
         foundNews.get().setHighlight(highlight);
-        System.out.println(highlight);
         return foundNews.isPresent() ?
                 ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObject("ok", "Update highlight news successfully", repository.save(foundNews.get()))
@@ -305,39 +303,5 @@ public class NewsController {
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                 new ResponseObject("failed", "Cannot found your data", "")
         );
-    }
-
-
-    private List<Object> handleDataNews(List<Object[]> srcList) {
-        List<Object> combinedList = new ArrayList<>(); // Result
-        List<Object> tempList = new ArrayList<>(); // Store tags of a news
-        Map<String, Object> tempObj = new HashMap<String, Object>();
-
-        for (Object[] result : srcList) {
-            News news = (News) result[0];
-            Tags tags = (Tags) result[1];
-
-            if (tempList.isEmpty() || !((News) tempObj.get("news")).getId().equals(news.getId())) {
-                if (!tempList.isEmpty()) {
-                    // Check news has not tag
-                    if (tempList.get(0) == null)
-                        tempList.remove(0);
-                    tempObj.put("tags", tempList);
-                    combinedList.add(tempObj);
-                    tempObj = new HashMap<>();
-                }
-                tempList = new ArrayList<>();
-                tempObj.put("news", news);
-            }
-
-            tempList.add(tags);
-        }
-        if (tempObj.containsKey("news")) {
-            if (tempList.get(0) == null)
-                tempList.remove(0);
-            tempObj.put("tags", tempList);
-            combinedList.add(tempObj);
-        }
-        return combinedList;
     }
 }
