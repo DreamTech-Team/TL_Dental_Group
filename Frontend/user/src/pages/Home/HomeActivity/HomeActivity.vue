@@ -5,17 +5,15 @@ import { RouterLink } from 'vue-router';
 
 //GET DATA
 interface Item {
-  news: {
-    id: string;
-    title: string;
-    img: string;
-    slug: string;
-    summary: string;
-    detail: string;
-    detailMobile: string;
-    highlight: number;
-    createAt: string;
-  };
+  id: string;
+  title: string;
+  img: string;
+  slug: string;
+  summary: string;
+  detail: string;
+  detailMobile: string;
+  highlight: number;
+  createAt: string;
   tags: [
     {
       id: string;
@@ -51,6 +49,7 @@ const uniqueTags = ref([
 
 //Properties
 let resizeListener: () => void;
+const isPhone = ref(false);
 const selectedItem = ref(-1);
 const sourceElement = ref<HTMLElement | null>(null);
 const itemWidth = ref(0);
@@ -64,9 +63,9 @@ const { response } = useAxios<DataResponse>('get', '/news/highlight', {}, {}, de
 watch(response, () => {
   feedbacks.value = response.value?.data;
   if (window.innerWidth < 739) {
-    activities.value = feedbacks.value.map((item) => item.news).slice(0, 4);
+    activities.value = feedbacks.value.map((item) => item).slice(0, 4);
   } else {
-    activities.value = feedbacks.value.map((item) => item.news).slice(0, 8);
+    activities.value = feedbacks.value.map((item) => item).slice(0, 8);
   }
 
   const allTags = feedbacks.value.flatMap((item) => item.tags);
@@ -83,24 +82,20 @@ watch(response, () => {
 const filterTags = (selectedTag: string) => {
   if (selectedTag === 'all') {
     if (window.innerWidth < 739) {
-      activities.value = feedbacks.value.map((item) => item.news).slice(0, 4);
+      activities.value = feedbacks.value.map((item) => item).slice(0, 4);
     } else {
-      activities.value = feedbacks.value.map((item) => item.news).slice(0, 8);
+      activities.value = feedbacks.value.map((item) => item).slice(0, 8);
     }
   } else {
     if (window.innerWidth < 739) {
       activities.value = feedbacks.value
         .filter((item) => item.tags.some((tag) => tag.name === selectedTag))
-        .map((item) => item.news)
         .slice(0, 4);
     } else {
       activities.value = feedbacks.value
         .filter((item) => item.tags.some((tag) => tag.name === selectedTag))
-        .map((item) => item.news)
         .slice(0, 8);
     }
-
-    console.log(activities.value);
   }
 };
 
@@ -109,8 +104,11 @@ const setTags = (temp: string) => {
   filterTags(temp);
 };
 
-const handleClick = (index: number) => {
+const startHold = (index: number) => {
   selectedItem.value = index;
+};
+const endHold = () => {
+  selectedItem.value = -1;
 };
 
 onMounted(() => {
@@ -120,6 +118,7 @@ onMounted(() => {
     if (window.innerWidth >= 739) {
       itemWidth.value = (width - 200) / 4;
     } else {
+      isPhone.value = true;
       itemWidth.value = (width - 35) / 2;
     }
   }
@@ -129,6 +128,7 @@ onMounted(() => {
       if (window.innerWidth >= 739) {
         itemWidth.value = (width - 200) / 4;
       } else {
+        isPhone.value = true;
         itemWidth.value = (width - 35) / 2;
       }
     }
@@ -170,12 +170,14 @@ onUnmounted(() => {
       </button>
     </div>
     <div :class="$style['home__activities-grid']" ref="sourceElement">
-      <div
+      <router-link
         v-for="(activity, index) in activities"
         :key="index"
         :class="$style['home__activities-item']"
         :style="{ width: itemWidth + 'px' }"
-        @click="handleClick(index)"
+        @touchstart="isPhone ? startHold(index) : ''"
+        @touchend="isPhone ? endHold() : ''"
+        :to="'/tintuc/' + activity.slug"
       >
         <img :src="activity.img" alt="activity" />
         <div
@@ -187,7 +189,7 @@ onUnmounted(() => {
             <span>{{ activity.summary }}</span>
           </div>
         </div>
-      </div>
+      </router-link>
     </div>
   </div>
 </template>

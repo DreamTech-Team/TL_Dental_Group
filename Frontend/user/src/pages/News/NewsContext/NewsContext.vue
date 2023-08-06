@@ -7,17 +7,15 @@ import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 //GET DATA
 interface ItemRS {
-  news: {
-    id: string;
-    title: string;
-    img: string;
-    slug: string;
-    summary: string;
-    detail: string;
-    detailMobile: string;
-    highlight: 0;
-    createAt: string;
-  };
+  id: string;
+  title: string;
+  img: string;
+  slug: string;
+  summary: string;
+  detail: string;
+  detailMobile: string;
+  highlight: number;
+  createAt: string;
   tags: [
     {
       id: string;
@@ -42,8 +40,8 @@ const content = defineProps({
     type: Number,
     required: false
   },
-  sortStatus: {
-    type: String,
+  popularStatus: {
+    type: Boolean,
     require: false
   },
   path: {
@@ -63,13 +61,13 @@ const currentPage = ref(content && content.prsPage ? content.prsPage + 1 : 1);
 const listData = ref<ItemRS[]>();
 const addData = ref<ItemRS[]>();
 const filterTags = ref();
-const sort = ref();
+const popular = ref();
 const pageSize = ref(8);
 const isDesktop = ref(true);
 
 watch(content, () => {
   listData.value = content.listItem;
-  sort.value = content.sortStatus;
+  popular.value = content.popularStatus;
   filterTags.value = content.path;
 });
 
@@ -106,7 +104,8 @@ const readMore = () => {
   currentPage.value++;
   const { response } = useAxios<DataResponse>(
     'get',
-    `/news?${filterTags.value}&sort=${sort.value}&page=${currentPage.value}&pageSize=8`,
+    // eslint-disable-next-line max-len
+    `/news?${filterTags.value}&sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
     {},
     {},
     deps.value
@@ -151,19 +150,19 @@ onUnmounted(() => {
         :class="$style['news__context-item']"
         v-for="(item, index) in displayNews"
         :key="index"
-        @click="linkDetail(item.news.slug)"
+        @click="linkDetail(item.slug)"
       >
         <div :class="$style['news__item-left']">
-          <img :src="item.news.img" alt="BGItem" />
+          <img :src="item.img" alt="BGItem" />
         </div>
         <div :class="$style['news__item-right']">
           <div :class="$style['news__item-date']">
-            <p>{{ formatDate(item.news.createAt) }}</p>
+            <p>{{ formatDate(item.createAt) }}</p>
             <span></span>
           </div>
-          <h4>{{ item.news.title }}</h4>
+          <h4>{{ item.title }}</h4>
           <div :class="$style['news__item-summary']">
-            <span v-html="item.news.summary"></span>
+            <span v-html="item.summary"></span>
           </div>
           <div :class="$style['news__item-footage']">
             <div :class="$style['news__footage-line']"></div>

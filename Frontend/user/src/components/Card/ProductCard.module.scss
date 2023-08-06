@@ -337,7 +337,7 @@
           position: absolute;
           flex-direction: column;
           top: 15%;
-          right: 5%;
+          right: 2%;
           align-items: center;
           &-sticker {
             width: 100%;
@@ -356,8 +356,8 @@
           display: flex;
           position: absolute;
           flex-direction: column;
-          top: 38%;
-          right: 5%;
+          top: 40%;
+          right: 2%;
           align-items: center;
           width: 3.5rem;
           &-sticker {
@@ -376,8 +376,8 @@
           display: flex;
           position: absolute;
           flex-direction: column;
-          top: 61%;
-          right: 5%;
+          top: 65%;
+          right: 2%;
           align-items: center;
           width: 3.5rem;
           &-sticker {
@@ -435,10 +435,10 @@
           color: #ffffff;
           text-transform: uppercase;
           font-weight: 700;
-          top: -16px;
+          top: -15px;
           right: 5px;
           z-index: 2;
-          font-size: 0.65rem;
+          font-size: 0.6rem;
         }
       }
 
@@ -448,7 +448,7 @@
         align-items: center;
         &-logo {
           width: auto;
-          height: 0.8rem;
+          height: 1rem;
           margin: 0.5rem 1rem 0.5rem 1.5rem;
           margin-left: 1rem;
         }

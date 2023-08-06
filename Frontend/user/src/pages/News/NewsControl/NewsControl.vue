@@ -65,6 +65,11 @@ const handleOverlay = () => {
 
 const selectItem1 = (index: number) => {
   activeSort.value = index;
+
+  emits('update-sort', {
+    sort: availableSorts.value[index]
+  });
+
   setTimeout(() => {
     isCustomSelectListOpen1.value = false;
   }, 250);

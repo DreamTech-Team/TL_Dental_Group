@@ -7,17 +7,15 @@ import { RouterLink } from 'vue-router';
 import { useRoute } from 'vue-router';
 
 interface News {
-  news: {
-    id: string;
-    title: string;
-    img: string;
-    slug: string;
-    summary: string;
-    detail: string;
-    detailMobile: string;
-    highlight: number;
-    createAt: string;
-  };
+  id: string;
+  title: string;
+  img: string;
+  slug: string;
+  summary: string;
+  detail: string;
+  detailMobile: string;
+  highlight: number;
+  createAt: string;
   tags: [
     {
       id: string;
@@ -192,8 +190,8 @@ if (route.path.startsWith('/tintuc')) {
     news.value = getNews.response.value?.data?.data;
     news.value.forEach((item) => {
       const news = {
-        slug: item.news.slug,
-        name: item.news.title
+        slug: item.slug,
+        name: item.title
       };
       predefinedItems.value.push(news);
     });

@@ -36,10 +36,13 @@ watch(response, () => {
   content.value.title = response.value?.data?.heading?.title;
   content.value.description = response.value?.data?.heading?.content;
   content.value.listrs[0].title = response.value?.data?.subItem1?.title;
+  content.value.listrs[0].icon = response.value?.data?.subItem1?.image;
   content.value.listrs[0].description = response.value?.data?.subItem1?.content;
   content.value.listrs[1].title = response.value?.data?.subItem2?.title;
+  content.value.listrs[1].icon = response.value?.data?.subItem2?.image;
   content.value.listrs[1].description = response.value?.data?.subItem2?.content;
   content.value.listrs[2].title = response.value?.data?.subItem3?.title;
+  content.value.listrs[2].icon = response.value?.data?.subItem3?.image;
   content.value.listrs[2].description = response.value?.data?.subItem3?.content;
 });
 </script>

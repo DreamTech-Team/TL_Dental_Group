@@ -13,7 +13,7 @@ interface Item {
 }
 
 const path = ref('');
-const sort = ref('desc');
+const popular = ref(false);
 const deps = ref([]);
 const dataContext = ref([]);
 const currentPage = ref(0);
@@ -28,7 +28,7 @@ watch(getTotal.response, () => {
 //Get default data
 const { response } = useAxios<DataResponse>(
   'get',
-  `/news?sort=${sort.value}&page=${currentPage.value}&pageSize=8`,
+  `/news?sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
   {},
   {},
   deps.value
@@ -39,8 +39,26 @@ watch(response, () => {
 
 //Sort
 const onUpdateSort = (data: { sort: string }) => {
-  console.log(data.sort);
+  if (data.sort === 'Phổ biến') {
+    popular.value = true;
+  } else {
+    popular.value = false;
+  }
 };
+
+watch(popular, () => {
+  const updateSlug = useAxios<DataResponse>(
+    'get',
+    `/news?${path.value}&sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
+    {},
+    {},
+    deps.value
+  );
+
+  watch(updateSlug.response, () => {
+    dataContext.value = updateSlug.response.value?.data?.data;
+  });
+});
 
 //Update when change slug
 const onUpdateSlug = (data: { listrs: Item[] }) => {
@@ -49,7 +67,7 @@ const onUpdateSlug = (data: { listrs: Item[] }) => {
 
   const updateSlug = useAxios<DataResponse>(
     'get',
-    `/news?${path.value}&sort=${sort.value}&page=${currentPage.value}&pageSize=8`,
+    `/news?${path.value}&sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
     {},
     {},
     deps.value
@@ -68,7 +86,7 @@ const updateCurrentPage = (currentIdx: number) => {
 watch(currentPage, () => {
   const { response } = useAxios<DataResponse>(
     'get',
-    `/news?${path.value}&sort=${sort.value}&page=${currentPage.value}&pageSize=8`,
+    `/news?${path.value}&sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
     {},
     {},
     deps.value
@@ -85,7 +103,7 @@ watch(currentPage, () => {
     <control @update-slug="onUpdateSlug" @update-sort="onUpdateSort" />
     <context
       :list-item="dataContext"
-      :sort-status="sort"
+      :popular-status="popular"
       :path="path"
       :prs-page="currentPage"
       :totalPage="totalPage"
