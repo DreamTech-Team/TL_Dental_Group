@@ -12,7 +12,8 @@ import { category } from './ProductCategory/ProductCategory';
 import IcSortDown from '@/assets/icons/IcSortDown.svg';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import {
   faArrowDownAZ,
   faArrowDownShortWide,
@@ -20,68 +21,73 @@ import {
   faBars
 } from '@fortawesome/free-solid-svg-icons';
 
-const categories = [
-  {
-    title: 'Vật liệu chỉnh nha ABC',
-    data: [
-      {
-        name: 'Lò xo chỉnh nha'
-      },
-      {
-        name: 'Kềm chỉnh nha'
-      },
-      {
-        name: 'Thun chỉnh chỉnh nha'
-      },
-      {
-        name: 'Chỉ chỉnh nha'
-      },
-      {
-        name: 'Kẹp gấp mắc cài'
-      }
-    ]
-  },
-  {
-    title: 'Vật liệu chỉnh nha ADC',
-    data: [
-      {
-        name: 'Lò xo chỉnh nha'
-      },
-      {
-        name: 'Kềm chỉnh nha'
-      },
-      {
-        name: 'Thun chỉnh chỉnh nha'
-      },
-      {
-        name: 'Chỉ chỉnh nha'
-      },
-      {
-        name: 'Kẹp gấp mắc cài'
-      }
-    ]
-  },
-  {
-    title: 'Vật liệu chỉnh nha XYZ',
-    data: [
-      {
-        name: 'Lò xo chỉnh nha'
-      },
-      {
-        name: 'Kềm chỉnh nha'
-      },
-      {
-        name: 'Thun chỉnh chỉnh nha'
-      },
-      {
-        name: 'Chỉ chỉnh nha'
-      },
-      {
-        name: 'Kẹp gấp mắc cài'
-      }
-    ]
-  }
-];
+interface ProductItem {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  priceSale: number;
+  summary: string;
+  description: string;
+  mainImg: string;
+  imgs: string;
+  highlight: number;
+  createAt: string;
+  fkCategory: {
+    id: string;
+    companyId: {
+      id: string;
+      name: string;
+      logo: string;
+      description: string;
+      highlight: number;
+      slug: string;
+      createAt: string;
+      outstandingProductId: string;
+    };
+    cate1Id: {
+      id: string;
+      title: string;
+      img: string;
+      highlight: 3;
+      slug: string;
+      createAt: string;
+    };
+    cate2Id: {
+      id: string;
+      title: string;
+      slug: string;
+      createAt: string;
+    };
+  };
+}
+
+interface Item {
+  id: string;
+  name: string;
+  src: string;
+  company: string;
+  price: string;
+}
+
+const deps = ref([]);
+const dataRes = ref([]);
+const filterAllProduct = ref([]);
+// Gọi hàm useAxios để lấy response, error, và isLoading
+const { response, error, isLoading } = useAxios<DataResponse>(
+  'get',
+  '/products',
+  {},
+  {},
+  deps.value
+);
+
+// Truy xuất giá trị response.value và gán vào responseData
+watch(response, () => {
+  dataRes.value = response?.value?.data;
+  filterAllProduct.value = response?.value?.data?.data;
+  // console.log(filterAllProduct.value);
+});
 
 const currentPage = ref(1);
 const pageSize = ref(12);
@@ -138,7 +144,10 @@ const handlePageChange = (page: number) => {
 const displayedProducts = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
-  return products.slice(start, end);
+  return filterAllProduct.value.slice(start, end);
+});
+watch(response, () => {
+  console.log(displayedProducts);
 });
 
 onMounted(() => {
@@ -161,13 +170,12 @@ window.addEventListener('resize', checkScreenSize);
         <div :class="$style['product__content-sort']">
           <p :class="$style['product__content-sort--info']">
             Hiển thị <strong>{{ (currentPage - 1) * pageSize + 1 }}</strong> đến
-            <strong>{{ Math.min(currentPage * pageSize, products.length) }}</strong> trên
-            <strong>{{ Math.ceil(products.length) }}</strong> kết quả
+            <strong>{{ Math.min(currentPage * pageSize, filterAllProduct.length) }}</strong> trên
+            <strong>{{ Math.ceil(filterAllProduct.length) }}</strong> kết quả
           </p>
 
           <div :class="$style['product__content-sort--type']" @click="toggleDropdown">
             <p>{{ selectedOption }}</p>
-            <!-- <img :src="IcSortDown" alt="sort down" /> -->
             <font-awesome-icon :icon="faCaretDown" />
           </div>
 
@@ -244,7 +252,7 @@ window.addEventListener('resize', checkScreenSize);
         </div>
         <div>
           <base-pagination
-            :total="Math.ceil(products.length / pageSize)"
+            :total="Math.ceil(filterAllProduct.length / pageSize)"
             :current-page="currentPage"
             :page-size="pageSize"
             @current-change="handlePageChange"
