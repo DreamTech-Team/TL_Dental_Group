@@ -1,7 +1,9 @@
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
 import { ref } from 'vue';
 import Swal from 'sweetalert2';
 import styles from './ModalUpdateContent.module.scss';
+import Editor from '@tinymce/tinymce-vue';
 
 const props = defineProps({
   contentEdit: {
@@ -11,20 +13,19 @@ const props = defineProps({
   handleUpdated: {
     type: Function,
     required: true
-  }
+  },
+  limitContent: { type: Number, required: true },
+  hiddenCustomize: { type: Boolean, required: true }
 });
 
 const edited = ref(props.contentEdit);
 const emit = defineEmits(['isFocus', 'close']);
+const hiddenMore = ref(props.limitContent > props.contentEdit.length || props.limitContent === -1);
 
 const updateTitle = (e: Event, index: number) => {
   const target = e.target as HTMLInputElement;
   edited.value[index].title = target.value;
-};
-
-const updateContent = (e: Event, index: number) => {
-  const target = e.target as HTMLInputElement;
-  edited.value[index].content = target.value;
+  // console.log(hiddenMore.value, edited.value.length === 0 && !hiddenMore.value);
 };
 
 const handleDeleteContent = (index: number) => {
@@ -42,12 +43,21 @@ const handleDeleteContent = (index: number) => {
   }).then((result) => {
     if (result.isDenied) {
       edited.value.splice(index, 1);
+      hiddenMore.value = props.limitContent > edited.value.length || props.limitContent === -1;
+      // console.log(hiddenMore.value, props.limitContent, edited.value.length);
     }
   });
 };
 
 const handleAddContent = (index: number) => {
   edited.value.splice(index + 1, 0, { title: '', content: '' });
+  hiddenMore.value = props.limitContent > edited.value.length || props.limitContent === -1;
+};
+
+const handleChangeContent = (e: any, index: number) => {
+  const target = e.level.content;
+  edited.value[index].content = target;
+  // console.log(target);
 };
 
 const handleModalCancel = () => {
@@ -149,14 +159,44 @@ const handleModalUpdate = () => {
             </div>
             <div :class="$style['container__modal-update-block-item-content']">
               <p>Nội dung mô tả</p>
-              <textarea
-                id="content"
-                placeholder="Nhập nội dung mô tả"
-                v-model="item.content"
-                @input="(e) => updateContent(e, Number(index))"
-              ></textarea>
+              <editor
+                :id="`edid${index}`"
+                allowedEvents="onChange"
+                :onChange="(e: any) => handleChangeContent(e, Number(index))"
+                api-key="y70bvcufdhcs3t72wuylxllnf0jyum0u7nf31vzvgvdliy26"
+                :initial-value="item.content"
+                :init="{
+                  selector: `textarea#edid${index}`,
+                  placeholder: 'Nhập tiêu đề',
+                  height: 200,
+                  width: 587,
+                  menubar: false,
+                  plugins: [
+                    'advlist',
+                    'autolink',
+                    'lists',
+                    'link',
+                    'image',
+                    'charmap',
+                    'preview',
+                    'anchor',
+                    'searchreplace',
+                    'visualblocks',
+                    'fullscreen',
+                    'insertdatetime',
+                    'media',
+                    'table',
+                    'help',
+                    'wordcount'
+                  ],
+                  toolbar:
+                    'undo redo | casechange blocks | formatselect | bold italic backcolor forecolor | \
+           alignleft aligncenter alignright alignjustify | \
+           bullist numlst outdent indent | removeformat | code table help'
+                }"
+              />
             </div>
-            <div :class="$style['container__modal-update-add']">
+            <div v-if="!hiddenCustomize" :class="$style['container__modal-update-add']">
               <div
                 :class="[
                   $style['container__modal-update-add-block'],
@@ -204,6 +244,7 @@ const handleModalUpdate = () => {
                 <div :class="$style['container__modal-update-add-sub-text']">Xóa nội dung</div>
               </div>
               <div
+                v-if="hiddenMore"
                 :class="[
                   $style['container__modal-update-add-block'],
                   $style['container__modal-update-add-plus']
@@ -256,52 +297,6 @@ const handleModalUpdate = () => {
           :class="[$style['container__modal-update-add'], $style['container__modal-update-empty']]"
           v-if="edited.length === 0"
         >
-          <div
-            :class="[
-              $style['container__modal-update-add-block'],
-              $style['container__modal-update-add-sub']
-            ]"
-            @click="handleDeleteContent(0)"
-          >
-            <svg
-              viewBox="0 -12 32 32"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
-              fill="#000000"
-            >
-              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-              <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-              <g id="SVGRepo_iconCarrier">
-                <title>minus</title>
-                <desc>Created with Sketch Beta.</desc>
-                <defs></defs>
-                <g
-                  id="Page-1"
-                  stroke="none"
-                  stroke-width="1"
-                  fill="none"
-                  fill-rule="evenodd"
-                  sketch:type="MSPage"
-                >
-                  <g
-                    id="Icon-Set-Filled"
-                    sketch:type="MSLayerGroup"
-                    transform="translate(-414.000000, -1049.000000)"
-                    fill="#000000"
-                  >
-                    <path
-                      d="M442,1049 L418,1049 C415.791,1049 414,1050.79 414,1053 C414,1055.21 415.791,1057 418,1057 L442,1057 C444.209,1057 446,1055.21 446,1053 C446,1050.79 444.209,1049 442,1049"
-                      id="minus"
-                      sketch:type="MSShapeGroup"
-                    ></path>
-                  </g>
-                </g>
-              </g>
-            </svg>
-            <div :class="$style['container__modal-update-add-sub-text']">Xóa nội dung</div>
-          </div>
           <div
             :class="[
               $style['container__modal-update-add-block'],

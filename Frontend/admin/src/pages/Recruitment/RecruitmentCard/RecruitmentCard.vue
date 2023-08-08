@@ -1,16 +1,24 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, type Ref, type PropType } from 'vue';
 import { ic_add } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 
+interface CardElementItem {
+  icon: { link: string; style: string };
+  title: { content: string; style: string };
+  content: { content: string; style: string };
+  image: { link: string; style: string };
+}
+
 const props = defineProps({
-  items: { type: Object, required: true },
-  content: Object,
-  style: String,
-  onSelected: Number
+  items: { type: Object as unknown as PropType<CardElementItem[]>, required: true },
+  content: { type: Object, required: false },
+  style: { type: String, required: false },
+  onSelected: { type: Number, required: false }
 });
 
 const indexSelected = ref(0);
 const onActive = ref(-1);
+const listItems: Ref<CardElementItem[]> = ref(props.items || []);
 
 const selectedContent = (index: any) => {
   if (screen.width > 739) {
@@ -23,15 +31,23 @@ const selectedContent = (index: any) => {
   }
 };
 
+watch(
+  () => props.items,
+  (value) => {
+    listItems.value = value;
+  }
+);
+
 onMounted(() => {
   // console.log(document.getElementById(`type5-${indexSelected.value}`)?.style.top);
-  console.log(props.items);
+  // console.log(listItems.value);
+  if (props.style === 'type3') console.log(props.items);
 });
 </script>
 
 <template>
   <div
-    v-for="(item, index) in props.items"
+    v-for="(item, index) in listItems"
     :class="
       style !== 'type4'
         ? [
@@ -52,7 +68,7 @@ onMounted(() => {
           : $style[`${style}-block`]
       "
     >
-      <div :class="$style['container__card-icon']" v-if="item.icon !== ''">
+      <div :class="$style['container__card-icon']" v-if="item.icon.link !== ''">
         <div
           :class="[
             $style['container__card-icon-block'],
@@ -97,23 +113,10 @@ onMounted(() => {
         <div>
           <div
             :class="$style[`container__card-${style}-content`]"
-            v-if="item.content.content !== ''"
-          >
-            {{ item.content.content }}
-          </div>
-          <div
-            :class="$style[`container__card-${style}-content`]"
-            v-else-if="item.content.style !== ''"
-          >
-            <ul>
-              <li><span>Thứ 2 - 6 :</span> <span>08:00 - 17:00</span></li>
-              <li><span>Thứ 2 - 6 :</span> <span>08:00 - 17:00</span></li>
-              <li><span>Chủ Nhật :</span> <span>Nghỉ</span></li>
-            </ul>
-          </div>
+            v-html="item.content.content"
+          ></div>
         </div>
       </div>
-
       <div :class="$style['container__card-image']" v-if="item.image.style !== ''">
         <img :src="item.image.link" alt="none" />
       </div>
@@ -127,20 +130,8 @@ onMounted(() => {
             <div>
               <div
                 :class="$style[`container__card-${style}-bg2-content`]"
-                v-if="item.content.content !== ''"
-              >
-                {{ item.content.content }}
-              </div>
-              <div
-                :class="$style[`container__card-${style}-bg2-content`]"
-                v-else-if="item.content.style !== ''"
-              >
-                <ul>
-                  <li><span>Thứ 2 - 6 :</span> <span>08:00 - 17:00</span></li>
-                  <li><span>Thứ 2 - 6 :</span> <span>08:00 - 17:00</span></li>
-                  <li><span>Chủ Nhật :</span> <span>Nghỉ</span></li>
-                </ul>
-              </div>
+                v-html="item.content.content"
+              ></div>
             </div>
           </div>
         </div>
@@ -154,7 +145,7 @@ onMounted(() => {
       v-for="(item2, index2) in props.content"
       :key="index2"
     >
-      <recruitment-card v-if="index === index2" :items="[item2]" :style="'type5'" />
+      <recruitment-card v-if="index === Number(index2)" :items="[item2]" :style="'type5'" />
     </div>
   </div>
 </template>

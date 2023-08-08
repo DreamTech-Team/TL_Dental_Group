@@ -67,7 +67,7 @@ const editType = ref(1);
 
 const paramAxios = ref();
 
-const getListPolicy = useAxios<DataResponse>('get', '/policy', {}, {}, results.value);
+const getListPolicy = useAxios<DataResponse>('get', '/policy', {}, {}, paramAxios.value);
 
 const removeAccents = (str: string) => {
   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -88,8 +88,9 @@ const displayNews = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
   // console.log(start, end);
-
-  return filteredProducts.value.slice(start, end);
+  if (filteredProducts.value.length > pageSize.value)
+    return filteredProducts.value.slice(start, end);
+  else return filteredProducts.value;
 });
 
 const handleEditPolicy = (item: PolicyDetail) => {
@@ -107,8 +108,8 @@ const handleAddPolicy = () => {
 const handleUpdatePolicy = (item: PolicyDetail, editTypeUpdate = 1) => {
   if (editTypeUpdate === 1) displayNews.value.push(item);
   else {
-    displayNews.value.splice(
-      displayNews.value.findIndex((e: PolicyDetail) => e.id === item.id),
+    results.value.splice(
+      results.value.findIndex((e: PolicyDetail) => e.id === item.id),
       1,
       item
     );
@@ -139,12 +140,15 @@ const handleDeletePolicy = (item: PolicyDetail) => {
 
       watch(deleteCate.response, (value) => {
         console.log(value);
-        displayNews.value.splice(
-          displayNews.value.findIndex((e: PolicyDetail) => e.id === item.id),
+        // displayNews.value.splice(
+        //   displayNews.value.findIndex((e: PolicyDetail) => e.id === item.id),
+        //   1
+        // );
+        results.value.splice(
+          results.value.findIndex((e: PolicyDetail) => e.id === item.id),
           1
         );
-
-        console.log(displayNews.value);
+        console.log(results.value, displayNews.value);
 
         Swal.fire({
           title: 'Xóa chính sách thành công!',

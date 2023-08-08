@@ -1,8 +1,22 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch, type Ref, onMounted } from 'vue';
 
 import { posterItems, visionItems, valueItems } from './RecruitmentHandle';
+import {
+  rec_step1,
+  rec_step2,
+  rec_step3,
+  rec_step4,
+  ic_clock,
+  ic_DaiNgo,
+  ic_light,
+  rec_img1,
+  rec_img2,
+  rec_img3,
+  rec_img4,
+  ic_arrow
+} from '@/assets/imgs/Recruitment/RecruitmentImgs';
 
 import ModalUpdateContent from './ModalUpdateContent/ModalUpdateContent.vue';
 import RecruitmentPoster from './RecruitmentPoster/RecruitmentPoster.vue';
@@ -11,12 +25,30 @@ import RecruitmentValue from './RecruitmentValue/RecruitmentValue.vue';
 import RecruitmentEnviroment from './RecruitmentEnviroment/RecruitmentEnviroment.vue';
 import RecruitmentNavScroll from './RecruitmentNavScroll/RecruitmentNavScroll.vue';
 import RecruitmentWork from './RecruitmentWork/RecruitmentWork.vue';
+import type { DataResponse } from '@/hooks/useAxios';
+import useAxios from '@/hooks/useAxios';
+
+interface CardElementItem {
+  id: string;
+  icon: { link: string; style: string };
+  title: { content: string; style: string };
+  content: { content: string; style: string };
+  image: { link: string; style: string };
+  type: string;
+}
+
+interface ListImage {
+  id: string;
+  image: string;
+  type: string;
+}
 
 const topics = {
   poster: 'poster',
   vision: 'vision',
   value: 'value'
 };
+const iconCard = [ic_clock, ic_DaiNgo, ic_light];
 
 const elementEventRec = ref();
 
@@ -25,15 +57,21 @@ const topicUpdate = ref();
 
 const isOpen = ref(false);
 
-const contentPosterItems = ref(posterItems);
-const contentVisionItems = ref(visionItems);
-const contentValueItems = ref(valueItems);
+const contentPosterItems: Ref<CardElementItem[]> = ref([]);
+const contentVisionItems: Ref<CardElementItem[]> = ref([]);
+const imageVisionItems: Ref<ListImage[]> = ref([]);
+const contentValueItems: Ref<CardElementItem[]> = ref([]);
+const contentValueMainItem = ref();
+const limitContent = ref(-1);
+const hiddenCustomizeModal = ref(false);
+const paramAxios = ref();
 
 const handleEditPoster = () => {
   topicUpdate.value = topics.poster;
+  hiddenCustomizeModal.value = true;
   contentEdit.value = [];
 
-  contentPosterItems.value.forEach((value) =>
+  contentPosterItems.value?.forEach((value) =>
     contentEdit.value.push({
       title: value.title.content,
       content: value.content.content
@@ -44,25 +82,171 @@ const handleEditPoster = () => {
   disableScroll();
 };
 
+const callApiContentPoster = () => {
+  //Lấy nội dung của poster
+  const getContentPoster = useAxios<DataResponse>(
+    'get',
+    '/recruitment/header',
+    {},
+    {},
+    paramAxios.value
+  );
+
+  watch(getContentPoster.response, (value) => {
+    const tmp = value?.data;
+
+    tmp.forEach((value: { [x: string]: any }, index: number) => {
+      contentPosterItems.value.push({
+        id: value.id,
+        icon: {
+          link: iconCard[index],
+          style: `icon${index + 1}`
+        },
+        title: { content: value.title, style: 'type1' },
+        content: { content: value.content, style: 'type1' },
+        image: { link: '', style: '' },
+        type: value.type
+      });
+    });
+
+    // console.log('poster: ', contentPosterItems.value);
+  });
+};
+
+const callApiContentVision = () => {
+  //Lấy nội dung của Vision
+  const getContentVision = useAxios<DataResponse>(
+    'get',
+    '/recruitment/section1',
+    {},
+    {},
+    paramAxios.value
+  );
+
+  watch(getContentVision.error, (value) => console.log(value));
+
+  watch(getContentVision.response, (value) => {
+    const dataArr = value?.data;
+
+    imageVisionItems.value[0] = {
+      id: dataArr.image1.id,
+      image: dataArr.image1.image,
+      type: dataArr.image1.type
+    };
+    imageVisionItems.value[1] = {
+      id: dataArr.image2.id,
+      image: dataArr.image2.image,
+      type: dataArr.image2.type
+    };
+
+    contentVisionItems.value.push({
+      id: dataArr.subItem1.id,
+      icon: {
+        link: '',
+        style: ''
+      },
+      title: { content: dataArr.subItem1.title, style: 'type2' },
+      content: { content: dataArr.subItem1.content, style: 'type2' },
+      image: { link: '', style: '' },
+      type: dataArr.subItem1.type
+    });
+    contentVisionItems.value.push({
+      id: dataArr.subItem2.id,
+      icon: {
+        link: '',
+        style: ''
+      },
+      title: { content: dataArr.subItem2.title, style: 'type2' },
+      content: { content: dataArr.subItem2.content, style: 'type2' },
+      image: { link: '', style: '' },
+      type: dataArr.subItem2.type
+    });
+  });
+};
+
+const callApiContentValue = () => {
+  //Lấy nội dung của Value
+  const getContentValue = useAxios<DataResponse>(
+    'get',
+    '/recruitment/section2',
+    {},
+    {},
+    paramAxios.value
+  );
+
+  watch(getContentValue.error, (value) => console.log(value));
+
+  watch(getContentValue.response, (value) => {
+    const tmp = value?.data;
+    contentValueItems.value = [];
+
+    tmp.subItem.forEach((value: { [x: string]: any }) => {
+      contentValueItems.value.push({
+        id: value.id,
+        icon: {
+          link: '',
+          style: ''
+        },
+        title: { content: value.title, style: 'type3' },
+        content: { content: value.content, style: 'type3' },
+        image: { link: '', style: '' },
+        type: value.type
+      });
+    });
+
+    contentValueMainItem.value = {
+      id: tmp.mainItem.id,
+      content: tmp.mainItem.content,
+      type: tmp.mainItem.type
+    };
+  });
+};
+
 const handleUpdatePoster = (newContent: any) => {
   topicUpdate.value = '';
-  contentPosterItems.value = [];
+  hiddenCustomizeModal.value = false;
+  const newContentArray: CardElementItem[] = [];
+  const dataPoster: any = [];
 
-  newContent.forEach((value: any, index: number) => {
-    contentPosterItems.value.push({
+  newContent.forEach((value: { title: string; content: any }, index: number) => {
+    dataPoster.push({
+      id: contentPosterItems.value[index].id,
+      title: value.title,
+      content: value.content,
+      type: contentPosterItems.value[index].type
+    });
+
+    newContentArray.push({
+      id: contentPosterItems.value[index].id,
       icon: {
-        link: posterItems[index].icon.link || posterItems[0].icon.link,
-        style: posterItems[index].icon.style || posterItems[0].icon.style
+        link: iconCard[index],
+        style: `icon${index + 1}`
       },
       title: { content: value.title, style: 'type1' },
       content: { content: value.content, style: 'type1' },
-      image: { link: '', style: '' }
+      image: { link: '', style: '' },
+      type: contentPosterItems.value[0].type
     });
+  });
+
+  const patchContentPoster = useAxios<DataResponse>(
+    'patch',
+    `/recruitment/header`,
+    dataPoster,
+    {},
+    paramAxios.value
+  );
+
+  watch(patchContentPoster.response, (value) => {
+    contentPosterItems.value = [];
+    contentPosterItems.value = newContentArray;
+    console.log(value);
   });
 };
 
 const handleEditVision = () => {
   topicUpdate.value = topics.vision;
+  hiddenCustomizeModal.value = true;
   contentEdit.value = [];
 
   contentVisionItems.value.forEach((value) =>
@@ -78,15 +262,53 @@ const handleEditVision = () => {
 
 const handleUpdateVision = (newContent: any) => {
   topicUpdate.value = '';
-  contentVisionItems.value = [];
+  hiddenCustomizeModal.value = true;
+  const newContentArray: CardElementItem[] = [];
+  const dataVision: any = [];
 
-  newContent.forEach((value: any) => {
-    contentVisionItems.value.push({
-      icon: '',
+  newContent.forEach((value: any, index: number) => {
+    dataVision.push({
+      id: contentVisionItems.value[index].id,
+      title: value.title,
+      content: value.content,
+      type: contentVisionItems.value[index].type
+    });
+
+    newContentArray.push({
+      id: contentVisionItems.value[index].id,
+      icon: { link: '', style: '' },
       title: { content: value.title, style: 'type2' },
       content: { content: value.content, style: 'type2' },
-      image: { link: '', style: '' }
+      image: { link: '', style: '' },
+      type: contentVisionItems.value[index].type
     });
+  });
+
+  const objData = {
+    subItem1: dataVision[0],
+    subItem2: dataVision[1],
+    image1: imageVisionItems.value[0],
+    image2: imageVisionItems.value[1]
+  };
+  const data = new FormData();
+  data.append('data', JSON.stringify(objData));
+
+  const patchContentVision = useAxios<DataResponse>(
+    'patch',
+    `/recruitment/section1`,
+    data,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    },
+    paramAxios.value
+  );
+
+  watch(patchContentVision.response, (value) => {
+    contentVisionItems.value = [];
+    contentVisionItems.value = newContentArray;
+    console.log(value);
   });
 };
 
@@ -107,15 +329,56 @@ const handleEditValue = () => {
 
 const handleUpdateValue = (newContent: any) => {
   topicUpdate.value = '';
-  contentValueItems.value = [];
+  const subItems: { id: string; title: string; content: string; type: string }[] = [];
+  const listDelete = [];
+  // contentValueItems.value = [];
 
-  newContent.forEach((value: any) => {
-    contentValueItems.value.push({
-      icon: '',
-      title: { content: value.title, style: 'type3' },
-      content: { content: value.content, style: 'type3' },
-      image: { link: '', style: '' }
+  // newContent.forEach((value: any) => {
+  //   contentValueItems.value.push({
+  //     id: '',
+  //     icon: { link: '', style: '' },
+  //     title: { content: value.title, style: 'type3' },
+  //     content: { content: value.content, style: 'type3' },
+  //     image: { link: '', style: '' },
+  //     type: ''
+  //   });
+  // });
+
+  newContent.forEach((value: { title: any; content: any }, index: number) => {
+    const idItem = contentValueItems.value.length > index ? contentValueItems.value[index].id : '';
+    subItems.push({
+      id: idItem,
+      title: value.title,
+      content: value.content,
+      type: contentValueItems.value[0].type
     });
+  });
+
+  if (newContent.length < contentValueItems.value.length) {
+    for (let i = newContent.length - 1; i < contentValueItems.value.length; i++)
+      listDelete.push(contentValueItems.value[i].id);
+  }
+
+  const dataUpdate = {
+    mainItem: contentValueMainItem.value,
+    subItem: subItems,
+    deletedSubItem: listDelete
+  };
+  console.log(dataUpdate);
+
+  const patchContentValue = useAxios<DataResponse>(
+    'patch',
+    '/recruitment/section2',
+    dataUpdate,
+    {},
+    paramAxios.value
+  );
+
+  watch(patchContentValue.error, (error) => console.log(error));
+
+  watch(patchContentValue.response, (value) => {
+    callApiContentValue();
+    console.log(value);
   });
 };
 
@@ -164,6 +427,12 @@ const hanldeScrollToVacancies = () => {
   const element = elementEventRec.value;
   element?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
 };
+
+onMounted(() => {
+  callApiContentPoster();
+  callApiContentVision();
+  callApiContentValue();
+});
 </script>
 <template>
   <div :class="$style.container">
@@ -172,17 +441,26 @@ const hanldeScrollToVacancies = () => {
       @close="handleModalClose"
       :contentEdit="contentEdit"
       :handleUpdated="handleUpdated"
+      :limit-content="limitContent"
+      :hidden-customize="hiddenCustomizeModal"
     />
+    <!-- <div v-if="contentPosterItems.length !== 0"> -->
     <recruitment-poster
       :hanldeScrollToVacancies="hanldeScrollToVacancies"
       :handleEditPoster="handleEditPoster"
       :contentPosterItems="contentPosterItems"
     />
+    <!-- </div> -->
     <recruitment-vision
       :handleEditVision="handleEditVision"
       :contentVisionItems="contentVisionItems"
+      :imageVisionItems="imageVisionItems"
     />
-    <recruitment-value :handleEditValue="handleEditValue" :contentValueItems="contentValueItems" />
+    <recruitment-value
+      :handleEditValue="handleEditValue"
+      :contentValueItems="contentValueItems"
+      :contentValueMainItem="contentValueMainItem"
+    />
     <recruitment-enviroment />
     <recruitment-nav-scroll />
     <recruitment-work :getElementRec="getElementRec" />

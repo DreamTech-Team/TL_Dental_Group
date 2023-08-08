@@ -1,15 +1,22 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, type PropType, type Ref } from 'vue';
 import { girl1, girl2 } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 import RecruitmentCard from '../RecruitmentCard/RecruitmentCard.vue';
+
+interface CardElementItem {
+  icon: { link: string; style: string };
+  title: { content: string; style: string };
+  content: { content: string; style: string };
+  image: { link: string; style: string };
+}
 
 const props = defineProps({
   hanldeScrollToVacancies: { type: Function, required: true },
   handleEditPoster: { type: Function, required: true },
-  contentPosterItems: { type: Object, required: true }
+  contentPosterItems: { type: Object as unknown as PropType<CardElementItem[]>, required: true }
 });
 
-const posterItems = ref();
+const posterItems: Ref<CardElementItem[]> = ref(props.contentPosterItems || []);
 
 watch(
   () => props.contentPosterItems,
@@ -21,6 +28,7 @@ watch(
 
 onMounted(() => {
   posterItems.value = props.contentPosterItems;
+  // console.log(posterItems.value);
 });
 </script>
 <template>
