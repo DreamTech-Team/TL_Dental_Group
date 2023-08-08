@@ -3,17 +3,15 @@ import { ref, watch, onMounted, onUnmounted } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 interface Item {
-  news: {
-    id: string;
-    title: string;
-    img: string;
-    slug: string;
-    summary: string;
-    detail: string;
-    detailMobile: string;
-    highlight: number;
-    createAt: string;
-  };
+  id: string;
+  title: string;
+  img: string;
+  slug: string;
+  summary: string;
+  detail: string;
+  detailMobile: string;
+  highlight: number;
+  createAt: string;
   tags: [
     {
       id: string;
@@ -39,19 +37,7 @@ const feedbacks = ref<Item[]>([]);
 const selectedItem = ref(-1);
 
 //Init structure data
-const activities = ref([
-  {
-    id: '',
-    title: '',
-    img: '',
-    slug: '',
-    summary: '',
-    detail: '',
-    detailMobile: '',
-    highlight: 1,
-    createAt: ''
-  }
-]);
+const activities = ref<Item[]>([]);
 const uniqueTags = ref([
   {
     id: '',
@@ -65,20 +51,18 @@ const uniqueTags = ref([
 const filterTags = (selectedTag: string) => {
   if (selectedTag === 'all') {
     if (window.innerWidth < 739) {
-      activities.value = feedbacks.value.map((item) => item.news).slice(0, 4);
+      activities.value = feedbacks.value.map((item) => item).slice(0, 4);
     } else {
-      activities.value = feedbacks.value.map((item) => item.news).slice(0, 8);
+      activities.value = feedbacks.value.map((item) => item).slice(0, 8);
     }
   } else {
     if (window.innerWidth < 739) {
       activities.value = feedbacks.value
         .filter((item) => item.tags.some((tag) => tag.name === selectedTag))
-        .map((item) => item.news)
         .slice(0, 4);
     } else {
       activities.value = feedbacks.value
         .filter((item) => item.tags.some((tag) => tag.name === selectedTag))
-        .map((item) => item.news)
         .slice(0, 8);
     }
   }
@@ -97,9 +81,9 @@ const handleClick = (index: number) => {
 watch(response, () => {
   feedbacks.value = response.value?.data;
   if (window.innerWidth < 739) {
-    activities.value = feedbacks.value.map((item) => item.news).slice(0, 4);
+    activities.value = feedbacks.value.map((item) => item).slice(0, 4);
   } else {
-    activities.value = feedbacks.value.map((item) => item.news).slice(0, 8);
+    activities.value = feedbacks.value.map((item) => item).slice(0, 8);
   }
 
   const allTags = feedbacks.value.flatMap((item) => item.tags);

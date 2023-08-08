@@ -125,8 +125,8 @@ const handleChangeAdd = (dataAdded: Tags) => {
 };
 
 const handleUpdateData = (data: { newsAdd: News }) => {
-  listNews.value.unshift(data.newsAdd);
-  // console.log('data add ' + data.newsAdd);
+  listNews.value.push(data.newsAdd);
+  console.log('data add ' + data.newsAdd);
 };
 
 watchEffect(() => {

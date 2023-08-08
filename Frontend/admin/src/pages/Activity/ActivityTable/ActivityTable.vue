@@ -9,7 +9,7 @@ import { format } from 'date-fns';
 import Pagination from '@/components/Pagination/BasePagination.vue';
 import UpdateActivity from './ModalActivity/UpdateActivity.vue';
 // import { activities } from '../Activity';
-import useAxios, { DataResponse } from '@/hooks/useAxios';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 interface News {
   news: {
@@ -185,14 +185,48 @@ const handlePageChange = (page: number) => {
 
 //Hàm giới hạn chiều dài khung
 const truncateText = (text: string, maxLength: number) => {
-  if (text.length > maxLength) {
+  if (text && text.length > maxLength) {
     return text.slice(0, maxLength) + '...';
   }
   return text;
 };
 
-const formatDateTime = (dateTimeString: string, outputFormat = 'dd/MM/yyyy HH:mm:ss'): string => {
-  return format(new Date(dateTimeString), outputFormat);
+// const formatDateTime = (dateTimeString: string, outputFormat = 'dd/MM/yyyy HH:mm:ss'): string => {
+//   return format(new Date(dateTimeString), outputFormat);
+// };
+
+const formatDateTime = (dateTimeStr: string) => {
+  // const date = new Date(dateTimeStr);
+  // const day = String(date.getDate()).padStart(2, '0');
+  // const month = String(date.getMonth() + 1).padStart(2, '0');
+  // const year = String(date.getFullYear());
+  // const hours = String(date.getHours()).padStart(2, '0');
+  // const minutes = String(date.getMinutes()).padStart(2, '0');
+  // const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  // return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+
+  // const date = new Date(dateTimeStr);
+  // const vietnamTime = date.toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+  // return vietnamTime;
+
+  const singaporeDateTime = new Date(dateTimeStr); // Chuyển chuỗi thành đối tượng Date
+  const singaporeOffset = singaporeDateTime.getTimezoneOffset() / 60;
+
+  // Chuyển đổi thời gian từ múi giờ Singapore sang múi giờ Việt Nam
+  const vietnamDateTime = new Date(singaporeDateTime.getTime() + singaporeOffset * 3600000);
+
+  const formattedDateTime = vietnamDateTime.toLocaleString('en-US', {
+    timeZone: 'Asia/Ho_Chi_Minh',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+
+  return formattedDateTime;
 };
 
 const deleteActivity = async (id: string) => {

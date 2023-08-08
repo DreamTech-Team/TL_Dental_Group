@@ -316,19 +316,10 @@ const submitForm = () => {
     const formData = new FormData();
     // tags: listIdTags.value //step 1
     formData.append('img', avatarFile.value as Blob); // step 1
-    // listIdTags.value.forEach((item: string) => {
-    //   console.log(item);
-    //   formData.append('tags', '[' + item.replace(/"/g, '') + ']');
-    // });
-    formData.append(
-      'tags',
-      listIdTags.value
-        .map((item) => {
-          return item.replace(/"/g, '');
-        })
-        .toString()
-        .replace(/"/g, '')
-    );
+
+    listIdTags.value.map((item) => {
+      formData.append('tags', item);
+    });
     //["id1"]
     formData.append('data', JSON.stringify(object));
     // console.log(formData);
