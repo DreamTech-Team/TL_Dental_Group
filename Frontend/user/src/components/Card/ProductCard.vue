@@ -1,110 +1,69 @@
 <script setup lang="ts">
-import LogoNoBg from '@/assets/imgs/logo_nobg.png';
-import ProductPic from '@/assets/imgs/Product/product.png';
-import LogoCompany from '@/assets/imgs/Product/logoCompany.png';
 import OkSticker from '@/assets/imgs/Product/GroupOk.svg';
 import Insurance from '@/assets/imgs/Product/GroupInsurance.svg';
 import SPSticker from '@/assets/imgs/Product/GroupSupport.svg';
-import { useRouter } from 'vue-router';
-import { watch, watchEffect, type PropType } from 'vue';
-import { products } from '../../pages/Product/ProductHandle';
+import { type PropType, ref, watch } from 'vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import router from '@/router/index';
 
-interface ProductItem {
-  id: string;
-  name: string;
-  slug: string;
+export interface Product {
+  nameProduct: string;
   price: number;
-  priceSale: number;
   summary: string;
-  description: string;
-  mainImg: string;
-  imgs: string;
-  highlight: number;
-  createAt: string;
-  fkCategory: {
-    id: string;
-    companyId: {
-      id: string;
-      name: string;
-      logo: string;
-      description: string;
-      highlight: number;
-      slug: string;
-      createAt: string;
-      outstandingProductId: string;
-    };
-    cate1Id: {
-      id: string;
-      title: string;
-      img: string;
-      highlight: 3;
-      slug: string;
-      createAt: string;
-    };
-    cate2Id: {
-      id: string;
-      title: string;
-      slug: string;
-      createAt: string;
-    };
-  };
-}
-
-interface Item {
-  id: string;
-  name: string;
-  src: string;
+  tag: string;
   company: string;
-  price: string;
+  image: string;
+  brand: string;
+  slug: string;
 }
 
-const router = useRouter();
-
-const goToDetailPage = () => {
-  router.push('/chitiet');
-};
-
-const props = defineProps({
+defineProps({
   product: {
-    type: Object as PropType<ProductItem>,
+    type: Object as PropType<Product>,
     required: true
   }
 });
 
-// Hàm định dạng giá tiền
-const formatPrice = (price: number) => {
-  if (typeof price !== 'number') {
-    return ''; // Nếu price không phải là số, trả về chuỗi rỗng hoặc thông báo lỗi tùy bạn
-  }
-  // Định dạng giá tiền thành chuỗi với phân cách hàng nghìn và ký tự đ
-  return price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+//Get Logo Company
+const logoValue = ref('');
+const deps = ref([]);
+const { response } = useAxios<DataResponse>('get', '/information?type=LOGO', {}, {}, deps.value);
+
+watch(response, () => {
+  logoValue.value = response.value?.data?.logo.content;
+});
+
+//Function 1000 to 1.000
+const formatNumberWithCommas = (num: number) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 
-watch(props.product, () => {
-  console.log(props.product.name);
-});
+//Go to detail Page
+const linkDetail = (slug: string) => {
+  router.push(`/chitiet/${slug}`);
+};
 </script>
 <template>
-  <div :class="$style.card" @click="goToDetailPage">
+  <div :class="$style.card">
     <div :class="$style.card__show">
-      <p :class="$style['card__show--info']">{{ product.description }}</p>
-      <div :class="$style['card__show--button']">Xem chi tiết</div>
+      <p :class="$style['card__show--info']" v-html="product.summary"></p>
+      <div :class="$style['card__show--button']" @click="linkDetail(product.slug)">
+        Xem chi tiết
+      </div>
     </div>
     <div :class="$style.card__header">
       <div :class="$style['card__header--container']">
-        <div :class="$style['card__header--container-wrapcfc']">
-          <div :class="$style['card__header--genuine']">
-            <img :class="$style['card__header--genuine-sticker']" :src="OkSticker" alt="sticker" />
-            <p :class="$style['card__header--genuine-text']">100% chính hãng</p>
-          </div>
-          <div :class="$style['card__header--genuine']">
-            <img :class="$style['card__header--genuine-sticker']" :src="Insurance" alt="sticker" />
-            <p :class="$style['card__header--genuine-text']">Bảo hành 12 tháng</p>
-          </div>
-          <div :class="$style['card__header--genuine']">
-            <img :class="$style['card__header--genuine-sticker']" :src="SPSticker" alt="sticker" />
-            <p :class="$style['card__header--genuine-text']">Hỗ trợ đổi trả</p>
-          </div>
+        <div :class="$style['card__header--genuine']">
+          <img :class="$style['card__header--genuine-sticker']" :src="OkSticker" alt="sticker" />
+          <p :class="$style['card__header--genuine-text']">100% chính hãng</p>
+        </div>
+        <div :class="$style['card__header--insurance']">
+          <img :class="$style['card__header--insurance-sticker']" :src="Insurance" alt="sticker" />
+          <p :class="$style['card__header--insurance-text']">Bảo hành 12 tháng</p>
+        </div>
+        <div :class="$style['card__header--support']">
+          <img :class="$style['card__header--support-sticker']" :src="SPSticker" alt="sticker" />
+          <p :class="$style['card__header--support-text']">Hỗ trợ đổi trả</p>
         </div>
         <div :class="$style['card__header--wgenuine']">
           <div :class="$style['card__header--wgenuine-confirm']"></div>
@@ -112,32 +71,33 @@ watch(props.product, () => {
         </div>
 
         <div :class="$style['card__header--title']">
-          <img :class="$style['card__header--title-logo']" :src="LogoNoBg" alt="logononbg" />
+          <img :class="$style['card__header--title-logo']" :src="logoValue" alt="logononbg" />
           <div :class="$style['card__header--title-content']">
-            <div v-html="product.summary"></div>
-            {{ product.fkCategory.companyId.name }}
+            {{ product.tag }} {{ product.company }}
           </div>
         </div>
-        <div :class="$style['card__header--image']">
-          <img
-            :class="$style['card__header--image-picture']"
-            :src="product.mainImg"
-            alt="product"
-          />
+        <div
+          style="
+            widows: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <img :class="$style['card__header--picture']" :src="product.image" alt="product" />
         </div>
       </div>
     </div>
     <div :class="$style.card__body">
       <p :class="$style['card__body--name']">
-        {{ product.name }}
+        {{ product.nameProduct }}
       </p>
       <div :class="$style['card__body--info']">
-        <img
-          :class="$style['card__body--info-company']"
-          :src="product.fkCategory.companyId.logo"
-          alt="Logo company"
-        />
-        <p :class="$style['card__body--info-price']">{{ formatPrice(product.price) }}</p>
+        <img :class="$style['card__body--info-company']" :src="product.brand" alt="Logo company" />
+        <p :class="$style['card__body--info-price']">
+          {{ formatNumberWithCommas(product.price) }}đ
+        </p>
       </div>
     </div>
   </div>

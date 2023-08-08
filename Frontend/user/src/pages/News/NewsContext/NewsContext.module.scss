@@ -30,6 +30,7 @@
         flex: 2;
 
         img {
+          object-fit: cover;
           width: 100%;
           height: 100%;
           border-top-right-radius: 40%;
@@ -126,10 +127,14 @@
       }
     }
 
-    &-pagination{
+    &-pagination {
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    button {
+      display: none;
     }
   }
 
@@ -260,6 +265,19 @@
 
       &-pagination {
         display: none;
+      }
+
+      button {
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: auto;
+        font-size: 18px;
+        font-weight: 500;
+        color: #0088cc;
+        background-color: white;
+        border: none;
       }
     }
 

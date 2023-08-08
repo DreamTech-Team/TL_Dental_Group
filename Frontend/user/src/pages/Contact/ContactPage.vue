@@ -10,13 +10,15 @@ import MessageV2 from '@/assets/imgs/Contact/MessageV2.png';
 import Close from '@/assets/imgs/Contact/Close.png';
 import { ref } from 'vue';
 
-const pathContact = 'lienhe';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
 
 const isOpen = ref(false);
 </script>
 <template>
   <div :class="$style.contact">
-    <bread-crumb :tags="pathContact" :class="$style.contact__breadcrumb" />
+    <bread-crumb :tags="route.path" :class="$style.contact__breadcrumb" />
     <contact-form />
     <contact-maps />
     <contact-facility />

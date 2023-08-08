@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import router from '@/router/index';
-import Logo from '@/assets/imgs/logo_nobg.png';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 //GET DATA
 const deps = ref([]);
+const nameComp = ref([]);
 const { response } = useAxios<DataResponse>('get', '/home/section3', {}, {}, deps.value);
+const getLogo = useAxios<DataResponse>('get', '/information?type=GENERAL', {}, {}, deps.value);
 
 const content = ref({
   title: ``,
@@ -18,6 +19,10 @@ watch(response, () => {
   content.value.image = response.value?.data?.image;
   content.value.title = response.value?.data?.title;
   content.value.context = response.value?.data?.content;
+});
+
+watch(getLogo.response, () => {
+  nameComp.value = getLogo.response.value?.data?.name.content;
 });
 </script>
 <template>
@@ -32,8 +37,7 @@ watch(response, () => {
       <img :src="content.image" alt="ceo" />
       <div :class="$style['home__intro-description']">
         <div :class="$style['home__intro-logo']">
-          <img :src="Logo" alt="logo" />
-          <h3>Group</h3>
+          <h3>{{ nameComp }}</h3>
         </div>
         <div :class="$style['home__intro-speach']" v-html="content.context"></div>
       </div>

@@ -5,21 +5,110 @@ import Control from './NewsControl/NewsControl.vue';
 import Context from './NewsContext/NewsContext.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
+interface Item {
+  id: string;
+  name: string;
+  slug: string;
+  createAt: string;
+}
+
+const path = ref('');
+const popular = ref(false);
 const deps = ref([]);
 const dataContext = ref([]);
 const currentPage = ref(0);
-const { response } = useAxios<DataResponse>('get', '/news?sort=desc', {}, {}, deps.value);
+const totalPage = ref(0);
+
+//Get total
+const getTotal = useAxios<DataResponse>('get', '/news/total', {}, {}, deps.value);
+watch(getTotal.response, () => {
+  totalPage.value = getTotal.response.value?.data;
+});
+
+//Get default data
+const { response } = useAxios<DataResponse>(
+  'get',
+  `/news?sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
+  {},
+  {},
+  deps.value
+);
 watch(response, () => {
-  console.log(response.value?.data);
   dataContext.value = response.value?.data?.data;
-  currentPage.value = parseInt(response.value?.data?.page);
+});
+
+//Sort
+const onUpdateSort = (data: { sort: string }) => {
+  if (data.sort === 'Phổ biến') {
+    popular.value = true;
+  } else {
+    popular.value = false;
+  }
+};
+
+watch(popular, () => {
+  const updateSlug = useAxios<DataResponse>(
+    'get',
+    `/news?${path.value}&sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
+    {},
+    {},
+    deps.value
+  );
+
+  watch(updateSlug.response, () => {
+    dataContext.value = updateSlug.response.value?.data?.data;
+  });
+});
+
+//Update when change slug
+const onUpdateSlug = (data: { listrs: Item[] }) => {
+  const slugs = data.listrs.map((item) => item.slug);
+  path.value = slugs.map((slug) => `filterTags=${slug}`).join('&');
+
+  const updateSlug = useAxios<DataResponse>(
+    'get',
+    `/news?${path.value}&sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
+    {},
+    {},
+    deps.value
+  );
+
+  watch(updateSlug.response, () => {
+    dataContext.value = updateSlug.response.value?.data?.data;
+  });
+};
+
+//Update current page
+const updateCurrentPage = (currentIdx: number) => {
+  currentPage.value = currentIdx;
+};
+
+watch(currentPage, () => {
+  const { response } = useAxios<DataResponse>(
+    'get',
+    `/news?${path.value}&sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
+    {},
+    {},
+    deps.value
+  );
+
+  watch(response, () => {
+    dataContext.value = response.value?.data?.data;
+  });
 });
 </script>
 <template>
   <div :class="$style.news">
     <banner />
-    <control />
-    <context v-if="dataContext.length > 0" :list-item="dataContext" :prs-page="currentPage" />
+    <control @update-slug="onUpdateSlug" @update-sort="onUpdateSort" />
+    <context
+      :list-item="dataContext"
+      :popular-status="popular"
+      :path="path"
+      :prs-page="currentPage"
+      :totalPage="totalPage"
+      @current-page="updateCurrentPage"
+    />
   </div>
 </template>
 

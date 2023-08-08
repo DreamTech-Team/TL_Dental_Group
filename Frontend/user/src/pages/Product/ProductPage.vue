@@ -7,21 +7,16 @@ import ProductNavigation from './ProductNavigation/ProductNavigation.vue';
 import ServiceQuality from '@/components/ServiceQuality/ServiceQuality.vue';
 import BasePagination from '@/components/Pagination/BasePagination.vue';
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
-import { products } from '../Product/ProductHandle';
+// import { products } from '../Product/ProductHandle';
 import { category } from './ProductCategory/ProductCategory';
 import IcSortDown from '@/assets/icons/IcSortDown.svg';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { computed, onMounted, ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
-import {
-  faArrowDownAZ,
-  faArrowDownShortWide,
-  faFilter,
-  faBars
-} from '@fortawesome/free-solid-svg-icons';
+import { faArrowDownShortWide } from '@fortawesome/free-solid-svg-icons';
 
-interface ProductItem {
+interface Product {
   id: string;
   name: string;
   slug: string;
@@ -63,12 +58,19 @@ interface ProductItem {
 }
 
 interface Item {
-  id: string;
-  name: string;
-  src: string;
+  nameProduct: string;
+  price: number;
+  summary: string;
+  tag: string;
   company: string;
-  price: string;
+  image: string;
+  brand: string;
+  slug: string;
 }
+
+//Init data structure
+const tempproducts = ref([]);
+const products = ref<Item[]>([]);
 
 const deps = ref([]);
 const dataRes = ref([]);
@@ -81,13 +83,6 @@ const { response, error, isLoading } = useAxios<DataResponse>(
   {},
   deps.value
 );
-
-// Truy xuất giá trị response.value và gán vào responseData
-watch(response, () => {
-  dataRes.value = response?.value?.data;
-  filterAllProduct.value = response?.value?.data?.data;
-  // console.log(filterAllProduct.value);
-});
 
 const currentPage = ref(1);
 const pageSize = ref(12);
@@ -141,13 +136,32 @@ const handlePageChange = (page: number) => {
   }
 };
 
+const updateShowResults = () => {
+  products.value = filterAllProduct.value.map((item: Product) => {
+    return {
+      nameProduct: item.name,
+      price: item.price,
+      summary: item.summary,
+      tag: item.fkCategory.cate1Id.title,
+      company: item.fkCategory.companyId.name,
+      image: item.mainImg,
+      brand: item.fkCategory.companyId.logo,
+      slug: item.slug
+    };
+  });
+};
+
+// Truy xuất giá trị response.value và gán vào responseData
+watch(response, () => {
+  dataRes.value = response?.value?.data;
+  filterAllProduct.value = response?.value?.data?.data;
+  updateShowResults();
+});
+
 const displayedProducts = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
-  return filterAllProduct.value.slice(start, end);
-});
-watch(response, () => {
-  console.log(displayedProducts);
+  return products.value.slice(start, end);
 });
 
 onMounted(() => {
@@ -250,7 +264,7 @@ window.addEventListener('resize', checkScreenSize);
             :product="item1"
           />
         </div>
-        <div>
+        <div :class="$style['product__pagination']">
           <base-pagination
             :total="Math.ceil(filterAllProduct.length / pageSize)"
             :current-page="currentPage"

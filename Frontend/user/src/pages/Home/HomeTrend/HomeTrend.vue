@@ -1,78 +1,68 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, onUnmounted } from 'vue';
+import { ref, onMounted, computed, onUnmounted, watch } from 'vue';
 import ProductCard from '@/components/Card/ProductCard.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-const products = [
-  {
-    nameProduct:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép) Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép)',
-    price: '4.000.000đ',
-    description:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO THÔNG TIN SẢN PHẨM - Kẹp gắp đầu cong để gắp mắc cài R6,7 và button.',
-    tag: 'Vật liệu chỉnh nha',
-    company: 'TL Group'
-  },
-  {
-    nameProduct:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép) Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép)',
-    price: '4.000.000đ',
-    description:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO THÔNG TIN SẢN PHẨM - Kẹp gắp đầu cong để gắp mắc cài R6,7 và button.',
-    tag: 'Vật liệu chỉnh nha',
-    company: 'TL Group'
-  },
-  {
-    nameProduct:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép) Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép)',
-    price: '4.000.000đ',
-    description:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO THÔNG TIN SẢN PHẨM - Kẹp gắp đầu cong để gắp mắc cài R6,7 và button.',
-    tag: 'Vật liệu chỉnh nha',
-    company: 'TL Group'
-  },
-  {
-    nameProduct:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép) Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép)',
-    price: '4.000.000đ',
-    description:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO THÔNG TIN SẢN PHẨM - Kẹp gắp đầu cong để gắp mắc cài R6,7 và button.',
-    tag: 'Vật liệu chỉnh nha',
-    company: 'TL Group'
-  },
-  {
-    nameProduct:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép) Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép)',
-    price: '4.000.000đ',
-    description:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO THÔNG TIN SẢN PHẨM - Kẹp gắp đầu cong để gắp mắc cài R6,7 và button.',
-    tag: 'Vật liệu chỉnh nha',
-    company: 'TL Group'
-  },
-  {
-    nameProduct:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép) Kẹp gấp mắc cài R6,7/ kẹp gấp Tube – PMC ORTHO (Sao chép)',
-    price: '4.000.000đ',
-    description:
-      // eslint-disable-next-line max-len
-      'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO THÔNG TIN SẢN PHẨM - Kẹp gắp đầu cong để gắp mắc cài R6,7 và button.',
-    tag: 'Vật liệu chỉnh nha',
-    company: 'TL Group'
-  }
-];
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-//Scroll Properties
+interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  priceSale: number;
+  summary: string;
+  description: string;
+  mainImg: string;
+  imgs: string;
+  highlight: number;
+  createAt: string;
+  fkCategory: {
+    id: string;
+    companyId: {
+      id: string;
+      name: string;
+      logo: string;
+      description: string;
+      highlight: number;
+      slug: string;
+      createAt: string;
+      outstandingProductId: string;
+    };
+    cate1Id: {
+      id: string;
+      title: string;
+      img: string;
+      highlight: 3;
+      slug: string;
+      createAt: string;
+    };
+    cate2Id: {
+      id: string;
+      title: string;
+      slug: string;
+      createAt: string;
+    };
+  };
+}
+
+interface Item {
+  nameProduct: string;
+  price: number;
+  summary: string;
+  tag: string;
+  company: string;
+  image: string;
+  brand: string;
+  slug: string;
+}
+
+//Init data structure
+const tempproducts = ref([]);
+const products = ref<Item[]>([]);
+
+//Properties
+const isPhone = ref(false);
 const MIN_SWIPE_DISTANCE_CM = 3;
 const TOUCH_SENSITIVITY = 20;
 const touchstartX = ref(0);
@@ -83,7 +73,7 @@ const tranfX = ref(0);
 let resizeListener: () => void;
 
 const widthComputed = computed(() => {
-  return wItem.value * products.length + 'px';
+  return wItem.value * products.value.length + 'px';
 });
 
 const widthItemComputed = computed(() => {
@@ -96,13 +86,13 @@ const scrollLeft = () => {
 
 const scrollRight = () => {
   if (window.innerWidth < 739) {
-    if (-tranfX.value + wItem.value * 2 < wItem.value * products.length) {
+    if (-tranfX.value + wItem.value * 2 < wItem.value * products.value.length) {
       tranfX.value -= wItem.value;
     } else {
       tranfX.value = 0;
     }
   } else {
-    if (-tranfX.value + wItem.value * 4 < wItem.value * products.length) {
+    if (-tranfX.value + wItem.value * 4 < wItem.value * products.value.length) {
       tranfX.value -= wItem.value;
     } else {
       tranfX.value = 0;
@@ -134,11 +124,40 @@ const handleTouchend = (e: TouchEvent) => {
   checkDirection();
 };
 
+//Get product highlight
+const deps = ref([]);
+const lenght = ref(0);
+const { response } = useAxios<DataResponse>('get', '/products/highlight', {}, {}, deps.value);
+
+const updateShowResults = () => {
+  products.value = tempproducts.value.map((item: Product) => {
+    return {
+      nameProduct: item.name,
+      price: item.price,
+      summary: item.summary,
+      tag: item.fkCategory.cate1Id.title,
+      company: item.fkCategory.companyId.name,
+      image: item.mainImg,
+      brand: item.fkCategory.companyId.logo,
+      slug: item.slug
+    };
+  });
+  lenght.value = products.value.length;
+};
+
+watch(response, () => {
+  tempproducts.value = response.value?.data.sort(
+    (a: Product, b: Product) => a.highlight - b.highlight
+  );
+  updateShowResults();
+});
+
 onMounted(() => {
   const container = document.getElementById('trend-wrapper');
   if (container) {
     if (window.innerWidth < 739) {
       wItem.value = container.offsetWidth / 2;
+      isPhone.value = true;
     } else {
       wItem.value = container.offsetWidth / 4;
     }
@@ -149,6 +168,7 @@ onMounted(() => {
     if (container) {
       if (window.innerWidth < 739) {
         wItem.value = container.offsetWidth / 2;
+        isPhone.value = true;
       } else {
         wItem.value = container.offsetWidth / 4;
       }
@@ -187,14 +207,18 @@ onUnmounted(() => {
             :key="index"
             :product="item"
             :class="$style['home__trend-item']"
-            :style="{ width: widthItemComputed }"
+            :style="{ width: widthItemComputed, 'max-width': widthItemComputed }"
           />
         </div>
       </div>
-      <button :class="$style['home__trend-left']" @click="scrollLeft">
+      <button v-show="tranfX != 0" :class="$style['home__trend-left']" @click="scrollLeft">
         <font-awesome-icon :icon="faChevronLeft" :class="$style['home__trend-ic']" />
       </button>
-      <button :class="$style['home__trend-right']" @click="scrollRight">
+      <button
+        v-show="(!isPhone && lenght > 4) || (isPhone && lenght > 2)"
+        :class="$style['home__trend-right']"
+        @click="scrollRight"
+      >
         <font-awesome-icon :icon="faChevronRight" :class="$style['home__trend-ic']" />
       </button>
     </div>

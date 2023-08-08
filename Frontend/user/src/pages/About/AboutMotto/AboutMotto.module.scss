@@ -27,13 +27,15 @@
                 background-color: #D7FFFA;
                 padding: 6rem 3rem;
                 border-radius: 2rem;
-                height: 100%;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
 
                 img{
                     width: calc(100vw*0.3333 - 15rem - 1.3rem);
+                    height: calc(100vh*0.333 - 30px);
+                    object-fit: cover;
+                    border-radius: 6px;
                 }
     
                 p{
@@ -44,8 +46,9 @@
                 &-title{
                     font-weight: 700;
                     font-size: $text-2xl;
-                    line-height: 5.5rem;
+                    line-height: 3rem;
                     letter-spacing: 0.02em;
+                    margin: 1.4rem 0;
                 }
 
                 &-content{

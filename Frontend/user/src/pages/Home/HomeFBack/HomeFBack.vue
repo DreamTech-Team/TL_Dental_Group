@@ -4,11 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faStar, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-//GET DATA
-const deps = ref([]);
-const lenght = ref(0);
-const { response } = useAxios<DataResponse>('get', '/home/reviews', {}, {}, deps.value);
-
+//Init data structure
 const feedbacks = ref([
   {
     title: 'DỤNG CỤ CHỈNH NHA ABC',
@@ -19,16 +15,6 @@ const feedbacks = ref([
     rating: 4
   }
 ]);
-
-watch(response, () => {
-  feedbacks.value = response.value?.data;
-  lenght.value = feedbacks.value.length;
-});
-
-const roundNumber = (number: number, decimalPlaces: number) => {
-  const factor = Math.pow(10, decimalPlaces);
-  return Math.round(number * factor) / factor;
-};
 
 //Scroll Properties
 const isPhone = ref(false);
@@ -83,6 +69,22 @@ const handleTouchstart = (e: TouchEvent) => {
 const handleTouchend = (e: TouchEvent) => {
   touchendX.value = e.changedTouches[0].screenX;
   checkDirection();
+};
+
+//Get reviews
+const deps = ref([]);
+const lenght = ref(0);
+const { response } = useAxios<DataResponse>('get', '/home/reviews', {}, {}, deps.value);
+
+watch(response, () => {
+  feedbacks.value = response.value?.data;
+  lenght.value = feedbacks.value.length;
+});
+
+//Function 4.2 to 4.0
+const roundNumber = (number: number, decimalPlaces: number) => {
+  const factor = Math.pow(10, decimalPlaces);
+  return Math.round(number * factor) / factor;
 };
 
 onMounted(() => {

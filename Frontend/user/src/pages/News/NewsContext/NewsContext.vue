@@ -2,22 +2,20 @@
 import Category from '@/components/Category/BaseCategory.vue';
 import Pagination from '@/components/Pagination/BasePagination.vue';
 import router from '@/router/index';
-import { ref, onMounted, onUnmounted, type PropType } from 'vue';
-import { news } from './ContextHandle';
+import { ref, watch, onMounted, onUnmounted, type PropType } from 'vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 //GET DATA
 interface ItemRS {
-  news: {
-    id: string;
-    title: string;
-    img: string;
-    slug: string;
-    summary: string;
-    detail: string;
-    detailMobile: string;
-    highlight: 0;
-    createAt: string;
-  };
+  id: string;
+  title: string;
+  img: string;
+  slug: string;
+  summary: string;
+  detail: string;
+  detailMobile: string;
+  highlight: number;
+  createAt: string;
   tags: [
     {
       id: string;
@@ -28,6 +26,7 @@ interface ItemRS {
   ];
 }
 
+//Props
 const content = defineProps({
   listItem: {
     type: Array as PropType<ItemRS[]>,
@@ -36,12 +35,43 @@ const content = defineProps({
   prsPage: {
     type: Number,
     require: false
+  },
+  totalPage: {
+    type: Number,
+    required: false
+  },
+  popularStatus: {
+    type: Boolean,
+    require: false
+  },
+  path: {
+    type: String,
+    require: false
   }
 });
 
+const emits = defineEmits<{
+  // eslint-disable-next-line no-unused-vars
+  (e: 'current-page', numberPage: number): void;
+}>();
+
+//Properties
+const deps = ref([]);
 const currentPage = ref(content && content.prsPage ? content.prsPage + 1 : 1);
-const pageSize = ref(12);
+const listData = ref<ItemRS[]>();
+const addData = ref<ItemRS[]>();
+const filterTags = ref();
+const popular = ref();
+const pageSize = ref(8);
 const isDesktop = ref(true);
+
+watch(content, () => {
+  listData.value = content.listItem;
+  popular.value = content.popularStatus;
+  filterTags.value = content.path;
+});
+
+const displayNews = ref(listData);
 
 const checkScreenSize = () => {
   if (window.innerWidth < 739) {
@@ -54,18 +84,38 @@ const checkScreenSize = () => {
 const scrollToTop = (top: number) => {
   window.scrollTo({
     top: top,
-    behavior: 'smooth' // Tạo hiệu ứng cuộn mượt
+    behavior: 'smooth'
   });
 };
 
 const handlePageChange = (page: number) => {
-  currentPage.value = page;
+  currentPage.value = page - 1;
+  emits('current-page', currentPage.value);
   if (window.innerWidth < 739) {
     isDesktop.value = false;
     scrollToTop(0);
   } else {
-    scrollToTop(400);
+    scrollToTop(550);
   }
+};
+
+//Button Readmore
+const readMore = () => {
+  currentPage.value++;
+  const { response } = useAxios<DataResponse>(
+    'get',
+    // eslint-disable-next-line max-len
+    `/news?${filterTags.value}&sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
+    {},
+    {},
+    deps.value
+  );
+  watch(response, () => {
+    addData.value = response.value?.data?.data;
+    addData.value?.forEach((item) => {
+      displayNews.value?.push(item);
+    });
+  });
 };
 
 const formatDate = (timestamp: string) => {
@@ -79,10 +129,9 @@ const formatDate = (timestamp: string) => {
   return `${day}/${month}/${year}, ${hours}:${minutes}`;
 };
 
-const displayNews = ref(content.listItem);
-
-const linkDetail = () => {
-  router.push('/tintuc/a');
+//Go to detail Page
+const linkDetail = (slug: string) => {
+  router.push(`/tintuc/${slug}`);
 };
 
 onMounted(() => {
@@ -101,19 +150,19 @@ onUnmounted(() => {
         :class="$style['news__context-item']"
         v-for="(item, index) in displayNews"
         :key="index"
-        @click="linkDetail()"
+        @click="linkDetail(item.slug)"
       >
         <div :class="$style['news__item-left']">
-          <img :src="item.news.img" alt="BGItem" />
+          <img :src="item.img" alt="BGItem" />
         </div>
         <div :class="$style['news__item-right']">
           <div :class="$style['news__item-date']">
-            <p>{{ formatDate(item.news.createAt) }}</p>
+            <p>{{ formatDate(item.createAt) }}</p>
             <span></span>
           </div>
-          <h4>{{ item.news.title }}</h4>
+          <h4>{{ item.title }}</h4>
           <div :class="$style['news__item-summary']">
-            <span>{{ item.news.summary }}</span>
+            <span v-html="item.summary"></span>
           </div>
           <div :class="$style['news__item-footage']">
             <div :class="$style['news__footage-line']"></div>
@@ -128,13 +177,15 @@ onUnmounted(() => {
         </div>
       </div>
       <pagination
+        v-if="content.listItem"
         :class="$style['news__context-left-pagination']"
         style="margin-top: 50px"
-        :total="Math.ceil(news.length / pageSize)"
+        :total="content.totalPage ? content.totalPage : 0"
         :current-page="currentPage"
         :page-size="pageSize"
         @current-change="handlePageChange"
       />
+      <button @click="readMore">Xem thêm</button>
     </div>
     <div :class="$style['news__context-right']">
       <category :class="$style['news__context-right-category']" style="margin-top: 0" />

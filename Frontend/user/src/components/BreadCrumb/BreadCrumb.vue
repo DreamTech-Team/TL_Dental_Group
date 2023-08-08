@@ -1,7 +1,87 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faHome, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import router from '@/router/index';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import { RouterLink } from 'vue-router';
+import { useRoute } from 'vue-router';
+
+interface News {
+  id: string;
+  title: string;
+  img: string;
+  slug: string;
+  summary: string;
+  detail: string;
+  detailMobile: string;
+  highlight: number;
+  createAt: string;
+  tags: [
+    {
+      id: string;
+      name: string;
+      slug: string;
+      createAt: string;
+    }
+  ];
+}
+
+interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  priceSale: number;
+  summary: string;
+  description: string;
+  mainImg: string;
+  imgs: string;
+  highlight: number;
+  createAt: string;
+  fkCategory: {
+    id: string;
+    companyId: {
+      id: string;
+      name: string;
+      logo: string;
+      description: string;
+      highlight: number;
+      slug: string;
+      createAt: string;
+      outstandingProductId: string;
+    };
+    cate1Id: {
+      id: string;
+      title: string;
+      img: string;
+      highlight: 3;
+      slug: string;
+      createAt: string;
+    };
+    cate2Id: {
+      id: string;
+      title: string;
+      slug: string;
+      createAt: string;
+    };
+  };
+}
+
+interface Cate1 {
+  id: string;
+  title: string;
+  img: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+}
+
+interface Cate2 {
+  id: string;
+  title: string;
+  slug: string;
+  createAt: string;
+}
 
 const pathAD = defineProps({
   tags: {
@@ -10,7 +90,7 @@ const pathAD = defineProps({
   }
 });
 
-const predefinedItems = [
+const predefinedItems = ref([
   {
     slug: 'tintuc',
     name: 'Tin tức'
@@ -28,87 +108,154 @@ const predefinedItems = [
     name: 'Sản phẩm'
   },
   {
-    slug: 'kep-gap-mac-cai-R6,7-kep-gap-Tube-PMC-ORTHOR',
-    name: 'Kẹp gấp mắc cài R6,7/ kẹp gấp Tube - PMC ORTHO'
-  },
-  {
-    slug: 'dung-cu-nha-khoa',
-    name: 'Dụng cụ nha khoa'
-  },
-  {
-    slug: 'kep-chinh-nha',
-    name: 'Kẹp chỉnh nha'
-  },
-  {
-    slug: 'hoat-dong-chong-dich-tinh-nguyen',
-    name: 'Hoạt động chống dịch tình nguyện'
-  },
-  {
-    slug: 'dungcu',
-    name: 'Dụng cụ nha khoa'
-  },
-  {
     slug: 'lienhe',
     name: 'Liên hệ'
   },
   {
-    slug: 'chinh-sach-bao-mat',
-    name: 'Chính sách bảo mật'
-  },
-  {
-    slug: 'chinh-sach-bao-mat',
-    name: 'Chính sách bảo mật'
-  },
-  {
-    slug: 'kem-chinh-nha-abc',
-    name: 'Kem chỉnh nha ABC'
-  },
-  {
-    slug: 'keo-chinh-nha',
-    name: 'Kẹp chỉnh nha'
+    slug: 'chinhsach',
+    name: 'Chính sách'
   },
   {
     slug: 'timkiem',
     name: 'Kết quả tìm kiếm'
   }
-];
+]);
 
-const pathSegments = pathAD.tags.split('/').filter((segment) => segment !== '');
-const breadcrumbItems = pathSegments.map((segment) => {
-  const predefinedItem = predefinedItems.find((item) => item.slug === segment);
-  return predefinedItem ? predefinedItem.name : segment;
-});
+//Properties
+const route = useRoute();
+const pathSegments = ref();
+const breadcrumbItems = ref();
+let isAllCategoryLoaded = false;
 
-const returnHome = () => {
-  router.push('/');
+//Function Update Slug
+const updateSlug = () => {
+  if (typeof pathAD.tags === 'string') {
+    pathSegments.value = pathAD.tags.split('/').filter((segment) => segment !== '');
+    breadcrumbItems.value = pathSegments.value.map((segment: string) => {
+      const predefinedItem = predefinedItems.value.find((item) => item.slug === segment);
+      return predefinedItem ? predefinedItem.name : segment;
+    });
+  }
 };
 
-const navigate = (slug: string) => {
-  const currentIndex = breadcrumbItems.findIndex((item) => item === slug);
-  if (currentIndex > -1) {
-    const pathSegments = breadcrumbItems.slice(0, currentIndex + 1);
-    const path = `/${pathSegments
-      .map((segment) => predefinedItems.find((item) => item.name === segment)?.slug)
-      .join('/')}`;
-    router.push(path);
+//Init dependencies
+const deps = ref([]);
+const cate1 = ref<Cate1[]>([]);
+const cate2 = ref<Cate2[]>([]);
+const getCate1 = useAxios<DataResponse>('get', '/cate1', {}, {}, deps.value);
+const getCate2 = useAxios<DataResponse>('get', '/cate2', {}, {}, deps.value);
+
+const getAllCategory = () => {
+  if (!isAllCategoryLoaded) {
+    watch(getCate1.response, () => {
+      const responseData = getCate1.response.value?.data;
+      if (responseData && responseData instanceof Array) {
+        cate1.value = responseData;
+        cate1.value.forEach((item: Cate1) => {
+          const news = {
+            slug: item.slug,
+            name: item.title
+          };
+          predefinedItems.value.push(news);
+        });
+      }
+    });
+
+    watch(getCate2.response, () => {
+      const responseData2 = getCate2.response.value?.data;
+      if (responseData2 && responseData2 instanceof Array) {
+        cate2.value = responseData2;
+        cate2.value.forEach((item: Cate2) => {
+          const news = {
+            slug: item.slug,
+            name: item.title
+          };
+          predefinedItems.value.push(news);
+        });
+      }
+    });
+
+    isAllCategoryLoaded = true;
+    updateSlug();
   }
+};
+
+getAllCategory();
+updateSlug();
+
+if (route.path.startsWith('/tintuc')) {
+  const news = ref<News[]>([]);
+  const getNews = useAxios<DataResponse>('get', '/news?pageSize=1000000', {}, {}, deps.value);
+  watch(getNews.response, () => {
+    news.value = getNews.response.value?.data?.data;
+    news.value.forEach((item) => {
+      const news = {
+        slug: item.slug,
+        name: item.title
+      };
+      predefinedItems.value.push(news);
+    });
+    updateSlug();
+  });
+} else if (route.path.startsWith('/chitiet')) {
+  const products = ref<Product[]>([]);
+  const getProducts = useAxios<DataResponse>(
+    'get',
+    '/products?pageSize=100000',
+    {},
+    {},
+    deps.value
+  );
+  watch(getProducts.response, () => {
+    products.value = getProducts.response.value?.data?.data;
+    products.value.forEach((item) => {
+      const news = {
+        slug: item.slug,
+        name: item.name
+      };
+      predefinedItems.value.push(news);
+    });
+    updateSlug();
+  });
+  getAllCategory();
+} else if (route.path.startsWith('/sanpham')) {
+  getAllCategory();
+}
+
+const navigate = (slug: string) => {
+  const currentIndex = breadcrumbItems.value.findIndex((item: string) => item === slug);
+  if (currentIndex > -1) {
+    const pathSegments = breadcrumbItems.value.slice(0, currentIndex + 1);
+    const path = `/${pathSegments
+      .map((segment: string) => predefinedItems.value.find((item) => item.name === segment)?.slug)
+      .join('/')}`;
+
+    return path;
+  }
+  return '/';
 };
 </script>
 <template>
   <div :class="$style.news__breadcrum">
-    <div :class="$style['news__breadcrum-home']" @click="returnHome">
+    <router-link to="/" :class="$style['news__breadcrum-home']">
       <font-awesome-icon :icon="faHome" :class="$style['news__breadcrum-ic']" />
       <span>Home</span>
-    </div>
-    <div
-      :class="$style['news__breadcrum-tag']"
-      v-for="item in breadcrumbItems"
-      :key="item"
-      @click="navigate(item)"
-    >
-      <font-awesome-icon :icon="faChevronRight" :class="$style['news__breadcrum-ic']" />
-      <span>{{ item }}</span>
-    </div>
+    </router-link>
+    <template v-for="(item, index) in breadcrumbItems">
+      <router-link
+        v-if="index < breadcrumbItems.length - 1"
+        :key="'link-' + index"
+        :to="navigate(item)"
+        :class="$style['news__breadcrum-tag']"
+      >
+        <font-awesome-icon :icon="faChevronRight" :class="$style['news__breadcrum-ic']" />
+        <span>{{ item }}</span>
+      </router-link>
+      <div v-else :key="'div-' + index" :class="$style['news__breadcrum-tag']">
+        <font-awesome-icon :icon="faChevronRight" :class="$style['news__breadcrum-ic']" />
+        <span>{{ item }}</span>
+      </div>
+    </template>
   </div>
 </template>
 

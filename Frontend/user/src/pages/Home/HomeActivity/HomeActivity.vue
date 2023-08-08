@@ -1,21 +1,19 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue';
-import router from '@/router/index';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import { RouterLink } from 'vue-router';
 
 //GET DATA
 interface Item {
-  news: {
-    id: string;
-    title: string;
-    img: string;
-    slug: string;
-    summary: string;
-    detail: string;
-    detailMobile: string;
-    highlight: number;
-    createAt: string;
-  };
+  id: string;
+  title: string;
+  img: string;
+  slug: string;
+  summary: string;
+  detail: string;
+  detailMobile: string;
+  highlight: number;
+  createAt: string;
   tags: [
     {
       id: string;
@@ -25,13 +23,8 @@ interface Item {
     }
   ];
 }
-let resizeListener: () => void;
-const deps = ref([]);
-const { response } = useAxios<DataResponse>('get', '/news/highlight', {}, {}, deps.value);
-const sourceElement = ref<HTMLElement | null>(null);
-const itemWidth = ref(0);
-const tags = ref('all');
-const feedbacks = ref<Item[]>([]);
+
+//Init data structure
 const activities = ref([
   {
     id: '',
@@ -54,12 +47,25 @@ const uniqueTags = ref([
   }
 ]);
 
+//Properties
+let resizeListener: () => void;
+const isPhone = ref(false);
+const selectedItem = ref(-1);
+const sourceElement = ref<HTMLElement | null>(null);
+const itemWidth = ref(0);
+const tags = ref('all');
+const feedbacks = ref<Item[]>([]);
+
+//Get highlight news
+const deps = ref([]);
+const { response } = useAxios<DataResponse>('get', '/news/highlight', {}, {}, deps.value);
+
 watch(response, () => {
   feedbacks.value = response.value?.data;
   if (window.innerWidth < 739) {
-    activities.value = feedbacks.value.map((item) => item.news).slice(0, 4);
+    activities.value = feedbacks.value.map((item) => item).slice(0, 4);
   } else {
-    activities.value = feedbacks.value.map((item) => item.news).slice(0, 8);
+    activities.value = feedbacks.value.map((item) => item).slice(0, 8);
   }
 
   const allTags = feedbacks.value.flatMap((item) => item.tags);
@@ -71,29 +77,25 @@ watch(response, () => {
 
   uniqueTags.value = Array.from(uniqueTagsMap.values());
 });
-const selectedItem = ref(-1);
 
+//Function filter tags by news
 const filterTags = (selectedTag: string) => {
   if (selectedTag === 'all') {
     if (window.innerWidth < 739) {
-      activities.value = feedbacks.value.map((item) => item.news).slice(0, 4);
+      activities.value = feedbacks.value.map((item) => item).slice(0, 4);
     } else {
-      activities.value = feedbacks.value.map((item) => item.news).slice(0, 8);
+      activities.value = feedbacks.value.map((item) => item).slice(0, 8);
     }
   } else {
     if (window.innerWidth < 739) {
       activities.value = feedbacks.value
         .filter((item) => item.tags.some((tag) => tag.name === selectedTag))
-        .map((item) => item.news)
         .slice(0, 4);
     } else {
       activities.value = feedbacks.value
         .filter((item) => item.tags.some((tag) => tag.name === selectedTag))
-        .map((item) => item.news)
         .slice(0, 8);
     }
-
-    console.log(activities.value);
   }
 };
 
@@ -102,12 +104,11 @@ const setTags = (temp: string) => {
   filterTags(temp);
 };
 
-const HandleClick = (index: number) => {
+const startHold = (index: number) => {
   selectedItem.value = index;
 };
-
-const SeeAll = () => {
-  router.push('/tintuc');
+const endHold = () => {
+  selectedItem.value = -1;
 };
 
 onMounted(() => {
@@ -117,6 +118,7 @@ onMounted(() => {
     if (window.innerWidth >= 739) {
       itemWidth.value = (width - 200) / 4;
     } else {
+      isPhone.value = true;
       itemWidth.value = (width - 35) / 2;
     }
   }
@@ -126,6 +128,7 @@ onMounted(() => {
       if (window.innerWidth >= 739) {
         itemWidth.value = (width - 200) / 4;
       } else {
+        isPhone.value = true;
         itemWidth.value = (width - 35) / 2;
       }
     }
@@ -141,7 +144,9 @@ onUnmounted(() => {
 <template>
   <div :class="$style.home__activities">
     <h3>CÁC HOẠT ĐỘNG CỦA CÔNG TY</h3>
-    <button :class="$style['home__activities-button']" @click="SeeAll">Xem tất cả</button>
+    <div :class="$style['home__activities-button']">
+      <router-link :class="$style['home__activities-link']" to="/tintuc"> Xem tất cả </router-link>
+    </div>
     <div :class="$style['home__activities-list']">
       <button
         @click="setTags('all')"
@@ -165,12 +170,14 @@ onUnmounted(() => {
       </button>
     </div>
     <div :class="$style['home__activities-grid']" ref="sourceElement">
-      <div
+      <router-link
         v-for="(activity, index) in activities"
         :key="index"
         :class="$style['home__activities-item']"
         :style="{ width: itemWidth + 'px' }"
-        @click="HandleClick(index)"
+        @touchstart="isPhone ? startHold(index) : ''"
+        @touchend="isPhone ? endHold() : ''"
+        :to="'/tintuc/' + activity.slug"
       >
         <img :src="activity.img" alt="activity" />
         <div
@@ -182,7 +189,7 @@ onUnmounted(() => {
             <span>{{ activity.summary }}</span>
           </div>
         </div>
-      </div>
+      </router-link>
     </div>
   </div>
 </template>

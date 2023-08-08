@@ -26,9 +26,15 @@
     margin-left: 17px;
     margin-right: 10px;
     cursor: pointer;
+    color: $primary_900;
 
     .news__breadcrum-ic {
       margin-right: 7px;
+      color: $primary_900;
+    }
+
+    span{
+      color: $primary_900;
     }
   }
 
@@ -42,6 +48,11 @@
     .news__breadcrum-ic {
       font-size: $text-xs;
       margin-right: 10px;
+      color: $primary_900;
+    }
+
+    span{
+      color: $primary_900;
     }
   }
 }

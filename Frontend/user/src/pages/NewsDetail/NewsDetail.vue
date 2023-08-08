@@ -3,16 +3,16 @@ import NewsDetailContent from './NewsDetailContent/NewsDetailContent.vue';
 import Categories from '@/components/Category/BaseCategory.vue';
 import Activity from '../Home/HomeActivity/HomeActivity.vue';
 import DaiDien from '@/assets/imgs/NewsDetail/DaiDien.png';
-
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
+import { useRoute } from 'vue-router';
 
-const pathNewsDetail = 'tintuc/hoat-dong-chong-dich-tinh-nguyen';
+const route = useRoute();
 </script>
 <template>
   <div :class="$style.newsdetail">
     <img :src="DaiDien" alt="" />
 
-    <BreadCrumb :tags="pathNewsDetail" />
+    <bread-crumb :tags="route.path" />
 
     <div :class="$style.newsdetail__wrapper">
       <NewsDetailContent />

@@ -4,6 +4,10 @@
 .home__activities {
   margin-top: 100px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   h3 {
     font-weight: 500;
@@ -11,15 +15,28 @@
     line-height: 33px;
   }
 
-  .home__activities-button{
+  .home__activities-button {
     padding: 10px 10px;
-    background: #EFFEFF;
+    background: #effeff;
     border-radius: 20px;
-    color: #0CBBC7;
+    color: #0cbbc7;
     border: none;
     font-size: $text-base;
     margin-top: 17px;
     margin-bottom: 25px;
+    width: max-content;
+
+    .home__activities-link{
+      padding: 10px 10px;
+      background: #effeff;
+      border-radius: 20px;
+      color: #0cbbc7;
+      border: none;
+      font-size: $text-base;
+      margin-top: 17px;
+      margin-bottom: 25px;
+      width: max-content;
+    }
   }
 
   &-list {
@@ -91,17 +108,17 @@
         top: 0;
         animation: fade-in 0.5s forwards;
 
-        .home__activities-text{
+        .home__activities-text {
           width: max-content;
           height: max-content;
-          
+
           h4 {
             font-weight: 500;
             font-size: $text-xl;
             color: white;
             margin-bottom: 30px;
           }
-  
+
           span {
             font-weight: 400;
             font-size: $text-xl;
@@ -128,7 +145,6 @@
 
 @include responsive_mobile() {
   .home__activities {
-
     h3 {
       font-weight: 600;
       font-size: $text-2xl-mobile;
@@ -136,42 +152,48 @@
       margin-bottom: 3px;
     }
 
-    .home__activities-button{
+    .home__activities-button {
       font-size: $text-base-mobile;
       margin-top: 5px;
       margin-bottom: 15px;
+
+      .home__activities-link{
+        font-size: $text-base-mobile;
+        margin-top: 5px;
+        margin-bottom: 15px;
+      }
     }
-  
+
     &-list {
       margin: auto;
       width: 95%;
       flex-wrap: wrap;
-  
+
       button {
         padding: 8px 5px;
         min-width: 70px;
         font-size: $text-sm-mobile;
         line-height: 15px;
-        color: #08929D;
-        background-color: #D1FCFF;
+        color: #08929d;
+        background-color: #d1fcff;
         border-radius: 20px;
         border: none;
         margin: 5px 5px;
         margin-top: 0;
         text-transform: uppercase;
-  
+
         &:hover {
-          background-color: #D1FCFF;
-          color: #08929D;
+          background-color: #d1fcff;
+          color: #08929d;
         }
       }
     }
-  
+
     &-grid {
       margin-top: 10px;
       padding-left: 10px;
       padding-right: 10px;
-  
+
       .home__activities-item {
         width: 47%;
         aspect-ratio: 1/1;
@@ -179,26 +201,26 @@
         margin-bottom: 10px;
         margin-right: 5px;
         cursor: pointer;
-  
+
         .home__activities-hover {
           display: none;
           padding: 20px 10px;
           position: absolute;
           background: rgba(48, 48, 49, 0.66);
           cursor: pointer;
-  
-          .home__activities-text{
+
+          .home__activities-text {
             width: max-content;
             height: max-content;
             text-align: center;
-            
+
             h4 {
               font-weight: 500;
               font-size: $text-lg-mobile;
               color: white;
               margin-bottom: 0;
             }
-    
+
             span {
               display: none;
               font-weight: 400;
@@ -207,7 +229,7 @@
             }
           }
         }
-  
+
         @keyframes fade-in {
           from {
             opacity: 0;
@@ -218,9 +240,9 @@
         }
 
         &:hover .home__activities-hover {
-        display: none;
-        animation: fade-in 0.4s forwards;
-      }
+          display: none;
+          animation: fade-in 0.4s forwards;
+        }
       }
     }
   }

@@ -1,29 +1,59 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
-
-//GET DATA
-const deps = ref([]);
-const { response } = useAxios<DataResponse>('get', '/home/header', {}, {}, deps.value);
-
-const content = ref({
-  title: '',
-  context: ''
-});
-
-watch(response, () => {
-  content.value.title = response.value?.data?.title;
-  content.value.context = response.value?.data?.content;
-});
+import router from '@/router/index';
 
 interface Company {
-  id: string;
-  name: string;
-  logo: string;
-  description: string;
-  highlight: number;
-  slug: string;
-  createAt: string;
+  outstandingProduct: {
+    id: string;
+    name: string;
+    slug: string;
+    price: number;
+    priceSale: number;
+    summary: string;
+    description: string;
+    mainImg: string;
+    imgs: string;
+    highlight: number;
+    createAt: string;
+    fkCategory: {
+      id: string;
+      companyId: {
+        id: string;
+        name: string;
+        logo: string;
+        description: string;
+        highlight: number;
+        slug: string;
+        createAt: string;
+        outstandingProductId: string;
+      };
+      cate1Id: {
+        id: string;
+        title: string;
+        img: string;
+        highlight: number;
+        slug: string;
+        createAt: string;
+      };
+      cate2Id: {
+        id: string;
+        title: string;
+        slug: string;
+        createAt: string;
+      };
+    };
+  };
+  company: {
+    id: string;
+    name: string;
+    logo: string;
+    description: string;
+    highlight: number;
+    slug: string;
+    createAt: string;
+    outstandingProductId: string;
+  };
 }
 
 interface Item {
@@ -31,42 +61,14 @@ interface Item {
   alt: string;
   width: string;
   height: string;
+  name: string;
+  product: string;
 }
 
-const companies = ref<Company[]>([]);
-const deps1 = ref([]);
-const results = useAxios<DataResponse>('get', '/company', {}, {}, deps1.value);
-const bannerItems = ref([{ src: '', alt: '', width: '0', height: '0' }]);
-
-const calculateWidths = () => {
-  return new Promise<void>((resolve) => {
-    const imagePromises = bannerItems.value.map((item: Item) => {
-      return new Promise<void>((resolve) => {
-        const image = new Image();
-        image.onload = () => {
-          const aspectRatio = image.width / image.height;
-          const newWidth = 30 * aspectRatio;
-          item.width = newWidth.toFixed(2);
-          resolve();
-        };
-        image.src = item.src;
-      });
-    });
-
-    Promise.all(imagePromises).then(() => {
-      resolve();
-    });
-  });
-};
-
-const getRandomItems = (array: Company[], count: number) => {
-  const shuffled = array.slice();
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled.slice(0, count);
-};
+//Define data structure
+const bannerItems = ref([
+  { src: '', alt: '', width: '0', height: '0', name: '', product: '', slug: '' }
+]);
 
 //Scroll Properties
 const MIN_SWIPE_DISTANCE_CM = 3.5;
@@ -94,6 +96,11 @@ const widthComputed = computed(() => {
 const widthItemComputed = computed(() => {
   return widthItemMB.value + 'px';
 });
+
+//Go to detail Page
+const linkDetail = (slug: string) => {
+  router.push(`/chitiet/${slug}`);
+};
 
 //Scroll Handle
 const scrollRight = () => {
@@ -308,27 +315,77 @@ const moveLine = (index: number) => {
   }
 };
 
+//Get information
+const deps = ref([]);
+const { response } = useAxios<DataResponse>('get', '/home/header', {}, {}, deps.value);
+
+const content = ref({
+  title: '',
+  context: ''
+});
+
+watch(response, () => {
+  content.value.title = response.value?.data?.title;
+  content.value.context = response.value?.data?.content;
+});
+
+//Get highlight compaines
+const companies = ref<Company[]>([]);
+const deps1 = ref([]);
+const results = useAxios<DataResponse>('get', '/company?highlight=true', {}, {}, deps1.value);
+
+//Calculate width for each logo
+const calculateWidths = () => {
+  return new Promise<void>((resolve) => {
+    const imagePromises = bannerItems.value.map((item: Item) => {
+      return new Promise<void>((resolve) => {
+        const image = new Image();
+        image.onload = () => {
+          const aspectRatio = image.width / image.height;
+          const newWidth = 30 * aspectRatio;
+          item.width = newWidth.toFixed(2);
+          resolve();
+        };
+        image.src = item.src;
+      });
+    });
+
+    Promise.all(imagePromises).then(() => {
+      resolve();
+    });
+  });
+};
+
+//Random item
+const getRandomItems = (array: Company[], count: number) => {
+  const shuffled = array.slice();
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, count);
+};
+
+//Handle data from axios
 watch(
   results.response,
   async () => {
-    companies.value = results.response.value?.data;
-
-    if (companies.value) {
-      const highlightedCompanies: Company[] = companies.value.filter(
-        (company) => company.highlight !== 0
-      );
+    if (results.response.value?.data.length > 0) {
       const randomHighlightedCompanies: Company[] =
-        highlightedCompanies.length >= 4
-          ? getRandomItems(highlightedCompanies, 4)
-          : highlightedCompanies;
+        results.response.value?.data >= 4
+          ? getRandomItems(results.response.value?.data, 4)
+          : results.response.value?.data;
       companies.value = randomHighlightedCompanies;
 
-      bannerItems.value = companies.value.map((company) => {
+      bannerItems.value = companies.value.map((company: Company) => {
         return {
-          src: company.logo,
-          alt: company.name,
+          src: company.company.logo,
+          alt: company.company.name,
           width: '',
-          height: '30'
+          height: '30',
+          name: company.outstandingProduct.name,
+          product: company.outstandingProduct.mainImg,
+          slug: company.outstandingProduct.slug
         };
       });
 
@@ -402,13 +459,16 @@ onUnmounted(() => {
         :style="{ background: !mobilestatus ? bannerBgColor : '' }"
       >
         <div :class="$style['home__banner-radial']">
-          <div :class="$style['home__banner-circle']">
+          <div :class="$style['home__banner-circle']" @click="linkDetail(selectedItem.slug)">
             <div :class="$style['home__banner-logo']">
               <img :src="selectedItem.src" :alt="selectedItem.alt" width="127" height="30" />
             </div>
-            <div :class="$style['home__banner-product']"></div>
+            <div
+              :class="$style['home__banner-product']"
+              :style="{ backgroundImage: `url(${selectedItem.product})` }"
+            ></div>
           </div>
-          <p>Trụ Implant Highness Hàn Quốc</p>
+          <p>{{ selectedItem.name }}</p>
         </div>
       </div>
     </div>
@@ -432,19 +492,22 @@ onUnmounted(() => {
         :style="{ width: widthItemComputed }"
       >
         <div :class="$style['home__bannerMB-left']">
-          <h2>TL Dental Group</h2>
-          <p>Nhà cung cấp thiết bị y tế chính hãng, uy tín hàng đầu Việt Nam.</p>
+          <h2>{{ content.title }}</h2>
+          <p>{{ content.context }}</p>
         </div>
         <div :class="$style['home__bannerMB-right']">
           <div v-if="showBannerBg" :class="$style['home__bannerMB-bg']">
             <div :class="$style['home__bannerMB-radial']">
-              <div :class="$style['home__bannerMB-circle']">
+              <div :class="$style['home__bannerMB-circle']" @click="linkDetail(item.slug)">
                 <div :class="$style['home__bannerMB-logo']">
                   <img :src="item.src" :alt="item.alt" width="60" height="30" />
                 </div>
-                <div :class="$style['home__bannerMB-product']"></div>
+                <div
+                  :class="$style['home__bannerMB-product']"
+                  :style="{ backgroundImage: `url(${item.product})` }"
+                ></div>
               </div>
-              <p>Trụ Implant Highness Hàn Quốc</p>
+              <p>{{ item.name }}</p>
             </div>
           </div>
         </div>
