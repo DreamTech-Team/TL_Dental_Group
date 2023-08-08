@@ -133,22 +133,23 @@ onMounted(() => {
         </div>
         <div :class="$style.options_wrap">
           <div>
-            <p :class="$style.options_title">Vị trí</p>
-            <select @click="logValue" :class="$style.options_wrap_btn" v-model="selectedPosition">
-              <option value="">Chọn một tùy chọn</option>
-              <option v-for="option in positionOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <p :class="$style.options_title" for="recruitment-position">Vị trí</p>
+            <input
+              id="recruitment-position"
+              v-model="selectedPosition"
+              placeholder="Nhập vị trí"
+              :class="$style['options_wrap_btn']"
+            />
           </div>
           <div>
-            <p :class="$style.options_title">Thời gian làm</p>
-            <select :class="$style.options_wrap_btn" v-model="selectedTime">
-              <option value="">Chọn một tùy chọn</option>
-              <option v-for="option in timeOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <p :class="$style.options_title" for="recruitment-time">Thời gian làm</p>
+
+            <input
+              id="recruitment-time"
+              v-model="selectedTime"
+              placeholder="Nhập thời gian làm"
+              :class="$style['options_wrap_btn']"
+            />
           </div>
         </div>
       </div>
