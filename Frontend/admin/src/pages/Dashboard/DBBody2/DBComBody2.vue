@@ -1,34 +1,73 @@
 <script setup lang="ts">
-import Comp from '@/assets/imgs/Dashboard/img_comp.png';
 import Camera from '@/assets/icons/Camera.png';
 import EditBtn from '@/components/EditBtn/EditBtn.vue';
-import { ref, nextTick } from 'vue';
+import { ref, nextTick, watch } from 'vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import Swal from 'sweetalert2';
 
+interface MyFile extends File {
+  name: string;
+}
+
+//Ref to focus
 const AddressRef = ref<HTMLInputElement | null>(null);
 const PhoneRef = ref<HTMLInputElement | null>(null);
 const HotlineRef = ref<HTMLInputElement | null>(null);
 const GGAdressRef = ref<HTMLInputElement | null>(null);
 
-const Address = ref('135B Trần Hưng Đạo, Quận 1, TP.HCM');
-const Phone = ref('0898521456');
-const Hotline = ref('442366781');
+//Init value
+const InitValue = ref({
+  id: '',
+  address: '',
+  phone: '',
+  hotline: '',
+  ggaddress: '',
+  image: ''
+});
+
+//Properties
+const Address = ref();
+const Phone = ref();
+const Hotline = ref();
 const GGAdress = ref('https://www.google.com/maps/@9.779349,105.6189045,11z?hl=vi-VN&entry=ttu');
 const GGIframe = ref(
   // eslint-disable-next-line max-len
   'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.5736868084896!2d106.69224417517916!3d10.767301989380964!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f15f08d6fa1%3A0x7b2e11ab195377b!2zMTM1YiDEkC4gVHLhuqduIEjGsG5nIMSQ4bqhbywgUGjGsOG7nW5nIEPhuqd1IMOUbmcgTMOjbmgsIFF14bqtbiAxLCBUaMOgbmggcGjhu5EgSOG7kyBDaMOtIE1pbmgsIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1687174673884!5m2!1svi!2s'
 );
-const selectedImg = ref(Comp);
+const selectedImg = ref();
 const fileInput = ref<HTMLInputElement | null>(null);
+const file = ref<MyFile | null>(null);
 const isEditable = ref(false);
-import Swal from 'sweetalert2';
+
+//Get value
+const deps = ref([]);
+const getInfor = useAxios<DataResponse>('get', '/facility/', {}, {}, deps.value);
+watch(getInfor.response, () => {
+  InitValue.value.id = getInfor.response.value?.data?.id;
+
+  Address.value = getInfor.response.value?.data?.address;
+  InitValue.value.address = getInfor.response.value?.data?.address;
+
+  Phone.value = getInfor.response.value?.data?.phoneNumber;
+  InitValue.value.phone = getInfor.response.value?.data?.phoneNumber;
+
+  Hotline.value = getInfor.response.value?.data?.hotline;
+  InitValue.value.hotline = getInfor.response.value?.data?.hotline;
+
+  selectedImg.value = getInfor.response.value?.data?.image;
+  InitValue.value.image = getInfor.response.value?.data?.image;
+
+  GGAdress.value = getInfor.response.value?.data?.mapLink;
+  InitValue.value.ggaddress = getInfor.response.value?.data?.mapLink;
+});
 
 const resetValue = () => {
   isEditable.value = false;
-  Address.value = '135B Trần Hưng Đạo, Quận 1, TP.HCM';
-  Phone.value = '0898521456';
-  Hotline.value = '442366781';
-  GGAdress.value = 'https://www.google.com/maps/@9.779349,105.6189045,11z?hl=vi-VN&entry=ttu';
-  selectedImg.value = Comp;
+  Address.value = InitValue.value.address;
+  Phone.value = InitValue.value.phone;
+  Hotline.value = InitValue.value.hotline;
+  GGAdress.value = InitValue.value.ggaddress;
+  selectedImg.value = InitValue.value.image;
 
   window.scrollTo({
     top: 1,
@@ -56,14 +95,14 @@ const openFileInput = () => {
 //Choose image
 const handleFileInputChange = (event: Event) => {
   const inputElement = event.target as HTMLInputElement;
-  const file = inputElement.files?.[0];
+  file.value = inputElement.files?.[0] || null;
 
-  if (file) {
+  if (file.value) {
     const reader = new FileReader();
     reader.onload = () => {
       selectedImg.value = reader.result as string;
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(file.value);
   }
 };
 
@@ -132,15 +171,44 @@ const submitForm = () => {
     alertDialog('Địa chỉ map không tồn tại');
     return;
   }
-  Swal.fire({
-    title: 'Cập nhật thành công',
-    icon: 'success',
-    confirmButtonText: 'Hoàn tất',
-    width: '30rem'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.close();
-      isEditable.value = false;
+
+  const object = {
+    id: InitValue.value.id,
+    address: Address.value,
+    phoneNumber: Phone.value,
+    hotline: Hotline.value,
+    image: selectedImg.value,
+    mapLink: GGAdress.value
+  };
+
+  const formData = new FormData();
+  formData.append('data', JSON.stringify(object));
+  formData.append('image', file.value as Blob);
+  const { response } = useAxios<DataResponse>(
+    'patch',
+    '/facility/',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    },
+    deps.value
+  );
+
+  watch(response, () => {
+    if (response.value?.status === 'ok') {
+      Swal.fire({
+        title: 'Cập nhật thành công',
+        icon: 'success',
+        confirmButtonText: 'Hoàn tất',
+        width: '30rem'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          isEditable.value = false;
+          Swal.close();
+        }
+      });
     }
   });
 };

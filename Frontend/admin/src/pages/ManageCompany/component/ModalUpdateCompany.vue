@@ -26,7 +26,7 @@ interface Products {
   mainImg: string;
   fkCategory: {
     companyId: {
-      slug: string;
+      id: string;
     };
   };
 }
@@ -44,11 +44,15 @@ const context = defineProps({
     type: Array,
     required: true
   },
-  slugCompany: {
+  idCompany: {
     type: String,
     required: true
   },
   change: {
+    type: Function as PropType<(newData: ManageCompany) => void>,
+    required: true
+  },
+  changeOutstanding: {
     type: Function as PropType<(newData: ManageCompany) => void>,
     required: true
   }
@@ -60,19 +64,17 @@ const variableChange = ref([]);
 const nameCompanyInput = ref(context.item.name);
 const descriptionInput = ref(context.item.description);
 const productInput = ref(context.productOutstanding.name);
-const productOutstand = ref(context.productOutstanding);
+const productOutstand = ref({ ...context.productOutstanding });
 const selectedlogo: Ref<string | null> = ref(context.item.logo);
 const productCompany = ref<Products[]>(
   (context.products as Products[]).filter((item) => {
-    return item.fkCategory.companyId.slug === context.slugCompany;
+    return item.fkCategory.companyId.id === context.idCompany;
   })
 );
 const isOpen = ref(false);
 const isChange = ref(false);
 const isPatchProduct = ref(false);
 const idProduct = ref('');
-
-console.log(productCompany.value);
 
 // Các hàm update dữ liệu cho thẻ input
 const updateTitle = (e: Event) => {
@@ -201,7 +203,7 @@ const submitForm = () => {
           formData.append('idProduct', idProduct.value);
           const { response, error, isLoading } = useAxios<DataResponse>(
             'patch',
-            '/company/outstanding/' + context.slugCompany,
+            '/company/outstanding/' + context.idCompany,
             formData,
             {
               headers: {
@@ -210,6 +212,10 @@ const submitForm = () => {
             },
             variableChange.value
           );
+
+          watch(response, () => {
+            context.changeOutstanding(response.value?.data);
+          });
         }
 
         Swal.close();
@@ -271,6 +277,7 @@ const handleDataProduct = (
   productOutstand.value.name = nameProduct;
   productOutstand.value.description = descriptionProduct;
   productOutstand.value.mainImg = image;
+
   idProduct.value = _idProduct;
   productInput.value = nameProduct;
 };
@@ -356,7 +363,7 @@ const handleDataProduct = (
     @results="handleDataProduct"
     :product="productOutstand"
     :products="productCompany"
-    :slug-company="context.slugCompany"
+    :id-company="context.idCompany"
   />
 </template>
 

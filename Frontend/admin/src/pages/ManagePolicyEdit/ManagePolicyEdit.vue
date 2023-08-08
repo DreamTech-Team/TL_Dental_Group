@@ -283,7 +283,7 @@ const handleUpdatePolicy = () => {
             toolbar:
               'undo redo | casechange blocks | formatselect | bold italic backcolor forecolor | \
            alignleft aligncenter alignright alignjustify | \
-           bullist numlst outdent indent | removeformat | code table help'
+           bullist numlst outdent indent | removeformat | code table help | fullscreen'
           }"
         />
       </div>

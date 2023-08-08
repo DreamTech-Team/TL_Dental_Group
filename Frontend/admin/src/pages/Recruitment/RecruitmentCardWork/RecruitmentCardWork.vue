@@ -52,9 +52,9 @@ const contentRecruit = [
       <div :class="$style['container__card-right-item']">
         <recruitment-card :items="locationItem" :style="'type6'" />
       </div>
-      <router-link :to="`/tuyendung/${infor.title}`" :class="$style['container__card-right-btn']">
-        <p>Ứng tuyển ngay</p>
-      </router-link>
+      <!-- <router-link :to="`/tuyendung/${infor.title}`" :class="$style['container__card-right-btn']"> -->
+      <p :class="$style['container__card-right-btn']">Ứng tuyển ngay</p>
+      <!-- </router-link> -->
     </div>
   </div>
 </template>

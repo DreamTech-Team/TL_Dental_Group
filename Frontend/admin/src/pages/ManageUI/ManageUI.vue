@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import {
   faHouse,
   faCircleInfo,
-  faSquarePhone,
   faArrowCircleRight,
   faBoxArchive,
   faPersonCirclePlus,
   faNewspaper
 } from '@fortawesome/free-solid-svg-icons';
-import router from '@/router/index';
+import { faImages } from '@fortawesome/free-regular-svg-icons';
+import { RouterLink } from 'vue-router';
 
 const componentUI = [
   {
@@ -28,11 +27,11 @@ const componentUI = [
     path: 'mnabout'
   },
   {
-    title: 'Liên hệ',
-    icon: faSquarePhone,
+    title: 'Banner',
+    icon: faImages,
     color:
       'linear-gradient(220deg, #00E878 12%, rgba(102, 255, 182, 0.65) 88%, rgba(0, 232, 134, 0.00) 100%)',
-    path: 'mncontact'
+    path: 'mnbanner'
   },
   {
     title: 'Sản phẩm',
@@ -56,22 +55,18 @@ const componentUI = [
     path: 'activity'
   }
 ];
-
-const handlePath = (path: string) => {
-  router.push('/' + path);
-};
 </script>
 <template>
   <div :class="$style.mn_ui">
     <h2>QUẢN LÝ GIAO DIỆN VÀ NỘI DUNG</h2>
 
     <div :class="$style['mn_ui--list']">
-      <div
+      <router-link
         :class="$style['mn_ui--item']"
         v-for="(ui, index) in componentUI"
         :key="index"
         :style="{ background: ui.color }"
-        @click="handlePath(ui.path)"
+        :to="'/' + ui.path"
       >
         <h3>{{ ui.title }}</h3>
 
@@ -82,7 +77,7 @@ const handlePath = (path: string) => {
 
           <font-awesome-icon :icon="faArrowCircleRight" :class="$style['mn_ui--item-footer-ic']" />
         </div>
-      </div>
+      </router-link>
     </div>
   </div>
 </template>

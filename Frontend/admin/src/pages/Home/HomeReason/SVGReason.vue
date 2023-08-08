@@ -47,9 +47,9 @@ const emits = defineEmits<{
   // eslint-disable-next-line no-unused-vars
   (e: 'close'): void;
   // eslint-disable-next-line no-unused-vars
-  (e: 'update-content', data: { listrs: ItemRS[] }): void;
+  (e: 'update-content', svg: string): void;
 }>();
-const selectedImage = ref(content.image);
+const selectedImage = ref(content.listItem?.[content.index ?? 0]?.image ?? '');
 const fileInput = ref<HTMLInputElement | null>(null);
 const file = ref<MyFile | null>(null);
 
@@ -108,9 +108,19 @@ const submitForm = () => {
       : null
   };
 
+  console.log(object);
+  console.log(content.index);
+
   const formData = new FormData();
   formData.append('data', JSON.stringify(object));
-  formData.append('image', file.value as Blob);
+  if (content.index === 0) {
+    formData.append('icon1', file.value as Blob);
+  } else if (content.index === 1) {
+    formData.append('icon2', file.value as Blob);
+  } else if (content.index === 2) {
+    formData.append('icon3', file.value as Blob);
+  }
+
   const { response } = useAxios<DataResponse>(
     'patch',
     '/home/section1',
@@ -133,10 +143,10 @@ const submitForm = () => {
       }).then((result) => {
         if (result.isConfirmed) {
           Swal.close();
-          // emits('update-content', {
-          //   image: selectedImage.value || ''
-          // });
-          emits('close');
+          if (content.index != undefined) {
+            emits('update-content', response.value?.data[content.index + 1].image);
+            emits('close');
+          }
         }
       });
     }

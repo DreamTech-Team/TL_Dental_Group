@@ -142,3 +142,53 @@
     opacity: 1;
   }
 }
+
+.update-btn {
+  position: absolute;
+  top: 1.5rem;
+  left: 3rem;
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+
+  &-submit {
+    width: 13rem;
+    padding: 0.5rem 0;
+    border-radius: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: $text-lg;
+    font-weight: 500;
+  }
+
+  &-cancel {
+    border: 0.2rem solid $primary_700;
+    color: $text_800;
+  }
+
+  &-update {
+    margin-left: 3rem;
+    background: linear-gradient(270deg, #22d1ee 0%, #3d5af1 100%);
+    color: white;
+  }
+
+  &-submit:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
+}
+
+.container-popup {
+  width: 50rem;
+  height: 20rem;
+}
+
+.confirm-button {
+  font-size: $text-lg !important;
+}
+
+.deny-button {
+  font-size: $text-lg !important;
+}

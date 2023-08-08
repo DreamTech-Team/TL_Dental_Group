@@ -57,6 +57,14 @@ interface Item {
   price: string;
 }
 
+interface MyErrorResponse {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
 //Array to store initial values
 const tempArrays = ref<ProductItem[]>([]);
 const products = ref<Item[]>([]);
@@ -272,6 +280,28 @@ const deleteProduct = (id: string) => {
               });
             }
           });
+        }
+      });
+
+      watch(deleteProduct.error, () => {
+        const errorValue: MyErrorResponse | null = deleteProduct.error
+          .value as MyErrorResponse | null;
+        if (errorValue !== null) {
+          if (
+            errorValue?.response?.data?.message ===
+            'Failed to delete product. Exist a company has this product!'
+          ) {
+            Swal.fire({
+              title: 'Sản phẩm nổi bật của công ty không thể xóa',
+              icon: 'error',
+              showCancelButton: false,
+              width: '30rem'
+            });
+            setTimeout(function () {
+              Swal.close();
+            }, 1200);
+            return;
+          }
         }
       });
     }
