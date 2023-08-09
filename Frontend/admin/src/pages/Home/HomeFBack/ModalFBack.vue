@@ -287,7 +287,6 @@ const updateForm = () => {
 
       watch(response, () => {
         if (response.value?.status === 'ok') {
-          console.log(feedbacks.value);
           emits('update-content', {
             listrs: feedbacks.value
           });

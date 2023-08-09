@@ -5,6 +5,7 @@ import { faXmark, faDownload } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import CropImage from '@/components/CropImage/CropImage.vue';
 import Editor from '@tinymce/tinymce-vue';
+import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 interface MyErrorResponse {
@@ -94,6 +95,7 @@ const emits = defineEmits<{
 
 //Properties
 const indexCur = ref(1);
+const isLoading = ref(false);
 
 //Part 1
 const name = ref('');
@@ -312,6 +314,8 @@ const submitForm = () => {
     return;
   }
 
+  isLoading.value = true;
+
   const getFKKey = useAxios<DataResponse>(
     'get',
     // eslint-disable-next-line max-len
@@ -353,6 +357,7 @@ const submitForm = () => {
 
     watch(createProduct.response, () => {
       if (createProduct.response.value?.status === 'ok') {
+        isLoading.value = false;
         Swal.fire({
           title: 'Thêm thành công',
           icon: 'success',
@@ -373,6 +378,7 @@ const submitForm = () => {
         .value as MyErrorResponse | null;
       if (errorValue !== null) {
         if (errorValue?.response?.data?.message === 'Product name already taken') {
+          isLoading.value = false;
           alertDialog('Tên sản phẩm đã tồn tại', 1);
           return;
         }
@@ -561,6 +567,9 @@ watch(selectedCompany, () => {
         <button v-if="indexCur > 1" @click="indexCur--">Quay lại</button>
         <button v-if="indexCur < 3" @click="indexCur++">Tiếp tục</button>
         <button v-if="indexCur === 3" @click="submitForm">Thêm</button>
+      </div>
+      <div v-show="isLoading" :class="$style.loading__overlay">
+        <Loading />
       </div>
     </div>
   </div>

@@ -4,6 +4,7 @@ import { ref, watch } from 'vue';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 //Validate TinyMCE
@@ -15,6 +16,7 @@ interface TextAreaValue {
 
 //Dependency
 const deps = ref([]);
+const isLoading = ref(false);
 
 //Emit
 const emits = defineEmits<{
@@ -114,6 +116,8 @@ const submitForm = () => {
     return;
   }
 
+  isLoading.value = true;
+
   const object = {
     title: title.value,
     position: position.value,
@@ -124,12 +128,11 @@ const submitForm = () => {
     treatment: treatInput.value.level.content
   };
 
-  console.log(object);
-
   const addRecruitment = useAxios<DataResponse>('post', '/recruitment/', object, {}, deps.value);
 
   watch(addRecruitment.response, () => {
     if (addRecruitment.response.value?.status === 'ok') {
+      isLoading.value = false;
       Swal.fire({
         title: 'Thêm thành công',
         icon: 'success',
@@ -152,9 +155,8 @@ const submitForm = () => {
       <p>THÊM BÀI TUYỂN DỤNG</p>
       <font-awesome-icon @click="$emit('close')" :icon="faXmark" :class="$style.activity_cancel" />
     </div>
-
-    <!-- Step 1 -->
     <div :class="$style['activity_container--wrap']">
+      <!-- Step 1 -->
       <template v-if="indexCur === 1">
         <div :class="$style['activity_container--wrap-left']">
           <div :class="$style.wrap_title">
@@ -292,6 +294,9 @@ const submitForm = () => {
         <button v-if="indexCur < 3" @click="indexCur++">Tiếp tục</button>
         <button v-if="indexCur === 3" @click="submitForm">Thêm</button>
       </div>
+    </div>
+    <div v-show="isLoading" :class="$style.loading__overlay">
+      <Loading />
     </div>
   </div>
 </template>
