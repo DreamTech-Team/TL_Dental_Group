@@ -7,6 +7,7 @@ import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import base64ToBlob from '@/utils/base64ToBlob';
 import Swal from 'sweetalert2';
 import styles from './UpdateBanner.module.scss';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface UpdateBanner {
   id: string;
@@ -47,6 +48,8 @@ const imageFile: Ref<string | null> = ref(null);
 const isCrop = ref(false);
 const isOpenInput = ref(false);
 const isUpdate = ref(false);
+const isLoadingPolicy = ref(false);
+const isLoadingNews = ref(false);
 const isTab = ref('Policy');
 
 // Gọi hàm useAxios để lấy response, error, và isLoading
@@ -58,16 +61,24 @@ const getImagePolicy = useAxios<DataResponse>(
   variableChange.value
 );
 
+isLoadingPolicy.value = getImagePolicy.isLoading.value;
+
 const getImageNews = useAxios<DataResponse>('get', 'news/header', {}, {}, variableChange.value);
+
+isLoadingNews.value = getImageNews.isLoading.value;
 
 watch(getImagePolicy.response, () => {
   dataHeaderPolicy.value = getImagePolicy.response.value?.data;
   imageFile.value = getImagePolicy.response.value?.data?.image;
+  isLoadingPolicy.value = getImagePolicy.isLoading.value;
 });
 watch(getImageNews.response, () => {
   dataHeaderNews.value = getImageNews.response.value?.data;
   // imageFile.value = getImageNews.response.value?.data?.image;
+  isLoadingNews.value = getImageNews.isLoading.value;
 });
+
+console.log(getImageNews.isLoading.value);
 
 const handleTab = (e: Event) => {
   const target = e.target as HTMLInputElement;
@@ -247,9 +258,7 @@ const handleUpload = () => {
         }"
         >News</span
       >
-      <div :class="$style['banner__item--policy']">
-        <!-- <h2>Banner Chính sách</h2> -->
-
+      <div :class="$style['banner__item--policy']" v-if="!isLoadingPolicy && !isLoadingNews">
         <div
           :class="$style['banner__item--policy-img']"
           @click="isOpenInput = !isOpenInput"
@@ -288,6 +297,9 @@ const handleUpload = () => {
           Update
         </button>
       </div>
+      <!-- <div v-else> -->
+      <loading-component v-else />
+      <!-- </div> -->
     </div>
   </div>
 
