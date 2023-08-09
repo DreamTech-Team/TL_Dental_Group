@@ -1,5 +1,6 @@
 package com.dreamtech.tldental.controllers;
 
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -374,8 +375,10 @@ public class RecruitmentController {
 
         if (foundRecruitment.isPresent()) {
             Recruitment recruitment = foundRecruitment.get();
+            ZonedDateTime created = recruitment.getCreateAt();
 
             BeanUtils.copyProperties(entity, recruitment);
+            recruitment.setCreateAt(created);
 
             return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject("ok", "Update recruitment successfully", recruitmentRepository.save(recruitment))

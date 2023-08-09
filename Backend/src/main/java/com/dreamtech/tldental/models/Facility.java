@@ -24,16 +24,20 @@ public class Facility {
     @Column(nullable = false, length = 500)
     private String mapLink;
 
+    @Column(nullable = false, length = 100000)
+    private String mapIframe;
+
     public Facility() {
     }
 
-    public Facility(String id, String address, String phoneNumber, String hotline, String image, String mapLink) {
+    public Facility(String id, String address, String phoneNumber, String hotline, String image, String mapLink, String mapIframe) {
         this.id = id;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.hotline = hotline;
         this.image = image;
         this.mapLink = mapLink;
+        this.mapIframe = mapIframe;
     }
 
     public String getId() {
@@ -82,5 +86,13 @@ public class Facility {
 
     public void setMapLink(String mapLink) {
         this.mapLink = mapLink;
+    }
+
+    public String getMapIframe() {
+        return mapIframe;
+    }
+
+    public void setMapIframe(String mapIframe) {
+        this.mapIframe = mapIframe;
     }
 }
