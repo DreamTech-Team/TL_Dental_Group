@@ -1,21 +1,35 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { recruitments } from './Recruitment';
+import { ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import ManageRecruitment from './RecruitmentTable.vue';
-import ModalRecruitment from './ModalRecruitment/ModalRecruitment.vue';
+import ModalAdd from './ModalRecruitment/ModalAdd.vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-const isModalOpen = ref(false);
+const isOpen = ref(false); //Open Modal Add
 const activeTab = ref('activity');
+const total = ref(0);
 
-const openModal = () => {
-  isModalOpen.value = true;
+//Data from Modal Add
+const onUpdateContent = () => {
+  window.location.reload();
 };
 
-const closeModal = () => {
-  isModalOpen.value = false;
-};
+const deps = ref([]);
+
+//GET DATA
+const { response } = useAxios<DataResponse>(
+  'get',
+  `/recruitment/?page=0&pageSize=10000`,
+  {},
+  {},
+  deps.value
+);
+
+//Convert array to compatible with data
+watch(response, () => {
+  total.value = response.value?.data?.total;
+});
 </script>
 <template>
   <div>
@@ -25,18 +39,18 @@ const closeModal = () => {
 
         <div v-if="activeTab === 'activity'" :class="$style['mn_activity--total']">
           <p>
-            Có tất cả <span :class="$style.highlight">{{ recruitments.length }}</span> nhân viên
+            Có tất cả <span :class="$style.highlight">{{ total }}</span> nhân viên
           </p>
 
-          <button @click="openModal" :class="$style.mn_activity_control">
+          <button @click="isOpen = true" :class="$style.mn_activity_control">
             <font-awesome-icon :icon="faPlus" :class="$style['mn_activity--total-ic1']" />
             THÊM BÀI TUYỂN DỤNG
           </button>
         </div>
-        <manage-recruitment />
+        <manage-recruitment :total="total" />
       </div>
-      <div :class="$style.activity_overlay" v-if="isModalOpen">
-        <modal-recruitment :closeModal="closeModal" @click.stop @close="closeModal" />
+      <div :class="$style.activity_overlay" v-if="isOpen">
+        <modal-add v-if="isOpen" @close="isOpen = false" @update-content="onUpdateContent" />
       </div>
     </div>
   </div>

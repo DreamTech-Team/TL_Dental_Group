@@ -1,26 +1,10 @@
 <script setup lang="ts">
 import Editor from '@tinymce/tinymce-vue';
-import { ref, watch, type PropType } from 'vue';
+import { ref, watch } from 'vue';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
-
-interface RecruitmentItem {
-  id: string;
-  title: string;
-  position: string;
-  location: string;
-  department: string;
-  working_form: string;
-  description: string;
-  requirements: string;
-  benefit: string;
-  contact: string;
-  treatment: string;
-  slug: string;
-  createAt: string;
-}
 
 //Validate TinyMCE
 interface TextAreaValue {
@@ -37,28 +21,20 @@ const emits = defineEmits<{
   // eslint-disable-next-line no-unused-vars
   (e: 'close'): void;
   // eslint-disable-next-line no-unused-vars
-  (e: 'update-content', data: { ItemAdd: RecruitmentItem }): void;
+  (e: 'update-content'): void;
 }>();
 
-//Define Props
-const context = defineProps({
-  updateObject: {
-    type: Object as PropType<RecruitmentItem | null>,
-    required: false
-  }
-});
-
 //Part 1
-const title = ref(context.updateObject?.title);
-const address = ref(context.updateObject?.location);
-const position = ref(context.updateObject?.position);
-const time = ref(context.updateObject?.working_form);
+const title = ref('');
+const address = ref('');
+const position = ref('');
+const time = ref('');
 
 //Part 2
-const desSummary = ref<string | undefined>(context.updateObject?.description);
+const desSummary = ref<string | undefined>('');
 const descriptionInput = ref<TextAreaValue>({
   level: {
-    content: context.updateObject?.description || ''
+    content: ''
   }
 });
 const updateDes = (content: TextAreaValue) => {
@@ -67,10 +43,10 @@ const updateDes = (content: TextAreaValue) => {
 };
 
 //Part 3
-const valueTreat = ref<string | undefined>(context.updateObject?.treatment);
+const valueTreat = ref<string | undefined>('');
 const treatInput = ref<TextAreaValue>({
   level: {
-    content: context.updateObject?.treatment || ''
+    content: ''
   }
 });
 const updateTreat = (content: TextAreaValue) => {
@@ -78,10 +54,10 @@ const updateTreat = (content: TextAreaValue) => {
   valueTreat.value = content.level.content;
 };
 
-const valueContact = ref<string | undefined>(context.updateObject?.contact);
+const valueContact = ref<string | undefined>('');
 const contactInput = ref<TextAreaValue>({
   level: {
-    content: context.updateObject?.contact || ''
+    content: ''
   }
 });
 const updateContact = (content: TextAreaValue) => {
@@ -139,7 +115,6 @@ const submitForm = () => {
   }
 
   const object = {
-    id: context.updateObject?.id,
     title: title.value,
     position: position.value,
     location: address.value,
@@ -151,27 +126,19 @@ const submitForm = () => {
 
   console.log(object);
 
-  const updateRecruitment = useAxios<DataResponse>(
-    'patch',
-    '/recruitment/',
-    object,
-    {},
-    deps.value
-  );
+  const addRecruitment = useAxios<DataResponse>('post', '/recruitment/', object, {}, deps.value);
 
-  watch(updateRecruitment.response, () => {
-    if (updateRecruitment.response.value?.status === 'ok') {
+  watch(addRecruitment.response, () => {
+    if (addRecruitment.response.value?.status === 'ok') {
       Swal.fire({
-        title: 'Cập nhật thành công',
+        title: 'Thêm thành công',
         icon: 'success',
         confirmButtonText: 'Hoàn tất',
         width: '30rem'
       }).then((result) => {
         if (result.isConfirmed) {
           Swal.close();
-          emits('update-content', {
-            ItemAdd: updateRecruitment.response.value?.data
-          });
+          emits('update-content');
           emits('close');
         }
       });
@@ -182,7 +149,7 @@ const submitForm = () => {
 <template>
   <div :class="$style.activity_container">
     <div :class="$style['activity_container--title']">
-      <p>CẬP NHẬT TUYỂN DỤNG</p>
+      <p>THÊM BÀI TUYỂN DỤNG</p>
       <font-awesome-icon @click="$emit('close')" :icon="faXmark" :class="$style.activity_cancel" />
     </div>
 
@@ -323,7 +290,7 @@ const submitForm = () => {
         <button v-if="indexCur === 1" @click="$emit('close')">Hủy</button>
         <button v-if="indexCur > 1" @click="indexCur--">Quay lại</button>
         <button v-if="indexCur < 3" @click="indexCur++">Tiếp tục</button>
-        <button v-if="indexCur === 3" @click="submitForm">Cập nhật</button>
+        <button v-if="indexCur === 3" @click="submitForm">Thêm</button>
       </div>
     </div>
   </div>
