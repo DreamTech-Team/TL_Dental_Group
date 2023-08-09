@@ -48,20 +48,10 @@ const rightForCandidate = ref('');
 const contact = ref('');
 const selectedTime = ref('');
 const treat = ref('');
+const position = ref('');
 
 const selectedPosition = ref('');
 const currentStep = ref(1);
-
-const positionOptions = [
-  { value: 'option1', label: 'Tùy chọn 1' },
-  { value: 'option2', label: 'Tùy chọn 2' },
-  { value: 'option3', label: 'Tùy chọn 3' }
-];
-const timeOptions = [
-  { value: 'option1', label: 'Tùy chọn 1' },
-  { value: 'option2', label: 'Tùy chọn 2' },
-  { value: 'option3', label: 'Tùy chọn 3' }
-];
 
 const saveInformation = () => {
   // Tiến hành lưu thông tin hoặc các xử lý khác
@@ -117,28 +107,29 @@ const handleChangeContent = (e: { target: { getContent: () => string } }) => {
           <input
             id="recruitment-address"
             v-model="addressInfo"
-            placeholder="Nhập vị trí"
+            placeholder="Nhập địa chỉ"
             :class="$style['custom-input']"
           />
         </div>
         <div :class="$style.options_wrap">
           <div>
-            <p :class="$style.options_title">Vị trí</p>
-            <select :class="$style.options_wrap_btn" v-model="selectedPosition">
-              <option value="">Chọn một tùy chọn</option>
-              <option v-for="option in positionOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <p :class="$style.options_title" for="recruitment-position">Vị trí</p>
+            <input
+              id="recruitment-position"
+              v-model="selectedPosition"
+              placeholder="Nhập vị trí"
+              :class="$style['options_wrap_btn']"
+            />
           </div>
           <div>
-            <p :class="$style.options_title">Thời gian làm</p>
-            <select :class="$style.options_wrap_btn" v-model="selectedTime">
-              <option value="">Chọn một tùy chọn</option>
-              <option v-for="option in timeOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
+            <p :class="$style.options_title" for="recruitment-time">Thời gian làm</p>
+
+            <input
+              id="recruitment-time"
+              v-model="selectedTime"
+              placeholder="Nhập thời gian làm"
+              :class="$style['options_wrap_btn']"
+            />
           </div>
         </div>
       </div>
