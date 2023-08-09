@@ -1,12 +1,64 @@
 <script setup lang="ts">
-import Facility from '@/assets/imgs/About/Facility.png';
+import { ref, watch } from 'vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faDiamondTurnRight } from '@fortawesome/free-solid-svg-icons';
 import Location from '@/assets/imgs/About/Location.png';
 import Telephone from '@/assets/imgs/About/Telephone.png';
 import Message from '@/assets/imgs/About/Message.png';
 import Facebook from '@/assets/imgs/About/Facebook.png';
-import Signpost from '@/assets/imgs/About/Signpost.png';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faChevronRight, faDiamondTurnRight } from '@fortawesome/free-solid-svg-icons';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+interface Info {
+  address: string;
+  hotline: string;
+  mapLink: string;
+  image: string;
+}
+
+interface Contact {
+  email: {
+    content: string;
+  };
+  facebook: {
+    content: string;
+  };
+}
+
+const variableChange = ref([]);
+const variableChangeContact = ref([]);
+const dataFacility = ref<Info>({
+  address: '',
+  hotline: '',
+  mapLink: '',
+  image: ''
+});
+const dataContact = ref<Contact>({
+  email: {
+    content: ''
+  },
+  facebook: {
+    content: ''
+  }
+});
+
+// Gọi hàm useAxios để lấy response, error, và isLoading
+const getInfo = useAxios<DataResponse>('get', '/facility/', {}, {}, variableChange.value);
+const getContact = useAxios<DataResponse>(
+  'get',
+  '/information?type=CONTACT',
+  {},
+  {},
+  variableChangeContact.value
+);
+
+// Truy xuất giá trị response.value và gán vào responseData
+watch(getInfo.response, () => {
+  dataFacility.value = getInfo.response?.value?.data;
+});
+
+watch(getContact.response, () => {
+  dataContact.value = getContact.response?.value?.data;
+});
 </script>
 <template>
   <div :class="$style.about__facility">
@@ -18,26 +70,28 @@ import { faChevronRight, faDiamondTurnRight } from '@fortawesome/free-solid-svg-
 
         <div>
           <img :src="Location" :class="$style['about__facility-ic']" />
-          <p>45 Thạch Thị Thanh, phường Tân Định, Quận 1, TP Hồ Chí Minh</p>
+          <p>{{ dataFacility.address }}</p>
         </div>
 
         <div>
           <img :src="Telephone" :class="$style['about__facility-ic']" />
-          <p>070 404 2234</p>
+          <p>{{ dataFacility.hotline }}</p>
         </div>
 
         <div>
           <img :src="Message" :class="$style['about__facility-ic']" />
-          <p>ceo.tldental.group@gmail.com</p>
+          <p>{{ dataContact.email.content }}</p>
         </div>
 
         <div>
           <img :src="Facebook" :class="$style['about__facility-ic']" />
-          <a href="">https://www.facebook.com/BiomeawTLG</a>
+          <a :href="dataContact.facebook.content" target="_blank">{{
+            dataContact.facebook.content
+          }}</a>
         </div>
 
         <button :class="$style['about__facility-button']">
-          <a href="https://goo.gl/maps/4KYphAyVoQMALkfUA">
+          <a :href="dataFacility.mapLink" target="_blank">
             <font-awesome-icon
               :icon="faDiamondTurnRight"
               :class="$style['about__facility-button-ic']"
@@ -46,7 +100,7 @@ import { faChevronRight, faDiamondTurnRight } from '@fortawesome/free-solid-svg-
           </a>
         </button>
       </div>
-      <img :src="Facility" alt="" />
+      <img :src="dataFacility.image" alt="" :class="$style['about__facility-img']" />
     </div>
   </div>
 </template>

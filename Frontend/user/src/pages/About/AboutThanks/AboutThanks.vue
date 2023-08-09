@@ -6,7 +6,7 @@ const variableChange = ref([]);
 const contentLetter = ref('');
 
 // Gọi hàm useAxios để lấy response, error, và isLoading
-const { response, error, isLoading } = useAxios<DataResponse>(
+const { response } = useAxios<DataResponse>(
   'get',
   '/introduce/letter',
   {},
@@ -56,6 +56,7 @@ const handleB = () => {
       <div :class="$style['about__thanks-mail']">
         <div :class="$style['about__thanks-cover']"></div>
         <div :class="$style['about__thanks-letter']" id="haha">
+          <h1>LỜI CẢM ƠN</h1>
           <p v-html="contentLetter"></p>
         </div>
       </div>

@@ -1,8 +1,15 @@
 @import '@/styles/responsive';
 
 .newsdetail{
-    img{
+    &__img{
         width: 100%;
+        height: 46.8rem;
+
+        img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
     }
 
     &__wrapper{

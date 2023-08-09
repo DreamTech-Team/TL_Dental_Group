@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { ref, nextTick, watch } from 'vue';
 import IcDownCategory from '@/assets/icons/IcsortDown.svg';
-import { category } from '../Category/Category';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
-import { data } from '@/pages/RecruitmentDetails/RecruitmentDetailsHandle';
 
 interface ListCategory1 {
   id: string;
@@ -154,7 +152,6 @@ const idDefine = (index: number) => {
 };
 
 const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
-  console.log(category[categoryIndex].data[itemIndex]);
   selectedCategoryItem.value = { categoryIndex, itemIndex };
 };
 

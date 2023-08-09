@@ -1,31 +1,110 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faChevronLeft, faChevronRight, faL } from '@fortawesome/free-solid-svg-icons';
-
-import Motto from '@/assets/imgs/About/Motto.png';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import dayjs from 'dayjs';
+import 'dayjs/locale/vi';
 import Time from '@/assets/imgs/NewsDetail/Time.png';
-import Test from '@/assets/imgs/NewsDetail/Test.png';
+import { useRouter } from 'vue-router';
+
+interface NewsDetail {
+  title: string;
+  time: Date;
+  summary: string;
+  img: string;
+  createAt: string;
+  detail: string;
+  slug: string;
+}
+
+interface News {
+  slug: string;
+  title: string;
+}
+
+const props = defineProps({
+  data: {
+    type: Object,
+    required: true
+  }
+});
+
+const variableChangeNews = ref([]);
+const dataRender = ref<NewsDetail>({ ...props.data } as NewsDetail);
+const dataNews = ref<News[]>([]);
+const indexNews = ref(-1);
+const showButtonLeft = ref(true);
+const showButtonRight = ref(true);
+const contentButtonLeft = ref('');
+const contentButtonRight = ref('');
+
+// Gọi hàm useAxios để lấy response, error, và isLoading
+const getNews = useAxios<DataResponse>('get', '/news', {}, {}, variableChangeNews.value);
+
+// Truy xuất giá trị response.value và gán vào responseData
+watch(getNews.response, () => {
+  dataNews.value = getNews.response.value?.data?.data;
+
+  dataNews.value.forEach((item, idx) => {
+    if (item.slug === dataRender.value.slug) indexNews.value = idx;
+  });
+
+  if (indexNews.value === 0) {
+    showButtonLeft.value = false;
+    showButtonRight.value = true;
+    contentButtonRight.value = dataNews.value[indexNews.value + 1].title;
+  } else if (indexNews.value === dataNews.value.length - 1) {
+    showButtonLeft.value = false;
+    showButtonRight.value = true;
+    contentButtonLeft.value = dataNews.value[indexNews.value - 1].title;
+  } else {
+    showButtonLeft.value = true;
+    showButtonRight.value = true;
+    contentButtonLeft.value = dataNews.value[indexNews.value - 1].title;
+    contentButtonRight.value = dataNews.value[indexNews.value + 1].title;
+  }
+});
+
+const handleFormatTime = (time: string) => {
+  const inputDate = dayjs(time).locale('vi'); // Đặt ngôn ngữ
+
+  const daysOfWeek = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+
+  return `${daysOfWeek[inputDate.day()]}, ${inputDate.format('DD/MM/YYYY, HH:mm [GMT]Z')}`;
+};
+
+const handleClickLeft = () => {
+  if (indexNews.value >= 0) {
+    window.location.href = `/tintuc/${dataNews.value[indexNews.value - 1].slug}`;
+  }
+};
+
+const handleClickRight = () => {
+  if (indexNews.value >= 0) {
+    window.location.href = `/tintuc/${dataNews.value[indexNews.value + 1].slug}`;
+  }
+};
 </script>
 <template>
   <div :class="$style.newsdetail__content">
-    <h1>HOẠT ĐỘNG CHỐNG DỊCH TÌNH NGUYỆN</h1>
+    <h1>{{ dataRender.title }}</h1>
 
     <div :class="$style['newsdetail__content-time']">
       <img :src="Time" alt="" />
 
-      <p>Thứ 6, 26/05/2023, 11:00 GMT+7</p>
+      <p>{{ handleFormatTime(dataRender.createAt) }}</p>
     </div>
 
     <div :class="$style['newsdetail__content-main']">
-      <div :class="$style['newsdetail__content-main-header']">
-        <p>
-          Chúng tôi đã tham gia vào các hoạt động chống dịch tình nguyện tại địa phương, cùng nhau
-          chung tay chống dịch góp phần giúp người dân và tổ quốc vượt qua khó khăn.
-        </p>
-        <img :src="Test" alt="" />
-      </div>
+      <!-- <div :class="$style['newsdetail__content-main-header']">
+        <p>{{ dataRender.summary }}</p>
+        <img :src="dataRender.img" alt="" />
+      </div> -->
 
-      <div :class="$style['newsdetail__content-main-body']">
+      <p v-html="dataRender.detail"></p>
+
+      <!-- <div :class="$style['newsdetail__content-main-body']">
         <h3>Lẫy mẫu test Covid - 19</h3>
         <div>
           <p>
@@ -55,21 +134,32 @@ import Test from '@/assets/imgs/NewsDetail/Test.png';
           </p>
           <img :src="Test" alt="" />
         </div>
-      </div>
+      </div> -->
 
-      <div :class="$style['newsdetail__content-main-footer']">
-        <button :class="$style['newsdetail__content-main-footer-button-left']">
+      <div
+        :class="$style['newsdetail__content-main-footer']"
+        :style="{ justifyContent: !showButtonLeft ? 'right' : 'none' }"
+      >
+        <button
+          :class="$style['newsdetail__content-main-footer-button-left']"
+          @click="handleClickLeft"
+          v-if="showButtonLeft"
+        >
           <font-awesome-icon
             :icon="faChevronLeft"
             :class="$style['newsdetail__content-main-footer-button-left-ic']"
           />
           <p :class="$style['newsdetail__content-main-footer-button-left-content']">
-            Chỉnh Nha Thay Phẫu Thuật Hàm – Kỹ Thuật Meaw – Geaw
+            {{ contentButtonLeft }}
           </p>
         </button>
-        <button :class="$style['newsdetail__content-main-footer-button-right']">
+        <button
+          :class="$style['newsdetail__content-main-footer-button-right']"
+          @click="handleClickRight"
+          v-if="showButtonRight"
+        >
           <p :class="$style['newsdetail__content-main-footer-button-right-conten']">
-            Tác Dụng Và Quy Trình Của Kỹ Thuật Đánh Lún Răng
+            {{ contentButtonRight }}
           </p>
           <font-awesome-icon
             :icon="faChevronRight"

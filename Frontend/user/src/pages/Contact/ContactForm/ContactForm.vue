@@ -1,17 +1,48 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import Zalo from '@/assets/imgs/Contact/Zalo.png';
 import Telephone from '@/assets/imgs/Contact/Telephone.png';
 import Message from '@/assets/imgs/Contact/Message.png';
 import Location from '@/assets/imgs/Contact/Location.png';
-
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
-import { ref } from 'vue';
+
+interface Info {
+  address: string;
+  hotline: string;
+  mapLink: string;
+  image: string;
+}
+
+interface Contact {
+  email: {
+    content: string;
+  };
+  facebook: {
+    content: string;
+  };
+  zalo: {
+    content: string;
+  };
+}
+
+const props = defineProps({
+  dataFacility: {
+    type: Object,
+    required: true
+  },
+  dataContact: {
+    type: Object,
+    required: true
+  }
+});
 
 const isCLick = ref(false);
 const isSocial = ref(true);
 const move = ref(0);
 const widthLine = ref(69);
+const dataContactRender = ref<Contact>({ ...(props.dataContact as Contact) });
+const dataFacilityRender = ref<Info>({ ...(props.dataFacility as Info) });
 
 const handleClick = () => {
   isCLick.value = !isCLick.value;
@@ -45,15 +76,19 @@ const handleSocialForm = (e: Event) => {
           <p :class="$style['contact__form-social-title']">Bạn có thể kết nối qua</p>
 
           <button :class="$style['contact__form-social-button-facebook']">
-            <font-awesome-icon
-              :icon="faFacebook"
-              :class="$style['contact__form-social-button-facebook-ic']"
-            />
-            <p>Facebook</p>
+            <a :href="dataContactRender.facebook.content" target="_blank">
+              <font-awesome-icon
+                :icon="faFacebook"
+                :class="$style['contact__form-social-button-facebook-ic']"
+              />
+              <p>Facebook</p>
+            </a>
           </button>
           <button :class="$style['contact__form-social-button-zalo']">
-            <img :src="Zalo" :class="$style['contact__form-social-button-zalo-ic']" />
-            <p>Zalo</p>
+            <a :href="dataContactRender.zalo.content" target="_blank">
+              <img :src="Zalo" :class="$style['contact__form-social-button-zalo-ic']" />
+              <p>Zalo</p>
+            </a>
           </button>
         </div>
 
@@ -92,21 +127,21 @@ const handleSocialForm = (e: Event) => {
           <div :class="$style['contact__form-info-img']">
             <img :src="Telephone" :class="$style['contact__form-info-img-ic']" />
           </div>
-          <p>070 404 2234</p>
+          <p>{{ dataFacilityRender.hotline }}</p>
         </div>
 
         <div :class="$style['contact__form-info-row']">
           <div :class="$style['contact__form-info-img']">
             <img :src="Message" :class="$style['contact__form-info-img-ic']" />
           </div>
-          <p>ceo.tldental.group@gmail.com</p>
+          <p>{{ dataContactRender.email.content }}</p>
         </div>
 
         <div :class="$style['contact__form-info-row']">
           <div :class="$style['contact__form-info-img']">
             <img :src="Location" :class="$style['contact__form-info-img-ic']" />
           </div>
-          <p>45 Thạch Thị Thanh, phường Tân Định, Quận 1, TP Hồ Chí Minh</p>
+          <p>{{ dataFacilityRender.address }}</p>
         </div>
 
         <button :class="$style['contact__form-info-button']" @click="handleClick">

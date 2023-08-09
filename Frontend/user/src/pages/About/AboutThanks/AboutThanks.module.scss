@@ -60,17 +60,17 @@
                 background-image: url('@/assets/imgs/About/Letter.png');
                 background-repeat: no-repeat;
                 background-size: cover;
-                padding: 12rem 8rem 0 8rem;
+                padding: 10rem 12rem;
             }
 
-            // .about__thanks-letter h1{
-            //     text-align: center;
-            //     color:  #0029BB;
-            //     font-weight: 700;
-            //     font-size: $text-3xl;
-            //     line-height: 5.8rem;
-            //     margin-top: 6rem;
-            // }
+            .about__thanks-letter h1{
+                text-align: center;
+                color:  #0029BB;
+                font-weight: 700;
+                font-size: $text-3xl;
+                line-height: 5.8rem;
+                // margin-top: 6rem;
+            }
             // .about__thanks-letter h2{
             //     text-align: center;
             //     font-size: $text-2xl;

@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router';
 import AboutHeader from './AboutHeader/AboutHeader.vue';
 import AboutInfoCompany from './AboutInfoCompany/AboutInfoCompany.vue';
 import AboutThanks from './AboutThanks/AboutThanks.vue';
 import AboutMotto from './AboutMotto/AboutMotto.vue';
-import AboutBusinessItems from './AboutBusinessItems/AboutBusinessItems.vue';
+import AboutBusinessItems from '../Home/HomeCategory/HomeCategory.vue';
 import AboutPolicy from './AboutPolicy/AboutPolicy.vue';
 import AboutFacility from './AboutFacility/AboutFacility.vue';
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
-import { useRoute } from 'vue-router';
 
 const route = useRoute();
 </script>
@@ -18,7 +18,7 @@ const route = useRoute();
     <about-thanks />
     <about-infoCompany />
     <about-motto />
-    <about-businessItems />
+    <about-businessItems :style="{ marginTop: '6rem' }" />
     <about-policy />
     <about-facility />
   </div>

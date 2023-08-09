@@ -2,6 +2,7 @@
 @import "@/styles/responsive";
 
 .about__motto{
+    overflow: hidden;
 
     &-title{
         font-size: $text-4xl;
@@ -159,8 +160,6 @@
                 transition: transform 150ms ease-out;
                 width: 100%;
                 overflow-x: scroll;
-                // overflow: hidden;
-
                 
                 &-item{
                     background-color: #D7FFFA;
@@ -170,9 +169,14 @@
                     display: flex;
                     flex-direction: column;
                     align-items: center;
+                    width: 100%;
     
                     img{
                         width: calc(100vw*0.5);
+                        // width: calc(33.33% - 100px);
+                        height: calc(100vh*0.333 - 150px);
+                        object-fit: cover;
+                        border-radius: 6px;
                     }
         
                     p{
