@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { ElPagination } from 'element-plus/lib/components/index.js';
 import 'element-plus/dist/index.css';
 
@@ -12,7 +12,15 @@ const props = defineProps({
 const background = ref(true);
 const disabled = ref(false);
 const emit = defineEmits(['size-change', 'current-change']);
+
 const currentPageRef = ref(props.currentPage);
+const totals = ref(props.total);
+watch(props, () => {
+  currentPageRef.value = props.currentPage;
+  totals.value = props.total;
+  console.log(currentPageRef.value);
+  console.log(totals.value);
+});
 
 const handleSizeChange = (val: number) => {
   // Emit the size-change event to notify the parent component
@@ -22,9 +30,9 @@ const handleSizeChange = (val: number) => {
 const handleCurrentChange = (val: number) => {
   // Emit the current-change event to notify the parent component
   emit('current-change', val);
-  console.log(props.total);
-  console.log(props.currentPage);
-  console.log(props.pageSize);
+  // console.log(props.total);
+  // console.log(props.currentPage);
+  // console.log(props.pageSize);
 };
 </script>
 
@@ -41,8 +49,7 @@ const handleCurrentChange = (val: number) => {
           :disabled="disabled"
           :background="background"
           layout="prev, pager, next, jumper"
-          :total="39"
-          :class="$style['custom-pagination']"
+          :total="totals"
         />
       </div>
     </el-config-provider>

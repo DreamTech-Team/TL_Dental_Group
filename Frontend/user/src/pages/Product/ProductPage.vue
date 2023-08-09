@@ -7,87 +7,101 @@ import ProductNavigation from './ProductNavigation/ProductNavigation.vue';
 import ServiceQuality from '@/components/ServiceQuality/ServiceQuality.vue';
 import BasePagination from '@/components/Pagination/BasePagination.vue';
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
-import { products } from '../Product/ProductHandle';
-import { category } from './ProductCategory/ProductCategory';
-import IcSortDown from '@/assets/icons/IcSortDown.svg';
+// import { products } from '../Product/ProductHandle';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { computed, onMounted, ref } from 'vue';
-import {
-  faArrowDownAZ,
-  faArrowDownShortWide,
-  faFilter,
-  faBars
-} from '@fortawesome/free-solid-svg-icons';
+import { computed, onMounted, ref, watch } from 'vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import { faArrowDownShortWide } from '@fortawesome/free-solid-svg-icons';
 
-const categories = [
-  {
-    title: 'Vật liệu chỉnh nha ABC',
-    data: [
-      {
-        name: 'Lò xo chỉnh nha'
-      },
-      {
-        name: 'Kềm chỉnh nha'
-      },
-      {
-        name: 'Thun chỉnh chỉnh nha'
-      },
-      {
-        name: 'Chỉ chỉnh nha'
-      },
-      {
-        name: 'Kẹp gấp mắc cài'
-      }
-    ]
-  },
-  {
-    title: 'Vật liệu chỉnh nha ADC',
-    data: [
-      {
-        name: 'Lò xo chỉnh nha'
-      },
-      {
-        name: 'Kềm chỉnh nha'
-      },
-      {
-        name: 'Thun chỉnh chỉnh nha'
-      },
-      {
-        name: 'Chỉ chỉnh nha'
-      },
-      {
-        name: 'Kẹp gấp mắc cài'
-      }
-    ]
-  },
-  {
-    title: 'Vật liệu chỉnh nha XYZ',
-    data: [
-      {
-        name: 'Lò xo chỉnh nha'
-      },
-      {
-        name: 'Kềm chỉnh nha'
-      },
-      {
-        name: 'Thun chỉnh chỉnh nha'
-      },
-      {
-        name: 'Chỉ chỉnh nha'
-      },
-      {
-        name: 'Kẹp gấp mắc cài'
-      }
-    ]
-  }
-];
+interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  priceSale: number;
+  summary: string;
+  description: string;
+  mainImg: string;
+  imgs: string;
+  highlight: number;
+  createAt: string;
+  fkCategory: {
+    id: string;
+    companyId: {
+      id: string;
+      name: string;
+      logo: string;
+      description: string;
+      highlight: number;
+      slug: string;
+      createAt: string;
+      outstandingProductId: string;
+    };
+    cate1Id: {
+      id: string;
+      title: string;
+      img: string;
+      highlight: 3;
+      slug: string;
+      createAt: string;
+    };
+    cate2Id: {
+      id: string;
+      title: string;
+      slug: string;
+      createAt: string;
+    };
+  };
+}
 
-const currentPage = ref(1);
-const pageSize = ref(12);
+interface Item {
+  nameProduct: string;
+  price: number;
+  summary: string;
+  tag: string;
+  company: string;
+  image: string;
+  brand: string;
+  slug: string;
+}
+
+//Init data structure
+const products = ref<Item[]>([]);
+
+const deps = ref([]);
+const deps1 = ref([]);
+const dataRes = ref([]);
+const filterAllProduct = ref([]);
+const slugCategory1 = ref('vat-lieu-chinh-nha');
+const slugCategory2 = ref('kem-chinh-nha');
+const currentPage = ref(0);
+const pageSize = ref(6);
 const pathBC = 'sanpham';
 const isDesktop = ref(true);
 const isActive = ref(false);
+const totalProduct = ref();
+
+// Gọi hàm useAxios để lấy response, error, và isLoading
+const { response, error, isLoading } = useAxios<DataResponse>(
+  'get',
+  `/products?cate1=${slugCategory1.value}&cate2=${slugCategory2.value}&page=${currentPage.value}&pageSize=${pageSize.value}`,
+  {},
+  {},
+  deps.value
+);
+
+const {
+  response: totalRes,
+  error: totalErr,
+  isLoading: loadErr
+} = useAxios<DataResponse>(
+  'get',
+  `/products?cate1=${slugCategory1.value}&cate2=${slugCategory2.value}`,
+  {},
+  {},
+  deps.value
+);
 
 // Define reactive properties
 const isDropdownOpen = ref(false);
@@ -126,20 +140,67 @@ const scrollToTop = (top: number) => {
 };
 
 const handlePageChange = (page: number) => {
-  currentPage.value = page;
+  currentPage.value = page - 1;
+  console.log('sdjfjksd' + currentPage.value);
+
   if (window.innerWidth < 739) {
-    isDesktop.value = false;
     scrollToTop(0);
   } else {
     scrollToTop(400);
   }
 };
 
-const displayedProducts = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return products.slice(start, end);
+const updateShowResults = () => {
+  products.value = filterAllProduct.value.map((item: Product) => {
+    return {
+      nameProduct: item.name,
+      price: item.price,
+      summary: item.summary,
+      tag: item.fkCategory.cate1Id.title,
+      company: item.fkCategory.companyId.name,
+      image: item.mainImg,
+      brand: item.fkCategory.companyId.logo,
+      slug: item.slug
+    };
+  });
+};
+
+// Truy xuất giá trị response.value và gán vào responseData
+watch(response, () => {
+  dataRes.value = response?.value?.data;
+  filterAllProduct.value = response?.value?.data?.data;
+  updateShowResults();
 });
+
+watch(totalRes, () => {
+  totalProduct.value = totalRes?.value?.data.total;
+  console.log(totalProduct.value);
+});
+
+watch(
+  [currentPage, slugCategory1, slugCategory2],
+  () => {
+    const {
+      response: responseChanged,
+      error,
+      isLoading
+    } = useAxios<DataResponse>(
+      'get',
+      `/products?cate1=${slugCategory1.value}&cate2=${slugCategory2.value}&page=${currentPage.value}&pageSize=${pageSize.value}`,
+      {},
+      {},
+      deps1.value
+    );
+
+    // Truy xuất giá trị response.value và gán vào responseData
+    watch(responseChanged, () => {
+      dataRes.value = responseChanged?.value?.data;
+      filterAllProduct.value = responseChanged?.value?.data?.data;
+      updateShowResults();
+    });
+  },
+  { immediate: false }
+);
 
 onMounted(() => {
   checkScreenSize();
@@ -152,22 +213,20 @@ window.addEventListener('resize', checkScreenSize);
   <div>
     <div :class="$style['product__header']">
       <product-banner :class="$style['product__header-banner']" />
-      <!-- <product-navigation :class="$style['product__header-navigation']" /> -->
     </div>
     <bread-crumb :tags="pathBC" />
     <div :class="$style['product__content']">
+      <!-- category -->
       <base-category v-if="isDesktop" />
       <div :class="$style['product__content-wrap']">
         <div :class="$style['product__content-sort']">
           <p :class="$style['product__content-sort--info']">
-            Hiển thị <strong>{{ (currentPage - 1) * pageSize + 1 }}</strong> đến
-            <strong>{{ Math.min(currentPage * pageSize, products.length) }}</strong> trên
-            <strong>{{ Math.ceil(products.length) }}</strong> kết quả
+            Hiển thị
+            <strong>{{ products.length }}</strong> trên <strong>{{ totalProduct }}</strong> kết quả
           </p>
 
           <div :class="$style['product__content-sort--type']" @click="toggleDropdown">
             <p>{{ selectedOption }}</p>
-            <!-- <img :src="IcSortDown" alt="sort down" /> -->
             <font-awesome-icon :icon="faCaretDown" />
           </div>
 
@@ -229,22 +288,18 @@ window.addEventListener('resize', checkScreenSize);
         <!-- mobile content -->
         <div v-if="isDesktop" :class="$style['product__content-container']">
           <product-card
-            v-for="(item, index) in displayedProducts"
+            v-for="(item, index) in products"
             :key="index"
             :product="item"
             :class="$style['product__content-container--card']"
           />
         </div>
         <div v-else :class="$style['product__content-mobile']">
-          <mobile-card
-            v-for="(item1, index1) in displayedProducts"
-            :key="index1"
-            :product="item1"
-          />
+          <mobile-card v-for="(item1, index1) in products" :key="index1" :product="item1" />
         </div>
-        <div>
+        <div :class="$style['product__pagination']">
           <base-pagination
-            :total="Math.ceil(products.length / pageSize)"
+            :total="totalProduct ? totalProduct : 0"
             :current-page="currentPage"
             :page-size="pageSize"
             @current-change="handlePageChange"

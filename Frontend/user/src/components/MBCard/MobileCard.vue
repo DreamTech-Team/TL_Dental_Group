@@ -8,12 +8,56 @@ import SupportSticker from '@/assets/imgs/Product/GroupSupport.svg';
 import { useRouter } from 'vue-router';
 import { type PropType } from 'vue';
 
-export interface Product {
-  nameProduct: string;
-  price: string | number;
+interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  priceSale: number;
+  summary: string;
   description: string;
+  mainImg: string;
+  imgs: string;
+  highlight: number;
+  createAt: string;
+  fkCategory: {
+    id: string;
+    companyId: {
+      id: string;
+      name: string;
+      logo: string;
+      description: string;
+      highlight: number;
+      slug: string;
+      createAt: string;
+      outstandingProductId: string;
+    };
+    cate1Id: {
+      id: string;
+      title: string;
+      img: string;
+      highlight: 3;
+      slug: string;
+      createAt: string;
+    };
+    cate2Id: {
+      id: string;
+      title: string;
+      slug: string;
+      createAt: string;
+    };
+  };
+}
+
+interface Item {
+  nameProduct: string;
+  price: number;
+  summary: string;
   tag: string;
   company: string;
+  image: string;
+  brand: string;
+  slug: string;
 }
 const router = useRouter();
 
@@ -23,7 +67,7 @@ const goToDetailPage = () => {
 
 defineProps({
   product: {
-    type: Object as PropType<Product>,
+    type: Object as PropType<Item>,
     required: true
   }
 });
@@ -51,7 +95,7 @@ defineProps({
       <h4 :class="$style['mbcard__right-title']">
         {{ product.nameProduct }}
       </h4>
-      <p>{{ product.description }}</p>
+      <p>{{ product.summary }}</p>
       <div :class="$style['mbcard__right-list']">
         <div :class="$style['mbcard__right--genuine']">
           <img :class="$style['mbcard__right-sticker']" :src="OkSticker" alt="sticker" />

@@ -13,6 +13,7 @@
   background-color: rgb(255, 255, 255);
   filter: drop-shadow(0px 1px 5px rgba(0, 0, 0, 0.1));
   cursor: pointer;
+  width: 100%;
 
   &__header {
     width: 100%;
@@ -53,7 +54,7 @@
           align-items: center;
         }
       }
-  
+
       .card__header--insurance {
         display: flex;
         position: absolute;
@@ -73,7 +74,7 @@
           color: #fc5151;
         }
       }
-  
+
       .card__header--support {
         display: flex;
         position: absolute;
@@ -93,7 +94,7 @@
           color: #fc5151;
         }
       }
-  
+
       .card__header--genuine,
       .card__header--insurance,
       .card__header--support {

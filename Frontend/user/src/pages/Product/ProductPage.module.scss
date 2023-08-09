@@ -23,6 +23,7 @@
       flex-direction: column;
       flex: 3;
       margin-top: 3rem;
+      justify-items: center;
     }
 
     &-sort {
@@ -94,6 +95,7 @@
       border-radius: 10px;
       display: grid;
       justify-items: center;
+      justify-content: center;
       -webkit-border-radius: 10px;
       -moz-border-radius: 10px;
       -ms-border-radius: 10px;
@@ -229,4 +231,10 @@
       transform: translateY(0);
     }
   }
+}
+
+.product__pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
