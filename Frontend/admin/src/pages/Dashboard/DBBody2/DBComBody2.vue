@@ -14,6 +14,7 @@ const AddressRef = ref<HTMLInputElement | null>(null);
 const PhoneRef = ref<HTMLInputElement | null>(null);
 const HotlineRef = ref<HTMLInputElement | null>(null);
 const GGAdressRef = ref<HTMLInputElement | null>(null);
+const GGIframeRef = ref<HTMLInputElement | null>(null);
 
 //Init value
 const InitValue = ref({
@@ -22,18 +23,17 @@ const InitValue = ref({
   phone: '',
   hotline: '',
   ggaddress: '',
-  image: ''
+  image: '',
+  ggiframe: ''
 });
 
 //Properties
 const Address = ref();
 const Phone = ref();
 const Hotline = ref();
-const GGAdress = ref('https://www.google.com/maps/@9.779349,105.6189045,11z?hl=vi-VN&entry=ttu');
-const GGIframe = ref(
-  // eslint-disable-next-line max-len
-  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.5736868084896!2d106.69224417517916!3d10.767301989380964!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f15f08d6fa1%3A0x7b2e11ab195377b!2zMTM1YiDEkC4gVHLhuqduIEjGsG5nIMSQ4bqhbywgUGjGsOG7nW5nIEPhuqd1IMOUbmcgTMOjbmgsIFF14bqtbiAxLCBUaMOgbmggcGjhu5EgSOG7kyBDaMOtIE1pbmgsIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1687174673884!5m2!1svi!2s'
-);
+const GGAdress = ref();
+const GGIframe = ref();
+// eslint-disable-next-line max-len
 const selectedImg = ref();
 const fileInput = ref<HTMLInputElement | null>(null);
 const file = ref<MyFile | null>(null);
@@ -59,6 +59,9 @@ watch(getInfor.response, () => {
 
   GGAdress.value = getInfor.response.value?.data?.mapLink;
   InitValue.value.ggaddress = getInfor.response.value?.data?.mapLink;
+
+  GGIframe.value = getInfor.response.value?.data?.mapIframe;
+  InitValue.value.ggiframe = getInfor.response.value?.data?.mapIframe;
 });
 
 const resetValue = () => {
@@ -68,6 +71,7 @@ const resetValue = () => {
   Hotline.value = InitValue.value.hotline;
   GGAdress.value = InitValue.value.ggaddress;
   selectedImg.value = InitValue.value.image;
+  GGIframe.value = InitValue.value.ggiframe;
 
   window.scrollTo({
     top: 1,
@@ -106,6 +110,18 @@ const handleFileInputChange = (event: Event) => {
   }
 };
 
+//Get url from iframe
+const extractSrcFromIframe = (iframeString: string) => {
+  const srcPattern = /src="([^"]*)"/;
+  const match = iframeString.match(srcPattern);
+  if (match) {
+    const src = match[1];
+    return src;
+  } else {
+    return '';
+  }
+};
+
 const scrollToBottom = () => {
   isEditable.value = true;
   nextTick(() => {
@@ -131,6 +147,9 @@ const updateInfor = (e: Event, tag: string) => {
       break;
     case 'Google':
       GGAdress.value = target.value;
+      break;
+    case 'Iframe':
+      GGIframe.value = target.value;
       break;
     default:
       break;
@@ -171,6 +190,12 @@ const submitForm = () => {
     alertDialog('Địa chỉ map không tồn tại');
     return;
   }
+  if (GGIframe.value.length <= 5) {
+    GGIframe.value = '';
+    GGIframeRef.value?.focus();
+    alertDialog('Địa chỉ iframe không tồn tại');
+    return;
+  }
 
   const object = {
     id: InitValue.value.id,
@@ -178,7 +203,8 @@ const submitForm = () => {
     phoneNumber: Phone.value,
     hotline: Hotline.value,
     image: selectedImg.value,
-    mapLink: GGAdress.value
+    mapLink: GGAdress.value,
+    mapIframe: GGIframe.value
   };
 
   const formData = new FormData();
@@ -266,9 +292,24 @@ const submitForm = () => {
         style="width: 100%"
         :style="{ color: !isEditable ? '#979090' : '' }"
       />
+      <h3>
+        Link Google Iframe
+        <a href="https://www.youtube.com/watch?v=E-5mqComhFM" target="_blank"
+          >Hướng dẫn lấy link Iframe</a
+        >
+      </h3>
+      <input
+        type="text"
+        v-model="GGIframe"
+        :readonly="!isEditable"
+        ref="GGIframeRef"
+        @input="updateInfor($event, 'Iframe')"
+        style="width: 100%"
+        :style="{ color: !isEditable ? '#979090' : '' }"
+      />
       <div :class="$style.dashboard_body2_map">
         <iframe
-          :src="GGIframe"
+          :src="extractSrcFromIframe(GGIframe)"
           allowfullscreen="false"
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
