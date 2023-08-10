@@ -50,10 +50,13 @@ const dataContact = ref<Contact>({
     content: ''
   }
 });
-const move = ref(false);
+const isLoadingContact = ref(false);
+const isLoadingFacility = ref(false);
 
 // Gọi hàm useAxios để lấy response, error, và isLoading
 const getInfo = useAxios<DataResponse>('get', '/facility/', {}, {}, variableChange.value);
+isLoadingFacility.value = getInfo.isLoading.value;
+
 const getContact = useAxios<DataResponse>(
   'get',
   '/information?type=CONTACT',
@@ -62,19 +65,21 @@ const getContact = useAxios<DataResponse>(
   variableChangeContact.value
 );
 
+isLoadingContact.value = getContact.isLoading.value;
+
 // Truy xuất giá trị response.value và gán vào responseData
 watch(getInfo.response, () => {
   dataFacility.value = getInfo.response?.value?.data;
+  isLoadingFacility.value = getInfo.isLoading.value;
 });
 
 watch(getContact.response, () => {
   dataContact.value = getContact.response?.value?.data;
-
-  move.value = true;
+  isLoadingContact.value = getContact.isLoading.value;
 });
 </script>
 <template>
-  <div :class="$style.contact" v-if="move">
+  <div :class="$style.contact" v-if="!isLoadingContact && !isLoadingFacility">
     <bread-crumb :tags="route.path" :class="$style.contact__breadcrumb" />
     <contact-form :data-contact="dataContact" :data-facility="dataFacility" />
     <contact-maps :data-facility="dataFacility" />

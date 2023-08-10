@@ -40,7 +40,6 @@ const getContact = useAxios<DataResponse>(
 // Truy xuất giá trị response.value và gán vào responseData
 watch(getContact.response, () => {
   dataContact.value = getContact.response?.value?.data;
-  console.log(dataContact.value);
 });
 
 const handleMessage = () => {
