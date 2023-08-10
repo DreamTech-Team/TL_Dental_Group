@@ -6,6 +6,7 @@ import Editor from '@tinymce/tinymce-vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import Swal from 'sweetalert2';
 import styles from './AboutThanks.module.scss';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface MyInputElement extends HTMLInputElement {
   getContent(): string;
@@ -20,9 +21,10 @@ const variableChange = ref([]);
 const contentLetter = ref<AboutLetter>({ content: '', id: '' });
 const isEdit = ref(false);
 const content = ref('');
+const isLoadingLetter = ref(false);
 
 // Gọi hàm useAxios để lấy response, error, và isLoading
-const { response, error, isLoading } = useAxios<DataResponse>(
+const { response } = useAxios<DataResponse>(
   'get',
   '/introduce/letter',
   {},
@@ -65,7 +67,6 @@ const handleUpdateContent = () => {
     if (result.isConfirmed) {
       Swal.close();
       isEdit.value = false;
-      contentLetter.value.content = content.value;
 
       const deps = ref([]);
 
@@ -74,22 +75,65 @@ const handleUpdateContent = () => {
         content: contentLetter.value.content
       };
 
-      const { response } = useAxios<DataResponse>(
+      const { response, isLoading } = useAxios<DataResponse>(
         'patch',
         '/introduce/letter',
         object,
         {},
         deps.value
       );
+      isLoadingLetter.value = isLoading.value;
+      watch(response, () => {
+        if (response.value?.status === 'ok') {
+          isLoadingLetter.value = isLoading.value;
+
+          Swal.fire({
+            title: 'Cập nhật thành công',
+            icon: 'success',
+            confirmButtonText: 'Hoàn tất',
+            width: '50rem',
+            padding: '0 2rem 2rem 2rem',
+            timer: 2000,
+            customClass: {
+              confirmButton: styles['confirm-button'],
+              cancelButton: styles['cancel-button'],
+              title: styles['title']
+            }
+          }).then((result) => {
+            if (result.isConfirmed) {
+              contentLetter.value.content = content.value;
+
+              Swal.close();
+            }
+          });
+        } else {
+          isLoadingLetter.value = isLoading.value;
+
+          Swal.fire({
+            title: 'Cập nhật thất bại',
+            icon: 'success',
+            confirmButtonText: 'Hoàn tất',
+            width: '50rem',
+            padding: '0 2rem 2rem 2rem',
+            customClass: {
+              confirmButton: styles['confirm-button'],
+              cancelButton: styles['cancel-button'],
+              title: styles['title']
+            }
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.close();
+            }
+          });
+        }
+      });
     }
   });
 };
-// Hàm submit dữ liệu, đẩy dữ liệu lên database
-const submitForm = () => {};
 </script>
 <template>
   <div :class="$style.about__thanks">
-    <div :class="$style['about__thanks-letter']">
+    <div :class="$style['about__thanks-letter']" v-if="!isLoadingLetter">
       <h1>LỜI CẢM ƠN</h1>
 
       <p v-if="!isEdit" v-html="contentLetter.content"></p>
@@ -128,6 +172,9 @@ const submitForm = () => {};
         <span>Click chuột để chỉnh sửa nội dung</span>
       </div>
       <div v-else></div>
+    </div>
+    <div v-else style="width: 100%; height: 100%">
+      <loading-component />
     </div>
   </div>
 </template>

@@ -9,6 +9,7 @@ import ModalAddCompany from './component/ModalAddCompany.vue';
 import ModalUpdateCompany from './component/ModalUpdateCompany.vue';
 import styles from './ManageCompany.module.scss';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface ManageCompany {
   id: string;
@@ -62,6 +63,7 @@ const outstandingRender = ref({
   image: '',
   name: ''
 });
+const isLoadingCompany = ref(false);
 
 // Gọi hàm useAxios để lấy response, error, và isLoading
 const getCompany = useAxios<DataResponse>('get', '/company', {}, {}, variableChangeCompany.value);
@@ -79,7 +81,11 @@ const getProducts = useAxios<DataResponse>('get', '/products', {}, {}, variableC
 
 // Truy xuất giá trị response.value và gán vào responseData
 watch(getCompany.response, () => {
-  companyRender.value = getCompany.response.value?.data;
+  companyRender.value = getCompany.response.value?.data
+    .slice()
+    .sort((a: ManageCompany, b: ManageCompany) => {
+      return new Date(b.createAt).getTime() - new Date(a.createAt).getTime();
+    });
 });
 
 watch(getCompanyHighlight.response, () => {
@@ -148,10 +154,6 @@ const handleUpdateModal = (idx: number, idOut: string, idCom: string) => {
 
 // Xử lí xóa một công ty
 const deleteCompany = (id: string) => {
-  const deps = ref([]);
-
-  const { response } = useAxios<DataResponse>('delete', '/company/' + id, {}, {}, deps.value);
-
   Swal.fire({
     title: 'Bạn có chắc muốn xóa công ty này không?',
     text: 'Dữ liệu sẽ không thể khôi phục sau khi xóa!',
@@ -170,42 +172,116 @@ const deleteCompany = (id: string) => {
     }
   }).then((result) => {
     if (result.isConfirmed) {
-      Swal.fire({
-        title: 'Xóa thành công',
-        icon: 'success',
-        confirmButtonText: 'Hoàn tất',
-        timer: 2000,
-        width: '50rem',
-        padding: '0 2rem 2rem 2rem',
-        customClass: {
-          confirmButton: styles['confirm-button'],
-          cancelButton: styles['cancel-button'],
-          title: styles['title']
+      const deps = ref([]);
+
+      const { response, error, isLoading } = useAxios<DataResponse>(
+        'delete',
+        '/company/' + id,
+        {},
+        {},
+        deps.value
+      );
+      isLoadingCompany.value = isLoading.value;
+
+      watch(response, () => {
+        companyRender.value = companyRender.value.filter((product) => product.id !== id);
+        isLoadingCompany.value = isLoading.value;
+        if (!isLoading.value) {
+          if (response.value?.status === 'ok') {
+            Swal.fire({
+              title: 'Xóa thành công',
+              icon: 'success',
+              confirmButtonText: 'Hoàn tất',
+              timer: 2000,
+              width: '50rem',
+              padding: '0 2rem 2rem 2rem',
+              customClass: {
+                confirmButton: styles['confirm-button'],
+                cancelButton: styles['cancel-button'],
+                title: styles['title']
+              }
+            });
+          } else {
+            Swal.fire({
+              title: 'Xóa thất bại',
+              icon: 'success',
+              confirmButtonText: 'Hoàn tất',
+              timer: 2000,
+              width: '50rem',
+              padding: '0 2rem 2rem 2rem',
+              customClass: {
+                confirmButton: styles['confirm-button'],
+                cancelButton: styles['cancel-button'],
+                title: styles['title']
+              }
+            });
+          }
         }
       });
-      companyRender.value = companyRender.value.filter((product) => product.id !== id);
     }
   });
 };
 
-const handleAddedChange = (dataAdded: ManageCompany) => {
-  companyRender.value.unshift(dataAdded);
+const handleAddedChange = (dataAdded: ManageCompany, isLoading: boolean) => {
+  isLoadingCompany.value = isLoading;
+  isOpenAdd.value = false;
+
+  if (!isLoading) {
+    companyRender.value.unshift(dataAdded);
+    Swal.fire({
+      title: 'Thêm thành công',
+      icon: 'success',
+      confirmButtonText: 'Hoàn tất',
+      width: '50rem',
+      padding: '0 2rem 2rem 2rem',
+      timer: 2000,
+      customClass: {
+        confirmButton: styles['confirm-button'],
+        cancelButton: styles['cancel-button'],
+        title: styles['title']
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.close();
+      }
+    });
+  }
 };
 
-const handleChangeUpdate = (dataUpdated: ManageCompany) => {
-  companyRender.value.forEach((item) => {
-    if (item.id === dataUpdated.id) {
-      item.name = dataUpdated.name;
-      item.description = dataUpdated.description;
-      item.logo = dataUpdated.logo;
-    }
-  });
+const handleChangeUpdate = (dataUpdated: ManageCompany, isLoading: boolean) => {
+  isLoadingCompany.value = isLoading;
+  isOpenUpdate.value = false;
+
+  if (!isLoading) {
+    Swal.fire({
+      title: 'Cập nhật thành công',
+      icon: 'success',
+      confirmButtonText: 'Hoàn tất',
+      width: '50rem',
+      padding: '0 2rem 2rem 2rem',
+      timer: 2000,
+      customClass: {
+        confirmButton: styles['confirm-button'],
+        cancelButton: styles['cancel-button'],
+        title: styles['title']
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.close();
+      }
+    });
+    companyRender.value.forEach((item) => {
+      if (item.id === dataUpdated.id) {
+        item.name = dataUpdated.name;
+        item.description = dataUpdated.description;
+        item.logo = dataUpdated.logo;
+      }
+    });
+  }
 };
 
 const handleChangeUpdateOutstanding = (outstanding: ManageCompany) => {
   if (outstanding.outstandingProductId !== null) {
-    console.log('haah');
-
     products.value.forEach((item) => {
       if (item.id === outstanding.outstandingProductId) {
         outstandingRender.value = {
@@ -221,8 +297,10 @@ const handleUpdateHighLight = (index: number) => {
   const checkbox = document.getElementById(`myCheckbox${index}`);
 
   if (checkbox instanceof HTMLInputElement) {
+    console.log(checkbox.checked);
+
     // Gọi hàm useAxios để lấy response, error, và isLoading
-    const { response, error, isLoading } = useAxios<DataResponse>(
+    const { response, isLoading } = useAxios<DataResponse>(
       'patch',
       '/company/highlight/' +
         companyRender.value[index].slug +
@@ -233,6 +311,44 @@ const handleUpdateHighLight = (index: number) => {
       {},
       variableChange.value
     );
+    isLoadingCompany.value = isLoading.value;
+
+    watch(response, () => {
+      isLoadingCompany.value = isLoading.value;
+
+      if (!isLoading.value) {
+        if (response.value?.status === 'ok') {
+          Swal.fire({
+            title: 'Cập nhật công ty nổi bậc thành công',
+            icon: 'success',
+            confirmButtonText: 'Hoàn tất',
+            timer: 2000,
+            width: '50rem',
+            padding: '0 2rem 2rem 2rem',
+            customClass: {
+              confirmButton: styles['confirm-button'],
+              cancelButton: styles['cancel-button'],
+              title: styles['title']
+            }
+          });
+          companyRender.value[index].highlight = checkbox.checked ? 1 : 0;
+        } else {
+          Swal.fire({
+            title: 'Cập nhật công ty nổi bậc thất bại',
+            icon: 'success',
+            confirmButtonText: 'Hoàn tất',
+            timer: 2000,
+            width: '50rem',
+            padding: '0 2rem 2rem 2rem',
+            customClass: {
+              confirmButton: styles['confirm-button'],
+              cancelButton: styles['cancel-button'],
+              title: styles['title']
+            }
+          });
+        }
+      }
+    });
   }
 };
 
@@ -246,8 +362,6 @@ const handleRenderOutstanding = (index: number) => {
         };
       }
     });
-
-    console.log(outstandingRender.value);
 
     return true;
   }
@@ -293,45 +407,52 @@ const handleRenderOutstanding = (index: number) => {
         <p style="width: 4%"></p>
       </div>
 
-      <div :class="$style['mn_company--table-list']" v-if="filteredProducts.length > 0">
-        <div
-          :class="$style['mn_company--table-row']"
-          v-for="(company, index) in displayNews"
-          :key="index"
-        >
-          <p :class="$style['mn_company--table-row-1']">{{ index + 1 }}</p>
-          <p :class="$style['mn_company--table-row-2']">{{ company.name }}</p>
-          <p :class="$style['mn_company--table-row-3']">{{ company.description }}</p>
-          <div :class="$style['mn_company--table-row-4']">
-            <img :src="company.logo" alt="" />
-          </div>
-          <div :class="$style['mn_company--table-row-5']" v-if="handleRenderOutstanding(index)">
-            <img :src="outstandingRender.image" alt="" />
-            <p>{{ outstandingRender.name }}</p>
-          </div>
-          <div :class="$style['mn_company--table-row-5']" v-else></div>
-          <div :class="$style['mn_company--table-row-6']">
-            <button @click="deleteCompany(company.id)">
-              <font-awesome-icon :icon="faTrash" :class="$style['mn_company--table-ic']" />
-            </button>
+      <div v-if="!isLoadingCompany">
+        <div :class="$style['mn_company--table-list']" v-if="filteredProducts.length > 0">
+          <div
+            :class="$style['mn_company--table-row']"
+            v-for="(company, index) in displayNews"
+            :key="index"
+          >
+            <p :class="$style['mn_company--table-row-1']">{{ index + 1 }}</p>
+            <p :class="$style['mn_company--table-row-2']">{{ company.name }}</p>
+            <p :class="$style['mn_company--table-row-3']">{{ company.description }}</p>
+            <div :class="$style['mn_company--table-row-4']">
+              <img :src="company.logo" alt="" />
+            </div>
+            <div :class="$style['mn_company--table-row-5']" v-if="handleRenderOutstanding(index)">
+              <img :src="outstandingRender.image" alt="" />
+              <p>{{ outstandingRender.name }}</p>
+            </div>
+            <div :class="$style['mn_company--table-row-5']" v-else></div>
+            <div :class="$style['mn_company--table-row-6']">
+              <button @click="deleteCompany(company.id)">
+                <font-awesome-icon :icon="faTrash" :class="$style['mn_company--table-ic']" />
+              </button>
 
-            <button @click="handleUpdateModal(index, company.outstandingProductId, company.id)">
-              <font-awesome-icon :icon="faPen" :class="$style['mn_company--table-ic']" />
-            </button>
+              <button @click="handleUpdateModal(index, company.outstandingProductId, company.id)">
+                <font-awesome-icon :icon="faPen" :class="$style['mn_company--table-ic']" />
+              </button>
+            </div>
+            <input
+              :title="company.highlight === 0 ? 'Công ty không nổi bậc' : 'Công ty nổi bậc'"
+              type="checkbox"
+              :style="{
+                width: '4%',
+                cursor: company.outstandingProductId === null ? 'auto' : 'pointer'
+              }"
+              :id="`myCheckbox${index}`"
+              @change="handleUpdateHighLight(index)"
+              :disabled="company.outstandingProductId === null ? true : false"
+              :checked="company.highlight !== 0 ? true : false"
+            />
           </div>
-          <input
-            type="checkbox"
-            style="width: 4%"
-            :id="`myCheckbox${index}`"
-            @change="handleUpdateHighLight(index)"
-            :disabled="company.outstandingProductId === null ? true : false"
-            :checked="company.highlight !== 0 ? true : false"
-          />
+        </div>
+        <div :class="$style['mn_company--table-row-notfonund']" v-else>
+          <p>Không tìm thấy kết quả mong muốn</p>
         </div>
       </div>
-      <div :class="$style['mn_company--table-row-notfonund']" v-else>
-        <p>Không tìm thấy kết quả mong muốn</p>
-      </div>
+      <loading-component style="height: calc(100vh - 440px)" v-else />
     </div>
 
     <div :class="$style['mn_company--pagination']">

@@ -24,7 +24,7 @@ const context = defineProps({
     required: true
   },
   change: {
-    type: Function as PropType<(newData: AboutMotto) => void>,
+    type: Function as PropType<(newData: AboutMotto, isLoadingItem: boolean) => void>,
     required: true
   }
 });
@@ -69,92 +69,80 @@ const submitForm = () => {
       }
     });
   } else {
-    Swal.fire({
-      title: 'Cập nhật thành công',
-      icon: 'success',
-      confirmButtonText: 'Hoàn tất',
-      width: '50rem',
-      padding: '0 2rem 2rem 2rem',
-      customClass: {
-        confirmButton: styles['confirm-button'],
-        cancelButton: styles['cancel-button'],
-        title: styles['title']
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        if (isChange.value && selectedImage.value) {
-          // Tạo một đối tượng File từ dữ liệu base64
-          const fileData = base64ToBlob.covertBase64ToBlob(selectedImage.value);
-          const image = new File([fileData], 'image.png', { type: 'image/png' });
+    if (isChange.value && selectedImage.value) {
+      // Tạo một đối tượng File từ dữ liệu base64
+      const fileData = base64ToBlob.covertBase64ToBlob(selectedImage.value);
+      const image = new File([fileData], 'image.png', { type: 'image/png' });
 
-          const deps = ref([]);
+      const deps = ref([]);
 
-          const object = {
-            id: context.item.id,
-            title: titleInput.value,
-            content: contentInput.value,
-            image: context.item.image
-          };
+      const object = {
+        id: context.item.id,
+        title: titleInput.value,
+        content: contentInput.value,
+        image: context.item.image
+      };
 
-          const formData = new FormData();
-          formData.append('data', JSON.stringify(object));
-          formData.append('image', image as Blob);
-          const { response } = useAxios<DataResponse>(
-            'patch',
-            '/introduce/section1',
-            formData,
-            {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            },
-            deps.value
-          );
+      const formData = new FormData();
+      formData.append('data', JSON.stringify(object));
+      formData.append('image', image as Blob);
+      const { response, isLoading } = useAxios<DataResponse>(
+        'patch',
+        '/introduce/section1',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        },
+        deps.value
+      );
+      context.change({} as AboutMotto, isLoading.value);
 
-          watch(response, () => {
-            if (response) {
-              if (response.value?.status === 'ok') {
-                context.change(response.value?.data);
-              }
-            }
-          });
-        } else {
-          const deps = ref([]);
-
-          const object = {
-            id: context.item.id,
-            title: titleInput.value,
-            content: contentInput.value,
-            image: context.item.image
-          };
-
-          const formData = new FormData();
-          formData.append('data', JSON.stringify(object));
-          formData.append('image', context.item.image);
-          const { response } = useAxios<DataResponse>(
-            'patch',
-            '/introduce/section1',
-            formData,
-            {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            },
-            deps.value
-          );
-
-          watch(response, () => {
-            if (response) {
-              if (response.value?.status === 'ok') {
-                context.change(response.value?.data);
-              }
-            }
-          });
+      watch(response, () => {
+        if (response) {
+          if (response.value?.status === 'ok') {
+            context.change(response.value?.data, isLoading.value);
+          }
         }
-        Swal.close();
-        emit('close');
-      }
-    });
+      });
+    } else {
+      const deps = ref([]);
+
+      const object = {
+        id: context.item.id,
+        title: titleInput.value,
+        content: contentInput.value,
+        image: context.item.image
+      };
+
+      const formData = new FormData();
+      formData.append('data', JSON.stringify(object));
+      formData.append('image', context.item.image);
+      const { response, isLoading } = useAxios<DataResponse>(
+        'patch',
+        '/introduce/section1',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        },
+        deps.value
+      );
+
+      context.change({} as AboutMotto, isLoading.value);
+
+      watch(response, () => {
+        if (response) {
+          if (response.value?.status === 'ok') {
+            context.change(response.value?.data, isLoading.value);
+          }
+        }
+      });
+    }
+
+    // emit('close');
   }
 };
 

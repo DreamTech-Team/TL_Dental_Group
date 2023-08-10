@@ -8,6 +8,7 @@ import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import base64ToBlob from '@/utils/base64ToBlob';
 import Swal from 'sweetalert2';
 import styles from './AboutInfoCompany.module.scss';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface MyInputElement extends HTMLInputElement {
   getContent(): string;
@@ -28,9 +29,11 @@ const selectedImage1: Ref<string | null> = ref(null); //Lưu ảnh 2
 const imageSave1 = ref<File | null>(null);
 const imageSave2 = ref<File | null>(null);
 const isEdit = ref(false);
+const isLoadingInfo = ref(false);
+const isPatchData = ref(false);
 
 // Gọi hàm useAxios để lấy response, error, và isLoading
-const { response, error, isLoading } = useAxios<DataResponse>(
+const { response } = useAxios<DataResponse>(
   'get',
   '/introduce/company-info',
   {},
@@ -75,7 +78,6 @@ const handleUpdateContent = () => {
     cancelButtonText: 'Hủy',
     width: '50rem',
     padding: '0 2rem 2rem 2rem',
-    timer: 2000,
     customClass: {
       confirmButton: styles['confirm-button'],
       cancelButton: styles['cancel-button'],
@@ -85,8 +87,6 @@ const handleUpdateContent = () => {
     if (result.isConfirmed) {
       Swal.close();
       isEdit.value = false;
-      contentInfoComapny.value[0].content = content1.value;
-      contentInfoComapny.value[1].content = content2.value;
 
       const deps = ref([]);
 
@@ -102,7 +102,7 @@ const handleUpdateContent = () => {
         formData.append('content', idx === 0 ? content1.value : content2.value);
         if (imageSave1.value && idx === 0) formData.append('image', imageSave1.value as Blob);
         else if (imageSave2.value && idx === 1) formData.append('image', imageSave2.value as Blob);
-        const { response } = useAxios<DataResponse>(
+        const patchData = useAxios<DataResponse>(
           'patch',
           '/introduce/company-info',
           formData,
@@ -113,6 +113,57 @@ const handleUpdateContent = () => {
           },
           deps.value
         );
+        isLoadingInfo.value = patchData.isLoading.value;
+        watch(patchData.response, () => {
+          if (response.value?.status === 'ok') {
+            isLoadingInfo.value = patchData.isLoading.value;
+            isPatchData.value = true;
+          } else {
+            isLoadingInfo.value = patchData.isLoading.value;
+
+            isPatchData.value = false;
+          }
+        });
+      });
+
+      watch(isPatchData, () => {
+        if (isPatchData.value === true) {
+          Swal.fire({
+            title: 'Cập nhật thành công',
+            icon: 'success',
+            confirmButtonText: 'Hoàn tất',
+            width: '50rem',
+            padding: '0 2rem 2rem 2rem',
+            customClass: {
+              confirmButton: styles['confirm-button'],
+              cancelButton: styles['cancel-button'],
+              title: styles['title']
+            }
+          }).then((result) => {
+            if (result.isConfirmed) {
+              contentInfoComapny.value[0].content = content1.value;
+              contentInfoComapny.value[1].content = content2.value;
+              Swal.close();
+            }
+          });
+        } else {
+          Swal.fire({
+            title: 'Cập nhật thất bại',
+            icon: 'success',
+            confirmButtonText: 'Hoàn tất',
+            width: '50rem',
+            padding: '0 2rem 2rem 2rem',
+            customClass: {
+              confirmButton: styles['confirm-button'],
+              cancelButton: styles['cancel-button'],
+              title: styles['title']
+            }
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.close();
+            }
+          });
+        }
       });
     }
   });
@@ -212,7 +263,7 @@ const handleFileInputChange1 = (event: Event) => {
   <div :class="$style.about__infocompany">
     <p :class="$style['about__infocompany-title']">THÔNG TIN CÔNG TY</p>
 
-    <div :class="$style['about__infocompany-content']">
+    <div :class="$style['about__infocompany-content']" v-if="!isLoadingInfo">
       <div :class="$style['about__infocompany-content-item']">
         <p v-html="content1" v-if="!isEdit"></p>
         <div v-else>
@@ -310,6 +361,10 @@ const handleFileInputChange1 = (event: Event) => {
           />
         </div>
       </div>
+    </div>
+
+    <div v-else style="width: 100%; height: 100%">
+      <loading-component />
     </div>
 
     <button

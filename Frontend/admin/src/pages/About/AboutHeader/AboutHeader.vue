@@ -5,6 +5,9 @@ import { faRotate } from '@fortawesome/free-solid-svg-icons';
 import CropImage from '@/components/CropImage/CropImage.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import base64ToBlob from '@/utils/base64ToBlob';
+import Swal from 'sweetalert2';
+import styles from './AboutHeader.module.scss';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface AboutHeader {
   id: string;
@@ -21,9 +24,10 @@ const renderImage = ref<AboutHeader>({
 const imageFile: Ref<string | null> = ref(null);
 const isCrop = ref(false);
 const isOpenInput = ref(false);
+const isLoadingBanner = ref(false);
 
 // Gọi hàm useAxios để lấy response, error, và isLoading
-const { response, error, isLoading } = useAxios<DataResponse>(
+const { response } = useAxios<DataResponse>(
   'get',
   '/introduce/header',
   {},
@@ -56,7 +60,7 @@ const handleCroppedImage = (result: string) => {
     const formData = new FormData();
     formData.append('data', JSON.stringify(object));
     formData.append('image', image as Blob);
-    const { response } = useAxios<DataResponse>(
+    const { response, isLoading } = useAxios<DataResponse>(
       'patch',
       '/introduce/header',
       formData,
@@ -67,12 +71,55 @@ const handleCroppedImage = (result: string) => {
       },
       deps.value
     );
+    isLoadingBanner.value = isLoading.value;
+    watch(response, () => {
+      if (response.value?.status === 'ok') {
+        isLoadingBanner.value = isLoading.value;
+
+        Swal.fire({
+          title: 'Cập nhật thành công',
+          icon: 'success',
+          confirmButtonText: 'Hoàn tất',
+          width: '50rem',
+          padding: '0 2rem 2rem 2rem',
+          timer: 2000,
+          customClass: {
+            confirmButton: styles['confirm-button'],
+            cancelButton: styles['cancel-button'],
+            title: styles['title']
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.close();
+          }
+        });
+      } else {
+        isLoadingBanner.value = isLoading.value;
+
+        Swal.fire({
+          title: 'Cập nhật thất bại',
+          icon: 'success',
+          confirmButtonText: 'Hoàn tất',
+          width: '50rem',
+          padding: '0 2rem 2rem 2rem',
+          customClass: {
+            confirmButton: styles['confirm-button'],
+            cancelButton: styles['cancel-button'],
+            title: styles['title']
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.close();
+          }
+        });
+      }
+    });
   }
 };
 </script>
 <template>
   <div :class="$style.about__header">
-    <div :class="$style['about__header-introduce']">
+    <div :class="$style['about__header-introduce']" v-if="!isLoadingBanner">
       <div v-if="imageFile" :class="$style['about__header-introduce-img']">
         <img :src="imageFile" alt="" />
       </div>
@@ -91,6 +138,9 @@ const handleCroppedImage = (result: string) => {
       </div>
 
       <p>Giới Thiệu</p>
+    </div>
+    <div v-else style="width: 100%; height: 100%">
+      <loading-component />
     </div>
   </div>
 

@@ -61,24 +61,16 @@ const getImagePolicy = useAxios<DataResponse>(
   variableChange.value
 );
 
-isLoadingPolicy.value = getImagePolicy.isLoading.value;
-
 const getImageNews = useAxios<DataResponse>('get', 'news/header', {}, {}, variableChange.value);
-
-isLoadingNews.value = getImageNews.isLoading.value;
 
 watch(getImagePolicy.response, () => {
   dataHeaderPolicy.value = getImagePolicy.response.value?.data;
   imageFile.value = getImagePolicy.response.value?.data?.image;
-  isLoadingPolicy.value = getImagePolicy.isLoading.value;
+  dataHeader.value = dataHeaderPolicy.value;
 });
 watch(getImageNews.response, () => {
   dataHeaderNews.value = getImageNews.response.value?.data;
-  // imageFile.value = getImageNews.response.value?.data?.image;
-  isLoadingNews.value = getImageNews.isLoading.value;
 });
-
-console.log(getImageNews.isLoading.value);
 
 const handleTab = (e: Event) => {
   const target = e.target as HTMLInputElement;
@@ -96,8 +88,6 @@ const handleTab = (e: Event) => {
 
       imageFile.value = dataHeaderNews.value.image;
       dataHeader.value = dataHeaderNews.value;
-
-      console.log(dataHeader.value);
     }
   }
 };
@@ -123,12 +113,13 @@ const handleUpload = () => {
       slug: dataHeader.value.slug,
       type: dataHeader.value.type
     };
+
     const formData = new FormData();
     formData.append('data', JSON.stringify(object));
     formData.append('image', image as Blob);
 
     if (isTab.value === 'Policy') {
-      const { response } = useAxios<DataResponse>(
+      const { response, isLoading } = useAxios<DataResponse>(
         'patch',
         '/policy/header',
         formData,
@@ -139,8 +130,10 @@ const handleUpload = () => {
         },
         deps.value
       );
+      isLoadingPolicy.value = isLoading.value;
       watch(response, () => {
         if (response.value?.status === 'ok') {
+          isLoadingPolicy.value = isLoading.value;
           dataHeaderPolicy.value.image = response.value?.data?.image;
 
           Swal.fire({
@@ -181,7 +174,7 @@ const handleUpload = () => {
         }
       });
     } else {
-      const { response } = useAxios<DataResponse>(
+      const { response, isLoading } = useAxios<DataResponse>(
         'patch',
         '/news/header',
         formData,
@@ -192,8 +185,12 @@ const handleUpload = () => {
         },
         deps.value
       );
+      isLoadingNews.value = isLoading.value;
+      console.log(isLoadingNews.value);
 
       watch(response, () => {
+        isLoadingNews.value = isLoading.value;
+
         if (response.value?.status === 'ok') {
           dataHeaderNews.value.image = response.value?.data?.image;
 
@@ -258,7 +255,7 @@ const handleUpload = () => {
         }"
         >News</span
       >
-      <div :class="$style['banner__item--policy']" v-if="!isLoadingPolicy && !isLoadingNews">
+      <div :class="$style['banner__item--policy']" v-if="!isLoadingNews && !isLoadingPolicy">
         <div
           :class="$style['banner__item--policy-img']"
           @click="isOpenInput = !isOpenInput"
@@ -297,10 +294,8 @@ const handleUpload = () => {
           Update
         </button>
       </div>
-      <!-- <div v-else> -->
-      <loading-component v-else />
-      <!-- </div> -->
     </div>
+    <loading-component v-if="isLoadingNews || isLoadingPolicy" />
   </div>
 
   <crop-image
