@@ -174,7 +174,7 @@ const deleteCompany = (id: string) => {
     if (result.isConfirmed) {
       const deps = ref([]);
 
-      const { response, error, isLoading } = useAxios<DataResponse>(
+      const { response, isLoading } = useAxios<DataResponse>(
         'delete',
         '/company/' + id,
         {},
@@ -297,8 +297,6 @@ const handleUpdateHighLight = (index: number) => {
   const checkbox = document.getElementById(`myCheckbox${index}`);
 
   if (checkbox instanceof HTMLInputElement) {
-    console.log(checkbox.checked);
-
     // Gọi hàm useAxios để lấy response, error, và isLoading
     const { response, isLoading } = useAxios<DataResponse>(
       'patch',

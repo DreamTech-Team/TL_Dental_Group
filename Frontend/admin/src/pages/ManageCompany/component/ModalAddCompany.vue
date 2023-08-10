@@ -24,7 +24,6 @@ const props = defineProps({
     required: true
   }
 });
-const emit = defineEmits(['close']);
 
 const titleInput = ref('');
 const contentInput = ref('');

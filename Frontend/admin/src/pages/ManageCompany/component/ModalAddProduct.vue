@@ -80,7 +80,7 @@ const submitForm = () => {
     emit('results', idProduct.value, dataSearchTerm.value, contentInput.value, selectedImage.value);
 
     Swal.fire({
-      title: 'Cập nhật thành công',
+      title: 'Cập nhật sản phẩm nổi bật thành công',
       icon: 'success',
       confirmButtonText: 'Hoàn tất',
       width: '50rem',
