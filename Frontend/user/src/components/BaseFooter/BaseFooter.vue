@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref, toRefs, watch } from 'vue';
+import { RouterLink } from 'vue-router';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import {
   faLocationDot,
@@ -6,8 +8,28 @@ import {
   faPhoneVolume,
   faCircleCheck
 } from '@fortawesome/free-solid-svg-icons';
-import { RouterLink } from 'vue-router';
 import qr from '../../assets/imgs/QR.png';
+import { useDataRenderStore, saveDataContact } from '@/stores/counter';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+interface AboutPolicy {
+  name: string;
+  detail: string;
+  symbol: string;
+  slug: string;
+}
+
+const { dataRender } = toRefs(useDataRenderStore());
+const { dataFacility, dataContact } = toRefs(saveDataContact());
+
+const variableChange = ref([]);
+const listPolicy = ref<AboutPolicy[]>([]);
+
+const { response } = useAxios<DataResponse>('get', '/policy', {}, {}, variableChange.value);
+
+watch(response, () => {
+  listPolicy.value = response?.value?.data;
+});
 </script>
 <template>
   <div :class="$style.footer">
@@ -18,11 +40,10 @@ import qr from '../../assets/imgs/QR.png';
       </div>
       <div :class="$style['footer__info-item']">
         <h4 :class="$style['footer__info-item--title']">Sản phẩm</h4>
-        <ul :class="$style['footer__info-item--list']">
-          <li><router-link to="">Vật liệu chỉnh nha ABC</router-link></li>
-          <li><router-link to="">Vật liệu chỉnh nha ABC</router-link></li>
-          <li><router-link to="">Vật liệu chỉnh nha ABC</router-link></li>
-          <li><router-link to="">Vật liệu chỉnh nha ABC</router-link></li>
+        <ul :class="$style['footer__info-item--list']" v-for="(item, idx) in dataRender" :key="idx">
+          <li>
+            <router-link to="">{{ item.title }}</router-link>
+          </li>
         </ul>
       </div>
       <div :class="$style['footer__info-item']">
@@ -34,11 +55,10 @@ import qr from '../../assets/imgs/QR.png';
       </div>
       <div :class="$style['footer__info-item']">
         <h4 :class="$style['footer__info-item--title']">Chính sách</h4>
-        <ul :class="$style['footer__info-item--list']">
-          <li><router-link to="">Chính sách bảo mật</router-link></li>
-          <li><router-link to="">Chính sách bảo hàng</router-link></li>
-          <li><router-link to="">Chính sách giao hàng</router-link></li>
-          <li><router-link to="">Chính sách đổi trả</router-link></li>
+        <ul :class="$style['footer__info-item--list']" v-for="(item, idx) in listPolicy" :key="idx">
+          <li>
+            <router-link to="">{{ item.name }}</router-link>
+          </li>
         </ul>
       </div>
       <div :class="$style['footer__info-item']">
@@ -47,18 +67,20 @@ import qr from '../../assets/imgs/QR.png';
           <li>
             <font-awesome-icon :icon="faLocationDot" />
             <p>
-              <router-link to="/lienhe"
-                >45 Thạch Thị Thanh, phường Tân Định, Quận 1, Ho Chi Minh City, Vietnam</router-link
-              >
+              <router-link to="/lienhe">{{ dataFacility.address }}</router-link>
             </p>
           </li>
           <li>
             <font-awesome-icon :icon="faEnvelope" />
-            <p><router-link to="/lienhe">ceo.tldental.group@gmail.com</router-link></p>
+            <p>
+              <router-link to="/lienhe">{{ dataContact.email.content }}</router-link>
+            </p>
           </li>
           <li>
             <font-awesome-icon :icon="faPhoneVolume" />
-            <p><a href="tel:+1234567890">078 404 3456</a></p>
+            <p>
+              <a :href="'tel:+' + dataFacility.phoneNumber">{{ dataFacility.phoneNumber }}</a>
+            </p>
           </li>
         </ul>
       </div>
