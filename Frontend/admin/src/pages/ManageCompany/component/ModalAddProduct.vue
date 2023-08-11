@@ -34,7 +34,24 @@ const context = defineProps({
 
 const emit = defineEmits(['close', 'results']);
 
-const contentInput = ref(context.product.description);
+const formatDescription = (str: string): string | null => {
+  try {
+    // Parse the HTML string using DOMParser
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(str, 'text/html');
+
+    // Get the text content from the parsed document
+    const pElement = doc.querySelector('p');
+    const textContent = pElement ? pElement.textContent : null;
+
+    return textContent;
+  } catch (error) {
+    console.error('Error parsing HTML:', error);
+    return null;
+  }
+};
+
+const contentInput = ref(formatDescription(context.product.description));
 const selectedImage: Ref<string | null> = ref(context.product.mainImg);
 const dataSearchTerm = ref(context.product.name !== undefined ? context.product.name : '');
 const listData = ref<Products[]>(context.products as Products[]);
