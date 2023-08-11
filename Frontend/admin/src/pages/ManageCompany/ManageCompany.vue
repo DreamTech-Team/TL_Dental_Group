@@ -222,6 +222,7 @@ const deleteCompany = (id: string) => {
   });
 };
 
+// Hàm lấy dữ liệu trả về khi ModalAddCompany trả dữ liệu đã add về
 const handleAddedChange = (dataAdded: ManageCompany, isLoading: boolean) => {
   isLoadingCompany.value = isLoading;
   isOpenAdd.value = false;
@@ -248,6 +249,7 @@ const handleAddedChange = (dataAdded: ManageCompany, isLoading: boolean) => {
   }
 };
 
+// Hàm lấy dữ liệu trả về khi ModalUpdate trả dữ liệu đã update về
 const handleChangeUpdate = (dataUpdated: ManageCompany, isLoading: boolean) => {
   isLoadingCompany.value = isLoading;
   isOpenUpdate.value = false;
@@ -280,19 +282,53 @@ const handleChangeUpdate = (dataUpdated: ManageCompany, isLoading: boolean) => {
   }
 };
 
+// Hàm lấy dữ liệu trả về khi ModalUpdate trả dữ liệu đã update sản phẩm nổi bât về
+// const handleChangeUpdateOutstanding = (outstanding: ManageCompany) => {
+//   if (outstanding.outstandingProductId !== null) {
+//     console.log('hâha');
+
+//     products.value.forEach((item) => {
+//       if (item.id === outstanding.outstandingProductId) {
+//         outstandingRender.value = {
+//           image: item.mainImg,
+//           name: item.name
+//         };
+//       }
+//     });
+
+//     console.log(outstandingRender.value);
+//   }
+// };
 const handleChangeUpdateOutstanding = (outstanding: ManageCompany) => {
   if (outstanding.outstandingProductId !== null) {
-    products.value.forEach((item) => {
-      if (item.id === outstanding.outstandingProductId) {
-        outstandingRender.value = {
-          image: item.mainImg,
-          name: item.name
-        };
-      }
-    });
+    // Find the corresponding product
+    const correspondingProduct = products.value.find(
+      (item) => item.id === outstanding.outstandingProductId
+    );
+
+    if (correspondingProduct) {
+      // Update the outstandingRender ref with a new object
+      outstandingRender.value = {
+        image: correspondingProduct.mainImg,
+        name: correspondingProduct.name
+      };
+    } else {
+      // Handle the case when the corresponding product is not found
+      outstandingRender.value = {
+        image: '',
+        name: ''
+      };
+    }
+  } else {
+    // Reset the outstandingRender when there's no outstanding product
+    outstandingRender.value = {
+      image: '',
+      name: ''
+    };
   }
 };
 
+// Hàm lấy dữ liệu trả về khi update Highlight công ty
 const handleUpdateHighLight = (index: number) => {
   const checkbox = document.getElementById(`myCheckbox${index}`);
 
@@ -350,7 +386,10 @@ const handleUpdateHighLight = (index: number) => {
   }
 };
 
+// Hàm kiểm tra xem công ty có sản phẩm nổi bật hay không
 const handleRenderOutstanding = (index: number) => {
+  console.log(3);
+
   if (companyRender.value[index].outstandingProductId !== null) {
     products.value.forEach((item) => {
       if (item.id === companyRender.value[index].outstandingProductId) {

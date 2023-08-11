@@ -58,6 +58,8 @@ const context = defineProps({
   }
 });
 
+const emit = defineEmits(['close']);
+
 const variableChange = ref([]);
 const nameCompanyInput = ref(context.item.name);
 const descriptionInput = ref(context.item.description);
