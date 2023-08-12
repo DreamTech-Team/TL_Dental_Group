@@ -291,7 +291,9 @@ const deleteActivity = async (id: string) => {
                   <td style="width: 30%">
                     <span v-for="(tag, idx) in item?.tags" :key="idx">
                       {{ truncateText(tag.name, 40) }}
-                      <span v-if="idx !== item.tags.length - 1">{{ ', ' }}</span>
+                      <span style="max-width: 30%" v-if="idx !== item.tags.length - 1">{{
+                        ', '
+                      }}</span>
                     </span>
                   </td>
 

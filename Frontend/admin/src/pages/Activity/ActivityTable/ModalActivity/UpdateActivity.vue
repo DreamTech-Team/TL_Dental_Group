@@ -308,9 +308,12 @@ const submitForm = () => {
       title: activityTitle.value, //step 1
       summary: summaryInput.value.level.content, //step 1
       img: props.selectedActivity?.img,
+      slug: props.selectedActivity?.slug,
+      createAt: props.selectedActivity?.createAt,
       detail: descriptionInput.value.level.content, //step 2
       highlight: 0,
-      detailMobile: ''
+      detailMobile: '',
+      tags: props.selectedActivity?.tags
     };
     const formData = new FormData();
     formData.append('img', avatarFile.value as Blob); // step 1
@@ -336,7 +339,7 @@ const submitForm = () => {
     watch(updateNews.response, () => {
       if (updateNews.response.value?.status === 'ok') {
         Swal.fire({
-          title: 'Thêm thành công',
+          title: 'Cập nhật thành công',
           icon: 'success',
           confirmButtonText: 'Hoàn tất',
           width: '30rem'
