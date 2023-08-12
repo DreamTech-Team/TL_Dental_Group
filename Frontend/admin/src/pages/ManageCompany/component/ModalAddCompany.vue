@@ -3,7 +3,6 @@ import { Ref, ref, watch, defineProps, PropType } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark, faCloudArrowUp, faRotate } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
-import ModalAddProduct from './ModalAddProduct.vue';
 import styles from './ModalAddCompany.module.scss';
 import base64ToBlob from '@/utils/base64ToBlob';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
@@ -21,11 +20,10 @@ interface ManageCompany {
 
 const props = defineProps({
   changeAddedCompany: {
-    type: Function as PropType<(newData: ManageCompany) => void>,
+    type: Function as PropType<(newData: ManageCompany, isLoading: boolean) => void>,
     required: true
   }
 });
-const emit = defineEmits(['close']);
 
 const titleInput = ref('');
 const contentInput = ref('');
@@ -84,7 +82,7 @@ const submitForm = () => {
       const formData = new FormData();
       formData.append('logo', image as Blob);
       formData.append('data', JSON.stringify(object));
-      const { response } = useAxios<DataResponse>(
+      const { response, isLoading } = useAxios<DataResponse>(
         'post',
         '/company',
         formData,
@@ -95,6 +93,7 @@ const submitForm = () => {
         },
         deps.value
       );
+      props.changeAddedCompany({} as ManageCompany, isLoading.value);
 
       watch(response, () => {
         if (response.value) {
@@ -108,27 +107,10 @@ const submitForm = () => {
             createAt: response.value?.data?.createAt,
             outstandingProductId: response.value?.data?.outstandingProductId
           };
-          props.changeAddedCompany(dataAdded.value);
+          props.changeAddedCompany(dataAdded.value, isLoading.value);
         }
       });
     }
-    Swal.fire({
-      title: 'Thêm thành công',
-      icon: 'success',
-      confirmButtonText: 'Hoàn tất',
-      width: '50rem',
-      padding: '0 2rem 2rem 2rem',
-      customClass: {
-        confirmButton: styles['confirm-button'],
-        cancelButton: styles['cancel-button'],
-        title: styles['title']
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.close();
-        emit('close');
-      }
-    });
   }
 };
 
@@ -255,20 +237,6 @@ const addFile = (e: DragEvent) => {
           </div>
         </div>
 
-        <!-- <h4>Sản phẩm nổi bật</h4>
-        <div :class="$style['category']">
-          <input
-            type="text"
-            placeholder="Đang trống"
-            :value="productInput"
-            @change="updateProduct"
-          />
-
-          <button @click="isOpen = true">
-            <font-awesome-icon :icon="faPencil" :class="$style['category-icon']" />
-          </button>
-        </div> -->
-
         <div :class="$style['modal__buttons']">
           <button @click="$emit('close')">Hủy</button>
           <button @click="submitForm">Thêm công ty</button>
@@ -276,8 +244,6 @@ const addFile = (e: DragEvent) => {
       </div>
     </div>
   </div>
-
-  <modal-add-product v-else @close="isOpen = false" />
 </template>
 
 <style module scoped lang="scss">

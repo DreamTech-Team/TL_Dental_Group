@@ -14,6 +14,7 @@ import ModalUpdateMotto from './component/ModalUpdateMotto.vue';
 import Swal from 'sweetalert2';
 import styles from './AboutMotto.module.scss';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface AboutMotto {
   id: string;
@@ -39,6 +40,7 @@ const isEdit = ref(false);
 const isOpenAdd = ref(false);
 const isOpenUpdate = ref(false);
 const widthItemEdit = ref(0);
+const isLoadingItem = ref(false);
 
 // Hàm lấy width của một thẻ trong trạng thái Edit
 const handleGetWidthItem = () => {
@@ -48,7 +50,7 @@ const handleGetWidthItem = () => {
 };
 
 // Gọi hàm useAxios để lấy response, error, và isLoading
-const { response, error, isLoading } = useAxios<DataResponse>(
+const { response } = useAxios<DataResponse>(
   'get',
   '/introduce/section1',
   {},
@@ -130,56 +132,62 @@ const handleClickRightEdit = () => {
 const handleRemoveItem = () => {
   const deps = ref([]);
 
-  const { response, error } = useAxios<DataResponse>(
+  const { response, isLoading } = useAxios<DataResponse>(
     'delete',
     '/introduce/section1/' + items.value[indexItems.value].id,
     {},
     {},
     deps.value
   );
+  isLoadingItem.value = isLoading.value;
   items.value.splice(indexItems.value, 1);
 
-  indexItems.value--;
+  indexItems.value = 0;
+  moveEdit.value = 0;
+  move.value = 0;
+  isDisableLeftEdit.value = true;
+  isDisableRightEdit.value = false;
 
-  if (indexItems.value < 0) {
-    indexItems.value = 0;
-  } else if (indexItems.value === items.value.length - 1) {
-    moveEdit.value += widthItemEdit.value;
-  } else {
-    indexItems.value += 1;
-  }
+  watch(response, () => {
+    isLoadingItem.value = isLoading.value;
 
-  // Hiển thị thông báo xóa thành công
-  Swal.fire({
-    title: 'Xóa thành công',
-    icon: 'success',
-    timer: 2000,
-    width: '50rem',
-    padding: '0 2rem 2rem 2rem',
-    customClass: {
-      confirmButton: styles['confirm-button'],
-      cancelButton: styles['cancel-button'],
-      title: styles['title']
-    }
-  }).then((result) => {
-    if (result.isConfirmed) {
-      // Xử lí trường hợp có 1 hoặc 2 item
-      if (items.value.length === 1) {
-        isOneItem.value = true;
-        isDisableRight.value = true;
-        isDisableLeft.value = true;
-        isDisableLeftEdit.value = true;
-        isDisableRightEdit.value = true;
-      } else if (items.value.length === 2) {
-        if (indexItems.value === 1) {
-          isDisableRight.value = true;
-          move.value += widthItemEdit.value + 150;
-        } else if (indexItems.value === 0) {
-          isDisableRight.value = true;
-          move.value -= widthItemEdit.value + 150;
+    if (response.value?.status === 'ok') {
+      // Hiển thị thông báo xóa thành công
+      Swal.fire({
+        title: 'Xóa thành công',
+        icon: 'success',
+        timer: 2000,
+        width: '50rem',
+        padding: '0 2rem 2rem 2rem',
+        customClass: {
+          confirmButton: styles['confirm-button'],
+          cancelButton: styles['cancel-button'],
+          title: styles['title']
         }
-      }
-      Swal.close();
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Xử lí trường hợp có 1 hoặc 2 item
+          if (items.value.length === 1) {
+            isOneItem.value = true;
+            isDisableRight.value = true;
+            isDisableLeft.value = true;
+            isDisableLeftEdit.value = true;
+            isDisableRightEdit.value = true;
+          } else if (items.value.length === 2) {
+            if (indexItems.value === 1) {
+              isDisableRight.value = true;
+              // move.value += widthItemEdit.value + 150;
+            } else if (indexItems.value === 0) {
+              isDisableRight.value = true;
+              // move.value -= widthItemEdit.value + 150;
+            }
+          } else {
+            isDisableLeft.value = false;
+            isDisableRight.value = false;
+          }
+          Swal.close();
+        }
+      });
     }
   });
 
@@ -210,7 +218,30 @@ const handleRemove = () => {
   });
 };
 
-const handleChangeUpdate = (dataUpdated: AboutMotto) => {
+const handleChangeUpdate = (dataUpdated: AboutMotto, isLoading: boolean) => {
+  isLoadingItem.value = isLoading;
+  isOpenUpdate.value = false;
+
+  if (!isLoading) {
+    Swal.fire({
+      title: 'Cập nhật thành công',
+      icon: 'success',
+      confirmButtonText: 'Hoàn tất',
+      width: '50rem',
+      padding: '0 2rem 2rem 2rem',
+      timer: 2000,
+      customClass: {
+        confirmButton: styles['confirm-button'],
+        cancelButton: styles['cancel-button'],
+        title: styles['title']
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.close();
+      }
+    });
+  }
+
   items.value.forEach((item, idx) => {
     if (item.id === dataUpdated.id) {
       items.value[idx].title = dataUpdated.title;
@@ -220,26 +251,48 @@ const handleChangeUpdate = (dataUpdated: AboutMotto) => {
   });
 };
 
-const handleChangeAdd = (dataAdded: AboutMotto) => {
-  items.value.unshift(dataAdded);
+const handleChangeAdd = (dataAdded: AboutMotto, isLoading: boolean) => {
+  isLoadingItem.value = isLoading;
+  isOpenAdd.value = false;
 
-  // Xử lí trường hợp có 1 hoặc 2 item
-  if (items.value.length === 1) {
-    isOneItem.value = true;
-    isDisableRight.value = true;
-    isDisableLeft.value = true;
+  if (!isLoading) {
+    items.value.unshift(dataAdded);
+
+    Swal.fire({
+      title: 'Thêm thành công',
+      icon: 'success',
+      confirmButtonText: 'Hoàn tất',
+      width: '50rem',
+      padding: '0 2rem 2rem 2rem',
+      customClass: {
+        confirmButton: styles['confirm-button'],
+        cancelButton: styles['cancel-button'],
+        title: styles['title']
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.close();
+      }
+    });
+
+    indexItems.value = 0;
+    moveEdit.value = 0;
+    move.value = 0;
     isDisableLeftEdit.value = true;
-    isDisableRightEdit.value = true;
-  } else if (items.value.length === 2) {
-    isDisableLeft.value = false;
-    isDisableRightEdit.value = false;
-    isOneItem.value = false;
-  } else if (items.value.length === 3) {
-    isDisableLeft.value = false;
-    isDisableRight.value = false;
-    isDisableRightEdit.value = false;
-    isDisableLeftEdit.value = false;
-    isOneItem.value = false;
+
+    // Xử lí trường hợp có 1 hoặc 2 item
+    if (items.value.length === 1) {
+      isOneItem.value = true;
+      isDisableRight.value = true;
+      isDisableLeft.value = true;
+    } else if (items.value.length === 2) {
+      isDisableLeft.value = false;
+      isOneItem.value = false;
+    } else if (items.value.length === 3) {
+      isDisableLeft.value = false;
+      isDisableRight.value = false;
+      isOneItem.value = false;
+    }
   }
 };
 </script>
@@ -327,6 +380,7 @@ const handleChangeAdd = (dataAdded: AboutMotto) => {
               :class="$style['about__motto-slider1']"
               id="motto-list"
               :style="{ transform: 'translateX' + '(' + moveEdit + 'px' + ')' }"
+              v-if="!isLoadingItem"
             >
               <div
                 :class="$style['about__motto-slider1-item']"
@@ -343,6 +397,7 @@ const handleChangeAdd = (dataAdded: AboutMotto) => {
                 </p>
               </div>
             </div>
+            <loading-component v-else />
           </div>
 
           <div :class="$style['about__motto-left-button']">

@@ -1,78 +1,161 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
-// import ModalAdd from './components/ModalAdd.vue';
 import Pagination from '@/components/Pagination/BasePagination.vue';
 import ModalUpdate from './ModalRecruitment/ModalUpdate.vue';
-import { recruitments } from './Recruitment';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-const searchText = ref('');
-const results = ref(recruitments);
+interface RecruitmentItem {
+  id: string;
+  title: string;
+  position: string;
+  location: string;
+  department: string;
+  working_form: string;
+  description: string;
+  requirements: string;
+  benefit: string;
+  contact: string;
+  treatment: string;
+  slug: string;
+  createAt: string;
+}
 
-const currentPage = ref(1);
-const pageSize = ref(10);
-const isModalOpen = ref(false);
-const activeTab = ref('activity');
-
-const openModal = () => {
-  isModalOpen.value = true;
-};
-
-const closeModal = () => {
-  isModalOpen.value = false;
-};
-
-interface SelectRecruitment {
-  id: number;
+interface Item {
+  id: string;
   title: string;
   position: string;
   type: string;
 }
 
-const selectedRecruitment = ref<Record<string, never> | SelectRecruitment>({});
+//Array to store initial values
+const tempArrays = ref<RecruitmentItem[]>([]);
+const products = ref<Item[]>([]);
+const chosenObject = ref<RecruitmentItem | undefined>();
 
-// Trong phần code xử lý sự kiện
-const editRecruitment = (recruitment: SelectRecruitment) => {
-  selectedRecruitment.value = recruitment;
-  isModalOpen.value = true; // Mở modal
-  console.log(recruitment);
-};
+const isOpen1 = ref(false); //Open Modal Update
+const searchText = ref('');
+const results = ref(products); //Final Render
+const scrollContainer = ref<HTMLElement | null>(null); //Scroll table to top when change page
+const debounceTimer = ref<number | null>(null); //searchData delay
 
-const filteredStaffs = computed(() => {
-  if (searchText.value.trim() === '') {
-    return results.value;
-  } else {
-    const searchTerm = searchText.value.toLowerCase();
-    return results.value.filter((activity) => activity.title.toLowerCase().includes(searchTerm));
+const totalPage = ref(0);
+const currentPage = ref(0);
+const deps = ref([]);
+
+//Props
+const context = defineProps({
+  total: {
+    type: Number,
+    required: false
   }
 });
 
-const handleRecruitment = (updatedStaff: SelectRecruitment) => {
-  // Cập nhật giá trị cho phần tử đã chỉnh sửa
-  selectedRecruitment.value = updatedStaff;
-};
+watch(context, () => {
+  if (context.total !== undefined) {
+    totalPage.value = context.total;
+  }
+});
 
-//Pagination Handle
-const scrollToTop = (top: number) => {
-  window.scrollTo({
-    top: top,
-    behavior: 'smooth'
+//GET DATA
+const { response } = useAxios<DataResponse>(
+  'get',
+  `/recruitment/?page=${currentPage.value}&pageSize=10`,
+  {},
+  {},
+  deps.value
+);
+
+//Convert array to compatible with data
+watch(response, () => {
+  tempArrays.value = response.value?.data?.data;
+  results.value = tempArrays.value.map((item: RecruitmentItem) => {
+    return {
+      id: item.id,
+      title: item.title,
+      position: item.position,
+      type: item.working_form
+    };
+  });
+});
+
+//Data from Modal Update
+const onUpdateContent2 = (data: { ItemAdd: RecruitmentItem }) => {
+  results.value.forEach((item) => {
+    if (item.id === data.ItemAdd.id) {
+      item.title = data.ItemAdd.title;
+      item.position = data.ItemAdd.position;
+      item.type = data.ItemAdd.working_form;
+    }
+  });
+  tempArrays.value.forEach((item, index) => {
+    if (item.id === data.ItemAdd.id) {
+      tempArrays.value[index] = data.ItemAdd;
+    }
   });
 };
 
-const handlePageChange = (page: number) => {
-  currentPage.value = page;
-  scrollToTop(0);
+// Trong phần code xử lý sự kiện
+const updateRecruitment = (id: string) => {
+  chosenObject.value = tempArrays.value.find((obj: RecruitmentItem) => obj.id === id);
+  isOpen1.value = true;
 };
 
-const displayNews = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return filteredStaffs.value.slice(start, end);
+//Function call API Search
+const searchProduct = () => {
+  const searchProduct = useAxios<DataResponse>(
+    'get',
+    `/recruitment/?q=${searchText.value}`,
+    {},
+    {},
+    deps.value
+  );
+
+  watch(searchProduct.response, () => {
+    tempArrays.value = searchProduct.response.value?.data?.data;
+    results.value = tempArrays.value.map((item: RecruitmentItem) => {
+      return {
+        id: item.id,
+        title: item.title,
+        position: item.position,
+        type: item.working_form
+      };
+    });
+  });
+};
+//Search Products
+watch(searchText, () => {
+  if (debounceTimer.value) {
+    clearTimeout(debounceTimer.value);
+  }
+
+  // Create a new timeout to call API after 1 second
+  debounceTimer.value = setTimeout(() => {
+    searchProduct();
+  }, 500);
 });
 
+// Computed property for displaying filtered products
+const filteredRecruitments = computed(() => {
+  return results.value;
+});
+
+//Pagination Handle
+const scrollToTop = () => {
+  if (scrollContainer.value && scrollContainer.value instanceof HTMLElement) {
+    scrollContainer.value.scrollTop = 0;
+  }
+};
+
+//Change Page
+const handlePageChange = (page: number) => {
+  currentPage.value = page - 1;
+  scrollToTop();
+};
+
+//Limit Character
 const truncateText = (text: string, maxLength: number) => {
   if (text.length > maxLength) {
     return text.slice(0, maxLength) + '...';
@@ -80,7 +163,31 @@ const truncateText = (text: string, maxLength: number) => {
   return text;
 };
 
-const deleteActivity = (id: number) => {
+watch(currentPage, () => {
+  const { response } = useAxios<DataResponse>(
+    'get',
+    `/recruitment/?page=${currentPage.value}&pageSize=10`,
+    {},
+    {},
+    deps.value
+  );
+
+  //Convert array to compatible with data
+  watch(response, () => {
+    tempArrays.value = response.value?.data?.data;
+    results.value = tempArrays.value.map((item: RecruitmentItem) => {
+      return {
+        id: item.id,
+        title: item.title,
+        position: item.position,
+        type: item.working_form
+      };
+    });
+  });
+});
+
+//Delete Product
+const deleteRecruitment = (id: string) => {
   Swal.fire({
     title: 'Bạn có chắc muốn xóa?',
     text: 'Dữ liệu sẽ không thể khôi phục sau khi xóa!',
@@ -92,18 +199,48 @@ const deleteActivity = (id: number) => {
     cancelButtonText: 'Hủy'
   }).then((result) => {
     if (result.isConfirmed) {
-      results.value = results.value.filter((activity) => activity.id !== id);
+      const deleteProduct = useAxios<DataResponse>(
+        'delete',
+        `/recruitment/${id}`,
+        {},
+        {},
+        deps.value
+      );
 
-      Swal.fire({
-        title: 'Xóa thành công',
-        icon: 'success',
-        confirmButtonText: 'Hoàn tất',
-        width: '30rem'
+      watch(deleteProduct.response, () => {
+        if (deleteProduct.response.value?.status === 'ok') {
+          Swal.fire({
+            title: 'Xóa thành công',
+            icon: 'success',
+            confirmButtonText: 'Hoàn tất',
+            width: '30rem'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.close();
+              const { response } = useAxios<DataResponse>(
+                'get',
+                `/recruitment/?page=${currentPage.value}&pageSize=10`,
+                {},
+                {},
+                deps.value
+              );
+
+              //Convert array to compatible with data
+              watch(response, () => {
+                tempArrays.value = response.value?.data?.data;
+                results.value = tempArrays.value.map((item: RecruitmentItem) => {
+                  return {
+                    id: item.id,
+                    title: item.title,
+                    position: item.position,
+                    type: item.working_form
+                  };
+                });
+              });
+            }
+          });
+        }
       });
-
-      setTimeout(function () {
-        Swal.close();
-      }, 1200);
     }
   });
 };
@@ -132,17 +269,17 @@ const deleteActivity = (id: number) => {
         <div :class="$style.mn_activity_table_ctn">
           <table :class="$style.mn_activity_table">
             <tbody>
-              <template v-if="filteredStaffs.length > 0">
-                <tr v-for="(item, index) in displayNews" :key="index">
-                  <td style="width: 5%">{{ index + 1 }}</td>
+              <template v-if="filteredRecruitments.length > 0">
+                <tr v-for="(item, index) in filteredRecruitments" :key="index">
+                  <td style="width: 5%">{{ currentPage * 10 + index + 1 }}</td>
                   <td style="width: 35%">{{ truncateText(item.title, 45) }}</td>
                   <td style="width: 25%">{{ truncateText(item.position, 35) }}</td>
                   <td style="width: 20%">{{ truncateText(item.type, 30) }}</td>
                   <td style="width: 15%">
-                    <button :class="$style['btn-room-trash']" @click="deleteActivity(item.id)">
+                    <button :class="$style['btn-room-trash']" @click="deleteRecruitment(item.id)">
                       <font-awesome-icon :icon="faTrash" />
                     </button>
-                    <button @click="editRecruitment(item)" :class="$style['edit-room-btn']">
+                    <button @click="updateRecruitment(item.id)" :class="$style['edit-room-btn']">
                       <font-awesome-icon :icon="faPen" />
                     </button>
                   </td>
@@ -159,22 +296,19 @@ const deleteActivity = (id: number) => {
       </div>
       <div :class="$style['mn_activity_pagination']">
         <pagination
-          :total="Math.ceil(filteredStaffs.length / pageSize)"
+          :total="totalPage"
           :current-page="currentPage"
-          :page-size="pageSize"
+          :page-size="10"
           @current-change="handlePageChange"
         />
       </div>
     </div>
-    <div :class="$style.activity_overlay" v-if="isModalOpen">
+    <div :class="$style.activity_overlay" v-if="isOpen1">
       <modal-update
-        @updateRecruitment="handleRecruitment"
-        :selectedRecruitment="selectedRecruitment"
-        :isModalOpen="isModalOpen"
-        :closeModal="closeModal"
-        v-if="activeTab === 'activity'"
-        @click.stop
-        @close="closeModal"
+        v-if="isOpen1"
+        @close="isOpen1 = false"
+        :update-object="chosenObject ? chosenObject : null"
+        @update-content="onUpdateContent2"
       />
     </div>
   </div>

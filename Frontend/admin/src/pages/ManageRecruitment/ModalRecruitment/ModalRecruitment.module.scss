@@ -2,7 +2,7 @@
 
 .activity_container {
   width: 35%;
-  height: 70%;
+  height: max-content;
   background-color: #fff;
   border-radius: 1rem;
   display: flex;
@@ -13,7 +13,7 @@
   &--title {
     justify-content: center;
     align-items: center;
-    font-size: 2.4rem;
+    font-size: 2rem;
     font-style: normal;
     font-weight: 600;
     line-height: normal;
@@ -37,6 +37,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-bottom: 20px;
 
     &-left {
       flex: 1;
@@ -91,78 +92,103 @@
         justify-content: space-between;
         align-items: center;
 
-        .options_title {
-          font-size: $text-base;
-          font-style: normal;
-          font-weight: 700;
-          line-height: normal;
-          margin-bottom: 1rem;
-          font-family: 'Roboto';
-        }
-
-        &_btn {
+        .options_wrap_item{
           flex: 1;
-          width: 220px;
-          padding: 10px 40px;
-          border-radius: 10px;
-          font-size: $text-sm;
-          font-style: normal;
-          line-height: normal;
-          text-align: start;
-          border: 1px solid #ccc;
+
+          .options_title {
+            font-size: $text-base;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            margin-bottom: 1rem;
+            font-family: 'Roboto';
+          }
+  
+          input {
+            width: 100%;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1.6rem;
+            font-style: normal;
+            line-height: normal;
+            text-align: start;
+            border: 1px solid #ccc;
+          }
+
+          &:first-child{
+            margin-right: 10px;
+          }
+
+          &:last-child{
+            margin-left: 10px;
+          }
+        }
+
+        
+      }
+    }
+
+    .activity_container--wrap--btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+
+      button {
+        padding: 8px 15px;
+        min-width: 120px;
+        font-size: 1.6rem;
+        font-weight: 600;
+        border-radius: 50px;
+
+        &:hover {
+          opacity: 0.9;
+        }
+
+        &:nth-child(1) {
           margin-right: 20px;
+          border: 1px solid #22d1ee;
+          background-color: white;
+        }
+
+        &:nth-child(2) {
+          color: white;
+          border: 1px solid #22d1ee;
+          background: linear-gradient(270deg, #22d1ee 0%, #3d5af1 100%);
+          box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
         }
       }
     }
 
-    &--btn {
-      margin-bottom: 20px;
-      .button_add {
-        background-color: $primary_600;
-        color: #ffffff;
-        font-size: 16px;
-        font-weight: 500;
-        padding: 10px 30px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-left: 5px;
-      }
+    .adding__modal__line {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 25px;
+      margin-top: 25px;
 
-      .button_add:hover {
-        background-color: #fff;
-        color: $primary_600;
-        border: 1px solid $primary_600;
-        padding: 8px 28px;
-      }
-
-      .button_add:active {
-        background-color: $primary_50;
-      }
-
-      .button_cancel {
-        background-color: #fff;
-        color: $text_900;
-        font-size: 16px;
-        font-weight: 500;
-        padding: 9px 29px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        border: 1px solid $text_900;
-        margin-right: 5px;
-      }
-
-      .button_cancel:hover {
-        background-color: #000000;
-        color: #fff;
-        border: 2px solid $text_900;
-        padding: 8px 28px;
-      }
-
-      .button_cancel:active {
-        background-color: #5e5e5e;
+      .modal__line-item {
+        width: 4rem;
+        height: 4px;
+        background-color: #d9d9d9;
+        margin: 0 10px;
       }
     }
+  }
+
+  .loading__overlay{
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    z-index: 30;
   }
 }

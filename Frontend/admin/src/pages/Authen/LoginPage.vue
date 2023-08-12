@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import second from '../../assets/imgs/Authen/bglogon.svg';
 import logo from '../../assets/imgs/Activity/image.png';
 import ellip1 from '../../assets/imgs/Authen/ellipse178.png';
 import ellip3 from '../../assets/imgs/Authen/ellipse179.png';
-import ellip2 from '../../assets/imgs/Authen/ellipse177.png';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faUnlockKeyhole } from '@fortawesome/free-solid-svg-icons';
 import { ref } from 'vue';
 
-const username = ref('');
+const accountInput = ref({ email: '', pass: '' });
 const checkAccount = ref(true);
 </script>
 <template>
@@ -24,7 +22,7 @@ const checkAccount = ref(true);
         <label :class="$style['wrap_title--text']" for="user-name">Email</label>
         <input
           id="user-name"
-          v-model="username"
+          v-model="accountInput.email"
           placeholder="Nhập email"
           :class="$style['custom-input']"
         />
@@ -33,7 +31,7 @@ const checkAccount = ref(true);
         <label :class="$style['wrap_title--text']" for="user-pass">Mật khẩu</label>
         <input
           id="user-pass"
-          v-model="username"
+          v-model="accountInput.pass"
           placeholder="Nhập mật khẩu"
           :class="$style['custom-input']"
         />
@@ -52,9 +50,12 @@ const checkAccount = ref(true);
       <!-- <img :src="second" alt="sdf" :class="$style.authen_welcome_img" /> -->
       <div :class="$style.authen_welcome_img"></div>
       <div :class="$style.authen_welcome_content">
-        <img :class="$style.authen_welcome_content_ellip1" :src="ellip1" alt="elip" />
-        <img :class="$style.authen_welcome_content_ellip2" :src="ellip1" alt="elip2" />
-        <img :class="$style.authen_welcome_content_ellip3" :src="ellip3" alt="elip2" />
+        <div :class="$style.authen_welcome_content_ellip1"></div>
+        <!-- <img :class="$style.authen_welcome_content_ellip1" :src="ellip1" alt="elip" /> -->
+        <!-- <img :class="$style.authen_welcome_content_ellip2" :src="ellip1" alt="elip2" /> -->
+        <!-- <img :class="$style.authen_welcome_content_ellip3" :src="ellip3" alt="elip2" /> -->
+        <div :class="$style.authen_welcome_content_ellip2"></div>
+        <div :class="$style.authen_welcome_content_ellip3"></div>
         <img :class="$style.authen_welcome_content_img" :src="logo" alt="logo" />
         <p :class="$style.authen_welcome_content_title">CHÀO MỪNG BẠN ĐÃ TRỞ LẠI</p>
         <p :class="$style.authen_welcome_content_text">

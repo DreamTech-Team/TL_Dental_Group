@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import CropImage from '@/components/CropImage/CropImage.vue';
 import Editor from '@tinymce/tinymce-vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface MyErrorResponse {
   response?: {
@@ -143,6 +144,7 @@ const emits = defineEmits<{
 
 //Properties
 const indexCur = ref(1);
+const isLoading = ref(false);
 
 //Part 1
 const name = ref(context.updateObject?.name);
@@ -443,6 +445,8 @@ const submitForm = () => {
     return;
   }
 
+  isLoading.value = true;
+
   const getFKKey = useAxios<DataResponse>(
     'get',
     // eslint-disable-next-line max-len
@@ -497,6 +501,7 @@ const submitForm = () => {
 
     watch(updateProduct.response, () => {
       if (updateProduct.response.value?.status === 'ok') {
+        isLoading.value = false;
         Swal.fire({
           title: 'Cập nhật thành công',
           icon: 'success',
@@ -517,6 +522,7 @@ const submitForm = () => {
       const errorValue: MyErrorResponse | null = updateProduct.error
         .value as MyErrorResponse | null;
       if (errorValue !== null) {
+        isLoading.value = false;
         alertDialog('Tên sản phẩm đã tồn tại', 1);
         return;
       }
@@ -713,6 +719,9 @@ watch(selectedCompany, () => {
         <button v-if="indexCur > 1" @click="indexCur--">Quay lại</button>
         <button v-if="indexCur < 3" @click="indexCur++">Tiếp tục</button>
         <button v-if="indexCur === 3" @click="submitForm">Cập nhật</button>
+      </div>
+      <div v-show="isLoading" :class="$style.loading__overlay">
+        <Loading />
       </div>
     </div>
   </div>

@@ -7,6 +7,7 @@ import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import base64ToBlob from '@/utils/base64ToBlob';
 import Swal from 'sweetalert2';
 import styles from './UpdateBanner.module.scss';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface UpdateBanner {
   id: string;
@@ -47,6 +48,8 @@ const imageFile: Ref<string | null> = ref(null);
 const isCrop = ref(false);
 const isOpenInput = ref(false);
 const isUpdate = ref(false);
+const isLoadingPolicy = ref(false);
+const isLoadingNews = ref(false);
 const isTab = ref('Policy');
 
 // Gọi hàm useAxios để lấy response, error, và isLoading
@@ -63,10 +66,10 @@ const getImageNews = useAxios<DataResponse>('get', 'news/header', {}, {}, variab
 watch(getImagePolicy.response, () => {
   dataHeaderPolicy.value = getImagePolicy.response.value?.data;
   imageFile.value = getImagePolicy.response.value?.data?.image;
+  dataHeader.value = dataHeaderPolicy.value;
 });
 watch(getImageNews.response, () => {
   dataHeaderNews.value = getImageNews.response.value?.data;
-  // imageFile.value = getImageNews.response.value?.data?.image;
 });
 
 const handleTab = (e: Event) => {
@@ -85,8 +88,6 @@ const handleTab = (e: Event) => {
 
       imageFile.value = dataHeaderNews.value.image;
       dataHeader.value = dataHeaderNews.value;
-
-      console.log(dataHeader.value);
     }
   }
 };
@@ -112,12 +113,13 @@ const handleUpload = () => {
       slug: dataHeader.value.slug,
       type: dataHeader.value.type
     };
+
     const formData = new FormData();
     formData.append('data', JSON.stringify(object));
     formData.append('image', image as Blob);
 
     if (isTab.value === 'Policy') {
-      const { response } = useAxios<DataResponse>(
+      const { response, isLoading } = useAxios<DataResponse>(
         'patch',
         '/policy/header',
         formData,
@@ -128,8 +130,10 @@ const handleUpload = () => {
         },
         deps.value
       );
+      isLoadingPolicy.value = isLoading.value;
       watch(response, () => {
         if (response.value?.status === 'ok') {
+          isLoadingPolicy.value = isLoading.value;
           dataHeaderPolicy.value.image = response.value?.data?.image;
 
           Swal.fire({
@@ -170,7 +174,7 @@ const handleUpload = () => {
         }
       });
     } else {
-      const { response } = useAxios<DataResponse>(
+      const { response, isLoading } = useAxios<DataResponse>(
         'patch',
         '/news/header',
         formData,
@@ -181,8 +185,12 @@ const handleUpload = () => {
         },
         deps.value
       );
+      isLoadingNews.value = isLoading.value;
+      console.log(isLoadingNews.value);
 
       watch(response, () => {
+        isLoadingNews.value = isLoading.value;
+
         if (response.value?.status === 'ok') {
           dataHeaderNews.value.image = response.value?.data?.image;
 
@@ -247,9 +255,7 @@ const handleUpload = () => {
         }"
         >News</span
       >
-      <div :class="$style['banner__item--policy']">
-        <!-- <h2>Banner Chính sách</h2> -->
-
+      <div :class="$style['banner__item--policy']" v-if="!isLoadingNews && !isLoadingPolicy">
         <div
           :class="$style['banner__item--policy-img']"
           @click="isOpenInput = !isOpenInput"
@@ -289,6 +295,7 @@ const handleUpload = () => {
         </button>
       </div>
     </div>
+    <loading-component v-if="isLoadingNews || isLoadingPolicy" />
   </div>
 
   <crop-image

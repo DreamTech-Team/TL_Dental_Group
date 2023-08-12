@@ -20,6 +20,14 @@
       font-weight: 600;
       margin-bottom: 10px;
       margin-top: 0;
+
+      a{
+        margin-left: 30px;
+        font-weight: 500;
+        color: blue;
+        text-decoration: underline;
+        cursor: pointer;
+      }
     }
 
     input {
