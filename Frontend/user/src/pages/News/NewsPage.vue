@@ -26,7 +26,7 @@ watch(getTotal.response, () => {
 });
 
 //Get default data
-const { response } = useAxios<DataResponse>(
+const { response, isLoading } = useAxios<DataResponse>(
   'get',
   `/news?sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
   {},
@@ -35,6 +35,9 @@ const { response } = useAxios<DataResponse>(
 );
 watch(response, () => {
   dataContext.value = response.value?.data?.data;
+});
+watch(isLoading, () => {
+  console.log(isLoading.value);
 });
 
 //Sort
