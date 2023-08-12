@@ -28,17 +28,15 @@ interface Tags {
 }
 
 interface News {
-  news: {
-    id: string;
-    title: string;
-    img: string;
-    slug: string;
-    summary: string;
-    detail: string;
-    detailMobile: string;
-    highlight: number;
-    createAt: string;
-  };
+  id: string;
+  title: string;
+  img: string;
+  slug: string;
+  summary: string;
+  detail: string;
+  detailMobile: string;
+  highlight: number;
+  createAt: string;
   tags: [
     {
       id: string;
@@ -224,8 +222,6 @@ const example_image_upload_handler = (blobInfo: BlobInfo, progress: ProgressFunc
 
 //Open file image
 const openFileInput = () => {
-  // console.log('jdsjbjsabdasd');
-
   isOpenInput.value = !isOpenInput.value;
 };
 
@@ -266,9 +262,7 @@ const handleImageChange = (event: Event) => {
 const selectedTag = (tag: Tags) => {
   if (!selectedTags.value.includes(tag)) {
     selectedTags.value.push(tag);
-    // console.log(selectedTags);
     listIdTags.value.push(tag.id);
-    // console.log(listIdTags);
   }
 };
 
@@ -287,7 +281,6 @@ const submitForm = () => {
     alertDialog('Tên không hợp lệ', 1);
     return;
   }
-
   if (summaryInput.value.level.content.length <= 5) {
     alertDialog('Tóm tắt quá ngắn', 1);
     return;
@@ -312,18 +305,13 @@ const submitForm = () => {
       detailMobile: ''
     };
     console.log(listIdTags.value.toString());
-
     const formData = new FormData();
-    // tags: listIdTags.value //step 1
     formData.append('img', avatarFile.value as Blob); // step 1
-
     listIdTags.value.map((item) => {
       formData.append('tags', item);
     });
     //["id1"]
     formData.append('data', JSON.stringify(object));
-    // console.log(formData);
-
     const createNews = useAxios<DataResponse>(
       'post',
       '/news',

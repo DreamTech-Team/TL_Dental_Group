@@ -25,17 +25,15 @@ interface Tags {
 }
 
 interface News {
-  news: {
-    id: string;
-    title: string;
-    img: string;
-    slug: string;
-    summary: string;
-    detail: string;
-    detailMobile: string;
-    highlight: number;
-    createAt: string;
-  };
+  id: string;
+  title: string;
+  img: string;
+  slug: string;
+  summary: string;
+  detail: string;
+  detailMobile: string;
+  highlight: number;
+  createAt: string;
   tags: [
     {
       id: string;
@@ -121,9 +119,9 @@ const prevStep = () => {
 };
 
 //Step 1
-const activityTitle = ref(props.selectedActivity.news?.title);
+const activityTitle = ref(props.selectedActivity?.title);
 const imageActivity = ref(imageAct);
-const mainFile = ref(props.selectedActivity.news?.img);
+const mainFile = ref(props.selectedActivity?.img);
 const fileData = ref();
 const avatarFile = ref();
 const selectedTags = ref<Tags[]>(props.selectedActivity?.tags);
@@ -135,7 +133,7 @@ const listIdTags = ref<string[]>(
 const valueSummary = ref<string | undefined>('');
 const summaryInput = ref<TextAreaValue>({
   level: {
-    content: props.selectedActivity.news.summary
+    content: props.selectedActivity.summary
   }
 });
 
@@ -182,7 +180,7 @@ const handleCroppedImage = (result: string) => {
 const valueDescription = ref<string | undefined>('');
 const descriptionInput = ref<TextAreaValue>({
   level: {
-    content: props.selectedActivity.news?.detail
+    content: props.selectedActivity?.detail
   }
 });
 
@@ -306,23 +304,16 @@ const submitForm = () => {
     return;
   } else {
     const object = {
-      id: props.selectedActivity.news?.id,
+      id: props.selectedActivity?.id,
       title: activityTitle.value, //step 1
       summary: summaryInput.value.level.content, //step 1
-      img: props.selectedActivity.news?.img,
+      img: props.selectedActivity?.img,
       detail: descriptionInput.value.level.content, //step 2
       highlight: 0,
       detailMobile: ''
     };
-    // console.log(listIdTags.value.toString());
-
     const formData = new FormData();
-    // tags: listIdTags.value //step 1
     formData.append('img', avatarFile.value as Blob); // step 1
-    // listIdTags.value.forEach((item: string) => {
-    //   console.log(item);
-    //   formData.append('tags', '[' + item.replace(/"/g, '') + ']');
-    // });
     listIdTags.value.map((item) => {
       formData.append('tags', item);
     });
@@ -333,7 +324,7 @@ const submitForm = () => {
 
     const updateNews = useAxios<DataResponse>(
       'patch',
-      `/news/${props.selectedActivity.news?.id}`,
+      `/news/${props.selectedActivity?.id}`,
       formData,
       {
         headers: {
@@ -354,7 +345,6 @@ const submitForm = () => {
             Swal.close();
             emits('close');
             props.closeModal();
-            // console.log(updateNews.response.value?.data);
             emits('update', updateNews.response.value?.data);
           }
         });

@@ -12,17 +12,15 @@ import UpdateActivity from './ModalActivity/UpdateActivity.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 interface News {
-  news: {
-    id: string;
-    title: string;
-    img: string;
-    slug: string;
-    summary: string;
-    detail: string;
-    detailMobile: string;
-    highlight: number;
-    createAt: string;
-  };
+  id: string;
+  title: string;
+  img: string;
+  slug: string;
+  summary: string;
+  detail: string;
+  detailMobile: string;
+  highlight: number;
+  createAt: string;
   tags: [
     {
       id: string;
@@ -70,15 +68,10 @@ const emits = defineEmits<{
   // eslint-disable-next-line no-unused-vars
   (e: 'close'): void;
   // eslint-disable-next-line no-unused-vars
-  (e: 'update-content', data: { newsAdd: News }): void;
+  (e: 'update-content', newsAdd: News): void;
   // eslint-disable-next-line no-unused-vars
   (e: 'current-page', numberPage: number): void;
 }>();
-
-// watch(props, () => {
-//   activitiesResList.value = props.dataNews;
-//   console.log(props.dataNews);
-// });
 
 const searchText = ref('');
 const currentPage = ref(0);
@@ -95,6 +88,8 @@ const activitiesResList = ref<News[]>(props.dataNews);
 watch(props, () => {
   activitiesResList.value = props.dataNews;
   currentPage.value;
+
+  console.log(activitiesResList.value);
 });
 
 const {
@@ -132,7 +127,6 @@ const searchNews = () => {
 
   watch(searchNews.response, () => {
     activitiesResList.value = searchNews.response.value?.data?.data;
-    // console.log(activitiesResList.value);
   });
 };
 
@@ -141,19 +135,19 @@ const handleUpdateNews = (data: dataUpdate) => {
 
   console.log('vinh đẹp trai');
   activitiesResList.value.forEach((item) => {
-    if (item.news.id === data.id) {
+    if (item.id === data.id) {
       // Cập nhật các thuộc tính của 'item.news' từ 'data.news'
-      item.news.title = data.title;
-      item.news.img = data.img;
-      item.news.slug = data.slug;
-      item.news.summary = data.summary;
-      item.news.detail = data.detail;
+      item.title = data.title;
+      item.img = data.img;
+      item.slug = data.slug;
+      item.summary = data.summary;
+      item.detail = data.detail;
     }
   });
 };
 
 watch(activitiesResList, () => {
-  console.log('vinhlog' + activitiesResList.value);
+  console.log(activitiesResList.value);
 });
 
 //Search Products
@@ -191,25 +185,7 @@ const truncateText = (text: string, maxLength: number) => {
   return text;
 };
 
-// const formatDateTime = (dateTimeString: string, outputFormat = 'dd/MM/yyyy HH:mm:ss'): string => {
-//   return format(new Date(dateTimeString), outputFormat);
-// };
-
 const formatDateTime = (dateTimeStr: string) => {
-  // const date = new Date(dateTimeStr);
-  // const day = String(date.getDate()).padStart(2, '0');
-  // const month = String(date.getMonth() + 1).padStart(2, '0');
-  // const year = String(date.getFullYear());
-  // const hours = String(date.getHours()).padStart(2, '0');
-  // const minutes = String(date.getMinutes()).padStart(2, '0');
-  // const seconds = String(date.getSeconds()).padStart(2, '0');
-
-  // return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-
-  // const date = new Date(dateTimeStr);
-  // const vietnamTime = date.toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
-  // return vietnamTime;
-
   const singaporeDateTime = new Date(dateTimeStr); // Chuyển chuỗi thành đối tượng Date
   const singaporeOffset = singaporeDateTime.getTimezoneOffset() / 60;
 
@@ -249,6 +225,7 @@ const deleteActivity = async (id: string) => {
         {},
         deps.value
       );
+      console.log(id);
 
       watch(deleteNews.response, () => {
         // console.log(deleteNews.response.value);
@@ -257,7 +234,7 @@ const deleteActivity = async (id: string) => {
           // Xóa phần tử trong activitiesResList
           if (activitiesResList.value) {
             activitiesResList.value = activitiesResList.value.filter(
-              (item: { news: { id: string } }) => item.news.id !== id
+              (item: { id: string }) => item.id !== id
             );
           }
           props.change(id);
@@ -309,7 +286,7 @@ const deleteActivity = async (id: string) => {
                 <tr v-for="(item, index) in activitiesResList" :key="index">
                   <td style="width: 5%">{{ index + 1 }}</td>
                   <td style="max-width: 30%">
-                    {{ truncateText(item?.news?.title, 50) }}
+                    {{ truncateText(item?.title, 50) }}
                   </td>
                   <td style="width: 30%">
                     <span v-for="(tag, idx) in item?.tags" :key="idx">
@@ -318,12 +295,9 @@ const deleteActivity = async (id: string) => {
                     </span>
                   </td>
 
-                  <td style="width: 20%">{{ formatDateTime(item?.news?.createAt) }}</td>
+                  <td style="width: 20%">{{ formatDateTime(item?.createAt) }}</td>
                   <td style="width: 15%">
-                    <button
-                      :class="$style['btn-room-trash']"
-                      @click="deleteActivity(item?.news?.id)"
-                    >
+                    <button :class="$style['btn-room-trash']" @click="deleteActivity(item.id)">
                       <font-awesome-icon :icon="faTrash" />
                     </button>
                     <button @click="editActivity(item)" :class="$style['edit-room-btn']">
