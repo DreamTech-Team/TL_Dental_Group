@@ -5,7 +5,7 @@
   margin-top: 3rem;
   &__bg {
     img {
-      height: auto;
+      height: 30vh;
       width: 100vw;
     }
   }
@@ -18,7 +18,7 @@
     &-nav {
       position: sticky;
       position: -webkit-sticky;
-      width: 50%;
+      width: 30%;
       margin-right: 4rem;
 
       ul {
@@ -93,8 +93,12 @@
       &-nav {
         width: 100%;
         margin-bottom: 2rem;
+        position: relative;
 
         ul {
+          position: absolute;
+          width: 100%;
+
           .hidden {
             transition: opacity 1s ease-out;
             opacity: 0;
@@ -120,8 +124,9 @@
           background-color: $text_200;
 
           svg {
+            display: block;
             transition: transform 1s;
-            width: 3rem;
+            width: 2rem;
             height: auto;
           }
 
@@ -130,9 +135,12 @@
           }
 
           h3 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             margin-left: 1rem;
-            font-size: $text-3xl-mobile;
-            font-weight: 400;
+            font-size: $text-xl-mobile;
+            font-weight: 600;
           }
         }
       }

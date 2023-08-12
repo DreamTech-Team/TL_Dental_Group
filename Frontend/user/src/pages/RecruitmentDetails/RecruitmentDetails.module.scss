@@ -50,11 +50,11 @@
 
   &__content {
     display: flex;
-    flex-direction: row-reverse;
     margin: 5rem 10rem;
 
     &-left {
-      width: 35%;
+      width: 30rem;
+      margin-right: 5rem;
       &-title {
         width: fit-content;
         font-size: $text-lg;
@@ -71,7 +71,7 @@
         list-style: disc;
 
         li {
-          max-width: 20rem;
+          max-width: 30rem;
           margin-top: 1rem;
           font-size: $text-sm;
           color: $text_800;

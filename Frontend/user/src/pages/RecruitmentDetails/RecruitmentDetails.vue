@@ -1,20 +1,24 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router';
+
 import logo from '@/assets/imgs/logo.png';
 import RecruitmentDetailsItem from './RecruitmentDetailsItem/RecruitmentDetailsItem.vue';
 import RecruitmentCard from '../Recruitment/RecruitmentCard/RecruitmentCard.vue';
 import { data, recContentDetails } from './RecruitmentDetailsHandle';
 import { ic_bag, ic_hourglass, ic_location } from '@/assets/imgs/Recruitment/RecruitmentImgs';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import { ref, watch } from 'vue';
 
 const typeRecuit = [
   {
     icon: { link: ic_location, style: 'type6' },
-    title: { content: data.location, style: 'type6' },
+    title: { content: '', style: 'type6' },
     content: { content: '', style: '' },
     image: { link: '', style: '' }
   },
   {
     icon: { link: ic_bag, style: 'type6' },
-    title: { content: data.typeWork, style: 'type6' },
+    title: { content: '', style: 'type6' },
     content: { content: '', style: '' },
     image: { link: '', style: '' }
   },
@@ -33,6 +37,33 @@ const contentOrganite = [
   'Kiểm tra sức khoẻ hàng năm',
   'Hỗ trợ bảo hiểm sức khỏe'
 ];
+
+const linkCurrent = useRoute();
+const descriptionRec = ref();
+const paramAxios = ref();
+
+const getRecruitmentDetails = useAxios<DataResponse>(
+  'get',
+  `/recruitment/${linkCurrent.path.split('/')[2]}`,
+  {},
+  {},
+  paramAxios.value
+);
+
+watch(getRecruitmentDetails.error, (value) => {
+  console.log(value);
+});
+
+watch(getRecruitmentDetails.response, (value) => {
+  console.log(value);
+  const tmp = value?.data;
+
+  typeRecuit[0].content.content = tmp.location;
+  typeRecuit[1].content.content = tmp.position;
+  typeRecuit[2].content.content = tmp.working_form;
+
+  descriptionRec.value = tmp.description;
+});
 </script>
 <template>
   <div :class="$style.container">
@@ -46,24 +77,18 @@ const contentOrganite = [
       </div>
     </div>
     <div :class="$style.container__content">
-      <div :class="$style['container__content-right']">
-        <div :class="$style['container__content-right-title']">{{ data.title }}</div>
-        <div :class="$style['container__content-right-type']">
-          <recruitment-card :items="typeRecuit" :style="'type6'" />
-        </div>
-        <div
-          :class="$style['container__content-right-content']"
-          v-for="(item, index) in recContentDetails"
-          :key="index"
-        >
-          <recruitment-details-item :items="item" />
-        </div>
-      </div>
       <div :class="$style['container__content-left']">
         <div :class="$style['container__content-left-title']">Đãi ngộ hấp dẫn</div>
         <ul>
           <li v-for="(item, index) in contentOrganite" :key="index">{{ item }}</li>
         </ul>
+      </div>
+      <div :class="$style['container__content-right']">
+        <div :class="$style['container__content-right-title']">{{ data.title }}</div>
+        <div :class="$style['container__content-right-type']">
+          <recruitment-card :items="typeRecuit" :style="'type6'" />
+        </div>
+        <div :class="$style['container__content-right-content']" v-html="descriptionRec"></div>
       </div>
     </div>
   </div>
