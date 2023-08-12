@@ -3,7 +3,7 @@ import AboutHeader from './AboutHeader/AboutHeader.vue';
 import AboutInfoCompany from './AboutInfoCompany/AboutInfoCompany.vue';
 import AboutThanks from './AboutThanks/AboutThanks.vue';
 import AboutMotto from './AboutMotto/AboutMotto.vue';
-import AboutBusinessItems from './AboutBusinessItems/AboutBusinessItems.vue';
+import AboutBusinessItems from '../Home/HomeCategory/HomeCategory.vue';
 </script>
 <template>
   <div :class="$style.about">

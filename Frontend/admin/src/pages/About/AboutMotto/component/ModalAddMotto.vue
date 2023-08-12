@@ -15,12 +15,13 @@ interface AboutMotto {
   title: string;
   content: string;
   image: string;
+  slug: string;
   type: string;
 }
 
 const props = defineProps({
   change: {
-    type: Function as PropType<(newData: ManageCompany) => void>,
+    type: Function as PropType<(newData: AboutMotto, isLoading: boolean) => void>,
     required: true
   }
 });
@@ -31,7 +32,7 @@ const contentInput = ref('');
 const selectedImage: Ref<string | null> = ref(null);
 const countWordTitle = ref(_MAX_WORD_TITLE);
 const countWordContent = ref(_MAX_WORD_CONTENT);
-const dataAdded = ref<object>({
+const dataAdded = ref<AboutMotto>({
   id: '',
   title: '',
   content: '',
@@ -71,66 +72,50 @@ const submitForm = () => {
       }
     });
   } else {
-    Swal.fire({
-      title: 'Thêm thành công',
-      icon: 'success',
-      confirmButtonText: 'Hoàn tất',
-      width: '50rem',
-      padding: '0 2rem 2rem 2rem',
-      customClass: {
-        confirmButton: styles['confirm-button'],
-        cancelButton: styles['cancel-button'],
-        title: styles['title']
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        if (selectedImage.value) {
-          // Tạo một đối tượng File từ dữ liệu base64
-          const fileData = base64ToBlob.covertBase64ToBlob(selectedImage.value);
-          const image = new File([fileData], 'image.png', { type: 'image/png' });
+    if (selectedImage.value) {
+      // Tạo một đối tượng File từ dữ liệu base64
+      const fileData = base64ToBlob.covertBase64ToBlob(selectedImage.value);
+      const image = new File([fileData], 'image.png', { type: 'image/png' });
 
-          const deps = ref([]);
+      const deps = ref([]);
 
-          const object = {
-            title: titleInput.value,
-            content: contentInput.value
+      const object = {
+        title: titleInput.value,
+        content: contentInput.value
+      };
+
+      const formData = new FormData();
+      formData.append('data', JSON.stringify(object));
+      formData.append('image', image as Blob);
+      const { response, isLoading } = useAxios<DataResponse>(
+        'post',
+        '/introduce/section1',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        },
+        deps.value
+      );
+
+      props.change(dataAdded.value, isLoading.value);
+
+      watch(response, () => {
+        if (response.value?.status === 'ok') {
+          dataAdded.value = {
+            id: response.value?.data?.id,
+            title: response.value?.data?.title,
+            content: response.value?.data?.content,
+            image: response.value?.data?.image,
+            slug: response.value?.data?.slug,
+            type: response.value?.data?.type
           };
 
-          const formData = new FormData();
-          formData.append('data', JSON.stringify(object));
-          formData.append('image', image as Blob);
-          const { response } = useAxios<DataResponse>(
-            'post',
-            '/introduce/section1',
-            formData,
-            {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            },
-            deps.value
-          );
-
-          watch(response, () => {
-            if (response.value?.status === 'ok') {
-              dataAdded.value = {
-                id: response.value?.data?.id,
-                title: response.value?.data?.title,
-                content: response.value?.data?.content,
-                image: response.value?.data?.image,
-                slug: response.value?.data?.slug,
-                type: response.value?.data?.type
-              };
-
-              props.change(dataAdded.value);
-            }
-          });
+          props.change(dataAdded.value, isLoading.value);
         }
-
-        Swal.close();
-        emit('close');
-      }
-    });
+      });
+    }
   }
 };
 // Hàm chuyển đổi từ ArrayBuffer sang string
