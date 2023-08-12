@@ -444,13 +444,11 @@ onMounted(() => {
       :limit-content="limitContent"
       :hidden-customize="hiddenCustomizeModal"
     />
-    <!-- <div v-if="contentPosterItems.length !== 0"> -->
     <recruitment-poster
       :hanldeScrollToVacancies="hanldeScrollToVacancies"
       :handleEditPoster="handleEditPoster"
       :contentPosterItems="contentPosterItems"
     />
-    <!-- </div> -->
     <recruitment-vision
       :handleEditVision="handleEditVision"
       :contentVisionItems="contentVisionItems"
