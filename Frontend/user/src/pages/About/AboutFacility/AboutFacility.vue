@@ -54,6 +54,7 @@ const getContact = useAxios<DataResponse>(
 // Truy xuất giá trị response.value và gán vào responseData
 watch(getInfo.response, () => {
   dataFacility.value = getInfo.response?.value?.data;
+  console.log(getInfo.response?.value);
 });
 
 watch(getContact.response, () => {

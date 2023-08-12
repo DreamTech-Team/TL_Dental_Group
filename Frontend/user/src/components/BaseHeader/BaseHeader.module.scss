@@ -36,7 +36,7 @@
     align-items: center;
     position: -webkit-sticky;
     position: sticky;
-    top: 0;
+    top: -1px;
     z-index: 1000000;
     background-color: white;
     box-shadow: 0 0 10px rgb(0, 0, 0, 0.05);

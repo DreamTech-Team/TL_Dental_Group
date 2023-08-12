@@ -20,6 +20,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@types/qs": "^6.9.7",
     "axios": "^1.4.0",
+    "axios-cache-interceptor": "^1.2.0",
     "dayjs": "^1.11.9",
     "element-plus": "^2.3.7",
     "pinia": "^2.0.36",
