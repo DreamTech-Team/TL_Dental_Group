@@ -1,45 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { toRefs } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faDiamondTurnRight } from '@fortawesome/free-solid-svg-icons';
-import Facility from '@/assets/imgs/About/Facility.png';
 import Location from '@/assets/imgs/About/Location.png';
 import Telephone from '@/assets/imgs/About/Telephone.png';
 import Message from '@/assets/imgs/About/Message.png';
 import Facebook from '@/assets/imgs/About/Facebook.png';
+import { saveDataContact } from '@/stores/counter';
 
-interface Info {
-  address: string;
-  hotline: string;
-  mapLink: string;
-  image: string;
-}
-
-interface Contact {
-  email: {
-    content: string;
-  };
-  facebook: {
-    content: string;
-  };
-  zalo: {
-    content: string;
-  };
-}
-
-const props = defineProps({
-  dataFacility: {
-    type: Object,
-    required: true
-  },
-  dataContact: {
-    type: Object,
-    required: true
-  }
-});
-
-const dataContactRender = ref<Contact>({ ...(props.dataContact as Contact) });
-const dataFacilityRender = ref<Info>({ ...(props.dataFacility as Info) });
+const { dataFacility, dataContact } = toRefs(saveDataContact());
 </script>
 <template>
   <div :class="$style.contact__facility">
@@ -51,28 +20,28 @@ const dataFacilityRender = ref<Info>({ ...(props.dataFacility as Info) });
 
         <div>
           <img :src="Location" :class="$style['contact__facility-ic']" />
-          <p>{{ dataFacilityRender.address }}</p>
+          <p>{{ dataFacility.address }}</p>
         </div>
 
         <div>
           <img :src="Telephone" :class="$style['contact__facility-ic']" />
-          <p>{{ dataFacilityRender.hotline }}</p>
+          <p>{{ dataFacility.phoneNumber }}</p>
         </div>
 
         <div>
           <img :src="Message" :class="$style['contact__facility-ic']" />
-          <p>{{ dataContactRender.email.content }}</p>
+          <p>{{ dataContact.email.content }}</p>
         </div>
 
         <div>
           <img :src="Facebook" :class="$style['contact__facility-ic']" />
-          <a :href="dataContactRender.facebook.content" target="_blank">{{
-            dataContactRender.facebook.content
+          <a :href="dataContact.facebook.content" target="_blank">{{
+            dataContact.facebook.content
           }}</a>
         </div>
 
         <button :class="$style['contact__facility-button']">
-          <a :href="dataFacilityRender.mapLink" target="_blank">
+          <a :href="dataFacility.mapLink" target="_blank">
             <font-awesome-icon
               :icon="faDiamondTurnRight"
               :class="$style['contact__facility-button-ic']"
@@ -81,7 +50,7 @@ const dataFacilityRender = ref<Info>({ ...(props.dataFacility as Info) });
           </a>
         </button>
       </div>
-      <img :src="dataFacilityRender.image" alt="" :class="$style['contact__facility-img']" />
+      <img :src="dataFacility.image" alt="" :class="$style['contact__facility-img']" />
     </div>
   </div>
 </template>

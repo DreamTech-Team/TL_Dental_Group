@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { RouterLink } from 'vue-router';
-import { computed, ref } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { categories } from '../HeaderHandle';
+// import { categories } from '../HeaderHandle';
+import { useDataRenderStore } from '@/stores/counter';
+
+const { dataRender } = toRefs(useDataRenderStore());
 
 const props = defineProps({
   pageHover: String
@@ -30,14 +33,14 @@ const heightCate2 = (slug: string) => {
     >
       <li :class="$style['header-category__line']"></li>
       <li
-        v-for="item1 in categories.slice(0, 6)"
+        v-for="item1 in dataRender.slice(0, 6)"
         v-on:mouseenter="cate1Hover = item1.slug"
         v-on:mouseleave="cate1Hover = ''"
         :key="item1.slug"
         :class="$style['header-category__item']"
       >
         <router-link to="" :class="$style['header-category__item-link']">
-          <p>{{ item1.name }}</p>
+          <p>{{ item1.title }}</p>
           <font-awesome-icon :icon="faChevronRight" size="xs" />
         </router-link>
 
@@ -51,7 +54,7 @@ const heightCate2 = (slug: string) => {
         >
           <li :class="$style['header-category__line']"></li>
           <li
-            v-for="item2 in item1.list.slice(0, 8)"
+            v-for="item2 in item1.data.slice(0, 8)"
             :key="item2.slug"
             :class="$style['header-category__item']"
           >

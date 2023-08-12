@@ -29,7 +29,8 @@ interface ListCategories {
 
 interface DataRender {
   title: string;
-  data: { name: string }[];
+  slug: string;
+  data: { name: string; slug: string }[];
 }
 
 const dataRenderStore = useDataRenderStore();
@@ -85,19 +86,25 @@ watch(response, () => {
       if (item) {
         const object = {
           title: '',
+          slug: '',
           data: [
             {
-              name: ''
+              name: '',
+              slug: ''
             }
           ]
         };
-        const dataCate2: { name: string }[] = [];
+        const dataCate2: { name: string; slug: string }[] = [];
 
         if (duplicatesPositions1[item.id]) {
           object.title = item.title;
+          object.slug = item.slug;
 
           if (listCategory2.value[duplicatesPositions1[item.id][0]] !== null) {
-            dataCate2.push({ name: listCategory2.value[duplicatesPositions1[item.id][0]].title });
+            dataCate2.push({
+              name: listCategory2.value[duplicatesPositions1[item.id][0]].title,
+              slug: listCategory2.value[duplicatesPositions1[item.id][0]].slug
+            });
           }
 
           object.data = dataCate2;
@@ -106,10 +113,14 @@ watch(response, () => {
         }
         if (duplicatesPositions[item.id]) {
           object.title = item.title;
+          object.slug = item.slug;
 
           duplicatesPositions[item.id].forEach((replace) => {
             if (listCategory2.value[replace] !== null) {
-              dataCate2.push({ name: listCategory2.value[replace].title });
+              dataCate2.push({
+                name: listCategory2.value[replace].title,
+                slug: listCategory2.value[replace].slug
+              });
             }
           });
 
@@ -119,6 +130,7 @@ watch(response, () => {
         }
       }
     });
+    console.log(dataRender.value);
 
     dataRenderStore.setDataRender(dataRender.value);
   }

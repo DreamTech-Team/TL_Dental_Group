@@ -3,11 +3,32 @@ import { defineStore } from 'pinia';
 
 interface DataRender {
   title: string;
-  data: { name: string }[];
+  slug: string;
+  data: { name: string; slug: string }[];
 }
 interface Active {
   categoryIndex: number;
   itemIndex: number;
+}
+interface Info {
+  address: string;
+  phoneNumber: string;
+  hotline: string;
+  mapLink: string;
+  image: string;
+  mapIframe: string;
+}
+
+interface Contact {
+  email: {
+    content: string;
+  };
+  facebook: {
+    content: string;
+  };
+  zalo: {
+    content: string;
+  };
 }
 
 export const useDataRenderStore = defineStore('dataRender', () => {
@@ -28,8 +49,6 @@ export const saveActive = defineStore('saveActiveCategory', () => {
 
   const setActiveCategory = (newActive: Active) => {
     selectedCategoryItem.value = { ...newActive };
-
-    // console.log(active.value);
   };
 
   return { selectedCategoryItem, setActiveCategory };
@@ -40,11 +59,40 @@ export const setAnnimation = defineStore('setAnnimation', () => {
 
   const setAnnimationCategory = (newActive: boolean) => {
     isAnimationVisible.value = newActive;
-
-    console.log(isAnimationVisible.value);
   };
 
   return { isAnimationVisible, setAnnimationCategory };
+});
+
+export const saveDataContact = defineStore('saveDataContact', () => {
+  const dataFacility = ref<Info>({
+    address: '',
+    phoneNumber: '',
+    hotline: '',
+    mapLink: '',
+    image: '',
+    mapIframe: ''
+  });
+  const dataContact = ref<Contact>({
+    email: {
+      content: ''
+    },
+    facebook: {
+      content: ''
+    },
+    zalo: {
+      content: ''
+    }
+  });
+
+  const setDataFacility = (newDataRender: Info) => {
+    dataFacility.value = newDataRender;
+  };
+  const setDataContact = (newDataRender: Contact) => {
+    dataContact.value = newDataRender;
+  };
+
+  return { dataFacility, dataContact, setDataFacility, setDataContact };
 });
 
 // export const useCounterStore = defineStore('counter', () => {

@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { toRefs, ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faDiamondTurnRight } from '@fortawesome/free-solid-svg-icons';
 import Location from '@/assets/imgs/About/Location.png';
 import Telephone from '@/assets/imgs/About/Telephone.png';
 import Message from '@/assets/imgs/About/Message.png';
 import Facebook from '@/assets/imgs/About/Facebook.png';
+import { saveDataContact } from '@/stores/counter';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 interface Info {

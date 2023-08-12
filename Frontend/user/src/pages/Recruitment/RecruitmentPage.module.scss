@@ -349,6 +349,7 @@
           padding: 1rem 3rem 1rem 1rem;
           width: 35rem;
           border: 0.1rem solid $text_300;
+          border-radius: 0.5rem;
         }
       }
     }
@@ -675,7 +676,8 @@
       }
 
       &-right {
-        display: none;
+        // display: none;
+        height: auto;
       }
 
       .sticky-container {
@@ -703,7 +705,7 @@
             background-size: 2.5rem;
             font-size: $text-base-mobile;
             padding: 1rem 1rem 1rem 1rem;
-            width: 84vw;
+            width: 99%;
             border: 0.1rem solid $text_300;
           }
         }
