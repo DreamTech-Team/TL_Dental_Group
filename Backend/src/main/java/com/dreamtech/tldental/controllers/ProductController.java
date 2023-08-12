@@ -60,14 +60,24 @@ public class ProductController {
                                                   @RequestParam(value = "key", required = false) String key,
                                                   @RequestParam(required = false, defaultValue = "12") String pageSize,
                                                   @RequestParam(required = false, defaultValue = "0") String page,
+                                                  @RequestParam(required = false) String sortPrice,
                                                   @RequestParam(required = false, defaultValue = "desc") String sort) {
         try {
             // HANDLE FILTER
+            Sort sortBy = null;
             Sort.Direction sortDirection = sort.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-            Sort sortByCreateAt = Sort.by(sortDirection, "createAt");
+            Sort.Order orderByCreateAt = new Sort.Order(sortDirection, "createAt");
+
+            if (sortPrice != null) {
+                Sort.Direction sortDirectionPrice = sortPrice.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+                Sort.Order orderByPrice = new Sort.Order(sortDirectionPrice, "price");
+                sortBy = Sort.by(orderByPrice, orderByCreateAt);
+            } else {
+                sortBy = Sort.by(orderByCreateAt);
+            }
 
             List<Object> newsList = repository.findFilteredProducts(key, company, cate1, cate2, PageRequest
-                    .of(Integer.parseInt(page), Integer.parseInt(pageSize), sortByCreateAt));
+                    .of(Integer.parseInt(page), Integer.parseInt(pageSize), sortBy));
 
             int total = newsList.size();
 
