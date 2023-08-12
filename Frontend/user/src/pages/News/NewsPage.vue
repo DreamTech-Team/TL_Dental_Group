@@ -46,20 +46,6 @@ const onUpdateSort = (data: { sort: string }) => {
   }
 };
 
-watch(popular, () => {
-  const updateSlug = useAxios<DataResponse>(
-    'get',
-    `/news?${path.value}&sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
-    {},
-    {},
-    deps.value
-  );
-
-  watch(updateSlug.response, () => {
-    dataContext.value = updateSlug.response.value?.data?.data;
-  });
-});
-
 //Update when change slug
 const onUpdateSlug = (data: { listrs: Item[] }) => {
   const slugs = data.listrs.map((item) => item.slug);
@@ -83,7 +69,7 @@ const updateCurrentPage = (currentIdx: number) => {
   currentPage.value = currentIdx;
 };
 
-watch(currentPage, () => {
+watch([currentPage, popular], () => {
   const { response } = useAxios<DataResponse>(
     'get',
     `/news?${path.value}&sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
