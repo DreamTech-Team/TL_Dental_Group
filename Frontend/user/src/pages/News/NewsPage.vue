@@ -18,6 +18,7 @@ const deps = ref([]);
 const dataContext = ref([]);
 const currentPage = ref(0);
 const totalPage = ref(0);
+const loading = ref(false);
 
 //Get total
 const getTotal = useAxios<DataResponse>('get', '/news/total', {}, {}, deps.value);
@@ -37,7 +38,7 @@ watch(response, () => {
   dataContext.value = response.value?.data?.data;
 });
 watch(isLoading, () => {
-  console.log(isLoading.value);
+  loading.value = isLoading.value;
 });
 
 //Sort
@@ -94,6 +95,7 @@ watch([currentPage, popular], () => {
       :list-item="dataContext"
       :popular-status="popular"
       :path="path"
+      :loading="loading"
       :prs-page="currentPage"
       :totalPage="totalPage"
       @current-page="updateCurrentPage"
