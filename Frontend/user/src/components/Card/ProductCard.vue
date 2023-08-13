@@ -66,8 +66,8 @@ const linkDetail = (slug: string) => {
           <p :class="$style['card__header--support-text']">Hỗ trợ đổi trả</p>
         </div>
         <div :class="$style['card__header--wgenuine']">
-          <div :class="$style['card__header--wgenuine-confirm']"></div>
-          <div :class="$style['card__header--txtconfirm']">Chính hãng</div>
+          <div :class="$style['card__header--wgenuine-trigle']"></div>
+          <div :class="$style['card__header--wgenuine-confirm']">Chính hãng</div>
         </div>
 
         <div :class="$style['card__header--title']">

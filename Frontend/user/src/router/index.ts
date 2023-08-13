@@ -28,7 +28,7 @@ const routes = [
     component: AboutPage
   },
   {
-    path: '/sanpham',
+    path: '/sanpham/:catchAll(.*)*',
     name: 'sanpham',
     component: ProductPage
   },

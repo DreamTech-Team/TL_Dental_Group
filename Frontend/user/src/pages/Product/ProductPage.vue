@@ -7,7 +7,6 @@ import ProductNavigation from './ProductNavigation/ProductNavigation.vue';
 import ServiceQuality from '@/components/ServiceQuality/ServiceQuality.vue';
 import BasePagination from '@/components/Pagination/BasePagination.vue';
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
-// import { products } from '../Product/ProductHandle';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { computed, onMounted, ref, watch } from 'vue';
@@ -66,47 +65,53 @@ interface Item {
   slug: string;
 }
 
-//Init data structure
+//Khởi tạo danh sách sản phẩm để hiển thị ra màn hình
 const products = ref<Item[]>([]);
 
 const deps = ref([]);
 const deps1 = ref([]);
 const dataRes = ref([]);
 const filterAllProduct = ref([]);
-const slugCategory1 = ref('vat-lieu-chinh-nha');
-const slugCategory2 = ref('kem-chinh-nha');
 const currentPage = ref(0);
-const pageSize = ref(6);
+const pageSize = ref(12);
 const pathBC = 'sanpham';
 const isDesktop = ref(true);
 const isActive = ref(false);
 const totalProduct = ref();
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
-const { response, error, isLoading } = useAxios<DataResponse>(
-  'get',
-  `/products?cate1=${slugCategory1.value}&cate2=${slugCategory2.value}&page=${currentPage.value}&pageSize=${pageSize.value}`,
-  {},
-  {},
-  deps.value
-);
+const slugCategory1 = ref('');
+const slugCategory2 = ref('');
+
+// Xử lí sort
+const isDropdownOpen = ref(false);
+const selectedOption = ref('Sắp xếp');
+const options = ['Mới nhất', 'Giá tăng dần', 'Giá giảm dần'];
+
+//Đặt biến API ban đầu: gọi tổng sản phẩm hiện có
+const apiTotalProduct = `/products/total${
+  slugCategory1.value
+    ? `?cate1=${slugCategory1.value}` + (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+    : ''
+}`;
+
+//Đặt biến API ban đầu: gọi danh sách sản phẩm theo category
+const apiProduct = `/products?page=${currentPage.value}&pageSize=${pageSize.value}${
+  slugCategory1.value
+    ? `&cate1=${slugCategory1.value}` + (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+    : ''
+}`;
+
+const {
+  response: productRes,
+  error,
+  isLoading
+} = useAxios<DataResponse>('get', apiProduct, {}, {}, deps.value);
 
 const {
   response: totalRes,
   error: totalErr,
   isLoading: loadErr
-} = useAxios<DataResponse>(
-  'get',
-  `/products?cate1=${slugCategory1.value}&cate2=${slugCategory2.value}`,
-  {},
-  {},
-  deps.value
-);
-
-// Define reactive properties
-const isDropdownOpen = ref(false);
-const selectedOption = ref('Sắp xếp');
-const options = ['Mới nhất', 'Giá tăng dần', 'Giá giảm dần'];
+} = useAxios<DataResponse>('get', apiTotalProduct, {}, {}, deps.value);
 
 // Define methods
 const toggleDropdown = () => {
@@ -141,8 +146,6 @@ const scrollToTop = (top: number) => {
 
 const handlePageChange = (page: number) => {
   currentPage.value = page - 1;
-  console.log('sdjfjksd' + currentPage.value);
-
   if (window.innerWidth < 739) {
     scrollToTop(0);
   } else {
@@ -150,6 +153,16 @@ const handlePageChange = (page: number) => {
   }
 };
 
+const handleCategory1Selected = (selectedCategory1: string) => {
+  slugCategory1.value = selectedCategory1;
+  console.log('Selected Category1:', selectedCategory1);
+};
+const handleCategory2Selected = (selectedCategory2: string) => {
+  slugCategory2.value = selectedCategory2;
+  console.log('Selected Category2:', selectedCategory2);
+};
+
+//Cập nhật lại nội dung cần để show sản phẩm ra màn hình
 const updateShowResults = () => {
   products.value = filterAllProduct.value.map((item: Product) => {
     return {
@@ -166,19 +179,21 @@ const updateShowResults = () => {
 };
 
 // Truy xuất giá trị response.value và gán vào responseData
-watch(response, () => {
-  dataRes.value = response?.value?.data;
-  filterAllProduct.value = response?.value?.data?.data;
+watch(productRes, () => {
+  dataRes.value = productRes?.value?.data;
+  filterAllProduct.value = productRes?.value?.data?.data;
   updateShowResults();
 });
 
 watch(totalRes, () => {
-  totalProduct.value = totalRes?.value?.data.total;
+  totalProduct.value = totalRes?.value?.data;
+  console.log(apiTotalProduct);
+  console.log(apiProduct);
   console.log(totalProduct.value);
 });
 
 watch(
-  [currentPage, slugCategory1, slugCategory2],
+  [currentPage, slugCategory1, slugCategory2, apiProduct],
   () => {
     const {
       response: responseChanged,
@@ -186,7 +201,12 @@ watch(
       isLoading
     } = useAxios<DataResponse>(
       'get',
-      `/products?cate1=${slugCategory1.value}&cate2=${slugCategory2.value}&page=${currentPage.value}&pageSize=${pageSize.value}`,
+      `/products?page=${currentPage.value}&pageSize=${pageSize.value}${
+        slugCategory1.value
+          ? `&cate1=${slugCategory1.value}` +
+            (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+          : ''
+      }`,
       {},
       {},
       deps1.value
@@ -217,12 +237,16 @@ window.addEventListener('resize', checkScreenSize);
     <bread-crumb :tags="pathBC" />
     <div :class="$style['product__content']">
       <!-- category -->
-      <base-category v-if="isDesktop" />
+      <base-category
+        v-if="isDesktop"
+        @slug-category1="handleCategory1Selected"
+        @slug-category2="handleCategory2Selected"
+      />
       <div :class="$style['product__content-wrap']">
         <div :class="$style['product__content-sort']">
           <p :class="$style['product__content-sort--info']">
             Hiển thị
-            <strong>{{ products.length }}</strong> trên <strong>{{ totalProduct }}</strong> kết quả
+            <strong>{{ products.length }}</strong> trên <strong>{{ totalProduct }}</strong> sản phẩm
           </p>
 
           <div :class="$style['product__content-sort--type']" @click="toggleDropdown">

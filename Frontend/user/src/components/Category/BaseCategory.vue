@@ -11,6 +11,8 @@ const { isAnimationVisible } = toRefs(setAnnimation());
 const saveState = saveActive();
 const setAnni = setAnnimation();
 const selectedItem = ref(-1);
+const selectedCategory1 = ref();
+const emit = defineEmits(['slug-category1', 'slug-category2']);
 
 const toggleAnimation = (index: number) => {
   if (isAnimationVisible.value && selectedItem.value == index) {
@@ -49,9 +51,20 @@ const idDefine = (index: number) => {
   return `id-${index}`;
 };
 
+const logAndSelectCategory1 = (categoryIndex: number) => {
+  selectedCategory1.value = dataRender.value[categoryIndex].slug;
+  console.log('Selected Category 1:', selectedCategory1.value);
+  emit('slug-category1', selectedCategory1.value);
+};
+
 const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
-  selectedCategoryItem.value = { categoryIndex, itemIndex };
   saveState.setActiveCategory(selectedCategoryItem.value);
+  const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
+  const selectedCategory = dataRender.value[categoryIndex]; // Giá trị của category cấp 1
+  console.log('Selected Category:', selectedCategory.slug);
+  console.log('Selected Sub-Category:', selectedSubCategory.slug);
+  emit('slug-category2', selectedSubCategory.slug);
+  selectedCategoryItem.value = { categoryIndex, itemIndex };
 };
 
 const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
@@ -64,7 +77,12 @@ const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
 <template>
   <div id="dropdown-container" :class="$style.category">
     <div :class="$style['category__title']">Danh mục</div>
-    <div :class="[$style['category__firstX']]" v-for="(item, index) in dataRender" :key="index">
+    <div
+      @click="logAndSelectCategory1(index)"
+      :class="[$style['category__firstX']]"
+      v-for="(item, index) in dataRender"
+      :key="index"
+    >
       <div
         @click="toggleAnimation(index)"
         :class="[
