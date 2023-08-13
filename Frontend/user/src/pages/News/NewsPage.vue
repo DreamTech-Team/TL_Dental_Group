@@ -18,6 +18,7 @@ const deps = ref([]);
 const dataContext = ref([]);
 const currentPage = ref(0);
 const totalPage = ref(0);
+const loading = ref(false);
 
 //Get total
 const getTotal = useAxios<DataResponse>('get', '/news/total', {}, {}, deps.value);
@@ -26,7 +27,7 @@ watch(getTotal.response, () => {
 });
 
 //Get default data
-const { response } = useAxios<DataResponse>(
+const { response, isLoading } = useAxios<DataResponse>(
   'get',
   `/news?sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
   {},
@@ -35,6 +36,9 @@ const { response } = useAxios<DataResponse>(
 );
 watch(response, () => {
   dataContext.value = response.value?.data?.data;
+});
+watch(isLoading, () => {
+  loading.value = isLoading.value;
 });
 
 //Sort
@@ -45,20 +49,6 @@ const onUpdateSort = (data: { sort: string }) => {
     popular.value = false;
   }
 };
-
-watch(popular, () => {
-  const updateSlug = useAxios<DataResponse>(
-    'get',
-    `/news?${path.value}&sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
-    {},
-    {},
-    deps.value
-  );
-
-  watch(updateSlug.response, () => {
-    dataContext.value = updateSlug.response.value?.data?.data;
-  });
-});
 
 //Update when change slug
 const onUpdateSlug = (data: { listrs: Item[] }) => {
@@ -83,7 +73,7 @@ const updateCurrentPage = (currentIdx: number) => {
   currentPage.value = currentIdx;
 };
 
-watch(currentPage, () => {
+watch([currentPage, popular], () => {
   const { response } = useAxios<DataResponse>(
     'get',
     `/news?${path.value}&sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
@@ -105,6 +95,7 @@ watch(currentPage, () => {
       :list-item="dataContext"
       :popular-status="popular"
       :path="path"
+      :loading="loading"
       :prs-page="currentPage"
       :totalPage="totalPage"
       @current-page="updateCurrentPage"

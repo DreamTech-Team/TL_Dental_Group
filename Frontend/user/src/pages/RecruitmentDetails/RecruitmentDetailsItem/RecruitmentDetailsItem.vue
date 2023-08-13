@@ -11,12 +11,9 @@ const props = defineProps({
 });
 </script>
 <template>
-  <div :class="$style.container">
-    <div :class="$style.container__title">{{ props.items.title }}</div>
-    <!-- <ul :class="$style.container__content">
-      <li></li>
-    </ul> -->
-    <div :class="$style.container__content" v-html="props.items.content"></div>
+  <div :class="$style['container-children']">
+    <div :class="$style['container-children__title']">{{ props.items.title }}</div>
+    <div :class="$style['container-children__content']" v-html="props.items.content"></div>
   </div>
 </template>
 

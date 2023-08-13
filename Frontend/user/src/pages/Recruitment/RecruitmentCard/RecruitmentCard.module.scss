@@ -15,6 +15,7 @@
     &-title {
       margin: 1rem;
       color: white;
+      text-transform: uppercase;
 
       h3 {
         font-size: $text-2xl;
@@ -47,6 +48,7 @@
       margin-top: 3rem;
       color: $complimentary_700;
       font-size: $text-2xl;
+      text-transform: uppercase;
     }
 
     &-content {
@@ -60,8 +62,12 @@
   &-type3 {
     position: relative;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 1.5rem 3rem;
     margin-bottom: 2.5rem;
+    height: 10rem;
     width: 45%;
 
     &-bg1 {
@@ -83,6 +89,10 @@
       background-color: $triadic_600;
       clip-path: polygon(0 0, 2% 0, 2% 100%, 0% 100%);
       transition: clip-path 300ms;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       padding: 1.5rem 3rem;
       margin-bottom: 2.5rem;
 
@@ -237,19 +247,19 @@
   }
 
   &-image {
-    padding-bottom: 8rem;
+    margin-bottom: 8rem;
   }
 }
 
-.type1 {
+.icon1 {
   background-color: $complimentary_500;
 }
 
-.type2 {
+.icon2 {
   background-color: $analogous_700;
 }
 
-.type3 {
+.icon3 {
   background-color: $triadic_500;
 }
 
