@@ -49,7 +49,7 @@ const context = defineProps({
     required: true
   },
   change: {
-    type: Function as PropType<(newData: ManageCompany) => void>,
+    type: Function as PropType<(newData: ManageCompany, isLoading: boolean) => void>,
     required: true
   },
   changeOutstanding: {
@@ -110,118 +110,102 @@ const submitForm = () => {
       }
     });
   } else {
-    Swal.fire({
-      title: 'Cập nhật thành công',
-      icon: 'success',
-      confirmButtonText: 'Hoàn tất',
-      width: '50rem',
-      padding: '0 2rem 2rem 2rem',
-      customClass: {
-        confirmButton: styles['confirm-button'],
-        cancelButton: styles['cancel-button'],
-        title: styles['title']
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        if (isChange.value && selectedlogo.value) {
-          // Tạo một đối tượng File từ dữ liệu base64
-          const fileData = base64ToBlob.covertBase64ToBlob(selectedlogo.value);
-          const image = new File([fileData], 'image.png', { type: 'image/png' });
+    if (isChange.value && selectedlogo.value) {
+      // Tạo một đối tượng File từ dữ liệu base64
+      const fileData = base64ToBlob.covertBase64ToBlob(selectedlogo.value);
+      const image = new File([fileData], 'image.png', { type: 'image/png' });
 
-          const deps = ref([]);
+      const deps = ref([]);
 
-          const object = {
-            id: context.item.id,
-            name: nameCompanyInput.value,
-            description: descriptionInput.value,
-            highlight: context.item.highlight,
-            outstandingProductId: context.item.outstandingProductId,
-            slug: context.item.slug
-          };
+      const object = {
+        id: context.item.id,
+        name: nameCompanyInput.value,
+        description: descriptionInput.value,
+        highlight: context.item.highlight,
+        outstandingProductId: context.item.outstandingProductId,
+        slug: context.item.slug
+      };
 
-          const formData = new FormData();
-          formData.append('logo', image as Blob);
-          formData.append('data', JSON.stringify(object));
-          const { response } = useAxios<DataResponse>(
-            'patch',
-            '/company/' + context.item.id,
-            formData,
-            {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            },
-            deps.value
-          );
+      const formData = new FormData();
+      formData.append('logo', image as Blob);
+      formData.append('data', JSON.stringify(object));
+      const { response, isLoading } = useAxios<DataResponse>(
+        'patch',
+        '/company/' + context.item.id,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        },
+        deps.value
+      );
+      context.change({} as ManageCompany, isLoading.value);
 
-          watch(response, () => {
-            if (response) {
-              if (response.value?.status === 'ok') {
-                context.change(response.value?.data);
-              }
-            }
-          });
-        } else {
-          const deps = ref([]);
-
-          const object = {
-            id: context.item.id,
-            name: nameCompanyInput.value,
-            description: descriptionInput.value,
-            highlight: context.item.highlight,
-            outstandingProductId: context.item.outstandingProductId,
-            slug: context.item.slug
-          };
-
-          const formData = new FormData();
-          formData.append('logo', context.item.logo);
-          formData.append('data', JSON.stringify(object));
-          const { response } = useAxios<DataResponse>(
-            'patch',
-            '/company/' + context.item.id,
-            formData,
-            {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            },
-            deps.value
-          );
-
-          watch(response, () => {
-            if (response) {
-              if (response.value?.status === 'ok') {
-                context.change(response.value?.data);
-              }
-            }
-          });
+      watch(response, () => {
+        if (response) {
+          if (response.value?.status === 'ok') {
+            context.change(response.value?.data, isLoading.value);
+          }
         }
+      });
+    } else {
+      const deps = ref([]);
 
-        if (isPatchProduct.value) {
-          // Gọi hàm useAxios để lấy response, error, và isLoading
-          const formData = new FormData();
-          formData.append('idProduct', idProduct.value);
-          const { response, error, isLoading } = useAxios<DataResponse>(
-            'patch',
-            '/company/outstanding/' + context.idCompany,
-            formData,
-            {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            },
-            variableChange.value
-          );
+      const object = {
+        id: context.item.id,
+        name: nameCompanyInput.value,
+        description: descriptionInput.value,
+        highlight: context.item.highlight,
+        outstandingProductId: context.item.outstandingProductId,
+        slug: context.item.slug
+      };
 
-          watch(response, () => {
-            context.changeOutstanding(response.value?.data);
-          });
+      const formData = new FormData();
+      formData.append('logo', context.item.logo);
+      formData.append('data', JSON.stringify(object));
+      const { response, isLoading } = useAxios<DataResponse>(
+        'patch',
+        '/company/' + context.item.id,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        },
+        deps.value
+      );
+      context.change({} as ManageCompany, isLoading.value);
+
+      watch(response, () => {
+        if (response) {
+          if (response.value?.status === 'ok') {
+            context.change(response.value?.data, isLoading.value);
+          }
         }
+      });
+    }
 
-        Swal.close();
-        emit('close');
-      }
-    });
+    if (isPatchProduct.value) {
+      // Gọi hàm useAxios để lấy response, error, và isLoading
+      const formData = new FormData();
+      formData.append('idProduct', idProduct.value);
+      const { response } = useAxios<DataResponse>(
+        'patch',
+        '/company/outstanding/' + context.idCompany,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        },
+        variableChange.value
+      );
+
+      watch(response, () => {
+        context.changeOutstanding(response.value?.data);
+      });
+    }
   }
 };
 

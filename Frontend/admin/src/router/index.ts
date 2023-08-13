@@ -16,7 +16,6 @@ const Forgot = () => import('@/pages/Authen/ForgotPage.vue');
 const ManageCustomer = () => import('@/pages/ManageCustomer/ManageCustomer.vue');
 const ManageUI = () => import('@/pages/ManageUI/ManageUI.vue');
 const ManagePolicy = () => import('@/pages/ManagePolicy/ManagePolicy.vue');
-const ManagePolicyEdit = () => import('@/pages/ManagePolicyEdit/ManagePolicyEdit.vue');
 const UpdateBanner = () => import('@/pages/UpdateBanner/UpdateBanner.vue');
 
 const routes = [
