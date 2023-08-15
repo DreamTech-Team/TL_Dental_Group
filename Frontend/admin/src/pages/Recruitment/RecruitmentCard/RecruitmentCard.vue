@@ -39,8 +39,6 @@ watch(
 );
 
 onMounted(() => {
-  // console.log(document.getElementById(`type5-${indexSelected.value}`)?.style.top);
-  // console.log(listItems.value);
   if (props.style === 'type3') console.log(props.items);
 });
 </script>

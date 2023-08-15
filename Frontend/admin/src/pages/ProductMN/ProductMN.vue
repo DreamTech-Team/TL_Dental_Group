@@ -7,6 +7,7 @@ import ModalAdd from './components/ModalAdd/ModalAdd.vue';
 import ModalUpdate from './components/ModalUpdate/ModalUpdate.vue';
 import Pagination from '@/components/Pagination/BasePagination.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface ProductItem {
   id: string;
@@ -77,6 +78,7 @@ const results = ref(products); //Final Render
 const scrollContainer = ref<HTMLElement | null>(null); //Scroll table to top when change page
 
 const debounceTimer = ref<number | null>(null); //searchData delay
+const loadingStatus = ref(false);
 
 const totalPage = ref(0);
 const currentPage = ref(0);
@@ -96,7 +98,7 @@ watch(getTotal.response, () => {
 });
 
 //GET DATA
-const { response } = useAxios<DataResponse>(
+const { response, isLoading } = useAxios<DataResponse>(
   'get',
   `/products?page=${currentPage.value}&pageSize=10`,
   {},
@@ -203,7 +205,7 @@ const truncateText = (text: string, maxLength: number) => {
 };
 
 watch(currentPage, () => {
-  const { response } = useAxios<DataResponse>(
+  const { response, isLoading } = useAxios<DataResponse>(
     'get',
     `/products?page=${currentPage.value}&pageSize=10`,
     {},
@@ -224,6 +226,14 @@ watch(currentPage, () => {
       };
     });
   });
+
+  watch(isLoading, () => {
+    loadingStatus.value = isLoading.value;
+  });
+});
+
+watch(isLoading, () => {
+  loadingStatus.value = isLoading.value;
 });
 
 //Open modal Update
@@ -334,6 +344,7 @@ const deleteProduct = (id: string) => {
         </thead>
       </table>
       <div :class="$style.mn_product_table_ctn" ref="scrollContainer">
+        <loading v-if="loadingStatus" />
         <table :class="$style.mn_product_table">
           <tbody>
             <template v-if="filteredProducts.length > 0">

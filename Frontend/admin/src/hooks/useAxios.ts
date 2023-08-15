@@ -30,7 +30,9 @@ const useAxios = <DataResponse>(
 
   const fetchData = async () => {
     if (!isLoading.value) {
-      isLoading.value = true;
+      setTimeout(() => {
+        isLoading.value = true;
+      }, 0);
       try {
         const res: AxiosResponse<DataResponse> = await axiosClient[method](api, body, {
           ...options,

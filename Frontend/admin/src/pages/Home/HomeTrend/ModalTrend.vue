@@ -5,6 +5,7 @@ import { faMagnifyingGlass, faMinus, faXmark } from '@fortawesome/free-solid-svg
 import { VueDraggableNext } from 'vue-draggable-next';
 import Swal from 'sweetalert2';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface ItemRS {
   id: string;
@@ -72,20 +73,28 @@ const emits = defineEmits<{
   (e: 'update-content', data: { listrs: ItemRS[] }): void;
 }>();
 
+//Properties
+const debounceTimer = ref<number | null>(null); //searchData delay
+const searchText = ref('');
+const loadingStatus = ref(false);
+
 //List present products
 const listProducts = ref<Product[]>([]);
 
 //GET ALL CATEGORY
 const containers = ref([]);
 const deps = ref([]);
-const { response } = useAxios<DataResponse>('get', '/products', {}, {}, deps.value);
+const { response, isLoading } = useAxios<DataResponse>(
+  'get',
+  '/products?page=0&pageSize=15',
+  {},
+  {},
+  deps.value
+);
 
 //Search
-const searchQuery = ref('');
 const filteredProducts = computed(() => {
-  return listProducts.value.filter((item) =>
-    item.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
+  return listProducts.value;
 });
 
 //Drag Status
@@ -258,6 +267,43 @@ const updateHighlight = () => {
   });
 };
 
+//Function call API Search
+const searchProduct = () => {
+  const searchProduct = useAxios<DataResponse>(
+    'get',
+    `/products/search?key=${searchText.value}&page=0&pageSize=15`,
+    {},
+    {},
+    deps.value
+  );
+
+  watch(searchProduct.response, () => {
+    containers.value = searchProduct.response.value?.data?.data;
+    listProducts.value = searchProduct.response.value?.data?.data.map((item: ItemRS) => {
+      return {
+        slug: item.slug,
+        name: item.name,
+        category: item.fkCategory.cate2Id.title,
+        check: item.highlight != 0 ? true : false,
+        src: item.mainImg,
+        highlight: item.highlight
+      };
+    });
+  });
+};
+
+//Search Products
+watch(searchText, () => {
+  if (debounceTimer.value) {
+    clearTimeout(debounceTimer.value);
+  }
+
+  // Create a new timeout to call API after 1 second
+  debounceTimer.value = setTimeout(() => {
+    searchProduct();
+  }, 500);
+});
+
 //Get data from axios
 watch(response, () => {
   containers.value = response.value?.data?.data;
@@ -273,6 +319,10 @@ watch(response, () => {
   });
 
   initListSelected();
+});
+
+watch(isLoading, () => {
+  loadingStatus.value = isLoading.value;
 });
 </script>
 
@@ -292,7 +342,7 @@ watch(response, () => {
           <div :class="$style['modal__search']">
             <font-awesome-icon :icon="faMagnifyingGlass" :class="$style['home__trend-ic']" />
             <input
-              v-model="searchQuery"
+              v-model="searchText"
               :class="$style['modal__search-input']"
               placeholder="Tìm kiếm danh mục"
             />
@@ -307,6 +357,7 @@ watch(response, () => {
             </thead>
           </table>
           <div :class="$style['modal__table-ctn']">
+            <loading v-if="loadingStatus" />
             <table :class="$style['modal__table']">
               <tbody>
                 <tr
