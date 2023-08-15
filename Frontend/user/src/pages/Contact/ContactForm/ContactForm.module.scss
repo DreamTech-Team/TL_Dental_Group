@@ -115,7 +115,7 @@
                 align-items: center;
                 justify-content: center;
     
-                form{
+                &-form{
                     width: 75%;
                     div{
                         margin-bottom: 1rem;
@@ -238,6 +238,27 @@
         }
     }
 }
+.title{
+    font-size: $text-xl !important;
+}
+.titleMB{
+    font-size: $text-base-mobile !important;
+}
+
+.confirm-button {
+font-size: $text-lg !important;
+}
+.confirm-buttonMB {
+    font-size: $text-base-mobile !important;
+}
+
+.cancel-button{
+font-size: $text-lg !important;
+}
+.cancel-buttonMB{
+    font-size: $text-base-mobile !important;
+}
+
 .contact__formMB{
     display: none;
 }
@@ -368,7 +389,7 @@
                             transition: all 0.5s ease;
             
                             .contact__form-social-button-facebook-ic{
-                                font-size: 3.5rem;
+                                font-size: 2rem;
                                 color: #fff;
                             }
                             p{
@@ -398,9 +419,9 @@
                             border-radius: 5px;
                             transition: all 0.5s ease;
             
-                            contact__form-social-button-zalo-ic{
-                                width: 3.5rem;
-                                height: 3.5rem;
+                            .contact__form-social-button-zalo-ic{
+                                width: 2rem;
+                                height: 2rem;
                                 color: #fff;
                             }
                             p{
@@ -432,7 +453,7 @@
                     // transform: translateX(100%);
                     transition: all 0.5s ease;
         
-                    form{
+                    &-form{
                         width: 100%;
 
                         div{

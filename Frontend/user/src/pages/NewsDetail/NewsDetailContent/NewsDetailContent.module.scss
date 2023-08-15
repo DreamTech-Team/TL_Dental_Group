@@ -72,6 +72,17 @@
             }
         }
 
+        &-wrap{
+            width: 100%;
+            // overflow: hidden;
+
+            img{
+                width: 100px !important;
+                height: 100px !important;
+                object-fit: cover;
+            }
+        }
+
         &-footer{
             display: flex;
             justify-content: space-between;
@@ -172,6 +183,7 @@
                     font-size: $text-lg-mobile;
                     line-height: 2.5rem;
                     margin-bottom: 1rem;
+
                 }
 
                 img{

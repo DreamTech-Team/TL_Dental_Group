@@ -79,7 +79,7 @@ watch(response, () => {
           <li>
             <font-awesome-icon :icon="faPhoneVolume" />
             <p>
-              <a :href="'tel:+' + dataFacility.phoneNumber">{{ dataFacility.phoneNumber }}</a>
+              <a :href="'tel:' + dataFacility.phoneNumber">{{ dataFacility.phoneNumber }}</a>
             </p>
           </li>
         </ul>

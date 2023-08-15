@@ -8,12 +8,15 @@ import Message from '@/assets/imgs/About/Message.png';
 import Facebook from '@/assets/imgs/About/Facebook.png';
 import { saveDataContact } from '@/stores/counter';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface Info {
   address: string;
+  phoneNumber: string;
   hotline: string;
   mapLink: string;
   image: string;
+  mapIframe: string;
 }
 
 interface Contact {
@@ -23,15 +26,20 @@ interface Contact {
   facebook: {
     content: string;
   };
+  zalo: {
+    content: string;
+  };
 }
 
-const variableChange = ref([]);
-const variableChangeContact = ref([]);
+const dataContactStore = saveDataContact();
+
 const dataFacility = ref<Info>({
   address: '',
+  phoneNumber: '',
   hotline: '',
   mapLink: '',
-  image: ''
+  image: '',
+  mapIframe: ''
 });
 const dataContact = ref<Contact>({
   email: {
@@ -39,31 +47,52 @@ const dataContact = ref<Contact>({
   },
   facebook: {
     content: ''
+  },
+  zalo: {
+    content: ''
   }
 });
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
-const getInfo = useAxios<DataResponse>('get', '/facility/', {}, {}, variableChange.value);
-const getContact = useAxios<DataResponse>(
-  'get',
-  '/information?type=CONTACT',
-  {},
-  {},
-  variableChangeContact.value
-);
+const isLoadingContact = ref(false);
+const isLoadingFacility = ref(false);
 
-// Truy xuất giá trị response.value và gán vào responseData
-watch(getInfo.response, () => {
-  dataFacility.value = getInfo.response?.value?.data;
-  console.log(getInfo.response?.value);
-});
+if (
+  dataContactStore.dataContact.email.content === '' &&
+  dataContactStore.dataFacility.address === ''
+) {
+  const variableChange = ref([]);
+  const variableChangeContact = ref([]);
 
-watch(getContact.response, () => {
-  dataContact.value = getContact.response?.value?.data;
-});
+  const getInfo = useAxios<DataResponse>('get', '/facility/', {}, {}, variableChange.value);
+
+  const getContact = useAxios<DataResponse>(
+    'get',
+    '/information?type=CONTACT',
+    {},
+    {},
+    variableChangeContact.value
+  );
+
+  watch(getInfo.response, () => {
+    isLoadingFacility.value = getInfo.isLoading.value;
+    dataFacility.value = getInfo.response?.value?.data;
+    dataContactStore.setDataFacility(dataFacility.value);
+  });
+
+  watch(getContact.response, () => {
+    isLoadingContact.value = getContact.isLoading.value;
+    dataContact.value = getContact.response?.value?.data;
+    dataContactStore.setDataContact(dataContact.value);
+  });
+} else {
+  dataContact.value = dataContactStore.dataContact;
+  dataFacility.value = dataContactStore.dataFacility;
+  isLoadingContact.value = false;
+  isLoadingFacility.value = false;
+}
 </script>
 <template>
-  <div :class="$style.about__facility">
+  <div :class="$style.about__facility" v-if="!isLoadingContact && !isLoadingFacility">
     <h3>CƠ SỞ CỦA CÔNG TY</h3>
 
     <div :class="$style['about__facility-wrap']">
@@ -105,6 +134,7 @@ watch(getContact.response, () => {
       <img :src="dataFacility.image" alt="" :class="$style['about__facility-img']" />
     </div>
   </div>
+  <loading-component v-else />
 </template>
 
 <style module scoped lang="scss">

@@ -1,10 +1,39 @@
 <script setup lang="ts">
-import { ref, nextTick, toRefs } from 'vue';
+import { ref, nextTick, toRefs, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { useDataRenderStore, saveActive, setAnnimation } from '@/stores/counter';
+import convertDataCate from '@/utils/covertDataCate';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import LoadingComponent from '../LoadingComponent/LoadingComponent.vue';
 
-const { dataRender } = toRefs(useDataRenderStore());
+interface ListCategory1 {
+  id: string;
+  title: string;
+  img: string;
+  highlight: number;
+  slug: string;
+}
+
+interface ListCategory2 {
+  id: string;
+  title: string;
+  slug: string;
+}
+
+interface ListCategories {
+  id: string;
+  cate1Id: ListCategory1;
+  cate2Id: ListCategory2;
+}
+
+interface DataRender {
+  title: string;
+  slug: string;
+  data: { name: string; slug: string }[];
+}
+
+const dataCate = useDataRenderStore();
 const { selectedCategoryItem } = toRefs(saveActive());
 const { isAnimationVisible } = toRefs(setAnnimation());
 
@@ -13,6 +42,37 @@ const setAnni = setAnnimation();
 const selectedItem = ref(-1);
 const selectedCategory1 = ref();
 const emit = defineEmits(['slug-category1', 'slug-category2']);
+
+const valueChange = ref([]);
+const listCategory1 = ref<ListCategory1[]>([]);
+const listCategory2 = ref<ListCategory2[]>([]);
+const dataRender = ref<DataRender[]>([]);
+const isLoadingCategory = ref(false);
+
+if (dataCate.dataRender.length === 0) {
+  const { response, isLoading } = useAxios<DataResponse>('get', '/cate', {}, {}, valueChange.value);
+
+  watch(response, () => {
+    isLoadingCategory.value = isLoading.value;
+
+    if (response.value?.data) {
+      response.value?.data.forEach((item: ListCategories) => {
+        listCategory1.value.push(item.cate1Id);
+        listCategory2.value.push(item.cate2Id);
+      });
+
+      dataRender.value = convertDataCate.covertBase64ToBlob(
+        listCategory1.value,
+        listCategory2.value,
+        dataRender.value
+      );
+
+      dataCate.setDataRender(dataRender.value);
+    }
+  });
+} else {
+  dataRender.value = dataCate.dataRender;
+}
 
 const toggleAnimation = (index: number) => {
   if (isAnimationVisible.value && selectedItem.value == index) {
@@ -75,7 +135,7 @@ const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
 };
 </script>
 <template>
-  <div id="dropdown-container" :class="$style.category">
+  <div id="dropdown-container" :class="$style.category" v-if="!isLoadingCategory">
     <div :class="$style['category__title']">Danh mục</div>
     <div
       @click="logAndSelectCategory1(index)"
@@ -118,6 +178,7 @@ const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
       </div>
     </div>
   </div>
+  <loading-component v-else />
 </template>
 
 <style module scoped lang="scss">

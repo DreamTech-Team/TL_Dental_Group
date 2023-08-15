@@ -4,6 +4,7 @@ import { RouterLink } from 'vue-router';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface AboutPolicy {
   name: string;
@@ -14,12 +15,20 @@ interface AboutPolicy {
 
 const variableChange = ref([]);
 const listPolicy = ref<AboutPolicy[]>([]);
+const isLoadingPolicy = ref(false);
 
 // Gọi hàm useAxios để lấy response, error, và isLoading
-const { response } = useAxios<DataResponse>('get', '/policy', {}, {}, variableChange.value);
+const { response, isLoading } = useAxios<DataResponse>(
+  'get',
+  '/policy',
+  {},
+  {},
+  variableChange.value
+);
 
 // Truy xuất giá trị response.value và gán vào responseData
 watch(response, () => {
+  isLoadingPolicy.value = isLoading.value;
   listPolicy.value = response?.value?.data;
 });
 </script>
@@ -27,7 +36,7 @@ watch(response, () => {
   <div :class="$style.about__policy">
     <h3>CHÍNH SÁCH CÔNG TY</h3>
 
-    <div :class="$style['about__policy-list']">
+    <div :class="$style['about__policy-list']" v-if="!isLoadingPolicy">
       <div
         :class="$style['about__policy-items']"
         v-for="(itemPolicy, index) in listPolicy"
@@ -50,6 +59,7 @@ watch(response, () => {
         </router-link>
       </div>
     </div>
+    <loading-component v-else />
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
@@ -85,6 +85,25 @@ const handleClickRight = () => {
     window.location.href = `/tintuc/${dataNews.value[indexNews.value + 1].slug}`;
   }
 };
+
+onMounted(() => {
+  const parent = document.getElementById('haha');
+  // parent.getElementsByTagName('img');
+  if (parent) {
+    const a = ref<HTMLImageElement[] | null>(null); // Initialize as null or an empty array based on your use case
+    const images = parent.getElementsByTagName('img');
+    const imageArray = Array.from(images); // Convert NodeList to an array
+    a.value = imageArray;
+
+    a.value.forEach((item) => {
+      if (window.innerWidth < 736) {
+        const aspectRatio = item.height / item.width;
+        item.width = window.innerWidth - 30;
+        item.height = item.width * aspectRatio;
+      }
+    });
+  }
+});
 </script>
 <template>
   <div :class="$style.newsdetail__content">
@@ -102,7 +121,11 @@ const handleClickRight = () => {
         <img :src="dataRender.img" alt="" />
       </div> -->
 
-      <p v-html="dataRender.detail"></p>
+      <div
+        id="haha"
+        :class="$style['newsdetail__content-main-wrap']"
+        v-html="dataRender.detail"
+      ></div>
 
       <!-- <div :class="$style['newsdetail__content-main-body']">
         <h3>Lẫy mẫu test Covid - 19</h3>

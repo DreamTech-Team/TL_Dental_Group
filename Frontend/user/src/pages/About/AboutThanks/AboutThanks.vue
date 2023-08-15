@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 const variableChange = ref([]);
 const contentLetter = ref('');
+const isLoadingLetter = ref(false);
 
 // Gọi hàm useAxios để lấy response, error, và isLoading
-const { response } = useAxios<DataResponse>(
+const { response, isLoading } = useAxios<DataResponse>(
   'get',
   '/introduce/letter',
   {},
@@ -14,8 +16,11 @@ const { response } = useAxios<DataResponse>(
   variableChange.value
 );
 
+console.log(isLoading.value);
+
 // Truy xuất giá trị response.value và gán vào responseData
 watch(response, () => {
+  isLoadingLetter.value = isLoading.value;
   contentLetter.value = response?.value?.data?.content;
 });
 
@@ -55,10 +60,11 @@ const handleB = () => {
     <div :class="$style['about__thanks-wrapper']" @mouseover="handleOpen" @mouseleave="handleB">
       <div :class="$style['about__thanks-mail']">
         <div :class="$style['about__thanks-cover']"></div>
-        <div :class="$style['about__thanks-letter']" id="haha">
+        <div :class="$style['about__thanks-letter']" id="haha" v-if="!isLoadingLetter">
           <h1>LỜI CẢM ƠN</h1>
           <p v-html="contentLetter"></p>
         </div>
+        <loading-component v-else />
       </div>
     </div>
   </div>

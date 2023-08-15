@@ -3,6 +3,7 @@ import { ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface AboutMotto {
   title: string;
@@ -16,9 +17,10 @@ const move = ref(0);
 const isOneItem = ref(false);
 const isDisableLeft = ref(false);
 const isDisableRight = ref(false);
+const isLoadingMotto = ref(false);
 
 // Gọi hàm useAxios để lấy response, error, và isLoading
-const { response, error, isLoading } = useAxios<DataResponse>(
+const { response, isLoading } = useAxios<DataResponse>(
   'get',
   '/introduce/section1',
   {},
@@ -28,6 +30,7 @@ const { response, error, isLoading } = useAxios<DataResponse>(
 
 // Truy xuất giá trị response.value và gán vào responseData
 watch(response, () => {
+  isLoadingMotto.value = isLoading.value;
   mottoItems.value = response?.value?.data;
 
   // Xử lí trường hợp có 1 hoặc 2 item
@@ -80,6 +83,7 @@ const handleClickRight = () => {
           transform: 'translateX' + '(' + move + 'px' + ')',
           justifyContent: isOneItem ? 'center' : ''
         }"
+        v-if="!isLoadingMotto"
       >
         <div
           :class="$style['about__motto-slider-item']"
@@ -96,6 +100,7 @@ const handleClickRight = () => {
           </p>
         </div>
       </div>
+      <loading-component v-else />
 
       <div :class="$style['about__motto-curtain']">
         <div :class="$style['about__motto-curtain-left']"></div>

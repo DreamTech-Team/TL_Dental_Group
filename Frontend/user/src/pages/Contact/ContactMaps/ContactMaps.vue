@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ref, toRefs } from 'vue';
+import { toRefs } from 'vue';
 import { saveDataContact } from '@/stores/counter';
 
-interface Info {
-  address: string;
-  hotline: string;
-  mapLink: string;
-  image: string;
-  mapIframe: string;
-}
+// interface Info {
+//   address: string;
+//   hotline: string;
+//   mapLink: string;
+//   image: string;
+//   mapIframe: string;
+// }
 
 const { dataFacility } = toRefs(saveDataContact());
 
