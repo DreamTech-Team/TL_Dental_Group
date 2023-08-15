@@ -4,17 +4,19 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark, faRotate, faPencil } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 
+interface Info {
+  id: string;
+  fullname: string;
+  email: string;
+  phone: string;
+  content: string;
+  contacted: string;
+  createAt: string;
+}
+
 const context = defineProps({
-  name: {
-    type: String,
-    required: true
-  },
-  phonenumber: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
+  customer: {
+    type: Object,
     required: true
   },
   time: {
@@ -25,10 +27,8 @@ const context = defineProps({
 
 const emit = defineEmits(['close']);
 
-const nameCustomer = ref(context.name);
-const phonenumberCustomer = ref(context.phonenumber);
-const emailCustomer = ref(context.email);
-const timeCustomer = ref(context.time);
+const dataCustomer = ref(context.customer as Info);
+const timeData = ref(context.time);
 </script>
 
 <template>
@@ -44,16 +44,19 @@ const timeCustomer = ref(context.time);
       </div>
       <div :class="$style.mncompany__modal__body">
         <h4>
-          Họ và tên: <span>{{ nameCustomer }}</span>
+          Họ và tên: <span>{{ dataCustomer.fullname }}</span>
         </h4>
         <h4>
-          Số điện thoại: <span>{{ phonenumberCustomer }}</span>
+          Số điện thoại: <span>{{ dataCustomer.phone }}</span>
         </h4>
         <h4>
-          Email: <span>{{ emailCustomer }}</span>
+          Email: <span>{{ dataCustomer.email }}</span>
         </h4>
         <h4>
-          Thời gian: <span>{{ timeCustomer }}</span>
+          Nội dung: <span>{{ dataCustomer.content }}</span>
+        </h4>
+        <h4>
+          Thời gian: <span>{{ timeData }}</span>
         </h4>
       </div>
     </div>

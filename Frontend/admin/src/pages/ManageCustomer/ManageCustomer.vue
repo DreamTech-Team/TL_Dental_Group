@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, onActivated } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faTrash, faSearch } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
@@ -7,111 +7,52 @@ import Pagination from '@/components/Pagination/BasePagination.vue';
 import ModalInfoCustomer from './component/ModalInfoCustomer.vue';
 import Chart from 'chart.js/auto';
 import styles from './ManageCustomer.module.scss';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import dayjs from 'dayjs'; // Import dayjs library
+import 'dayjs/locale/vi'; // Import Vietnamese locale (optional)
 
-const infoCustomers = [
-  {
-    id: 1,
-    name: 'Trần Văn A',
-    phonenumber: '0388123865',
-    email: 'tranvana2023@gmail.com',
-    time: '17:30, 10/06/2023'
-  },
-  {
-    id: 2,
-    name: 'Trần Văn A1',
-    phonenumber: '0388123865',
-    email: 'tranvana2023@gmail.com',
-    time: '17:30, 10/06/2023'
-  },
-  {
-    id: 3,
-    name: 'Trần Văn A2',
-    phonenumber: '0388123865',
-    email: 'tranvana2023@gmail.com',
-    time: '17:30, 10/06/2023'
-  },
-  {
-    id: 4,
-    name: 'Trần Văn A3',
-    phonenumber: '0388123865',
-    email: 'tranvana2023@gmail.com',
-    time: '17:30, 10/06/2023'
-  },
-  {
-    id: 5,
-    name: 'Trần Văn A',
-    phonenumber: '0388123865',
-    email: 'tranvana2023@gmail.com',
-    time: '17:30, 10/06/2023'
-  },
-  {
-    id: 6,
-    name: 'Trần Văn A',
-    phonenumber: '0388123865',
-    email: 'tranvana2023@gmail.com',
-    time: '17:30, 10/06/2023'
-  },
-  {
-    id: 7,
-    name: 'Trần Văn A',
-    phonenumber: '0388123865',
-    email: 'tranvana2023@gmail.com',
-    time: '17:30, 10/06/2023'
-  },
-  {
-    id: 8,
-    name: 'Trần Văn A',
-    phonenumber: '0388123865',
-    email: 'tranvana2023@gmail.com',
-    time: '17:30, 10/06/2023'
-  },
-  {
-    id: 9,
-    name: 'Trần Văn A',
-    phonenumber: '0388123865',
-    email: 'tranvana2023@gmail.com',
-    time: '17:30, 10/06/2023'
-  },
-  {
-    id: 10,
-    name: 'Trần Văn A',
-    phonenumber: '0388123865',
-    email: 'tranvana2023@gmail.com',
-    time: '17:30, 10/06/2023'
-  },
-  {
-    id: 11,
-    name: 'Trần Văn A',
-    phonenumber: '0388123865',
-    email: 'tranvana2023@gmail.com',
-    time: '17:30, 10/06/2023'
-  },
-  {
-    id: 12,
-    name: 'Trần Văn A',
-    phonenumber: '0388123865',
-    email: 'tranvana2023@gmail.com',
-    time: '17:30, 10/06/2023'
-  },
-  {
-    id: 13,
-    name: 'Trần Văn A',
-    phonenumber: '0388123865',
-    email: 'tranvana2023@gmail.com',
-    time: '17:30, 10/06/2023'
-  }
-];
+interface Info {
+  id: string;
+  fullname: string;
+  email: string;
+  phone: string;
+  content: string;
+  contacted: boolean;
+  createAt: string;
+}
 
-const infoCustomerRender = ref(infoCustomers);
+const variableChange = ref([]);
+
+const infoCustomerRender = ref<Info[]>([]);
 const isOpen = ref(false);
 const searchText = ref('');
 const currentPage = ref(1);
 const pageSize = ref(10);
+const total = ref(0);
 const indexRow = ref(0);
 const widthLine = ref(75);
 const widthLine1 = ref(0);
 const widthLine2 = ref(0);
 const isChart = ref(true);
+const time = ref('');
+const isLoadingInfo = ref(false);
+
+const { response } = useAxios<DataResponse>(
+  'get',
+  '/contact?sort=asc',
+  {},
+  {},
+  variableChange.value
+);
+
+watch(response, () => {
+  if (response.value?.status === 'ok') {
+    infoCustomerRender.value = response.value?.data?.data;
+    pageSize.value = parseInt(response.value?.data?.pageSize);
+    total.value = response.value?.data?.total;
+    currentPage.value = parseInt(response.value?.data?.page);
+  }
+});
 
 // Hàm xử lí search
 const filteredProducts = computed(() => {
@@ -119,74 +60,77 @@ const filteredProducts = computed(() => {
     return infoCustomerRender.value;
   } else {
     const searchTerm = searchText.value.toLowerCase();
-    return infoCustomerRender.value.filter((company) =>
-      company.name.toLowerCase().includes(searchTerm)
+    return infoCustomerRender.value.filter((customer) =>
+      customer.fullname.toLowerCase().includes(searchTerm)
     );
   }
 });
 
 // tính toán mỗi page có bao nhiêu phần tử để render lên màn hình
 const displayNews = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
+  const start = currentPage.value * pageSize.value;
   const end = start + pageSize.value;
+
+  console.log(start);
+  console.log(end);
+
   return filteredProducts.value.slice(start, end);
 });
 
-// Xử lí render biểu đồ
-let chartInstance: Chart;
-const renderChart = () => {
-  const chartCanvas = document.getElementById('chartCanvas') as HTMLCanvasElement;
-  console.log(chartCanvas);
+// // Xử lí render biểu đồ
+// let chartInstance: Chart;
+// const renderChart = () => {
+//   const chartCanvas = document.getElementById('chartCanvas') as HTMLCanvasElement;
 
-  if (!chartCanvas) return;
+//   if (!chartCanvas) return;
 
-  const ctx = chartCanvas.getContext('2d');
-  if (!ctx) return;
+//   const ctx = chartCanvas.getContext('2d');
+//   if (!ctx) return;
 
-  chartInstance = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [
-        {
-          label: 'Khách hàng',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          borderColor: 'blue',
-          fill: false,
-          backgroundColor: '#9BD0F5'
-        }
-        // {
-        //   label: 'Data 2',
-        //   data: [28, 48, 40, 19, 86, 27, 90],
-        //   borderColor: 'blue',
-        //   fill: false
-        // }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          labels: {
-            // This more specific font property overrides the global property
-            font: {
-              size: 16
-            }
-          }
-        }
-      }
-    }
-  });
-};
-// Xử lý việc render biểu đồ khi component được mounted
-onMounted(renderChart);
-// Xử lý việc xóa biểu đồ khi component bị hủy
-onBeforeUnmount(() => {
-  if (chartInstance) {
-    chartInstance.destroy();
-  }
-});
+//   chartInstance = new Chart(ctx, {
+//     type: 'line',
+//     data: {
+//       labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+//       datasets: [
+//         {
+//           label: 'Khách hàng',
+//           data: [65, 59, 80, 81, 56, 55, 40],
+//           borderColor: 'blue',
+//           fill: false,
+//           backgroundColor: '#9BD0F5'
+//         }
+//         // {
+//         //   label: 'Data 2',
+//         //   data: [28, 48, 40, 19, 86, 27, 90],
+//         //   borderColor: 'blue',
+//         //   fill: false
+//         // }
+//       ]
+//     },
+//     options: {
+//       responsive: true,
+//       maintainAspectRatio: false,
+//       plugins: {
+//         legend: {
+//           labels: {
+//             // This more specific font property overrides the global property
+//             font: {
+//               size: 16
+//             }
+//           }
+//         }
+//       }
+//     }
+//   });
+// };
+// // Xử lý việc render biểu đồ khi component được mounted
+// onMounted(renderChart);
+// // Xử lý việc xóa biểu đồ khi component bị hủy
+// onBeforeUnmount(() => {
+//   if (chartInstance) {
+//     chartInstance.destroy();
+//   }
+// });
 
 //Pagination Handle
 const scrollToTop = (top: number) => {
@@ -215,24 +159,32 @@ const handleLine = (e: Event) => {
     if (target.textContent === 'Thông số') {
       isChart.value = true;
       widthLine.value = widthSpan1.offsetWidth;
-      console.log(isChart.value);
     } else {
       isChart.value = false;
       widthLine.value = widthSpan2.offsetWidth;
-      console.log(isChart.value);
     }
   }
+};
+
+const formatTime = (inputString: string) => {
+  const outputFormat = 'HH:mm, DD/MM/YYYY';
+
+  dayjs.locale('vi'); // Set locale to Vietnamese (optional)
+  const parsedDateTime = dayjs(inputString, { locale: 'vi' });
+  return parsedDateTime.format(outputFormat);
 };
 
 // Hàm mở modal show thông tin
 const handleShowInfo = (id: number) => {
   isOpen.value = true;
 
+  time.value = formatTime(infoCustomerRender.value[id].createAt);
+
   indexRow.value = id;
 };
 
 // Hàm xóa một khách hàng
-const deleteInfoCustomer = (id: number, e: Event) => {
+const deleteInfoCustomer = (id: string, e: Event) => {
   e.stopPropagation();
 
   Swal.fire({
@@ -277,8 +229,57 @@ const deleteInfoCustomer = (id: number, e: Event) => {
 };
 
 // Ngăn cản sự kiện mở modal show info khi click vào checkbox
-const handleCheckBox = (e: Event) => {
+const handleCheckBox = (e: Event, index: number) => {
   e.stopPropagation();
+
+  const checkbox = document.getElementById(`myCheckbox${index}`);
+
+  if (checkbox instanceof HTMLInputElement) {
+    const { response, isLoading } = useAxios<DataResponse>(
+      'patch',
+      '/contact/' + infoCustomerRender.value[index].id + `?contacted=${checkbox.checked}`,
+      {},
+      {},
+      variableChange.value
+    );
+
+    watch(response, () => {
+      isLoadingInfo.value = isLoading.value;
+
+      if (!isLoading.value) {
+        if (response.value?.status === 'ok') {
+          // Swal.fire({
+          //   title: 'Dd',
+          //   icon: 'success',
+          //   confirmButtonText: 'Hoàn tất',
+          //   timer: 2000,
+          //   width: '50rem',
+          //   padding: '0 2rem 2rem 2rem',
+          //   customClass: {
+          //     confirmButton: styles['confirm-button'],
+          //     cancelButton: styles['cancel-button'],
+          //     title: styles['title']
+          //   }
+          // });
+          infoCustomerRender.value[index].contacted = checkbox.checked;
+        } else {
+          // Swal.fire({
+          //   title: 'Cập nhật công ty nổi bậc thất bại',
+          //   icon: 'success',
+          //   confirmButtonText: 'Hoàn tất',
+          //   timer: 2000,
+          //   width: '50rem',
+          //   padding: '0 2rem 2rem 2rem',
+          //   customClass: {
+          //     confirmButton: styles['confirm-button'],
+          //     cancelButton: styles['cancel-button'],
+          //     title: styles['title']
+          //   }
+          // });
+        }
+      }
+    });
+  }
 };
 </script>
 <template>
@@ -323,8 +324,8 @@ const handleCheckBox = (e: Event) => {
         <p style="width: 16%">Số điện thoại</p>
         <p style="width: 24%">Email</p>
         <p style="width: 20%">Thời gian</p>
-        <p style="width: 4%"></p>
-        <p style="width: 12%">Xóa</p>
+        <p style="width: 16%"></p>
+        <!-- <p style="width: 12%">Xóa</p> -->
       </div>
 
       <div :class="$style['mn_customer--table-list']" v-if="filteredProducts.length > 0">
@@ -332,15 +333,22 @@ const handleCheckBox = (e: Event) => {
           :class="$style['mn_customer--table-row']"
           v-for="(customer, index) in displayNews"
           :key="index"
-          @click="handleShowInfo(customer.id)"
+          @click="handleShowInfo(index)"
         >
           <p :class="$style['mn_customer--table-row-1']">{{ index + 1 }}</p>
-          <p :class="$style['mn_customer--table-row-2']">{{ customer.name }}</p>
-          <p :class="$style['mn_customer--table-row-3']">{{ customer.phonenumber }}</p>
+          <p :class="$style['mn_customer--table-row-2']">{{ customer.fullname }}</p>
+          <p :class="$style['mn_customer--table-row-3']">{{ customer.phone }}</p>
           <p :class="$style['mn_customer--table-row-4']">{{ customer.email }}</p>
-          <p :class="$style['mn_customer--table-row-5']">{{ customer.time }}</p>
-          <input type="checkbox" style="width: 4%" @click="(e) => handleCheckBox(e)" />
-          <div :class="$style['mn_customer--table-row-6']">
+          <p :class="$style['mn_customer--table-row-5']">{{ formatTime(customer.createAt) }}</p>
+          <input
+            :title="customer.contacted ? 'Đã liên hệ' : 'Chưa liên hệ'"
+            type="checkbox"
+            :id="'myCheckbox' + index"
+            style="width: 16%"
+            :checked="customer.contacted"
+            @click="(e) => handleCheckBox(e, index)"
+          />
+          <!-- <div :class="$style['mn_customer--table-row-6']">
             <button
               @click="
                 (e) => {
@@ -350,7 +358,7 @@ const handleCheckBox = (e: Event) => {
             >
               <font-awesome-icon :icon="faTrash" :class="$style['mn_customer--table-ic']" />
             </button>
-          </div>
+          </div> -->
         </div>
       </div>
       <div :class="$style['mn_customer--table-row-notfonund']" v-else>
@@ -358,13 +366,13 @@ const handleCheckBox = (e: Event) => {
       </div>
     </div>
 
-    <div :class="$style['mn_customer--canvas']" v-show="isChart">
+    <!-- <div :class="$style['mn_customer--canvas']" v-show="isChart">
       <canvas id="chartCanvas" ref="chartCanvas"></canvas>
-    </div>
+    </div> -->
 
     <div :class="$style['mn_customer--pagination']" v-if="!isChart">
       <pagination
-        :total="Math.ceil(filteredProducts.length / pageSize)"
+        :total="Math.ceil(total / pageSize)"
         :current-page="currentPage"
         :page-size="pageSize"
         @current-change="handlePageChange"
@@ -375,10 +383,8 @@ const handleCheckBox = (e: Event) => {
   <modal-info-customer
     v-if="isOpen"
     @close="isOpen = false"
-    :name="infoCustomerRender[indexRow - 1].name"
-    :phonenumber="infoCustomerRender[indexRow - 1].phonenumber"
-    :email="infoCustomerRender[indexRow - 1].email"
-    :time="infoCustomerRender[indexRow - 1].time"
+    :customer="infoCustomerRender[indexRow]"
+    :time="time"
   />
 </template>
 
