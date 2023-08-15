@@ -39,7 +39,7 @@ const isLoadingInfo = ref(false);
 
 const { response } = useAxios<DataResponse>(
   'get',
-  '/contact?sort=asc',
+  '/contact?sort=desc',
   {},
   {},
   variableChange.value
@@ -324,7 +324,7 @@ const handleCheckBox = (e: Event, index: number) => {
         <p style="width: 16%">Số điện thoại</p>
         <p style="width: 24%">Email</p>
         <p style="width: 20%">Thời gian</p>
-        <p style="width: 16%"></p>
+        <p style="width: 16%">Đã liên hệ</p>
         <!-- <p style="width: 12%">Xóa</p> -->
       </div>
 
