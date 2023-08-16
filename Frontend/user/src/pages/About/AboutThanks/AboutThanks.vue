@@ -7,7 +7,6 @@ const variableChange = ref([]);
 const contentLetter = ref('');
 const isLoadingLetter = ref(false);
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
 const { response, isLoading } = useAxios<DataResponse>(
   'get',
   '/introduce/letter',
@@ -16,9 +15,6 @@ const { response, isLoading } = useAxios<DataResponse>(
   variableChange.value
 );
 
-console.log(isLoading.value);
-
-// Truy xuất giá trị response.value và gán vào responseData
 watch(response, () => {
   isLoadingLetter.value = isLoading.value;
   contentLetter.value = response?.value?.data?.content;
@@ -41,7 +37,8 @@ const handleOpen = () => {
   countHover++;
 };
 
-const handleB = () => {
+// Xử lí scroll khi không hover nữa
+const handleLeave = () => {
   countHover = 0;
   const mobileElement = document.getElementById('haha');
 
@@ -57,7 +54,7 @@ const handleB = () => {
   <div :class="$style.about__thanks">
     <span>LỜI CẢM ƠN</span>
 
-    <div :class="$style['about__thanks-wrapper']" @mouseover="handleOpen" @mouseleave="handleB">
+    <div :class="$style['about__thanks-wrapper']" @mouseover="handleOpen" @mouseleave="handleLeave">
       <div :class="$style['about__thanks-mail']">
         <div :class="$style['about__thanks-cover']"></div>
         <div :class="$style['about__thanks-letter']" id="haha" v-if="!isLoadingLetter">

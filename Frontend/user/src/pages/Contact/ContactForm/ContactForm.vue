@@ -11,6 +11,7 @@ import styles from './ContactForm.module.scss';
 import Swal from 'sweetalert2';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
+// Lấy dữ liệu được lưu ở store về
 const { dataFacility, dataContact } = toRefs(saveDataContact());
 
 const variableChange = ref([]);
@@ -24,6 +25,7 @@ const phone = ref('');
 const content = ref('');
 const isLoadingSuccess = ref(false);
 
+// Các hàm lấy dữ liệu từ thẻ input
 const updateName = (e: Event) => {
   const target = e.target as HTMLInputElement;
 
@@ -49,6 +51,7 @@ const updateContent = (e: Event) => {
   console.log(content.value);
 };
 
+// Hàm xử lí khi bấm vào tiêu đề để cái line chạy qua chạy lại ở mobile
 const handleClick = () => {
   isCLick.value = !isCLick.value;
 
@@ -56,6 +59,7 @@ const handleClick = () => {
   else move.value = 0;
 };
 
+// Hàm check tab ở Mobile
 const handleSocialForm = (e: Event) => {
   const target = e.target as HTMLElement; // Ép kiểu 'e.target' thành 'HTMLElement'
 
@@ -70,6 +74,7 @@ const handleSocialForm = (e: Event) => {
   }
 };
 
+// Hàm gửi dữ liệu liên hệ đi
 const submitForm = () => {
   if (
     name.value.length < 4 ||
@@ -148,7 +153,7 @@ const submitForm = () => {
             </a>
           </button>
           <button :class="$style['contact__form-social-button-zalo']">
-            <a :href="dataContact.zalo.content" target="_blank">
+            <a :href="'https://zalo.me/' + dataContact.zalo.content" target="_blank">
               <img :src="Zalo" :class="$style['contact__form-social-button-zalo-ic']" />
               <p>Zalo</p>
             </a>

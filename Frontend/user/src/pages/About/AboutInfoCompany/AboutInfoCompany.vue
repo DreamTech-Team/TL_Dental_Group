@@ -12,7 +12,6 @@ const variableChange = ref([]);
 const contentInfoComapny = ref<CompanyInfo[]>([]);
 const isLoadingInfo = ref(false);
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
 const { response, isLoading } = useAxios<DataResponse>(
   'get',
   '/introduce/company-info',
@@ -21,7 +20,6 @@ const { response, isLoading } = useAxios<DataResponse>(
   variableChange.value
 );
 
-// Truy xuất giá trị response.value và gán vào responseData
 watch(response, () => {
   isLoadingInfo.value = isLoading.value;
   contentInfoComapny.value = response?.value?.data;

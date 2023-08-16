@@ -36,15 +36,17 @@ interface DataRender {
 
 const dataRenderStore = useDataRenderStore();
 
-if (dataRenderStore.dataRender.length === 0) {
-  const valueChange = ref([]);
-  const listCategory1 = ref<ListCategory1[]>([]);
-  const listCategory2 = ref<ListCategory2[]>([]);
-  const dataRender = ref<DataRender[]>([]);
-  const isLoadingCategory = ref(false);
+const valueChange = ref([]);
+const listCategory1 = ref<ListCategory1[]>([]);
+const listCategory2 = ref<ListCategory2[]>([]);
+const dataRender = ref<DataRender[]>([]);
+const isLoadingCategory = ref(false);
 
+const fetchData = async () => {
   const { response, isLoading } = useAxios<DataResponse>('get', '/cate', {}, {}, valueChange.value);
   isLoadingCategory.value = isLoading.value;
+
+  await response;
 
   watch(response, () => {
     isLoadingCategory.value = isLoading.value;
@@ -64,7 +66,10 @@ if (dataRenderStore.dataRender.length === 0) {
       dataRenderStore.setDataRender(dataRender.value);
     }
   });
-}
+};
+
+// Gọi fetchData sau 3 giây
+setTimeout(fetchData, 3000);
 </script>
 
 <template>

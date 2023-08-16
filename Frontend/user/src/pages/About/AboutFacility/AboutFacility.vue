@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRefs, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faDiamondTurnRight } from '@fortawesome/free-solid-svg-icons';
 import Location from '@/assets/imgs/About/Location.png';
@@ -31,6 +31,7 @@ interface Contact {
   };
 }
 
+// Gọi hàm xử lí store
 const dataContactStore = saveDataContact();
 
 const dataFacility = ref<Info>({
@@ -56,6 +57,7 @@ const dataContact = ref<Contact>({
 const isLoadingContact = ref(false);
 const isLoadingFacility = ref(false);
 
+// Kiểm tra xem ở store có dữ liệu chưa, nếu chưa có thì call API về
 if (
   dataContactStore.dataContact.email.content === '' &&
   dataContactStore.dataFacility.address === ''
@@ -76,13 +78,13 @@ if (
   watch(getInfo.response, () => {
     isLoadingFacility.value = getInfo.isLoading.value;
     dataFacility.value = getInfo.response?.value?.data;
-    dataContactStore.setDataFacility(dataFacility.value);
+    dataContactStore.setDataFacility(dataFacility.value); // Lưu vào store
   });
 
   watch(getContact.response, () => {
     isLoadingContact.value = getContact.isLoading.value;
     dataContact.value = getContact.response?.value?.data;
-    dataContactStore.setDataContact(dataContact.value);
+    dataContactStore.setDataContact(dataContact.value); // Lưu vào store
   });
 } else {
   dataContact.value = dataContactStore.dataContact;

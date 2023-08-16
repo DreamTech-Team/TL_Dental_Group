@@ -32,6 +32,8 @@ interface Contact {
 }
 
 const route = useRoute();
+
+// Xử lí store
 const dataContactStore = saveDataContact();
 
 const dataFacility = ref<Info>({
@@ -56,6 +58,7 @@ const dataContact = ref<Contact>({
 const isLoadingContact = ref(false);
 const isLoadingFacility = ref(false);
 
+// Kiểm tra store có dữ liệu chưa
 if (
   dataContactStore.dataContact.email.content === '' &&
   dataContactStore.dataFacility.address === ''

@@ -19,7 +19,6 @@ const isDisableLeft = ref(false);
 const isDisableRight = ref(false);
 const isLoadingMotto = ref(false);
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
 const { response, isLoading } = useAxios<DataResponse>(
   'get',
   '/introduce/section1',
@@ -28,7 +27,6 @@ const { response, isLoading } = useAxios<DataResponse>(
   variableChange.value
 );
 
-// Truy xuất giá trị response.value và gán vào responseData
 watch(response, () => {
   isLoadingMotto.value = isLoading.value;
   mottoItems.value = response?.value?.data;

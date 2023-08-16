@@ -7,7 +7,6 @@ const variableChange = ref([]);
 const imageIntro = ref('');
 const isLoadingHeader = ref(true);
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
 const { response, isLoading } = useAxios<DataResponse>(
   'get',
   '/introduce/header',
@@ -16,7 +15,6 @@ const { response, isLoading } = useAxios<DataResponse>(
   variableChange.value
 );
 
-// Truy xuất giá trị response.value và gán vào responseData
 watch(response, () => {
   isLoadingHeader.value = isLoading.value;
   imageIntro.value = response?.value?.data?.image;

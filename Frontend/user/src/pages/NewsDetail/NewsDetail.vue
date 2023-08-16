@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-
+import { useRoute } from 'vue-router';
 import NewsDetailContent from './NewsDetailContent/NewsDetailContent.vue';
 import Categories from '@/components/Category/BaseCategory.vue';
 import Activity from '../Home/HomeActivity/HomeActivity.vue';
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
-import { useRoute } from 'vue-router';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 interface NewsDetail {
@@ -32,7 +31,6 @@ const dataRender = ref<NewsDetail>({
   slug: ''
 });
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
 const { response } = useAxios<DataResponse>(
   'get',
   '/news/' + path.value,
@@ -41,7 +39,6 @@ const { response } = useAxios<DataResponse>(
   variableChange.value
 );
 
-// Truy xuất giá trị response.value và gán vào responseData
 watch(response, () => {
   dataRender.value = response.value?.data;
 });

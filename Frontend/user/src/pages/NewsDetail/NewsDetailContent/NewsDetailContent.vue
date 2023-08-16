@@ -6,7 +6,6 @@ import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import dayjs from 'dayjs';
 import 'dayjs/locale/vi';
 import Time from '@/assets/imgs/NewsDetail/Time.png';
-import { useRouter } from 'vue-router';
 
 interface NewsDetail {
   title: string;
@@ -39,10 +38,8 @@ const showButtonRight = ref(true);
 const contentButtonLeft = ref('');
 const contentButtonRight = ref('');
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
 const getNews = useAxios<DataResponse>('get', '/news', {}, {}, variableChangeNews.value);
 
-// Truy xuất giá trị response.value và gán vào responseData
 watch(getNews.response, () => {
   dataNews.value = getNews.response.value?.data?.data;
 
@@ -50,6 +47,7 @@ watch(getNews.response, () => {
     if (item.slug === dataRender.value.slug) indexNews.value = idx;
   });
 
+  // Xử lí nút button chuyển tin tức
   if (indexNews.value === 0) {
     showButtonLeft.value = false;
     showButtonRight.value = true;
@@ -66,6 +64,7 @@ watch(getNews.response, () => {
   }
 });
 
+// Format lại thời gian
 const handleFormatTime = (time: string) => {
   const inputDate = dayjs(time).locale('vi'); // Đặt ngôn ngữ
 
@@ -74,25 +73,28 @@ const handleFormatTime = (time: string) => {
   return `${daysOfWeek[inputDate.day()]}, ${inputDate.format('DD/MM/YYYY, HH:mm [GMT]Z')}`;
 };
 
+// Xử lí chuyển bài viết bên trái
 const handleClickLeft = () => {
   if (indexNews.value >= 0) {
     window.location.href = `/tintuc/${dataNews.value[indexNews.value - 1].slug}`;
   }
 };
 
+// Xử lí chuyển bài viết bên phải
 const handleClickRight = () => {
   if (indexNews.value >= 0) {
     window.location.href = `/tintuc/${dataNews.value[indexNews.value + 1].slug}`;
   }
 };
 
+// Xử lí resize lại tấm ảnh để phù hợp với mobile
 onMounted(() => {
   const parent = document.getElementById('haha');
   // parent.getElementsByTagName('img');
   if (parent) {
-    const a = ref<HTMLImageElement[] | null>(null); // Initialize as null or an empty array based on your use case
+    const a = ref<HTMLImageElement[] | null>(null);
     const images = parent.getElementsByTagName('img');
-    const imageArray = Array.from(images); // Convert NodeList to an array
+    const imageArray = Array.from(images);
     a.value = imageArray;
 
     a.value.forEach((item) => {
@@ -116,48 +118,11 @@ onMounted(() => {
     </div>
 
     <div :class="$style['newsdetail__content-main']">
-      <!-- <div :class="$style['newsdetail__content-main-header']">
-        <p>{{ dataRender.summary }}</p>
-        <img :src="dataRender.img" alt="" />
-      </div> -->
-
       <div
         id="haha"
         :class="$style['newsdetail__content-main-wrap']"
         v-html="dataRender.detail"
       ></div>
-
-      <!-- <div :class="$style['newsdetail__content-main-body']">
-        <h3>Lẫy mẫu test Covid - 19</h3>
-        <div>
-          <p>
-            Phát huy tinh thần “Đâu cần thanh niên có, đâu khó có thanh niên”, chúng tôi thực hiện
-            lấy mẫu cho người dân ở địa phương mỗi ngày, giúp đỡ những người dân cần lấy mẫu để đi
-            xa. Những ngày lâm bệnh, anh chia sẻ rằng rất nhớ những ngày cùng mọi người đi hỗ trợ
-            lấy mẫu xét nghiệm, phát gạo, chuyển thức ăn đến các hộ dân, rồi lại lo lắng anh em sẽ
-            phải gánh thêm phần việc của mình... Chỉ sau 7 ngày tự cách ly, điều trị tại nhà, anh
-            hầu như khỏi bệnh. Và ngay sau khi hoàn thành đợt cách ly, anh Hải đã lập tức quay trở
-            lại và tiếp tục công việc của mình tại địa phương.
-          </p>
-          <img :src="Test" alt="" />
-        </div>
-      </div>
-
-      <div :class="$style['newsdetail__content-main-body']">
-        <h3>Lẫy mẫu test Covid - 19</h3>
-        <div>
-          <p>
-            Phát huy tinh thần “Đâu cần thanh niên có, đâu khó có thanh niên”, chúng tôi thực hiện
-            lấy mẫu cho người dân ở địa phương mỗi ngày, giúp đỡ những người dân cần lấy mẫu để đi
-            xa. Những ngày lâm bệnh, anh chia sẻ rằng rất nhớ những ngày cùng mọi người đi hỗ trợ
-            lấy mẫu xét nghiệm, phát gạo, chuyển thức ăn đến các hộ dân, rồi lại lo lắng anh em sẽ
-            phải gánh thêm phần việc của mình... Chỉ sau 7 ngày tự cách ly, điều trị tại nhà, anh
-            hầu như khỏi bệnh. Và ngay sau khi hoàn thành đợt cách ly, anh Hải đã lập tức quay trở
-            lại và tiếp tục công việc của mình tại địa phương.
-          </p>
-          <img :src="Test" alt="" />
-        </div>
-      </div> -->
 
       <div
         :class="$style['newsdetail__content-main-footer']"

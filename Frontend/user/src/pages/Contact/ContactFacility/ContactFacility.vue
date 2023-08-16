@@ -8,6 +8,7 @@ import Message from '@/assets/imgs/About/Message.png';
 import Facebook from '@/assets/imgs/About/Facebook.png';
 import { saveDataContact } from '@/stores/counter';
 
+// Lấy dữ liệu từ store
 const { dataFacility, dataContact } = toRefs(saveDataContact());
 </script>
 <template>

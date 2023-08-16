@@ -17,7 +17,6 @@ const variableChange = ref([]);
 const listPolicy = ref<AboutPolicy[]>([]);
 const isLoadingPolicy = ref(false);
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
 const { response, isLoading } = useAxios<DataResponse>(
   'get',
   '/policy',
@@ -26,7 +25,6 @@ const { response, isLoading } = useAxios<DataResponse>(
   variableChange.value
 );
 
-// Truy xuất giá trị response.value và gán vào responseData
 watch(response, () => {
   isLoadingPolicy.value = isLoading.value;
   listPolicy.value = response?.value?.data;
