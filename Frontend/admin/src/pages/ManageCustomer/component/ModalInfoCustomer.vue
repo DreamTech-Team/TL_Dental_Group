@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { Ref, ref } from 'vue';
+import { ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faXmark, faRotate, faPencil } from '@fortawesome/free-solid-svg-icons';
-import Swal from 'sweetalert2';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 interface Info {
   id: string;

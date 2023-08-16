@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Ref, ref, onMounted, watch } from 'vue';
+import { type Ref, ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faCloudArrowUp, faRotate, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faCloudArrowUp, faUpload } from '@fortawesome/free-solid-svg-icons';
 import CropImage from '@/components/CropImage/CropImage.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import base64ToBlob from '@/utils/base64ToBlob';
@@ -19,7 +19,6 @@ interface UpdateBanner {
 }
 
 const variableChange = ref([]);
-// const variableChange = ref([]);
 const dataHeader = ref<UpdateBanner>({
   id: '',
   title: '',
@@ -52,7 +51,6 @@ const isLoadingPolicy = ref(false);
 const isLoadingNews = ref(false);
 const isTab = ref('Policy');
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
 const getImagePolicy = useAxios<DataResponse>(
   'get',
   '/policy/header',
@@ -72,6 +70,7 @@ watch(getImageNews.response, () => {
   dataHeaderNews.value = getImageNews.response.value?.data;
 });
 
+// Xử lí chuyển tab
 const handleTab = (e: Event) => {
   const target = e.target as HTMLInputElement;
 
@@ -92,6 +91,7 @@ const handleTab = (e: Event) => {
   }
 };
 
+// Lấy dữ liệu về khi Image đã được Crop
 const handleCroppedImage = (result: string) => {
   if (result) {
     isUpdate.value = true;
@@ -99,6 +99,7 @@ const handleCroppedImage = (result: string) => {
   }
 };
 
+// Xử lí upload ảnh lên dtb
 const handleUpload = () => {
   if (imageFile.value) {
     // Tạo một đối tượng File từ dữ liệu base64

@@ -23,7 +23,6 @@ const isEdit = ref(false);
 const content = ref('');
 const isLoadingLetter = ref(false);
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
 const { response } = useAxios<DataResponse>(
   'get',
   '/introduce/letter',
@@ -32,7 +31,6 @@ const { response } = useAxios<DataResponse>(
   variableChange.value
 );
 
-// Truy xuất giá trị response.value và gán vào responseData
 watch(response, () => {
   contentLetter.value = response?.value?.data;
 });

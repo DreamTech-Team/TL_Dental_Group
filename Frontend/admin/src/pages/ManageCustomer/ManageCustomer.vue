@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faTrash, faSearch } from '@fortawesome/free-solid-svg-icons';
-import Swal from 'sweetalert2';
+// import Swal from 'sweetalert2';
 import Pagination from '@/components/Pagination/BasePagination.vue';
 import ModalInfoCustomer from './component/ModalInfoCustomer.vue';
-import Chart from 'chart.js/auto';
-import styles from './ManageCustomer.module.scss';
+// import Chart from 'chart.js/auto';
+// import styles from './ManageCustomer.module.scss';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import dayjs from 'dayjs'; // Import dayjs library
 import 'dayjs/locale/vi'; // Import Vietnamese locale (optional)
@@ -183,50 +183,50 @@ const handleShowInfo = (id: number) => {
   indexRow.value = id;
 };
 
-// Hàm xóa một khách hàng
-const deleteInfoCustomer = (id: string, e: Event) => {
-  e.stopPropagation();
+// // Hàm xóa một khách hàng
+// const deleteInfoCustomer = (id: string, e: Event) => {
+//   e.stopPropagation();
 
-  Swal.fire({
-    title: 'Bạn có chắc muốn xóa công ty này không?',
-    text: 'Dữ liệu sẽ không thể khôi phục sau khi xóa!',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Xóa',
-    cancelButtonText: 'Hủy',
-    width: '50rem',
-    padding: '0 2rem 2rem 2rem',
-    customClass: {
-      confirmButton: styles['confirm-button'],
-      cancelButton: styles['cancel-button'],
-      title: styles['title']
-    }
-  }).then((result) => {
-    if (result.isConfirmed) {
-      infoCustomerRender.value = infoCustomerRender.value.filter((product) => product.id !== id);
+//   Swal.fire({
+//     title: 'Bạn có chắc muốn xóa công ty này không?',
+//     text: 'Dữ liệu sẽ không thể khôi phục sau khi xóa!',
+//     icon: 'warning',
+//     showCancelButton: true,
+//     confirmButtonColor: '#3085d6',
+//     cancelButtonColor: '#d33',
+//     confirmButtonText: 'Xóa',
+//     cancelButtonText: 'Hủy',
+//     width: '50rem',
+//     padding: '0 2rem 2rem 2rem',
+//     customClass: {
+//       confirmButton: styles['confirm-button'],
+//       cancelButton: styles['cancel-button'],
+//       title: styles['title']
+//     }
+//   }).then((result) => {
+//     if (result.isConfirmed) {
+//       infoCustomerRender.value = infoCustomerRender.value.filter((product) => product.id !== id);
 
-      Swal.fire({
-        title: 'Xóa thành công',
-        icon: 'success',
-        confirmButtonText: 'Hoàn tất',
-        timer: 2000,
-        width: '50rem',
-        padding: '0 2rem 2rem 2rem',
-        customClass: {
-          confirmButton: styles['confirm-button'],
-          cancelButton: styles['cancel-button'],
-          title: styles['title']
-        }
-      });
+//       Swal.fire({
+//         title: 'Xóa thành công',
+//         icon: 'success',
+//         confirmButtonText: 'Hoàn tất',
+//         timer: 2000,
+//         width: '50rem',
+//         padding: '0 2rem 2rem 2rem',
+//         customClass: {
+//           confirmButton: styles['confirm-button'],
+//           cancelButton: styles['cancel-button'],
+//           title: styles['title']
+//         }
+//       });
 
-      setTimeout(function () {
-        // Swal.close();
-      }, 1200);
-    }
-  });
-};
+//       setTimeout(function () {
+//         // Swal.close();
+//       }, 1200);
+//     }
+//   });
+// };
 
 // Ngăn cản sự kiện mở modal show info khi click vào checkbox
 const handleCheckBox = (e: Event, index: number) => {
@@ -248,34 +248,7 @@ const handleCheckBox = (e: Event, index: number) => {
 
       if (!isLoading.value) {
         if (response.value?.status === 'ok') {
-          // Swal.fire({
-          //   title: 'Dd',
-          //   icon: 'success',
-          //   confirmButtonText: 'Hoàn tất',
-          //   timer: 2000,
-          //   width: '50rem',
-          //   padding: '0 2rem 2rem 2rem',
-          //   customClass: {
-          //     confirmButton: styles['confirm-button'],
-          //     cancelButton: styles['cancel-button'],
-          //     title: styles['title']
-          //   }
-          // });
           infoCustomerRender.value[index].contacted = checkbox.checked;
-        } else {
-          // Swal.fire({
-          //   title: 'Cập nhật công ty nổi bậc thất bại',
-          //   icon: 'success',
-          //   confirmButtonText: 'Hoàn tất',
-          //   timer: 2000,
-          //   width: '50rem',
-          //   padding: '0 2rem 2rem 2rem',
-          //   customClass: {
-          //     confirmButton: styles['confirm-button'],
-          //     cancelButton: styles['cancel-button'],
-          //     title: styles['title']
-          //   }
-          // });
         }
       }
     });

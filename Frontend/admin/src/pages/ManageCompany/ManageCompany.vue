@@ -45,11 +45,8 @@ interface Products {
 
 const variableChange = ref([]);
 const variableChangeCompany = ref([]);
-const variableChangeCompanyHighlight = ref([]);
 const variableChangeProduct = ref([]);
-const data = ref<DataCompany[]>([]);
 const companyRender = ref<ManageCompany[]>([]);
-const featuredProducts = ref<ManageOutstanding[]>([]);
 const products = ref<Products[]>([]);
 const isOpenAdd = ref(false);
 const isOpenUpdate = ref(false);
@@ -65,21 +62,10 @@ const outstandingRender = ref({
 });
 const isLoadingCompany = ref(false);
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
 const getCompany = useAxios<DataResponse>('get', '/company', {}, {}, variableChangeCompany.value);
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
-const getCompanyHighlight = useAxios<DataResponse>(
-  'get',
-  '/company?highlight=true',
-  {},
-  {},
-  variableChangeCompanyHighlight.value
-);
-// Gọi hàm useAxios để lấy response, error, và isLoading
 const getProducts = useAxios<DataResponse>('get', '/products', {}, {}, variableChangeProduct.value);
 
-// Truy xuất giá trị response.value và gán vào responseData
 watch(getCompany.response, () => {
   companyRender.value = getCompany.response.value?.data
     .slice()
@@ -88,17 +74,6 @@ watch(getCompany.response, () => {
     });
 });
 
-watch(getCompanyHighlight.response, () => {
-  data.value = getCompanyHighlight.response.value?.data;
-
-  data.value.forEach((item) => {
-    if (item.outstandingProduct) {
-      featuredProducts.value.push(item.outstandingProduct);
-    }
-  });
-});
-
-// Truy xuất giá trị response.value và gán vào responseData
 watch(getProducts.response, () => {
   products.value = getProducts.response.value?.data?.data;
 });
