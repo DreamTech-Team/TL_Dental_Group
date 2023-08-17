@@ -2,7 +2,7 @@
 import Intro from '@/assets/imgs/About/Intro.png';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faRotate } from '@fortawesome/free-solid-svg-icons';
-import { Ref, ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, type Ref } from 'vue';
 import Croppie from 'croppie';
 import 'croppie/croppie.css';
 
