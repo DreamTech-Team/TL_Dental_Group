@@ -6,7 +6,7 @@ import MNRecruitmentVue from '@/pages/ManageRecruitment/MNRecruitment.vue';
 const AboutPage = () => import('@/pages/About/AboutPage.vue');
 const NotFound = () => import('@/pages/NotFound/NotFound.vue');
 const ProductMN = () => import('@/pages/ProductMN/ProductMN.vue');
-const ManageCopany = () => import('@/pages/ManageCompany/ManageCompany.vue');
+const ManageCompany = () => import('@/pages/ManageCompany/ManageCompany.vue');
 const RecruitmentPage = () => import('@/pages/Recruitment/RecruitmentPage.vue');
 const Staff = () => import('@/pages/Staff/ManageStaff.vue');
 const CategoryMN = () => import('@/pages/CategoryMN/CategoryMN.vue');
@@ -20,8 +20,8 @@ const UpdateBanner = () => import('@/pages/UpdateBanner/UpdateBanner.vue');
 
 const routes = [
   {
-    path: '/home',
-    name: 'home',
+    path: '/mnhome',
+    name: 'mnhome',
     component: HomePage
   },
   {
@@ -44,13 +44,13 @@ const routes = [
     component: ProductMN
   },
   {
-    path: '/activity',
-    name: 'activity',
+    path: '/mnactivity',
+    name: 'mnactivity',
     component: ActivityVue
   },
   {
-    path: '/staff',
-    name: 'staff',
+    path: '/mnstaff',
+    name: 'mnstaff',
     component: Staff
   },
   {
@@ -70,7 +70,7 @@ const routes = [
   {
     path: '/mncompany',
     name: 'mncompany',
-    component: ManageCopany
+    component: ManageCompany
   },
   {
     path: '/mnrecruitment',

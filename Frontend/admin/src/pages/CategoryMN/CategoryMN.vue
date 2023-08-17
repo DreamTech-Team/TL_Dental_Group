@@ -314,10 +314,10 @@ watch(getCategoryFull2.response, (value) => {
         @close="openModalAdd = false"
       />
     </div>
-    <div :class="$style.container__back">
+    <!-- <div :class="$style.container__back">
       <FontAwesomeIcon :icon="faChevronLeft" />
       <p>Trở về</p>
-    </div>
+    </div> -->
     <div :class="$style.container__content">
       <div :class="$style['container__content-left']">
         <div :class="$style['container__content-left-topic']">

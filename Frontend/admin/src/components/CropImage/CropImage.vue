@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import Intro from '@/assets/imgs/About/Intro.png';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faRotate } from '@fortawesome/free-solid-svg-icons';
-import { Ref, ref, onMounted, watch } from 'vue';
+import { type Ref, ref, onMounted, watch } from 'vue';
 import Croppie from 'croppie';
 import 'croppie/croppie.css';
 
@@ -73,9 +70,11 @@ const handleFileInputChange = (event: Event) => {
       }
       isSelectImage.value = !isSelectImage.value;
 
-      croppieInstance.value.bind({
-        url: reader.result as string
-      });
+      if (croppieInstance.value) {
+        croppieInstance.value.bind({
+          url: reader.result as string
+        });
+      }
     };
 
     reader.readAsDataURL(file);
@@ -99,7 +98,7 @@ watch(() => isSelectImage.value, handleCheckCrop);
 const crop = () => {
   if (croppieInstance.value) {
     emit('close');
-    croppieInstance.value.result('base64').then((result: string) => {
+    croppieInstance.value.result({ type: 'base64' }).then((result: string) => {
       // Xử lý kết quả crop ở đây (ví dụ: lưu vào biến imageFile)
       imageFile.value = result;
 

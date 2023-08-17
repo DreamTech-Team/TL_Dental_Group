@@ -12,7 +12,7 @@ import { ref, reactive } from 'vue';
 
 const btnItems = [
   { icon: faDashboard, label: 'Quản lý giao diện', link: '/mnui' },
-  { icon: faPeopleGroup, label: 'Quản lý nhân viên', link: '/staff' },
+  { icon: faPeopleGroup, label: 'Quản lý nhân viên', link: '/mnstaff' },
   { icon: faBuilding, label: 'Quản lý công ty', link: '/mncompany' }
 ];
 

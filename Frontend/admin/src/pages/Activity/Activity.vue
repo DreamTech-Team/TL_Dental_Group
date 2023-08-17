@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watchEffect, watch, PropType } from 'vue';
+import { ref, watchEffect, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { format } from 'date-fns';
 import { faPlus, faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';

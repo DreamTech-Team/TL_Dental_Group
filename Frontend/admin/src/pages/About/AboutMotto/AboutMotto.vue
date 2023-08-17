@@ -455,7 +455,7 @@ const handleChangeAdd = (dataAdded: AboutMotto, isLoading: boolean) => {
 
     <button :class="$style['about__motto-button-left']" v-if="isEdit" @click="isEdit = false">
       <font-awesome-icon :icon="faClose" :class="$style['about__motto-button-ic']" />
-      <span>Trở về</span>
+      <span>Hủy</span>
     </button>
   </div>
 

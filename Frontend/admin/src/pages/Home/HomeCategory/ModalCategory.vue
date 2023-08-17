@@ -294,10 +294,6 @@ watch(isLoading, () => {
               </tbody>
             </table>
           </div>
-          <div :class="$style['modal__buttons']">
-            <button @click="$emit('close')">Hủy</button>
-            <button @click="updateHighlight">Cập nhật</button>
-          </div>
         </div>
         <div :class="$style['category__modal__body-right']">
           <h3>DANH MỤC NỔI BẬT ĐÃ CHỌN</h3>
@@ -323,6 +319,10 @@ watch(isLoading, () => {
                 </div>
               </transition-group>
             </vue-draggable-next>
+          </div>
+          <div :class="$style['modal__buttons']">
+            <button @click="$emit('close')">Hủy</button>
+            <button @click="updateHighlight">Cập nhật</button>
           </div>
         </div>
       </div>

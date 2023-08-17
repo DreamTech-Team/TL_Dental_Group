@@ -309,7 +309,7 @@ const deleteProduct = (id: string) => {
             });
             setTimeout(function () {
               Swal.close();
-            }, 1200);
+            }, 2000);
             return;
           }
         }
