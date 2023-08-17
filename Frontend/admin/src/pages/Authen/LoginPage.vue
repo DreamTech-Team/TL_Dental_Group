@@ -43,7 +43,7 @@ const checkAccount = ref(true);
         <button>Đăng nhập</button>
       </div>
       <div :class="$style.wrap_route">
-        <router-link to="/forgot" :class="$style.wrap_cancel">Quên mật khẩu</router-link>
+        <router-link to="/forgot" :class="$style.wrap_cancel">Quên mật khẩu?</router-link>
       </div>
     </div>
     <div :class="$style.authen_welcome">
