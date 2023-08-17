@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faComputerMouse, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
+import { faComputerMouse, faFloppyDisk, faClose } from '@fortawesome/free-solid-svg-icons';
 import Editor from '@tinymce/tinymce-vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import Swal from 'sweetalert2';
@@ -159,9 +159,16 @@ const handleUpdateContent = () => {
           }"
         />
 
-        <button @click="handleUpdateContent">
+        <button
+          @click="handleUpdateContent"
+          :class="$style['about__thanks-letter-editor-button-right']"
+        >
           <font-awesome-icon :icon="faFloppyDisk" :class="$style['about__infocompany-button-ic']" />
           <span>Lưu thay đổi</span>
+        </button>
+        <button @click="isEdit = false" :class="$style['about__thanks-letter-editor-button-left']">
+          <font-awesome-icon :icon="faClose" :class="$style['about__infocompany-button-ic']" />
+          <span>Hủy</span>
         </button>
       </div>
 
