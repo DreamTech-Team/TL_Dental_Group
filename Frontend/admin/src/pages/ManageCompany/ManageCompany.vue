@@ -374,8 +374,8 @@ const handleRenderOutstanding = (index: number) => {
         <p style="width: 28%">Mô tả công ty</p>
         <p style="width: 8%">Logo</p>
         <p style="width: 28%">Sản phẩm nổi bật</p>
-        <p style="width: 12%">Chỉnh sửa</p>
-        <p style="width: 4%"></p>
+        <p style="width: 10%">Chỉnh sửa</p>
+        <p style="width: 6%">Nổi bật</p>
       </div>
 
       <div v-if="!isLoadingCompany">
@@ -409,7 +409,7 @@ const handleRenderOutstanding = (index: number) => {
               :title="company.highlight === 0 ? 'Công ty không nổi bậc' : 'Công ty nổi bậc'"
               type="checkbox"
               :style="{
-                width: '4%',
+                width: '6%',
                 cursor: company.outstandingProductId === null ? 'auto' : 'pointer'
               }"
               :id="`myCheckbox${index}`"
@@ -423,7 +423,7 @@ const handleRenderOutstanding = (index: number) => {
           <p>Không tìm thấy kết quả mong muốn</p>
         </div>
       </div>
-      <loading-component style="height: calc(100vh - 440px)" v-else />
+      <loading-component style="height: calc(100vh - 400px)" v-else />
     </div>
 
     <div :class="$style['mn_company--pagination']">

@@ -112,11 +112,15 @@ const handleFileInputChange = (event: Event) => {
 
 //Get url from iframe
 const extractSrcFromIframe = (iframeString: string) => {
-  const srcPattern = /src="([^"]*)"/;
-  const match = iframeString.match(srcPattern);
-  if (match) {
-    const src = match[1];
-    return src;
+  if (iframeString) {
+    const srcPattern = /src="([^"]*)"/;
+    const match = iframeString.match(srcPattern);
+    if (match) {
+      const src = match[1];
+      return src;
+    } else {
+      return '';
+    }
   } else {
     return '';
   }

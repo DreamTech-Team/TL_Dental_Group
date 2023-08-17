@@ -159,7 +159,7 @@ watch(searchText, () => {
   // Create a new timeout to call API after 1 second
   debounceTimer.value = setTimeout(() => {
     searchNews();
-  }, 500);
+  }, 400);
 });
 
 //Pagination Handle

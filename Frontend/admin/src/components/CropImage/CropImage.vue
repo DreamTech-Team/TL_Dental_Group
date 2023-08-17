@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import Intro from '@/assets/imgs/About/Intro.png';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faRotate } from '@fortawesome/free-solid-svg-icons';
 import { type Ref, ref, onMounted, watch } from 'vue';
 import Croppie from 'croppie';
 import 'croppie/croppie.css';

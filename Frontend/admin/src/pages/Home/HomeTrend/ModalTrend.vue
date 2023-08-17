@@ -70,6 +70,8 @@ const emits = defineEmits<{
   // eslint-disable-next-line no-unused-vars
   (e: 'close'): void;
   // eslint-disable-next-line no-unused-vars
+  (e: 'update'): void;
+  // eslint-disable-next-line no-unused-vars
   (e: 'update-content', data: { listrs: ItemRS[] }): void;
 }>();
 
@@ -80,6 +82,7 @@ const loadingStatus = ref(false);
 
 //List present products
 const listProducts = ref<Product[]>([]);
+const listHighlights = ref<Product[]>([]);
 
 //GET ALL CATEGORY
 const containers = ref([]);
@@ -91,6 +94,7 @@ const { response, isLoading } = useAxios<DataResponse>(
   {},
   deps.value
 );
+const getHighlights = useAxios<DataResponse>('get', '/products/highlight', {}, {}, deps.value);
 
 //Search
 const filteredProducts = computed(() => {
@@ -113,18 +117,16 @@ const truncateText = (text: string, maxLength: number) => {
 
 //Handle modal
 const initListSelected = () => {
-  listProducts.value.forEach((item) => {
-    if (item.check) {
-      const selectedItem: Product = {
-        slug: item.slug,
-        name: item.name,
-        category: item.category,
-        check: true,
-        src: item.src,
-        highlight: item.highlight
-      };
-      selectedProducts.value.push(selectedItem);
-    }
+  listHighlights.value.forEach((item: Product) => {
+    const selectedItem: Product = {
+      slug: item.slug,
+      name: item.name,
+      category: item.category,
+      check: true,
+      src: item.src,
+      highlight: item.highlight
+    };
+    selectedProducts.value.push(selectedItem);
   });
   selectedProducts.value.sort((a: Product, b: Product) => a.highlight - b.highlight);
 };
@@ -230,27 +232,6 @@ const updateHighlight = () => {
 
   watch(response, () => {
     if (response.value?.status === 'ok') {
-      const updatedContainers = containers.value
-        .map((container: ItemRS) => {
-          const updatedProduct = updatedSelectedProducts.find(
-            (item) => item.slug === container.slug
-          );
-          if (updatedProduct) {
-            return {
-              ...container,
-              highlight: updatedProduct.highlight
-            };
-          }
-          return null;
-        })
-        .filter((item) => item !== null) as ItemRS[];
-
-      updatedContainers.sort((a, b) => a.highlight - b.highlight);
-
-      emits('update-content', {
-        listrs: updatedContainers
-      });
-
       Swal.fire({
         title: 'Cập nhật thành công',
         icon: 'success',
@@ -258,11 +239,7 @@ const updateHighlight = () => {
         width: '30rem'
       });
 
-      emits('close');
-
-      setTimeout(function () {
-        Swal.close();
-      }, 1200);
+      emits('update');
     }
   });
 };
@@ -306,7 +283,6 @@ watch(searchText, () => {
 
 //Get data from axios
 watch(response, () => {
-  containers.value = response.value?.data?.data;
   listProducts.value = response.value?.data?.data.map((item: ItemRS) => {
     return {
       slug: item.slug,
@@ -319,6 +295,12 @@ watch(response, () => {
   });
 
   initListSelected();
+});
+
+watch(getHighlights.response, () => {
+  if (getHighlights.response.value) {
+    listHighlights.value = getHighlights.response.value.data;
+  }
 });
 
 watch(isLoading, () => {
@@ -385,10 +367,6 @@ watch(isLoading, () => {
               </tbody>
             </table>
           </div>
-          <div :class="$style['modal__buttons']">
-            <button @click="$emit('close')">Hủy</button>
-            <button @click="updateHighlight">Cập nhật</button>
-          </div>
         </div>
         <div :class="$style['trend__modal__body-right']">
           <h3>SẢN PHẨM NỔI BẬT ĐÃ CHỌN</h3>
@@ -415,6 +393,10 @@ watch(isLoading, () => {
                 </div>
               </transition-group>
             </vue-draggable-next>
+          </div>
+          <div :class="$style['modal__buttons']">
+            <button @click="$emit('close')">Hủy</button>
+            <button @click="updateHighlight">Cập nhật</button>
           </div>
         </div>
       </div>
