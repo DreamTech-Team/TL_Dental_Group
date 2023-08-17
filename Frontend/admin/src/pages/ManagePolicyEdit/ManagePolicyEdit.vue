@@ -203,10 +203,29 @@ const handleUpdatePolicy = () => {
     });
   }
 };
+
+const handleModalCancel = () => {
+  Swal.fire({
+    title: 'Nội dung của bạn chưa được lưu!',
+    icon: 'warning',
+    showDenyButton: true,
+    confirmButtonText: 'Trở lại',
+    denyButtonText: 'Thoát',
+    customClass: {
+      popup: styles['container-popup'],
+      confirmButton: styles['confirm-button'],
+      denyButton: styles['deny-button']
+    }
+  }).then((result) => {
+    if (result.isDenied) {
+      emit('close');
+    }
+  });
+};
 </script>
 <template>
   <div :class="$style.container">
-    <div :class="$style.container__back" @click="emit('close')">
+    <div :class="$style.container__back" @click="handleModalCancel">
       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -292,6 +311,7 @@ const handleUpdatePolicy = () => {
       <div :class="$style['container__btn-update']">
         <div
           :class="[$style['container__btn-update-submit'], $style['container__btn-update-cancel']]"
+          @click="handleModalCancel"
         >
           Hủy
         </div>

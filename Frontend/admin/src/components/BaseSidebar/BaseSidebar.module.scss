@@ -42,7 +42,7 @@
   }
 
   &-btn-active {
-    left: 25rem;
+    left: 23rem;
     width: 2.5rem;
 
     .container__sidebar-btn-block-icon {
@@ -66,9 +66,10 @@
 
   &__logo {
     display: flex;
-    justify-content: center;
+    // justify-content: center;
     align-items: center;
     margin-top: 2rem;
+    margin-left: 1rem;
 
     img {
       width: 5.5rem;
@@ -86,7 +87,7 @@
 }
 
 .show {
-  width: 25rem;
+  width: 23rem;
 
   .sidebar__logo {
     &-title {
