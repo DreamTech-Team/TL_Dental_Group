@@ -67,6 +67,7 @@ const moveLine = (index: number) => {
   setTimeout(() => {
     activeTab.value = document.getElementById('tabActive');
     lineWidth.value = activeTabWidth.value * 0.8;
+    console.log('line width' + lineWidth.value);
   }, 0);
 };
 
