@@ -38,17 +38,12 @@
 
       &-exit {
         position: absolute;
-        top: 1.7rem;
+        top: 1.8rem;
         right: 3.5rem;
 
         svg {
-          transform: rotate(45deg);
-          width: 2.5rem;
-          height: auto;
-
-          path {
-            fill: white;
-          }
+          font-size: 2.5rem;
+          color: white;
         }
       }
 
@@ -145,12 +140,8 @@
         &-sub {
           margin-right: 2rem;
           svg {
-            width: 1rem;
-            height: auto;
-
-            path {
-              fill: $complimentary_800;
-            }
+            font-size: 1.3rem;
+            color: $complimentary_800;
           }
 
           &-text {
@@ -163,12 +154,8 @@
 
         &-plus {
           svg {
-            width: 1rem;
-            height: auto;
-
-            path {
-              fill: $primary_700;
-            }
+            font-size: 1.3rem;
+            color: $primary_700;
           }
 
           &-text {

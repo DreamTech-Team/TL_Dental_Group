@@ -20,20 +20,18 @@
     width: fit-content;
     display: flex;
     align-items: center;
+    margin-top: 2rem;
 
     svg {
-      width: 3.3rem;
-      height: auto;
-
-      path {
-        stroke: $text_700;
-      }
+      font-size: 1.8;
+      color: $text_700;
     }
 
     p {
       font-size: $text-lg;
       font-weight: 500;
       color: $text_700;
+      margin-left: 0.5rem;
     }
   }
 

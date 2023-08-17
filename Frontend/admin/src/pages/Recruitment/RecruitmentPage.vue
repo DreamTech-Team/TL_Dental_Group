@@ -2,21 +2,7 @@
 <script setup lang="ts">
 import { ref, watch, type Ref, onMounted } from 'vue';
 
-import { posterItems, visionItems, valueItems } from './RecruitmentHandle';
-import {
-  rec_step1,
-  rec_step2,
-  rec_step3,
-  rec_step4,
-  ic_clock,
-  ic_DaiNgo,
-  ic_light,
-  rec_img1,
-  rec_img2,
-  rec_img3,
-  rec_img4,
-  ic_arrow
-} from '@/assets/imgs/Recruitment/RecruitmentImgs';
+import { ic_clock, ic_DaiNgo, ic_light } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 
 import ModalUpdateContent from './ModalUpdateContent/ModalUpdateContent.vue';
 import RecruitmentPoster from './RecruitmentPoster/RecruitmentPoster.vue';
@@ -24,7 +10,7 @@ import RecruitmentVision from './RecruitmentVision/RecruitmentVision.vue';
 import RecruitmentValue from './RecruitmentValue/RecruitmentValue.vue';
 import RecruitmentEnviroment from './RecruitmentEnviroment/RecruitmentEnviroment.vue';
 import RecruitmentNavScroll from './RecruitmentNavScroll/RecruitmentNavScroll.vue';
-import RecruitmentWork from './RecruitmentWork/RecruitmentWork.vue';
+// import RecruitmentWork from './RecruitmentWork/RecruitmentWork.vue';
 import type { DataResponse } from '@/hooks/useAxios';
 import useAxios from '@/hooks/useAxios';
 
@@ -461,7 +447,7 @@ onMounted(() => {
     />
     <recruitment-enviroment />
     <recruitment-nav-scroll />
-    <recruitment-work :getElementRec="getElementRec" />
+    <!-- <recruitment-work :getElementRec="getElementRec" /> -->
   </div>
 </template>
 

@@ -53,19 +53,7 @@
   border-radius: 3rem;
 
   svg {
-    width: 3rem;
-    height: auto;
-  }
-
-  &-1 {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background-color: white;
-
-    path {
-      fill: $primary_900;
-    }
+    font-size: 2.3rem;
   }
 
   &-2 {
@@ -73,10 +61,7 @@
     top: 3rem;
     right: 3rem;
     background-color: $primary_900;
-
-    path {
-      fill: white;
-    }
+    color: white;
   }
 }
 
@@ -117,23 +102,11 @@
     }
 
     svg {
-      width: 6.5rem;
-      height: auto;
-
-      rect {
-        fill: $primary_900;
-      }
-
-      path {
-        &:nth-child(1),
-        &:nth-child(2) {
-          fill: white;
-        }
-
-        &:nth-child(3) {
-          fill: $primary_900;
-        }
-      }
+      font-size: 4rem;
+      background-color: white;
+      color: $primary_900;
+      padding: 1.5rem;
+      border-radius: 5rem;
     }
   }
 

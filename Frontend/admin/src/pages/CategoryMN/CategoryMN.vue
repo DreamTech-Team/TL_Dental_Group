@@ -7,6 +7,8 @@ import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import CategoryList from './CategoryList/CategoryList.vue';
 import CategoryModalEdit from './CategoryModalEdit/CategoryModalEdit.vue';
 import styles from './CategoryMN.module.scss';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 interface Cate1Object {
   id: string;
@@ -313,19 +315,7 @@ watch(getCategoryFull2.response, (value) => {
       />
     </div>
     <div :class="$style.container__back">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-        <g id="SVGRepo_iconCarrier">
-          <path
-            d="M15 7L10 12L15 17"
-            stroke="#000000"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></path>
-        </g>
-      </svg>
+      <FontAwesomeIcon :icon="faChevronLeft" />
       <p>Trở về</p>
     </div>
     <div :class="$style.container__content">

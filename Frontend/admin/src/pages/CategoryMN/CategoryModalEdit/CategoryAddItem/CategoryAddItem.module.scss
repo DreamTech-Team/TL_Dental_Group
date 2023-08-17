@@ -140,23 +140,11 @@
     }
 
     svg {
-      width: 5rem;
-      height: auto;
-
-      rect {
-        fill: $primary_900;
-      }
-
-      path {
-        &:nth-child(1),
-        &:nth-child(2) {
-          fill: white;
-        }
-
-        &:nth-child(3) {
-          fill: $primary_900;
-        }
-      }
+      font-size: 4rem;
+      color: $primary_900;
+      background-color: white;
+      padding: 1rem;
+      border-radius: 5rem;
     }
   }
 

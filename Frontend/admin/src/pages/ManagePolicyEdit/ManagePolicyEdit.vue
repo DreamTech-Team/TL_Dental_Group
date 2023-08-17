@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import no_icon from '@/assets/imgs/Policy/icon/ic_noimage.svg';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faUpload } from '@fortawesome/free-solid-svg-icons';
 import Editor from '@tinymce/tinymce-vue';
 import { ref, watch, type Ref, type PropType } from 'vue';
 import type { DataResponse } from '@/hooks/useAxios';
@@ -226,19 +226,7 @@ const handleModalCancel = () => {
 <template>
   <div :class="$style.container">
     <div :class="$style.container__back" @click="handleModalCancel">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-        <g id="SVGRepo_iconCarrier">
-          <path
-            d="M15 7L10 12L15 17"
-            stroke="#000000"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></path>
-        </g>
-      </svg>
+      <font-awesome-icon :icon="faChevronLeft" />
       <p>Trở về</p>
     </div>
 

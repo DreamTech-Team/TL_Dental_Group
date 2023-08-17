@@ -44,13 +44,9 @@
 
       svg {
         transition: transform 0.25s;
-        width: 2.8rem;
-        height: auto;
         transform: rotate(-90deg);
-
-        path {
-          stroke: white;
-        }
+        font-size: 1.8rem;
+        color: white;
       }
 
       &-empty {
@@ -98,12 +94,9 @@
       border-radius: 1rem;
 
       svg {
-        width: 2rem;
-        height: auto;
-
-        path {
-          fill: white;
-        }
+        font-size: 2rem;
+        color: white;
+        margin-bottom: 0.2rem;
       }
 
       p {

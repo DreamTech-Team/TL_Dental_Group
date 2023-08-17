@@ -35,13 +35,9 @@
 
       &-exit {
         svg {
-          height: 2rem;
-          width: auto;
-          transform: rotate(45deg);
-
-          path {
-            fill: white;
-          }
+          font-size: 2rem;
+          color: white;
+          margin-right: 1rem;
         }
 
         &:hover {

@@ -9,7 +9,8 @@ import {
   faMagnifyingGlass,
   faPlus,
   faGears,
-  faXmarkCircle
+  faXmarkCircle,
+  faXmark
 } from '@fortawesome/free-solid-svg-icons';
 
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
@@ -326,17 +327,7 @@ watch(filteredProducts, (value) => (listCateFull.value = value));
         <div class=""></div>
         <div :class="$style['container__modal-heading-title']">Thêm danh mục cấp {{ numCate }}</div>
         <div :class="$style['container__modal-heading-exit']" @click="handleModalCancel">
-          <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none">
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-            <g id="SVGRepo_iconCarrier">
-              <path
-                fill="#000000"
-                fill-rule="evenodd"
-                d="M9 17a1 1 0 102 0v-6h6a1 1 0 100-2h-6V3a1 1 0 10-2 0v6H3a1 1 0 000 2h6v6z"
-              ></path>
-            </g>
-          </svg>
+          <FontAwesomeIcon :icon="faXmark" />
         </div>
       </div>
       <div :class="$style['container__modal-body']">
