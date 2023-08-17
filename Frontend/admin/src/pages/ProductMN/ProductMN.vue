@@ -175,7 +175,7 @@ watch(searchText, () => {
   // Create a new timeout to call API after 1 second
   debounceTimer.value = setTimeout(() => {
     searchProduct();
-  }, 500);
+  }, 400);
 });
 
 // Computed property for displaying filtered products

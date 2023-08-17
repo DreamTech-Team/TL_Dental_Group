@@ -121,6 +121,12 @@ const onUpdateContent = (data: { listrs: Product[] }) => {
   updateShowResults();
 };
 
+//Reload when update
+const handleUpdate = () => {
+  isOpen.value = false;
+  window.location.reload();
+};
+
 onMounted(() => {
   const container = document.getElementById('trend-wrapper');
   if (container) {
@@ -175,6 +181,7 @@ onUnmounted(() => {
   <ModalTrend
     v-if="isOpen"
     @close="isOpen = false"
+    @update="handleUpdate"
     :list-item="tempproducts"
     @update-content="onUpdateContent"
   />
