@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faComputerMouse, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
+import { faComputerMouse, faFloppyDisk, faClose } from '@fortawesome/free-solid-svg-icons';
 import Editor from '@tinymce/tinymce-vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import Swal from 'sweetalert2';
@@ -23,7 +23,6 @@ const isEdit = ref(false);
 const content = ref('');
 const isLoadingLetter = ref(false);
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
 const { response } = useAxios<DataResponse>(
   'get',
   '/introduce/letter',
@@ -32,7 +31,6 @@ const { response } = useAxios<DataResponse>(
   variableChange.value
 );
 
-// Truy xuất giá trị response.value và gán vào responseData
 watch(response, () => {
   contentLetter.value = response?.value?.data;
 });
@@ -161,9 +159,16 @@ const handleUpdateContent = () => {
           }"
         />
 
-        <button @click="handleUpdateContent">
+        <button
+          @click="handleUpdateContent"
+          :class="$style['about__thanks-letter-editor-button-right']"
+        >
           <font-awesome-icon :icon="faFloppyDisk" :class="$style['about__infocompany-button-ic']" />
           <span>Lưu thay đổi</span>
+        </button>
+        <button @click="isEdit = false" :class="$style['about__thanks-letter-editor-button-left']">
+          <font-awesome-icon :icon="faClose" :class="$style['about__infocompany-button-ic']" />
+          <span>Hủy</span>
         </button>
       </div>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PropType, Ref, ref, watch } from 'vue';
+import { type PropType, type Ref, ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark, faRotate, faPencil } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
@@ -250,6 +250,7 @@ const handleChangelogo = () => {
   }
 };
 
+// Hàm lấy dữ liệu về từ modalAddProduct
 const handleDataProduct = (
   _idProduct: string,
   nameProduct: string,

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, watch, type Ref } from 'vue';
-import InfoCompany from '@/assets/imgs/About/InfoCompany.png';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faClose, faPencil, faCheck, faRotate } from '@fortawesome/free-solid-svg-icons';
 import Editor from '@tinymce/tinymce-vue';
@@ -32,7 +31,6 @@ const isEdit = ref(false);
 const isLoadingInfo = ref(false);
 const isPatchData = ref(false);
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
 const { response } = useAxios<DataResponse>(
   'get',
   '/introduce/company-info',
@@ -41,7 +39,6 @@ const { response } = useAxios<DataResponse>(
   variableChange.value
 );
 
-// Truy xuất giá trị response.value và gán vào responseData
 watch(response, () => {
   contentInfoComapny.value = response?.value?.data;
   content1.value = contentInfoComapny.value[0].content;

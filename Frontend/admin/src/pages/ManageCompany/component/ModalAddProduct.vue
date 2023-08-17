@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { Ref, ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { type Ref, ref, computed } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faXmark, faCloudArrowUp, faRotate } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faCloudArrowUp } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import styles from './ModalAddProduct.module.scss';
-// import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 interface Products {
   id: string;
@@ -34,6 +33,7 @@ const context = defineProps({
 
 const emit = defineEmits(['close', 'results']);
 
+// Lấy dữ liệu từ description ra và dưới dạng <p>haha</p> thì sẽ lấy được haha
 const formatDescription = (str: string): string | null => {
   try {
     // Parse the HTML string using DOMParser
@@ -58,6 +58,7 @@ const listData = ref<Products[]>(context.products as Products[]);
 const isOpen = ref(false);
 const idProduct = ref('');
 
+// Hàm search
 const filteredItems = computed(() => {
   const searchTerm = dataSearchTerm.value.toLowerCase().trim();
   if (!searchTerm) {
@@ -80,39 +81,47 @@ const updateContent = (e: Event) => {
 
 // Hàm submit dữ liệu, đẩy dữ liệu lên database
 const submitForm = () => {
-  if (dataSearchTerm.value.length < 4 || contentInput.value.length < 4 || !selectedImage.value) {
-    Swal.fire({
-      title: 'Vui lòng điền đủ thông tin',
-      icon: 'error',
-      confirmButtonText: 'Đóng',
-      width: '50rem',
-      padding: '0 2rem 2rem 2rem',
-      customClass: {
-        confirmButton: styles['confirm-button'],
-        cancelButton: styles['cancel-button'],
-        title: styles['title']
-      }
-    });
-  } else {
-    emit('results', idProduct.value, dataSearchTerm.value, contentInput.value, selectedImage.value);
+  if (contentInput.value !== null) {
+    if (dataSearchTerm.value.length < 4 || contentInput.value.length < 4 || !selectedImage.value) {
+      Swal.fire({
+        title: 'Vui lòng điền đủ thông tin',
+        icon: 'error',
+        confirmButtonText: 'Đóng',
+        width: '50rem',
+        padding: '0 2rem 2rem 2rem',
+        customClass: {
+          confirmButton: styles['confirm-button'],
+          cancelButton: styles['cancel-button'],
+          title: styles['title']
+        }
+      });
+    } else {
+      emit(
+        'results',
+        idProduct.value,
+        dataSearchTerm.value,
+        contentInput.value,
+        selectedImage.value
+      );
 
-    Swal.fire({
-      title: 'Cập nhật sản phẩm nổi bật thành công',
-      icon: 'success',
-      confirmButtonText: 'Hoàn tất',
-      width: '50rem',
-      padding: '0 2rem 2rem 2rem',
-      customClass: {
-        confirmButton: styles['confirm-button'],
-        cancelButton: styles['cancel-button'],
-        title: styles['title']
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.close();
-        emit('close');
-      }
-    });
+      Swal.fire({
+        title: 'Cập nhật sản phẩm nổi bật thành công',
+        icon: 'success',
+        confirmButtonText: 'Hoàn tất',
+        width: '50rem',
+        padding: '0 2rem 2rem 2rem',
+        customClass: {
+          confirmButton: styles['confirm-button'],
+          cancelButton: styles['cancel-button'],
+          title: styles['title']
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.close();
+          emit('close');
+        }
+      });
+    }
   }
 };
 
@@ -137,6 +146,7 @@ const addFile = (e: DragEvent) => {
   }
 };
 
+// Hàm chọn sản phẩm khác trong cùng công ty
 const handleOption = (item: Products, id: string) => {
   isOpen.value = false;
   dataSearchTerm.value = item.name;

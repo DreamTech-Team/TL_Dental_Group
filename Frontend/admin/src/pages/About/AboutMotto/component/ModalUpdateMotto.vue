@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { PropType, Ref, ref, watch } from 'vue';
+import { type PropType, type Ref, ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faXmark, faCloudArrowUp, faRotate } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faRotate } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import styles from './ModalUpdateMotto.module.scss';
 import base64ToBlob from '@/utils/base64ToBlob';

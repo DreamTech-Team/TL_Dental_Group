@@ -74,7 +74,35 @@
 
         &-editor{
 
-            button{
+            .about__thanks-letter-editor-button-left{
+                float: right;
+                padding: 0.4rem 2.4rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: none;
+                background-color: #000;
+                border: 1px solid #000;
+                border-radius: 1rem;
+                margin-top: 1.4rem;
+                margin-right: 1.4rem;
+                transition: all 0.3s ease-in-out;
+        
+                .about__infocompany-button-ic{
+                    font-size: $text-2xl;
+                    margin-right: 1.4rem;
+                    color: #fff;
+                }
+        
+                span{
+                    font-size: $text-base;
+                    font-weight: 500;
+                    line-height: 3.5rem;
+                    color: #fff;
+                }
+            }
+
+            .about__thanks-letter-editor-button-right{
                 float: right;
                 padding: 0.4rem 2.4rem;
                 display: flex;
@@ -100,8 +128,9 @@
                     color: #fff;
                 }
             }
+
         
-            button:hover{
+            .about__thanks-letter-editor-button-right:hover{
                 background-color: #fff;
         
                 .about__infocompany-button-ic{
@@ -110,6 +139,18 @@
         
                 span{
                     color: $primary_600;
+                }
+            }
+
+            .about__thanks-letter-editor-button-left:hover{
+                background-color: #fff;
+        
+                .about__infocompany-button-ic{
+                    color: #000;
+                }
+        
+                span{
+                    color: #000;
                 }
             }
         }

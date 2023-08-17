@@ -28,14 +28,18 @@ const variableChange = ref([]);
 const mottoItems = ref<AboutMotto[]>([]);
 const isOneItem = ref(false);
 const move = ref(0); // biến lưu chiều dài của một item khi bấm nút qua lại
-const moveEdit = ref(0); // biến lưu chiều dài của một item khi bấm nút qua lại khi trong trạng thái chỉnh sửa
+// biến lưu chiều dài của một item khi bấm nút qua lại khi trong trạng thái chỉnh sửa
+const moveEdit = ref(0);
 const items = ref(mottoItems); // biến để lấy dữ liệu để render
 const indexItems = ref(0); // biến lưu vị trí hiện tại
 // biến kiểm tra xem đã hết phần tử bên trái khi bấm nút qua lại chưa
 const isDisableLeft = ref(false);
-const isDisableLeftEdit = ref(true); // biến kiểm tra xem đã hết phần tử bên trái khi bấm nút qua lại chưa trong trang thái Edit
-const isDisableRight = ref(false); // biến kiểm tra xem đã hết phần tử bên phải khi bấm nút qua lại chưa
-const isDisableRightEdit = ref(false); // biến kiểm tra xem đã hết phần tử bên phải khi bấm nút qua lại chưa trong trạng thái Edit
+// biến kiểm tra xem đã hết phần tử bên trái khi bấm nút qua lại chưa trong trang thái Edit
+const isDisableLeftEdit = ref(true);
+// biến kiểm tra xem đã hết phần tử bên phải khi bấm nút qua lại chưa
+const isDisableRight = ref(false);
+// biến kiểm tra xem đã hết phần tử bên phải khi bấm nút qua lại chưa trong trạng thái Edit
+const isDisableRightEdit = ref(false);
 const isEdit = ref(false);
 const isOpenAdd = ref(false);
 const isOpenUpdate = ref(false);
@@ -49,7 +53,6 @@ const handleGetWidthItem = () => {
   if (widthItem) widthItemEdit.value = widthItem.offsetWidth;
 };
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
 const { response } = useAxios<DataResponse>(
   'get',
   '/introduce/section1',
@@ -58,7 +61,6 @@ const { response } = useAxios<DataResponse>(
   variableChange.value
 );
 
-// Truy xuất giá trị response.value và gán vào responseData
 watch(response, () => {
   mottoItems.value = response?.value?.data;
 
@@ -218,6 +220,7 @@ const handleRemove = () => {
   });
 };
 
+// Hàm lấy dữ liệu từ modalUpdate về khi update thành công
 const handleChangeUpdate = (dataUpdated: AboutMotto, isLoading: boolean) => {
   isLoadingItem.value = isLoading;
   isOpenUpdate.value = false;
@@ -251,6 +254,7 @@ const handleChangeUpdate = (dataUpdated: AboutMotto, isLoading: boolean) => {
   });
 };
 
+// Hàm lấy dữ liệu từ modalAdd về khi add thành công
 const handleChangeAdd = (dataAdded: AboutMotto, isLoading: boolean) => {
   isLoadingItem.value = isLoading;
   isOpenAdd.value = false;

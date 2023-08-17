@@ -17,17 +17,15 @@ interface Tags {
 }
 
 interface News {
-  news: {
-    id: string;
-    title: string;
-    img: string;
-    slug: string;
-    summary: string;
-    detail: string;
-    detailMobile: string;
-    highlight: number;
-    createAt: string;
-  };
+  id: string;
+  title: string;
+  img: string;
+  slug: string;
+  summary: string;
+  detail: string;
+  detailMobile: string;
+  highlight: number;
+  createAt: string;
   tags: [
     {
       id: string;
@@ -52,7 +50,7 @@ const {
 
 watch(dataNews, () => {
   listNews.value = dataNews?.value?.data?.data;
-  // console.log(listNews.value);
+  console.log(listNews);
 });
 
 //Call API tổng news
@@ -116,17 +114,16 @@ const handleTagDeleted = (deletedTagId: string) => {
 
 const handleNewsDeleted = (deletedNewsId: string) => {
   totalActivity.value = totalActivity.value - 1;
-  listNews.value = listNews.value.filter((item) => item.news.id !== deletedNewsId);
-  // console.log('vinh ' + deletedNewsId);
+  listNews.value = listNews.value.filter((item) => item.id !== deletedNewsId);
 };
 
 const handleChangeAdd = (dataAdded: Tags) => {
   listTags.value.unshift(dataAdded);
 };
 
-const handleUpdateData = (data: { newsAdd: News }) => {
-  listNews.value.push(data.newsAdd);
-  console.log('data add ' + data.newsAdd);
+const handleUpdateData = (newsAdd: News) => {
+  listNews.value.push(newsAdd);
+  location.reload();
 };
 
 watchEffect(() => {

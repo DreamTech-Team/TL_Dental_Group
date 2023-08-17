@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Ref, ref, onMounted, watch } from 'vue';
+import { type Ref, ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faRotate } from '@fortawesome/free-solid-svg-icons';
 import CropImage from '@/components/CropImage/CropImage.vue';
@@ -26,7 +26,6 @@ const isCrop = ref(false);
 const isOpenInput = ref(false);
 const isLoadingBanner = ref(false);
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
 const { response } = useAxios<DataResponse>(
   'get',
   '/introduce/header',
@@ -35,12 +34,12 @@ const { response } = useAxios<DataResponse>(
   variableChange.value
 );
 
-// Truy xuất giá trị response.value và gán vào responseData
 watch(response, () => {
   imageFile.value = response?.value?.data?.image;
   renderImage.value = response?.value?.data;
 });
 
+// Hàm lấy dữ liệu về khi Image đã được Crop
 const handleCroppedImage = (result: string) => {
   if (result) {
     imageFile.value = result;
@@ -72,6 +71,7 @@ const handleCroppedImage = (result: string) => {
       deps.value
     );
     isLoadingBanner.value = isLoading.value;
+
     watch(response, () => {
       if (response.value?.status === 'ok') {
         isLoadingBanner.value = isLoading.value;

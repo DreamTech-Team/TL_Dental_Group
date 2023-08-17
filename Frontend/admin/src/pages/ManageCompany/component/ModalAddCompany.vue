@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Ref, ref, watch, defineProps, PropType } from 'vue';
+import { type Ref, ref, watch, type PropType } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark, faCloudArrowUp, faRotate } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';

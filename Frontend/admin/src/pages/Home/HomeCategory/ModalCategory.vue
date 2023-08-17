@@ -5,6 +5,7 @@ import { faMagnifyingGlass, faMinus, faXmark } from '@fortawesome/free-solid-svg
 import { VueDraggableNext } from 'vue-draggable-next';
 import Swal from 'sweetalert2';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface ItemRS {
   id: string;
@@ -39,13 +40,16 @@ const emits = defineEmits<{
   (e: 'update-content', data: { listrs: ItemRS[] }): void;
 }>();
 
+//Properties
+const loadingStatus = ref(false);
+
 //List present categories
 const listCategories = ref<Category[]>([]);
 
 //GET ALL CATEGORY
 const containers = ref([]);
 const deps = ref([]);
-const { response } = useAxios<DataResponse>('get', '/cate1', {}, {}, deps.value);
+const { response, isLoading } = useAxios<DataResponse>('get', '/cate1', {}, {}, deps.value);
 
 //Search
 const searchQuery = ref('');
@@ -230,6 +234,10 @@ watch(response, () => {
   });
   initListSelected();
 });
+
+watch(isLoading, () => {
+  loadingStatus.value = isLoading.value;
+});
 </script>
 
 <template>
@@ -263,6 +271,7 @@ watch(response, () => {
             </thead>
           </table>
           <div :class="$style['modal__table-ctn']">
+            <loading v-if="loadingStatus" />
             <table :class="$style['modal__table']">
               <tbody>
                 <tr
