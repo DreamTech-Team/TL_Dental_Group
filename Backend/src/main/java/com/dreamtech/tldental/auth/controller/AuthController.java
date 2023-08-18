@@ -1,17 +1,14 @@
 package com.dreamtech.tldental.auth.controller;
 
 import com.dreamtech.tldental.UserSecurity.dao.JpaUserDetailsService;
-import com.dreamtech.tldental.UserSecurity.model.UserSecurity;
 import com.dreamtech.tldental.auth.request.AuthenticationRequest;
 import com.dreamtech.tldental.auth.response.AuthResponse;
 import com.dreamtech.tldental.auth.service.AuthService;
 import com.dreamtech.tldental.config.JwtUtils;
 import com.dreamtech.tldental.models.ResponseObject;
-import com.dreamtech.tldental.users.Requests.UsersRequest;
 import com.dreamtech.tldental.users.model.Users;
 import com.dreamtech.tldental.users.repository.UsersRepository;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
