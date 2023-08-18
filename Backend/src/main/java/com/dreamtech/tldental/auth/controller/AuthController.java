@@ -71,11 +71,4 @@ public class AuthController {
             return ResponseEntity.status(400).body(new ResponseObject("failed", e.getMessage(), ""));
         }
     }
-
-    @PostMapping("/register")
-    public ResponseEntity<UserSecurity> register(@RequestBody UsersRequest user) throws Exception {
-        return ResponseEntity
-                .ok(authService.AddUser(user).map(UserSecurity::new).orElseThrow(() -> new Exception("Unknown")));
-    }
-
 }
