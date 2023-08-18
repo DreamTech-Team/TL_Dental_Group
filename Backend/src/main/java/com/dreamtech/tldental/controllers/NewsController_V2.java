@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -33,6 +36,13 @@ public class NewsController_V2 {
     private ContentPageRepository contentPageRepository;
     @Autowired
     private IStorageService storageService;
+
+    private final Executor executor;
+
+    @Autowired
+    public NewsController_V2() {
+        this.executor = Executors.newFixedThreadPool(5);
+    }
 
     // GET ALL NEWS WITH FILTER
     @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
@@ -132,18 +142,28 @@ public class NewsController_V2 {
                 return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                         new ResponseObject("failed", "News's name should not have /", ""));
             }
+
             // Upload image to cloudinary
-            String mainImgFileName = storageService.storeFile(img);
-            newsData.setImg(mainImgFileName);
+            CompletableFuture<Void> futureMainImg = CompletableFuture.runAsync(() -> {
+                String mainImgFileName = storageService.storeFile(img);
+                newsData.setImg(mainImgFileName);
+            }, executor);
             newsData.setTitle(newsData.getTitle().trim());
 
             // Create FK_TAGS_NEWS
+            CompletableFuture<Void>[] futures = new CompletableFuture[tags.size()];
             for (int i = 0; i < tags.size(); i++) {
-                Tags tag = tagsRepository.findById(tags.get(i)).orElse(null);
-                if (tag != null) {
+                int index = i;
+                CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                    Tags tag = tagsRepository.findById(tags.get(index)).orElse(null);
                     newsData.getTags().add(tag);
-                }
+                }, executor);
+                futures[i] = future;
             }
+            CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures);
+
+            allFutures.join();
+            futureMainImg.join();
 
             // Create News
             News resNews = repository.save(newsData);
@@ -177,24 +197,38 @@ public class NewsController_V2 {
             BeanUtils.copyProperties(newsData, foundNews.get());
 
             // Update FK_NEWS_TAGS if it was changed
+            CompletableFuture<Void>[] futures = new CompletableFuture[tags.size()];
             if (tags.size() > 0) {
                 newsData.getTags().clear();
                 // Create FK_TAGS_NEWS
                 for (int i = 0; i < tags.size(); i++) {
-                    Tags tag = tagsRepository.findById(tags.get(i)).orElse(null);
-                    if (tag != null) {
+                    int index = i;
+                    CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                        Tags tag = tagsRepository.findById(tags.get(index)).orElse(null);
                         newsData.getTags().add(tag);
-                    }
+                    }, executor);
+                    futures[i] = future;
                 }
             }
+            CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures);
 
             // Update img
             if (img != null && img.getSize() != 0) {
-                storageService.deleteFile(oldUrlImg);
+                CompletableFuture<Void> futureDeleteMainImg = CompletableFuture.runAsync(() -> {
+                    storageService.deleteFile(oldUrlImg);
+                }, executor);
+
                 // Upload image to cloudinary
-                String mainImgFileName = storageService.storeFile(img);
-                foundNews.get().setImg(mainImgFileName);
+                CompletableFuture<Void> futureMainImg = CompletableFuture.runAsync(() -> {
+                    String mainImgFileName = storageService.storeFile(img);
+                    foundNews.get().setImg(mainImgFileName);
+                }, executor);
+
+                futureMainImg.join();
+                futureDeleteMainImg.join();
             }
+
+            allFutures.join();
 
             News resNews = repository.save(foundNews.get());
 
