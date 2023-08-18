@@ -23,7 +23,6 @@ public class TagsController {
     @Autowired
     private TagsNewsFKRepository fkTagsNewsRepository;
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(

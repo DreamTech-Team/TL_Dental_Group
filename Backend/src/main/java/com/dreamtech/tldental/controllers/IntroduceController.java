@@ -30,7 +30,6 @@ public class IntroduceController {
     @Autowired
     private IStorageService storageService;
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/header")
     public ResponseEntity<ResponseObject> getHeader() {
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -89,7 +88,6 @@ public class IntroduceController {
                 new ResponseObject("failed", "Cannot found your data", ""));
     }
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/letter")
     public ResponseEntity<ResponseObject> getLetter() {
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -135,7 +133,6 @@ public class IntroduceController {
                 new ResponseObject("failed", "Cannot found your data", ""));
     }
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/company-info")
     public ResponseEntity<ResponseObject> getCompanyInfor() {
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -204,7 +201,6 @@ public class IntroduceController {
                 new ResponseObject("failed", "Cannot found your data", ""));
     }
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/section1")
     public ResponseEntity<ResponseObject> getSection1() {
         return ResponseEntity.status(HttpStatus.OK).body(

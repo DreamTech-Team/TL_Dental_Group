@@ -37,7 +37,6 @@ public class HomePageController {
     @Autowired
     private IStorageService storageService;
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/header")
     public ResponseEntity<ResponseObject> getHomeHeader() {
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -88,7 +87,6 @@ public class HomePageController {
 
     // SECTION 1
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/section1")
     ResponseEntity<ResponseObject> getSection1() {
         Optional<ContentPage> section1Heading = contentPageRepository.findHomePageByTypeName("home::section1_heading");
@@ -252,7 +250,6 @@ public class HomePageController {
                 new ResponseObject("failed", "Cannot found your data", ""));
     }
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping(value = "/section2")
     public ResponseEntity<ResponseObject> getSection2() {
         Optional<ContentPage> section2 = contentPageRepository.findHomePageByTypeName("home::section2");
@@ -326,7 +323,6 @@ public class HomePageController {
                 new ResponseObject("failed", "Cannot found your data", ""));
     }
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping(value = "/section3")
     public ResponseEntity<ResponseObject> getSection3() {
         Optional<ContentPage> section3 = contentPageRepository.findHomePageByTypeName("home::section3");
@@ -398,7 +394,6 @@ public class HomePageController {
                 new ResponseObject("failed", "Cannot found your data", ""));
     }
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping(value = "/reviews")
     ResponseEntity<ResponseObject> getReviews() {
         return ResponseEntity.status(HttpStatus.OK).body(

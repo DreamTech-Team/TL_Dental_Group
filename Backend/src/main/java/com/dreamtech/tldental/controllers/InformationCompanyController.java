@@ -35,7 +35,6 @@ public class InformationCompanyController {
                 this.executor = Executors.newFixedThreadPool(5);
         }
 
-        @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
         @GetMapping("")
         public ResponseEntity<ResponseObject> getGeneral(@RequestParam(defaultValue = "GENERAL") String type) {
                 List<InformationCompany> data = repository.findAllByType(type);

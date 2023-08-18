@@ -30,7 +30,6 @@ public class Category_1Controller {
     private IStorageService storageService;
 
     // GET ALL WITH FILTER
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAll(@RequestParam(required = false) boolean highlight) {
         List<Category_1> data;
@@ -44,7 +43,6 @@ public class Category_1Controller {
     }
 
     // GET DETAIL
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/{slug}")
     public ResponseEntity<ResponseObject> getDetail(@PathVariable String slug) {
         return ResponseEntity.status(HttpStatus.OK).body(

@@ -41,7 +41,6 @@ public class FacilityController {
     @Autowired
     private IStorageService storageService;
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN')")
     @GetMapping("/")
     public ResponseEntity<ResponseObject> getFacility() {
         List<Facility> facilities = facilityRepository.findAll();

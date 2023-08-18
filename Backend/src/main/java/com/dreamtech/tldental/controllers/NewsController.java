@@ -35,7 +35,6 @@ public class NewsController {
     private IStorageService storageService;
 
     // GET ALL NEWS WITH FILTER
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("")
     ResponseEntity<ResponseObject> getFilter(@RequestParam(value = "key", required = false) String key,
             @RequestParam(value = "outstanding", required = false) boolean outstanding,
@@ -65,7 +64,6 @@ public class NewsController {
                         new DataPageObject(total, page, pageSize, combinedList)));
     }
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/total")
     ResponseEntity<ResponseObject> getTotal(@RequestParam(value = "key", required = false) String key,
             @RequestParam(required = false) List<String> filterTags) {
@@ -85,7 +83,6 @@ public class NewsController {
     }
 
     // GET NEWS WITH FILTER BY MONTH
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/month")
     ResponseEntity<ResponseObject> getNewsByMonth(@RequestParam int month) {
         List<Object[]> foundNews = repository.findNewsByMonth(month);
@@ -95,7 +92,6 @@ public class NewsController {
     }
 
     // GET DETAIL NEWS
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/{slug}")
     ResponseEntity<ResponseObject> getDetail(@PathVariable String slug) {
         Optional<News> foundNews = Optional.ofNullable(repository.findBySlug(slug));
@@ -217,7 +213,6 @@ public class NewsController {
 
     // HIGHLIGHT //
     // GET ALL HIGHLIGHT NEWS
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/highlight")
     ResponseEntity<ResponseObject> getHighlightNews() {
         List<Object[]> foundNews = repository.findHighlightNews();
@@ -241,7 +236,6 @@ public class NewsController {
     }
 
     // BANNER HEADER
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/header")
     public ResponseEntity<ResponseObject> getHeader() {
         return ResponseEntity.status(HttpStatus.OK).body(

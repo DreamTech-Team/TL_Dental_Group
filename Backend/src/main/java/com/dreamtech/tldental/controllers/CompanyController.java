@@ -28,7 +28,6 @@ public class CompanyController {
     private IStorageService storageService;
 
     // GET ALL WITH FILTER
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN')")
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAll(@RequestParam(required = false) boolean highlight) {
         try {
@@ -51,7 +50,6 @@ public class CompanyController {
     }
 
     // GET DETAIL
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN')")
     @GetMapping("/{slug}")
     public ResponseEntity<ResponseObject> getDetail(@PathVariable String slug) {
         return ResponseEntity.status(HttpStatus.OK).body(

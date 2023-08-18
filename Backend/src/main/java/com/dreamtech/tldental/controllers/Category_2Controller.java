@@ -25,7 +25,6 @@ public class Category_2Controller {
     private IStorageService storageService;
 
     // GET ALL WITH FILTER
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAll() {
         List<Category_2> data = repository.findAll();
@@ -34,7 +33,6 @@ public class Category_2Controller {
     }
 
     // GET DETAIL
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/{slug}")
     public ResponseEntity<ResponseObject> getDetail(@PathVariable String slug) {
         return ResponseEntity.status(HttpStatus.OK).body(

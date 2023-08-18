@@ -54,7 +54,6 @@ public class ProductController {
     }
 
     // GET ALL WITH FILTER
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("")
     ResponseEntity<ResponseObject> getAllProducts(@RequestParam(value = "company", required = false) String company,
                                                   @RequestParam(value = "cate1", required = false) String cate1,
@@ -92,7 +91,6 @@ public class ProductController {
         }
     }
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/total")
     ResponseEntity<ResponseObject> getTotal(@RequestParam(value = "company", required = false) String company,
             @RequestParam(value = "cate1", required = false) String cate1,
@@ -106,7 +104,6 @@ public class ProductController {
     }
 
     // SEARCH BY NAME OR COMPANY
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/search")
     ResponseEntity<ResponseObject> searchProducts(@RequestParam(value = "key", required = false) String key,
             @RequestParam(required = false, defaultValue = "12") String pageSize,
@@ -132,7 +129,6 @@ public class ProductController {
     }
 
     // GET DETAIL
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/{slug}")
     ResponseEntity<ResponseObject> findBySlug(@PathVariable String slug) {
         Optional<Product> foundProduct = Optional.ofNullable(repository.findBySlug(slug));
@@ -357,7 +353,6 @@ public class ProductController {
     }
 
     // GET ALL HIGHLIGHT PRODUCTS
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/highlight")
     ResponseEntity<ResponseObject> getAllHighlight() {
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -388,7 +383,6 @@ public class ProductController {
     }
 
     // BANNER HEADER
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/header")
     public ResponseEntity<ResponseObject> getHeader() {
         return ResponseEntity.status(HttpStatus.OK).body(

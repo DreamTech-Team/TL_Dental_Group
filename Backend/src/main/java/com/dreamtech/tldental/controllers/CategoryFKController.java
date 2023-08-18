@@ -30,7 +30,6 @@ public class CategoryFKController {
     private Category_2Repository category2Repository;
 
     // GET ALL FILTER
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAll(@RequestParam(required = false, defaultValue = "") String companyId,
             @RequestParam(required = false, defaultValue = "") String cate1Id,
@@ -42,7 +41,6 @@ public class CategoryFKController {
     }
 
     // GET DETAIL
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseObject> getDetail(@PathVariable String id) {
         return ResponseEntity.status(HttpStatus.OK).body(

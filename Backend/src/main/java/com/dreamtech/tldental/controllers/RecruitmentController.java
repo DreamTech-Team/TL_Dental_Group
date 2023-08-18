@@ -51,7 +51,6 @@ public class RecruitmentController {
     @Autowired
     private IStorageService storageService;
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/header")
     public ResponseEntity<ResponseObject> getHeader() {
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -107,7 +106,6 @@ public class RecruitmentController {
                         contentPageRepository.saveAll(Arrays.asList(entity))));
     }
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping(value = "/section1")
     public ResponseEntity<ResponseObject> getSection1() {
         Optional<ContentPage> section1_1 = contentPageRepository.findHomePageByTypeName("recruitment::section1_1");
@@ -230,7 +228,6 @@ public class RecruitmentController {
                 new ResponseObject("failed", "Cannot found your data", ""));
     }
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping(value = "/section2")
     public ResponseEntity<ResponseObject> getSection2() {
         Optional<ContentPage> section2 = contentPageRepository.findHomePageByTypeName("recruitment::section2");
@@ -327,7 +324,6 @@ public class RecruitmentController {
                 new ResponseObject("failed", "Cannot found your data", ""));
     }
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/")
     ResponseEntity<ResponseObject> getRecruitment(@RequestParam(value = "q", required = false) String query,
             @RequestParam(required = false, defaultValue = "12") String pageSize,
@@ -352,7 +348,6 @@ public class RecruitmentController {
         }
     }
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/{id}")
     ResponseEntity<ResponseObject> getById(@PathVariable("id") String id) {
         try {
