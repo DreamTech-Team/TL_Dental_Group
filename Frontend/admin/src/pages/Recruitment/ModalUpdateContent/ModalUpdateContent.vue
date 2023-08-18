@@ -182,6 +182,7 @@ const handleModalUpdate = () => {
                     'wordcount'
                   ],
                   toolbar:
+                    // eslint-disable-next-line max-len
                     'undo redo | casechange blocks | formatselect | bold italic backcolor forecolor | \
            alignleft aligncenter alignright alignjustify | \
            bullist numlst outdent indent | removeformat | code table help'

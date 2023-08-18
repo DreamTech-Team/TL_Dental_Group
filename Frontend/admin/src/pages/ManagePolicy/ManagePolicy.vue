@@ -1,51 +1,12 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faPlus, faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
-import { RouterLink } from 'vue-router';
 import Pagination from '@/components/Pagination/BasePagination.vue';
-import ic_private from '@/assets/imgs/Policy/icon/ic_private.svg';
 import { computed, ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import ManagePolicyEdit from '../ManagePolicyEdit/ManagePolicyEdit.vue';
 import styles from './ManagePolicy.module.scss';
 import Swal from 'sweetalert2';
-
-// const datebase = [
-//   { name: '1Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: '2Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: '3Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: '4Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private },
-//   { name: 'Chính sách bảo mật', date: '01/01/2001', icon: ic_private }
-// ];
 
 interface PolicyDetail {
   id: string;

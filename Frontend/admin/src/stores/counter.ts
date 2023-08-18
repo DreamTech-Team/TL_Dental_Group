@@ -10,3 +10,33 @@ export const useCounterStore = defineStore('counter', () => {
 
   return { count, doubleCount, increment };
 });
+
+interface AccountAdmin {
+  id: string;
+  email: string;
+  fullName: string;
+  phoneNumber: string;
+  address: string;
+  password: string;
+  roles: string;
+  token: string;
+}
+
+export const useInforAdminStore = defineStore('inforAdmin', () => {
+  const inforAdmin = ref<AccountAdmin>({
+    id: '',
+    email: '',
+    fullName: '',
+    phoneNumber: '',
+    address: '',
+    password: '',
+    roles: '',
+    token: ''
+  });
+
+  const setInforAdmin = (newInfor: AccountAdmin) => {
+    inforAdmin.value = newInfor;
+  };
+
+  return { inforAdmin, setInforAdmin };
+});

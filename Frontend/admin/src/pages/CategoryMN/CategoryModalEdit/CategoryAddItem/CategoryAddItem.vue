@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, type PropType } from 'vue';
+import { ref, watch } from 'vue';
 import Swal from 'sweetalert2';
 
 import { ic_logo } from '@/assets/imgs/Recruitment/RecruitmentImgs';
@@ -7,15 +7,6 @@ import styles from './CategoryAddItem.module.scss';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import { faCameraRotate } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-
-interface Cate1Object {
-  id: string;
-  title: string;
-  img: string;
-  highlight: number;
-  slug: string;
-  createAt: string;
-}
 
 const props = defineProps({
   numCate: { type: Number, required: false },

@@ -1,6 +1,6 @@
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
 import { ref, onMounted, watch, type Ref, type PropType } from 'vue';
-import { ic_add } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 
 interface CardElementItem {
   icon: { link: string; style: string };

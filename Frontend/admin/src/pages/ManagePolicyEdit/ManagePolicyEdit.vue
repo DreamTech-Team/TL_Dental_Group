@@ -4,7 +4,7 @@ import no_icon from '@/assets/imgs/Policy/icon/ic_noimage.svg';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faUpload } from '@fortawesome/free-solid-svg-icons';
 import Editor from '@tinymce/tinymce-vue';
-import { ref, watch, type Ref, type PropType } from 'vue';
+import { ref, watch, type PropType } from 'vue';
 import type { DataResponse } from '@/hooks/useAxios';
 import useAxios from '@/hooks/useAxios';
 import styles from './ManagePolicyEdit.module.scss';

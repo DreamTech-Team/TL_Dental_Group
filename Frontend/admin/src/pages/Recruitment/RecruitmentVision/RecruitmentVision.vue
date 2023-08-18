@@ -2,7 +2,6 @@
 import { onMounted, ref, watch, type PropType } from 'vue';
 
 import RecruitmentCard from '../RecruitmentCard/RecruitmentCard.vue';
-import { ceo, imgHand } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 import styles from './RecruitmentVision.module.scss';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import Swal from 'sweetalert2';
@@ -214,7 +213,7 @@ watch(
 
 watch(
   () => props.imageVisionItems[0],
-  (value) => {
+  () => {
     selectedImage1.value = props.imageVisionItems[0].image;
     selectedImage2.value = props.imageVisionItems[1].image;
   }

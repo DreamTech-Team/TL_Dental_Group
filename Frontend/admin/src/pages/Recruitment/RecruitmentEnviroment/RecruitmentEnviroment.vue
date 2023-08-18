@@ -18,7 +18,7 @@ const handleEditEnvir = () => {
 };
 
 //Choose image
-const handleFileInputChange = (event: Event, index: number, topic: any) => {
+const handleFileInputChange = (event: Event, index: number) => {
   const inputElement = event.target as HTMLInputElement;
   const file = inputElement.files?.[0];
 

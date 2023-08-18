@@ -8,9 +8,16 @@
   position: relative;
   align-items: center;
 
+  &__loading {
+    position: absolute;
+    background-color: rgba(#000, 0.2);
+    width: 100vw;
+    height: 100vh;
+  }
+
   &_container {
     flex: 0.6;
-    padding-left: 3rem;
+    padding-left: 10rem;
 
     &_title {
       margin-bottom: 30px;
@@ -192,5 +199,68 @@
   .checkAccount {
     color: red;
     font-size: $text-sm;
+  }
+}
+
+//Loading
+#loader {
+  padding: 1.5rem;
+  width: 2rem;
+  height: 2rem;
+  margin: auto;
+  margin-top: 3rem;
+  border: 0.8rem solid white;
+  border-radius: 50%;
+  border-top: 0.8rem solid #3498db;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Add animation to "page content" */
+.animate-bottom {
+  position: relative;
+  -webkit-animation-name: animatebottom;
+  -webkit-animation-duration: 1s;
+  animation-name: animatebottom;
+  animation-duration: 1s;
+}
+
+@-webkit-keyframes animatebottom {
+  from {
+    bottom: -100px;
+    opacity: 0;
+  }
+  to {
+    bottom: 0px;
+    opacity: 1;
+  }
+}
+
+@keyframes animatebottom {
+  from {
+    bottom: -100px;
+    opacity: 0;
+  }
+  to {
+    bottom: 0;
+    opacity: 1;
   }
 }

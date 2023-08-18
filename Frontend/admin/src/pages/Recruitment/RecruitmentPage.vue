@@ -34,6 +34,7 @@ const topics = {
   vision: 'vision',
   value: 'value'
 };
+
 const iconCard = [ic_clock, ic_DaiNgo, ic_light];
 
 const elementEventRec = ref();
@@ -406,8 +407,6 @@ function enableScroll() {
   // Cuộn lại đến vị trí ban đầu
   window.scrollTo(-scrollLeft, -scrollTop);
 }
-
-const getElementRec = (e: Event) => (elementEventRec.value = e);
 
 const hanldeScrollToVacancies = () => {
   const element = elementEventRec.value;

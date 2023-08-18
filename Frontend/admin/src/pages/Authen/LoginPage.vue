@@ -1,13 +1,58 @@
 <script setup lang="ts">
 import logo from '../../assets/imgs/Activity/image.png';
-import ellip1 from '../../assets/imgs/Authen/ellipse178.png';
-import ellip3 from '../../assets/imgs/Authen/ellipse179.png';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faUnlockKeyhole } from '@fortawesome/free-solid-svg-icons';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import { useInforAdminStore } from '@/stores/counter';
+import { useRouter } from 'vue-router';
 
 const accountInput = ref({ email: '', pass: '' });
-const checkAccount = ref(true);
+const checkAccount = ref(false);
+const isLoading = ref(false);
+const paramAxios = ref();
+const router = useRouter();
+
+const { setInforAdmin } = useInforAdminStore();
+const handleLogin = () => {
+  const postAccount = useAxios<DataResponse>(
+    'post',
+    '/auth/login',
+    {
+      email: accountInput.value.email,
+      password: accountInput.value.pass
+    },
+    {},
+    paramAxios.value
+  );
+
+  watch(postAccount.error, (value) => {
+    console.log(value);
+    checkAccount.value = true;
+  });
+
+  watch(postAccount.isLoading, (value) => {
+    console.log(value);
+    isLoading.value = value;
+  });
+
+  watch(postAccount.response, (value) => {
+    const newInfor = {
+      id: value?.data.user.id,
+      email: value?.data.user.email,
+      fullName: value?.data.user.fullname,
+      phoneNumber: value?.data.user.phonenumber,
+      address: value?.data.user.address,
+      password: value?.data.user.password,
+      roles: value?.data.user.roles,
+      token: value?.data.jwt
+    };
+
+    setInforAdmin(newInfor);
+
+    router.push('/');
+  });
+};
 </script>
 <template>
   <div :class="$style.authen">
@@ -40,20 +85,16 @@ const checkAccount = ref(true);
         *Email hoặc mật khẩu không chính xác
       </p>
       <div :class="$style.wrap_btn">
-        <button>Đăng nhập</button>
+        <button @click="handleLogin">Đăng nhập</button>
       </div>
       <div :class="$style.wrap_route">
         <router-link to="/forgot" :class="$style.wrap_cancel">Quên mật khẩu?</router-link>
       </div>
     </div>
     <div :class="$style.authen_welcome">
-      <!-- <img :src="second" alt="sdf" :class="$style.authen_welcome_img" /> -->
       <div :class="$style.authen_welcome_img"></div>
       <div :class="$style.authen_welcome_content">
         <div :class="$style.authen_welcome_content_ellip1"></div>
-        <!-- <img :class="$style.authen_welcome_content_ellip1" :src="ellip1" alt="elip" /> -->
-        <!-- <img :class="$style.authen_welcome_content_ellip2" :src="ellip1" alt="elip2" /> -->
-        <!-- <img :class="$style.authen_welcome_content_ellip3" :src="ellip3" alt="elip2" /> -->
         <div :class="$style.authen_welcome_content_ellip2"></div>
         <div :class="$style.authen_welcome_content_ellip3"></div>
         <img :class="$style.authen_welcome_content_img" :src="logo" alt="logo" />
@@ -63,6 +104,9 @@ const checkAccount = ref(true);
           mật khẩu để tiếp tục quản lý hệ thống.
         </p>
       </div>
+    </div>
+    <div v-if="isLoading" :class="$style.authen__loading">
+      <div :id="$style.loader"></div>
     </div>
   </div>
 </template>

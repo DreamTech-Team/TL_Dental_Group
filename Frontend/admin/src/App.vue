@@ -15,7 +15,10 @@ watch(useRoute(), (value) => {
 <template>
   <BaseHeader v-if="!checkLoginPage" />
 
-  <div style="width: calc(100% - 70px); margin-left: auto">
+  <div v-if="checkLoginPage">
+    <RouterView />
+  </div>
+  <div v-else style="width: calc(100% - 70px); margin-left: auto">
     <RouterView />
   </div>
 

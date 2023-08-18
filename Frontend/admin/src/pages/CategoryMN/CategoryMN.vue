@@ -7,8 +7,6 @@ import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import CategoryList from './CategoryList/CategoryList.vue';
 import CategoryModalEdit from './CategoryModalEdit/CategoryModalEdit.vue';
 import styles from './CategoryMN.module.scss';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 interface Cate1Object {
   id: string;
@@ -88,10 +86,6 @@ const getCategoryFull2 = useAxios<DataResponse>(
   listCategoryFull.value.cate1
 );
 
-// function findElementFromArrayStartingFromIndex(arr, callback, startIndex) {
-//   return arr.slice(startIndex).find(callback);
-// }
-
 //Hàm mở cate1 khi select company
 const handleSelectCompany = (infCompapy: any) => {
   itemSelected.value.company = infCompapy;
@@ -119,7 +113,7 @@ const handleSelectCompany = (infCompapy: any) => {
           return arr.findIndex((e) => e.id === element.id) === index;
         });
 
-        checkCate1.value.forEach((element, index) => {
+        checkCate1.value.forEach((element) => {
           cate1IdArray.findIndex((e) => e.id === element.id);
         });
 
@@ -184,9 +178,9 @@ const handleSelectCategory1 = (infCategory1: any) => {
       }
     });
 
-    // watch(getCategories.error, (value) => {
-    //   console.log(value);
-    // });
+    watch(getCategories.error, (value) => {
+      console.log(value);
+    });
   } else {
     listCategory2.value.lst = [];
     listCategory2.value.lstEmpty = false;

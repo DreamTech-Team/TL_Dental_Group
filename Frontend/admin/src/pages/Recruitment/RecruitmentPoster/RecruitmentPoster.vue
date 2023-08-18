@@ -3,7 +3,7 @@ import { ref, watch, onMounted, type PropType, type Ref } from 'vue';
 import { girl1, girl2 } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 import RecruitmentCard from '../RecruitmentCard/RecruitmentCard.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faPen, faPencil } from '@fortawesome/free-solid-svg-icons';
+import { faPencil } from '@fortawesome/free-solid-svg-icons';
 
 interface CardElementItem {
   icon: { link: string; style: string };
