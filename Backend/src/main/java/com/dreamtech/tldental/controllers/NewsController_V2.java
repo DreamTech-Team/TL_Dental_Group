@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,14 +35,16 @@ public class NewsController_V2 {
     private IStorageService storageService;
 
     // GET ALL NEWS WITH FILTER
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("")
-    ResponseEntity<ResponseObject> getFilter(@RequestParam(value = "key", required = false, defaultValue = "") String key,
-                                             @RequestParam(value = "outstanding", required = false) boolean outstanding,
-                                             @RequestParam(value = "popular", required = false) boolean popular,
-                                             @RequestParam(required = false, defaultValue = "12") String pageSize,
-                                             @RequestParam(required = false, defaultValue = "0") String page,
-                                             @RequestParam(required = false) List<String> filterTags,
-                                             @RequestParam(required = false, defaultValue = "desc") String sort) {
+    ResponseEntity<ResponseObject> getFilter(
+            @RequestParam(value = "key", required = false, defaultValue = "") String key,
+            @RequestParam(value = "outstanding", required = false) boolean outstanding,
+            @RequestParam(value = "popular", required = false) boolean popular,
+            @RequestParam(required = false, defaultValue = "12") String pageSize,
+            @RequestParam(required = false, defaultValue = "0") String page,
+            @RequestParam(required = false) List<String> filterTags,
+            @RequestParam(required = false, defaultValue = "desc") String sort) {
         Sort.Direction sortDirection = sort.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
         Sort sortByCreateAt = Sort.by(sortDirection, "createAt");
 
@@ -66,13 +69,15 @@ public class NewsController_V2 {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Query news successfully", new DataPageObject(newsList.size(), page, pageSize, newsList))
-        );
+                new ResponseObject("ok", "Query news successfully",
+                        new DataPageObject(newsList.size(), page, pageSize, newsList)));
     }
 
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/total")
-    ResponseEntity<ResponseObject> getTotal(@RequestParam(value = "key", required = false, defaultValue = "") String key,
-                                            @RequestParam(required = false) List<String> filterTags) {
+    ResponseEntity<ResponseObject> getTotal(
+            @RequestParam(value = "key", required = false, defaultValue = "") String key,
+            @RequestParam(required = false) List<String> filterTags) {
         Long total = 0L;
         if (filterTags == null) {
             total = repository.countByTitleContainingIgnoreCase(key);
@@ -81,37 +86,35 @@ public class NewsController_V2 {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Query total successfully", total)
-        );
+                new ResponseObject("ok", "Query total successfully", total));
     }
 
     // GET NEWS WITH FILTER BY MONTH
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/month")
     ResponseEntity<ResponseObject> getNewsByMonth(@RequestParam int month) {
         List<Object[]> foundNews = repository.findNewsByMonth(month);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Get news by month (" + month + ") successfully", foundNews)
-        );
+                new ResponseObject("ok", "Get news by month (" + month + ") successfully", foundNews));
     }
 
     // GET DETAIL NEWS
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/{slug}")
     ResponseEntity<ResponseObject> getDetail(@PathVariable String slug) {
         Optional<News> foundNews = Optional.ofNullable(repository.findBySlug(slug));
-        return foundNews.isPresent() ?
-                ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject("ok", "Query news successfully", foundNews)
-                ):
-                ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new ResponseObject("failed", "Can not find product with id = "+slug, "")
-                );
+        return foundNews.isPresent() ? ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Query news successfully", foundNews))
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject("failed", "Can not find product with id = " + slug, ""));
     }
 
     // CREATE NEWS
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PostMapping("")
     ResponseEntity<ResponseObject> createNews(@RequestPart("img") MultipartFile img,
-                                              @RequestParam ("data") String data,
-                                              @RequestParam (value = "tags", required = false) List<String> tags) {
+            @RequestParam("data") String data,
+            @RequestParam(value = "tags", required = false) List<String> tags) {
         try {
             // Convert String to JSON
             ObjectMapper objectMapper = new ObjectMapper();
@@ -121,15 +124,13 @@ public class NewsController_V2 {
             List<News> foundNews = repository.findByTitle(newsData.getTitle().trim());
             if (foundNews.size() > 0) {
                 return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                        new ResponseObject("failed", "News's name already taken", "")
-                );
+                        new ResponseObject("failed", "News's name already taken", ""));
             }
 
             // Check name has "/" or "\"
             if (newsData.getTitle().contains("/") || newsData.getTitle().contains("/")) {
                 return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                        new ResponseObject("failed", "News's name should not have /", "")
-                );
+                        new ResponseObject("failed", "News's name should not have /", ""));
             }
             // Upload image to cloudinary
             String mainImgFileName = storageService.storeFile(img);
@@ -148,21 +149,20 @@ public class NewsController_V2 {
             News resNews = repository.save(newsData);
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Insert news successfully", resNews)
-            );
+                    new ResponseObject("ok", "Insert news successfully", resNews));
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject("failed", exception.getMessage(), "")
-            );
+                    new ResponseObject("failed", exception.getMessage(), ""));
         }
     }
 
     // UPDATE NEWS
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PatchMapping("/{id}")
     ResponseEntity<ResponseObject> updateNews(@PathVariable String id,
-                                              @RequestPart(value = "img", required = false) MultipartFile img,
-                                              @RequestParam("data") String data,
-                                              @RequestParam(value = "tags", required = false) List<String> tags) throws JsonProcessingException {
+            @RequestPart(value = "img", required = false) MultipartFile img,
+            @RequestParam("data") String data,
+            @RequestParam(value = "tags", required = false) List<String> tags) throws JsonProcessingException {
         // Convert String to JSON
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -199,16 +199,15 @@ public class NewsController_V2 {
             News resNews = repository.save(foundNews.get());
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Update news successfully", resNews)
-            );
+                    new ResponseObject("ok", "Update news successfully", resNews));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", "Can not find news with id = "+newsData.getId(), "")
-            );
+                    new ResponseObject("failed", "Can not find news with id = " + newsData.getId(), ""));
         }
     }
 
     // DELETE NEWS
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseObject> deleteNews(@PathVariable String id) {
         Optional<News> foundNews = repository.findById(id);
@@ -218,57 +217,52 @@ public class NewsController_V2 {
 
             repository.deleteById(id);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Deleted news successfully", "")
-            );
+                    new ResponseObject("ok", "Deleted news successfully", ""));
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new ResponseObject("failed", "Can not find news with id = "+id, "")
-        );
+                new ResponseObject("failed", "Can not find news with id = " + id, ""));
     }
-
 
     // HIGHLIGHT //
     // GET ALL HIGHLIGHT NEWS
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/highlight")
     ResponseEntity<ResponseObject> getHighlightNews() {
         List<News> foundNews = repository.findHighlightNews();
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Get all highlight news successfully", foundNews)
-        );
+                new ResponseObject("ok", "Get all highlight news successfully", foundNews));
     }
 
     // UPDATE HIGHLIGHT NEWS
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PatchMapping("/highlight/{slug}")
     ResponseEntity<ResponseObject> updateHighlightNews(@PathVariable String slug,
-                                                   @RequestParam int highlight) {
+            @RequestParam int highlight) {
         Optional<News> foundNews = Optional.ofNullable(repository.findBySlug(slug));
         foundNews.get().setHighlight(highlight);
-        return foundNews.isPresent() ?
-                ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject("ok", "Update highlight news successfully", repository.save(foundNews.get()))
-                ):
-                ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new ResponseObject("failed", "Can not find product with id = "+slug, "")
-                );
+        return foundNews.isPresent() ? ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Update highlight news successfully", repository.save(foundNews.get())))
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject("failed", "Can not find product with id = " + slug, ""));
     }
 
-
-    //  BANNER HEADER
+    // BANNER HEADER
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/header")
     public ResponseEntity<ResponseObject> getHeader() {
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Get header successfully", contentPageRepository.findHomePageByTypeName("news_list::header"))
-        );
+                new ResponseObject("ok", "Get header successfully",
+                        contentPageRepository.findHomePageByTypeName("news_list::header")));
     }
 
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PostMapping("/header")
     public ResponseEntity<ResponseObject> addHeader(@RequestParam("image") MultipartFile image) {
         Optional<ContentPage> foundHeader = contentPageRepository.findHomePageByTypeName("news_list::header");
 
         if (foundHeader.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject("failed", "Type name already taken", "")
-            );
+                    new ResponseObject("failed", "Type name already taken", ""));
         }
 
         String imageFile = storageService.storeFile(image);
@@ -276,12 +270,14 @@ public class NewsController_V2 {
         ContentPage entity = new ContentPage(null, "Danh sách tin tức", null, imageFile, null, "news_list::header");
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Add header successfully", contentPageRepository.save(entity))
-        );
+                new ResponseObject("ok", "Add header successfully", contentPageRepository.save(entity)));
     }
 
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PatchMapping("/header")
-    public ResponseEntity<ResponseObject> updateHeader(@RequestParam("data") String data, @RequestParam(name = "image", required = false) MultipartFile image) throws JsonMappingException, JsonProcessingException {
+    public ResponseEntity<ResponseObject> updateHeader(@RequestParam("data") String data,
+            @RequestParam(name = "image", required = false) MultipartFile image)
+            throws JsonMappingException, JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         ContentPage entity = objectMapper.readValue(data, ContentPage.class);
 
@@ -301,13 +297,11 @@ public class NewsController_V2 {
                 header.setType("news_list::header");
 
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject("ok", "Update header successfully", contentPageRepository.save(header))
-                );
+                        new ResponseObject("ok", "Update header successfully", contentPageRepository.save(header)));
             }
         }
 
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                new ResponseObject("failed", "Cannot found your data", "")
-        );
+                new ResponseObject("failed", "Cannot found your data", ""));
     }
 }

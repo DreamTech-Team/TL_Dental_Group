@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -28,32 +29,34 @@ public class CategoryFKController {
     @Autowired
     private Category_2Repository category2Repository;
 
-
     // GET ALL FILTER
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAll(@RequestParam(required = false, defaultValue = "") String companyId,
-                                                 @RequestParam(required = false, defaultValue = "") String cate1Id,
-                                                 @RequestParam(required = false, defaultValue = "") String cate2Id) {
+            @RequestParam(required = false, defaultValue = "") String cate1Id,
+            @RequestParam(required = false, defaultValue = "") String cate2Id) {
         List<CategoryFK> cateExist = categoryFKRepository.getCategoryFKByAll(companyId, cate1Id, cate2Id);
         System.out.println(companyId);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Query category successfully", cateExist)
-        );
+                new ResponseObject("ok", "Query category successfully", cateExist));
     }
 
     // GET DETAIL
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/{id}")
     public ResponseEntity<ResponseObject> getDetail(@PathVariable String id) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Query category successfully", categoryFKRepository.findById(id))
-        );
+                new ResponseObject("ok", "Query category successfully", categoryFKRepository.findById(id)));
     }
 
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PostMapping("")
     public ResponseEntity<ResponseObject> createCategory(@RequestBody CategoryData cateData) throws IOException {
         try {
-            CategoryFK cateExistCate1 = categoryFKRepository.getCategoryFKCate1(cateData.getCompanyId(), cateData.getCate1Id());
-            CategoryFK cateExistCate2 = categoryFKRepository.getCategoryFKCate2(cateData.getCompanyId(), cateData.getCate1Id(), cateData.getCate2Id());
+            CategoryFK cateExistCate1 = categoryFKRepository.getCategoryFKCate1(cateData.getCompanyId(),
+                    cateData.getCate1Id());
+            CategoryFK cateExistCate2 = categoryFKRepository.getCategoryFKCate2(cateData.getCompanyId(),
+                    cateData.getCate1Id(), cateData.getCate2Id());
 
             Company companyId = null;
             Category_1 cate1Id = null;
@@ -64,8 +67,7 @@ public class CategoryFKController {
                 // Create cate1
                 if (cateExistCate1 != null) {
                     return ResponseEntity.status(HttpStatus.OK).body(
-                            new ResponseObject("ok", "Category was created previously", cateExistCate1)
-                    );
+                            new ResponseObject("ok", "Category was created previously", cateExistCate1));
                 } else {
                     // Create new
                     companyId = companyRepository.findById(cateData.getCompanyId()).orElseGet(null);
@@ -77,8 +79,7 @@ public class CategoryFKController {
                 // Create cate2
                 if (cateExistCate2 != null) {
                     return ResponseEntity.status(HttpStatus.OK).body(
-                            new ResponseObject("ok", "Category was created previously", cateExistCate2)
-                    );
+                            new ResponseObject("ok", "Category was created previously", cateExistCate2));
                 } else {
                     if (cateExistCate1 != null) {
                         cate2Id = category2Repository.findById(cateData.getCate2Id()).orElseGet(null);
@@ -96,36 +97,34 @@ public class CategoryFKController {
             }
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Insert category successfully", resCategory)
-            );
+                    new ResponseObject("ok", "Insert category successfully", resCategory));
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", exception.getMessage(), "")
-            );
+                    new ResponseObject("failed", exception.getMessage(), ""));
         }
     }
 
     // Delete detail
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseObject> deleteCategoryFK(@PathVariable String id) {
         try {
             categoryFKRepository.deleteById(id);
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Deleted category successfully", "")
-            );
-        } catch (Exception exception){
+                    new ResponseObject("ok", "Deleted category successfully", ""));
+        } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", exception.getMessage(), "")
-            );
+                    new ResponseObject("failed", exception.getMessage(), ""));
         }
     }
 
     // DELETE
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @DeleteMapping("")
     public ResponseEntity<ResponseObject> deleteCategory(@RequestParam(required = true) String companyId,
-                                                         @RequestParam(required = true) String cate1Id,
-                                                         @RequestParam(required = false, defaultValue = "") String cate2Id) throws IOException {
+            @RequestParam(required = true) String cate1Id,
+            @RequestParam(required = false, defaultValue = "") String cate2Id) throws IOException {
         try {
             if (cate2Id.equals("")) {
                 // Delete cate1
@@ -136,25 +135,23 @@ public class CategoryFKController {
 
                 if (categoryFKList.size() > 0) {
                     return ResponseEntity.status(HttpStatus.OK).body(
-                            new ResponseObject("ok", "Delete category successfully. However, categories can not be deleted because they have Foreign Key.", categoryFKList)
-                    );
+                            new ResponseObject("ok",
+                                    "Delete category successfully. However, categories can not be deleted because they have Foreign Key.",
+                                    categoryFKList));
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject("ok", "Delete category successfully", categoryFKList)
-                );
+                        new ResponseObject("ok", "Delete category successfully", categoryFKList));
             } else {
                 // Delete cate2
                 CategoryFK cateExistCate2 = categoryFKRepository.getCategoryFKCate2(companyId, cate1Id, cate2Id);
                 categoryFKRepository.deleteById(cateExistCate2.getId());
 
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject("ok", "Delete category successfully", cateExistCate2)
-                );
+                        new ResponseObject("ok", "Delete category successfully", cateExistCate2));
             }
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", exception.getMessage(), "")
-            );
+                    new ResponseObject("failed", exception.getMessage(), ""));
         }
     }
 

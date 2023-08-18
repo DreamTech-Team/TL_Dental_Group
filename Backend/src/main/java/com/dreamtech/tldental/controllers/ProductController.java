@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,14 +54,15 @@ public class ProductController {
     }
 
     // GET ALL WITH FILTER
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("")
     ResponseEntity<ResponseObject> getAllProducts(@RequestParam(value = "company", required = false) String company,
-                                                  @RequestParam(value = "cate1", required = false) String cate1,
-                                                  @RequestParam(value = "cate2", required = false) String cate2,
-                                                  @RequestParam(value = "key", required = false) String key,
-                                                  @RequestParam(required = false, defaultValue = "12") String pageSize,
-                                                  @RequestParam(required = false, defaultValue = "0") String page,
-                                                  @RequestParam(required = false, defaultValue = "desc") String sort) {
+            @RequestParam(value = "cate1", required = false) String cate1,
+            @RequestParam(value = "cate2", required = false) String cate2,
+            @RequestParam(value = "key", required = false) String key,
+            @RequestParam(required = false, defaultValue = "12") String pageSize,
+            @RequestParam(required = false, defaultValue = "0") String page,
+            @RequestParam(required = false, defaultValue = "desc") String sort) {
         try {
             // HANDLE FILTER
             Sort.Direction sortDirection = sort.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
@@ -72,34 +74,34 @@ public class ProductController {
             int total = newsList.size();
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Query product successfully", new DataPageObject(total, page, pageSize, newsList))
-            );
+                    new ResponseObject("ok", "Query product successfully",
+                            new DataPageObject(total, page, pageSize, newsList)));
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject("failed", exception.getMessage(), "")
-            );
+                    new ResponseObject("failed", exception.getMessage(), ""));
         }
     }
 
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/total")
     ResponseEntity<ResponseObject> getTotal(@RequestParam(value = "company", required = false) String company,
-                                            @RequestParam(value = "cate1", required = false) String cate1,
-                                            @RequestParam(value = "cate2", required = false) String cate2,
-                                            @RequestParam(value = "key", required = false) String key) {
+            @RequestParam(value = "cate1", required = false) String cate1,
+            @RequestParam(value = "cate2", required = false) String cate2,
+            @RequestParam(value = "key", required = false) String key) {
         List<Object> newsList = repository.findFilteredProducts(key, company, cate1, cate2, null);
         int total = newsList.size();
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Query total successfully", total)
-        );
+                new ResponseObject("ok", "Query total successfully", total));
     }
 
     // SEARCH BY NAME OR COMPANY
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/search")
     ResponseEntity<ResponseObject> searchProducts(@RequestParam(value = "key", required = false) String key,
-                                                  @RequestParam(required = false, defaultValue = "12") String pageSize,
-                                                  @RequestParam(required = false, defaultValue = "0") String page,
-                                                  @RequestParam(required = false, defaultValue = "desc") String sort) {
+            @RequestParam(required = false, defaultValue = "12") String pageSize,
+            @RequestParam(required = false, defaultValue = "0") String page,
+            @RequestParam(required = false, defaultValue = "desc") String sort) {
         try {
             // HANDLE FILTER
             Sort.Direction sortDirection = sort.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
@@ -111,35 +113,33 @@ public class ProductController {
             int total = newsList.size();
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Query product successfully", new DataPageObject(total, page, pageSize, newsList))
-            );
+                    new ResponseObject("ok", "Query product successfully",
+                            new DataPageObject(total, page, pageSize, newsList)));
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject("failed", exception.getMessage(), "")
-            );
+                    new ResponseObject("failed", exception.getMessage(), ""));
         }
     }
 
     // GET DETAIL
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/{slug}")
     ResponseEntity<ResponseObject> findBySlug(@PathVariable String slug) {
         Optional<Product> foundProduct = Optional.ofNullable(repository.findBySlug(slug));
-        return foundProduct.isPresent() ?
-                ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject("ok", "Query product successfully", foundProduct)
-                ):
-                ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new ResponseObject("failed", "Can not find product with id = "+slug, "")
-                );
+        return foundProduct.isPresent() ? ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Query product successfully", foundProduct))
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject("failed", "Can not find product with id = " + slug, ""));
     }
 
     // UPDATE PRODUCT
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PatchMapping("/{id}")
     ResponseEntity<ResponseObject> updateProduct(@PathVariable String id,
-                                                 @RequestParam(value = "imgs", required = false) List<MultipartFile> imgs,
-                                                 @RequestParam(value = "mainImg", required = false) MultipartFile mainImg,
-                                                 @RequestParam("data") String data,
-                                                 @RequestParam(value = "removeImgs", required = false) List<String> removeImgs) {
+            @RequestParam(value = "imgs", required = false) List<MultipartFile> imgs,
+            @RequestParam(value = "mainImg", required = false) MultipartFile mainImg,
+            @RequestParam("data") String data,
+            @RequestParam(value = "removeImgs", required = false) List<String> removeImgs) {
         try {
             // Convert String to JSON
             ObjectMapper objectMapper = new ObjectMapper();
@@ -155,14 +155,14 @@ public class ProductController {
                     // Check name has "/" or "\"
                     if (updatedProduct.getName().contains("/") || updatedProduct.getName().contains("/")) {
                         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                                new ResponseObject("failed", "Product name should not have /", "")
-                        );
+                                new ResponseObject("failed", "Product name should not have /", ""));
                     }
                     existingProduct.setName(updatedProduct.getName().trim());
                 }
 
                 if (updatedProduct.getFkCategory() != null) {
-                    CategoryFK categoryFK = categoryFKRepository.findById(updatedProduct.getFkCategory()).orElseGet(null);
+                    CategoryFK categoryFK = categoryFKRepository.findById(updatedProduct.getFkCategory())
+                            .orElseGet(null);
                     existingProduct.setFkCategory(categoryFK);
                 }
 
@@ -224,8 +224,7 @@ public class ProductController {
                 CompletableFuture<Void> allFutures = CompletableFuture.allOf(
                         mainImageFuture,
                         removeImagesFuture,
-                        CompletableFuture.allOf(uploadImageFutures.toArray(new CompletableFuture[0]))
-                );
+                        CompletableFuture.allOf(uploadImageFutures.toArray(new CompletableFuture[0])));
                 allFutures.join();
 
                 existingProduct.setImgs(oldImgs.toString());
@@ -233,12 +232,10 @@ public class ProductController {
                 Product savedProduct = repository.save(existingProduct);
 
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject("ok", "Updated product successfully", savedProduct)
-                );
+                        new ResponseObject("ok", "Updated product successfully", savedProduct));
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new ResponseObject("failed", "Cannot find product", "")
-                );
+                        new ResponseObject("failed", "Cannot find product", ""));
             }
 
         } catch (Exception exception) {
@@ -248,6 +245,7 @@ public class ProductController {
     }
 
     // DELETE PRODUCT
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseObject> deleteProduct(@PathVariable String id) {
         try {
@@ -257,8 +255,8 @@ public class ProductController {
                 Company company = companyRepository.findByOutstandingProductId(foundProduct.get().getId());
                 if (company != null) {
                     return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                            new ResponseObject("failed", "Failed to delete product. Exist a company has this product!", "")
-                    );
+                            new ResponseObject("failed", "Failed to delete product. Exist a company has this product!",
+                                    ""));
                 }
 
                 // Delete images on cloudinary
@@ -276,44 +274,42 @@ public class ProductController {
                 repository.deleteById(id);
 
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject("ok", "Deleted product successfully", foundProduct)
-                );
+                        new ResponseObject("ok", "Deleted product successfully", foundProduct));
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", "Can not find product with id = "+id, "")
-            );
+                    new ResponseObject("failed", "Can not find product with id = " + id, ""));
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", exception.getMessage(), "")
-            );
+                    new ResponseObject("failed", exception.getMessage(), ""));
         }
     }
 
     // CREATE PRODUCT
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PostMapping("")
-    ResponseEntity<ResponseObject> createProduct(@RequestParam(value = "imgs", required = true) List<MultipartFile> imgs,
-                                                 @RequestParam(value = "mainImg", required = true) MultipartFile mainImg,
-                                                 @RequestParam (value = "data", required = true) String data){
+    ResponseEntity<ResponseObject> createProduct(
+            @RequestParam(value = "imgs", required = true) List<MultipartFile> imgs,
+            @RequestParam(value = "mainImg", required = true) MultipartFile mainImg,
+            @RequestParam(value = "data", required = true) String data) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             ProductData obj = objectMapper.readValue(data, ProductData.class);
 
             CategoryFK categoryFK = categoryFKRepository.findById(obj.getFkCategory()).orElseGet(null);
-            Product product = new Product(obj.getName(), obj.getPrice(), obj.getPriceSale(), obj.getSummary(), obj.getDescription(), categoryFK);
+            Product product = new Product(obj.getName(), obj.getPrice(), obj.getPriceSale(), obj.getSummary(),
+                    obj.getDescription(), categoryFK);
 
             // Check existed item
             List<Product> foundProducts = repository.findByName(product.getName().trim());
             if (foundProducts.size() > 0) {
                 return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                        new ResponseObject("failed", "Product name already taken", "")
-                );
+                        new ResponseObject("failed", "Product name already taken", ""));
             }
 
             // Check name has "/" or "\"
             if (product.getName().contains("/") || product.getName().contains("/")) {
                 return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                        new ResponseObject("failed", "Product name should not have /", "")
-                );
+                        new ResponseObject("failed", "Product name should not have /", ""));
             }
 
             if (mainImg.getSize() == 0) {
@@ -343,25 +339,23 @@ public class ProductController {
             product.setImgs(imgList.toString());
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Insert product successfully", repository.save(product))
-            );
+                    new ResponseObject("ok", "Insert product successfully", repository.save(product)));
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject("failed", exception.getMessage(), "")
-            );
+                    new ResponseObject("failed", exception.getMessage(), ""));
         }
     }
 
-
     // GET ALL HIGHLIGHT PRODUCTS
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/highlight")
     ResponseEntity<ResponseObject> getAllHighlight() {
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Updated product successfully", repository.getAllHighlight())
-        );
+                new ResponseObject("ok", "Updated product successfully", repository.getAllHighlight()));
     }
 
     // UPDATE HIGHLIGHT NEWS
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PatchMapping("/highlight")
     ResponseEntity<ResponseObject> updateHighlight(@RequestBody ArrayList<Map<String, String>> data) {
         ArrayList<Object> res = new ArrayList<>();
@@ -380,27 +374,26 @@ public class ProductController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Updated product successfully", res)
-        );
+                new ResponseObject("ok", "Updated product successfully", res));
     }
 
-
-    //  BANNER HEADER
+    // BANNER HEADER
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/header")
     public ResponseEntity<ResponseObject> getHeader() {
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Get header successfully", contentPageRepository.findHomePageByTypeName("product_list::header"))
-        );
+                new ResponseObject("ok", "Get header successfully",
+                        contentPageRepository.findHomePageByTypeName("product_list::header")));
     }
 
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PostMapping("/header")
     public ResponseEntity<ResponseObject> addHeader(@RequestParam("image") MultipartFile image) {
         Optional<ContentPage> foundHeader = contentPageRepository.findHomePageByTypeName("product_list::header");
 
         if (foundHeader.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject("failed", "Type name already taken", "")
-            );
+                    new ResponseObject("failed", "Type name already taken", ""));
         }
 
         String imageFile = storageService.storeFile(image);
@@ -408,12 +401,14 @@ public class ProductController {
         ContentPage entity = new ContentPage(null, "Chính sách", null, imageFile, null, "product_list::header");
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Add header successfully", contentPageRepository.save(entity))
-        );
+                new ResponseObject("ok", "Add header successfully", contentPageRepository.save(entity)));
     }
 
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PatchMapping("/header")
-    public ResponseEntity<ResponseObject> updateHeader(@RequestParam("data") String data, @RequestParam(name = "image", required = false) MultipartFile image) throws JsonMappingException, JsonProcessingException {
+    public ResponseEntity<ResponseObject> updateHeader(@RequestParam("data") String data,
+            @RequestParam(name = "image", required = false) MultipartFile image)
+            throws JsonMappingException, JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         ContentPage entity = objectMapper.readValue(data, ContentPage.class);
 
@@ -433,16 +428,13 @@ public class ProductController {
                 header.setType("product_list::header");
 
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject("ok", "Update header successfully", contentPageRepository.save(header))
-                );
+                        new ResponseObject("ok", "Update header successfully", contentPageRepository.save(header)));
             }
         }
 
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                new ResponseObject("failed", "Cannot found your data", "")
-        );
+                new ResponseObject("failed", "Cannot found your data", ""));
     }
-    
 
     private static class ProductData {
         private String id;
@@ -461,7 +453,8 @@ public class ProductController {
         public ProductData() {
         }
 
-        public ProductData(String id, String name, String slug, int price, int priceSale, String summary, String description, String mainImg, String imgs, int highlight, String createAt, String fkCategory) {
+        public ProductData(String id, String name, String slug, int price, int priceSale, String summary,
+                String description, String mainImg, String imgs, int highlight, String createAt, String fkCategory) {
             this.id = id;
             this.name = name;
             this.slug = slug;

@@ -8,6 +8,7 @@ import com.dreamtech.tldental.repositories.TagsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,13 +23,14 @@ public class TagsController {
     @Autowired
     private TagsNewsFKRepository fkTagsNewsRepository;
 
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAll() {
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Query tags successfully", repository.findAll())
-        );
+                new ResponseObject("ok", "Query tags successfully", repository.findAll()));
     }
 
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PostMapping("")
     public ResponseEntity<ResponseObject> createTag(@RequestBody Tags data) {
         try {
@@ -36,27 +38,24 @@ public class TagsController {
             List<Tags> foundTags = repository.findByName(data.getName().trim());
             if (foundTags.size() > 0) {
                 return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                        new ResponseObject("failed", "Tag's name already taken", "")
-                );
+                        new ResponseObject("failed", "Tag's name already taken", ""));
             }
 
             // Check name has "/" or "\"
             if (data.getName().contains("/") || data.getName().contains("/")) {
                 return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                        new ResponseObject("failed", "Tag's name should not have /", "")
-                );
+                        new ResponseObject("failed", "Tag's name should not have /", ""));
             }
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Insert tag successfully", repository.save(data))
-            );
+                    new ResponseObject("ok", "Insert tag successfully", repository.save(data)));
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", exception.getMessage(), "")
-            );
+                    new ResponseObject("failed", exception.getMessage(), ""));
         }
     }
 
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PatchMapping("/{id}")
     ResponseEntity<ResponseObject> updateTag(@PathVariable String id, @RequestParam String name) {
         Optional<Tags> foundTags = repository.findById(id);
@@ -65,21 +64,19 @@ public class TagsController {
             List<Tags> checkTagExist = repository.findByName(name.trim());
             if (checkTagExist.size() > 0) {
                 return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                        new ResponseObject("failed", "Tag's name already taken", "")
-                );
+                        new ResponseObject("failed", "Tag's name already taken", ""));
             }
 
             Tags existTag = foundTags.get();
             existTag.setName(name.trim());
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Updated tag successfully", repository.save(existTag))
-            );
+                    new ResponseObject("ok", "Updated tag successfully", repository.save(existTag)));
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new ResponseObject("failed", "Can not find tag with id = "+id, "")
-        );
+                new ResponseObject("failed", "Can not find tag with id = " + id, ""));
     }
 
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseObject> deleteTag(@PathVariable String id) {
         Optional<Tags> foundTags = repository.findById(id);
@@ -87,11 +84,9 @@ public class TagsController {
             fkTagsNewsRepository.deleteByFkTags(foundTags.get().getId());
             repository.deleteById(id);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Deleted tag successfully", foundTags)
-            );
+                    new ResponseObject("ok", "Deleted tag successfully", foundTags));
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new ResponseObject("failed", "Can not find tag with id = "+id, "")
-        );
+                new ResponseObject("failed", "Can not find tag with id = " + id, ""));
     }
 }

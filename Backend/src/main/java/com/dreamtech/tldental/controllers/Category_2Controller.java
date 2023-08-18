@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,23 +25,24 @@ public class Category_2Controller {
     private IStorageService storageService;
 
     // GET ALL WITH FILTER
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAll() {
         List<Category_2> data = repository.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Query category level 2 successfully", data)
-        );
+                new ResponseObject("ok", "Query category level 2 successfully", data));
     }
 
     // GET DETAIL
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/{slug}")
     public ResponseEntity<ResponseObject> getDetail(@PathVariable String slug) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Query category successfully", repository.findBySlug(slug))
-        );
+                new ResponseObject("ok", "Query category successfully", repository.findBySlug(slug)));
     }
 
     // CREATE CATEGORY LEVEL 2
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PostMapping("")
     public ResponseEntity<ResponseObject> createCate2(@RequestBody Category_2 data) {
         try {
@@ -48,35 +50,32 @@ public class Category_2Controller {
             List<Category_2> foundCate2 = repository.findByTitle(data.getTitle().trim());
             if (foundCate2.size() > 0) {
                 return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                        new ResponseObject("failed", "Category's name already taken", "")
-                );
+                        new ResponseObject("failed", "Category's name already taken", ""));
             }
 
             // Check name has "/" or "\"
             if (data.getTitle().contains("/") || data.getTitle().contains("/")) {
                 return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                        new ResponseObject("failed", "Company's name should not have /", "")
-                );
+                        new ResponseObject("failed", "Company's name should not have /", ""));
             }
 
             // Upload image to cloudinary
             data.setTitle(data.getTitle().trim());
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Insert company successfully", repository.save(data))
-            );
+                    new ResponseObject("ok", "Insert company successfully", repository.save(data)));
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", exception.getMessage(), "")
-            );
+                    new ResponseObject("failed", exception.getMessage(), ""));
         }
     }
 
     // UPDATE
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PatchMapping("/{id}")
     ResponseEntity<ResponseObject> updateCate2(@PathVariable String id,
-                                               @RequestBody Category_2 data) throws JsonProcessingException {
-         Optional<Category_2> foundCate2 = repository.findById(id);
+            @RequestBody Category_2 data) throws JsonProcessingException {
+        Optional<Category_2> foundCate2 = repository.findById(id);
         if (foundCate2.isPresent()) {
             data.setCreateAt(foundCate2.get().getCreateAt());
             // Copy new data
@@ -84,16 +83,15 @@ public class Category_2Controller {
 
             Category_2 resCate2 = repository.save(foundCate2.get());
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Update company successfully", resCate2)
-            );
+                    new ResponseObject("ok", "Update company successfully", resCate2));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", "Can not find company with id = "+data.getId(), "")
-            );
+                    new ResponseObject("failed", "Can not find company with id = " + data.getId(), ""));
         }
     }
 
     // DELETE
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseObject> deleteCompany(@PathVariable String id) {
         try {
@@ -103,16 +101,13 @@ public class Category_2Controller {
                 repository.deleteById(id);
 
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject("ok", "Deleted category level 2 successfully", foundCate2)
-                );
+                        new ResponseObject("ok", "Deleted category level 2 successfully", foundCate2));
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", "Can not find category with id = "+id, "")
-            );
-        } catch (Exception exception){
+                    new ResponseObject("failed", "Can not find category with id = " + id, ""));
+        } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", exception.getMessage(), "")
-            );
+                    new ResponseObject("failed", exception.getMessage(), ""));
         }
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +30,7 @@ public class Category_1Controller {
     private IStorageService storageService;
 
     // GET ALL WITH FILTER
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAll(@RequestParam(required = false) boolean highlight) {
         List<Category_1> data;
@@ -38,22 +40,22 @@ public class Category_1Controller {
             data = repository.findAll();
         }
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Query category level 1 successfully", data)
-        );
+                new ResponseObject("ok", "Query category level 1 successfully", data));
     }
 
     // GET DETAIL
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/{slug}")
     public ResponseEntity<ResponseObject> getDetail(@PathVariable String slug) {
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Query company successfully", repository.findBySlug(slug))
-        );
+                new ResponseObject("ok", "Query company successfully", repository.findBySlug(slug)));
     }
 
     // CREATE CATEGORY LEVEL 1
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PostMapping("")
-    public ResponseEntity<ResponseObject> createCate1(@RequestParam ("data") String data,
-                                                      @RequestPart("img") MultipartFile img) {
+    public ResponseEntity<ResponseObject> createCate1(@RequestParam("data") String data,
+            @RequestPart("img") MultipartFile img) {
         try {
             // Convert String to JSON
             ObjectMapper objectMapper = new ObjectMapper();
@@ -63,15 +65,13 @@ public class Category_1Controller {
             List<Category_1> foundTags = repository.findByTitle(cate1Data.getTitle().trim());
             if (foundTags.size() > 0) {
                 return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                        new ResponseObject("failed", "Category's name already taken", "")
-                );
+                        new ResponseObject("failed", "Category's name already taken", ""));
             }
 
             // Check name has "/" or "\"
             if (cate1Data.getTitle().contains("/") || cate1Data.getTitle().contains("/")) {
                 return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                        new ResponseObject("failed", "Company's name should not have /", "")
-                );
+                        new ResponseObject("failed", "Company's name should not have /", ""));
             }
 
             // Upload image to cloudinary
@@ -81,22 +81,20 @@ public class Category_1Controller {
             // Save to DB
             Category_1 resData = repository.save(cate1Data);
 
-
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Insert company successfully", resData)
-            );
+                    new ResponseObject("ok", "Insert company successfully", resData));
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", exception.getMessage(), "")
-            );
+                    new ResponseObject("failed", exception.getMessage(), ""));
         }
     }
 
     // UPDATE
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PatchMapping("/{id}")
     ResponseEntity<ResponseObject> updateCate1(@PathVariable String id,
-                                              @RequestPart(value = "img", required = false) MultipartFile img,
-                                              @RequestParam ("data") String data) throws JsonProcessingException {
+            @RequestPart(value = "img", required = false) MultipartFile img,
+            @RequestParam("data") String data) throws JsonProcessingException {
         // Convert String to JSON
         ObjectMapper objectMapper = new ObjectMapper();
         Category_1 cate1Data = objectMapper.readValue(data, Category_1.class);
@@ -110,7 +108,7 @@ public class Category_1Controller {
             BeanUtils.copyProperties(cate1Data, foundCate1.get());
 
             // Update img
-            if (img != null && img.getSize() !=0) {
+            if (img != null && img.getSize() != 0) {
                 storageService.deleteFile(oldUrlLogo);
                 // Upload image to cloudinary
                 String mainImgFileName = storageService.storeFile(img);
@@ -119,17 +117,15 @@ public class Category_1Controller {
 
             Category_1 resNews = repository.save(foundCate1.get());
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Update company successfully", resNews)
-            );
+                    new ResponseObject("ok", "Update company successfully", resNews));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", "Can not find company with id = "+cate1Data.getId(), "")
-            );
+                    new ResponseObject("failed", "Can not find company with id = " + cate1Data.getId(), ""));
         }
     }
 
-
     // UPDATE HIGHLIGHT CATEGORY LEVEL 1
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PatchMapping("/highlight")
     ResponseEntity<ResponseObject> updateHighlight(@RequestBody ArrayList<Map<String, String>> data) {
         ArrayList<Object> res = new ArrayList<>();
@@ -147,11 +143,11 @@ public class Category_1Controller {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Updated highlight category level 1 successfully", res)
-        );
+                new ResponseObject("ok", "Updated highlight category level 1 successfully", res));
     }
 
     // DELETE
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseObject> deleteCompany(@PathVariable String id) {
         try {
@@ -163,16 +159,13 @@ public class Category_1Controller {
                 repository.deleteById(id);
 
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject("ok", "Deleted category level 1 successfully", foundCate1)
-                );
+                        new ResponseObject("ok", "Deleted category level 1 successfully", foundCate1));
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", "Can not find category with id = "+id, "")
-            );
-        } catch (Exception exception){
+                    new ResponseObject("failed", "Can not find category with id = " + id, ""));
+        } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", exception.getMessage(), "")
-            );
+                    new ResponseObject("failed", exception.getMessage(), ""));
         }
     }
 }

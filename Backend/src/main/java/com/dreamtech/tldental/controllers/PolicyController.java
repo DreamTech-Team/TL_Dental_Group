@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,36 +32,35 @@ public class PolicyController {
     @Autowired
     private IStorageService storageService;
 
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("")
     public ResponseEntity<ResponseObject> getAll() {
         try {
             List<Policy> data = repository.findAll();
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Query company successfully", data)
-            );
+                    new ResponseObject("ok", "Query company successfully", data));
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject("Failed", exception.getMessage(), "")
-            );
+                    new ResponseObject("Failed", exception.getMessage(), ""));
         }
     }
 
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/{slug}")
     public ResponseEntity<ResponseObject> getDetail(@PathVariable String slug) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Query company successfully", repository.findBySlug(slug))
-            );
+                    new ResponseObject("ok", "Query company successfully", repository.findBySlug(slug)));
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject("Failed", exception.getMessage(), "")
-            );
+                    new ResponseObject("Failed", exception.getMessage(), ""));
         }
     }
 
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PostMapping("")
-    public ResponseEntity<ResponseObject> createPolicy(@RequestParam ("data") String data,
-                                                        @RequestPart("symbol") MultipartFile symbol) {
+    public ResponseEntity<ResponseObject> createPolicy(@RequestParam("data") String data,
+            @RequestPart("symbol") MultipartFile symbol) {
         try {
             // Convert String to JSON
             ObjectMapper objectMapper = new ObjectMapper();
@@ -70,15 +70,13 @@ public class PolicyController {
             List<Policy> foundTags = repository.findByName(policyData.getName().trim());
             if (foundTags.size() > 0) {
                 return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                        new ResponseObject("failed", "Policy's name already taken", "")
-                );
+                        new ResponseObject("failed", "Policy's name already taken", ""));
             }
 
             // Check name has "/" or "\"
             if (policyData.getName().contains("/") || policyData.getName().contains("/")) {
                 return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                        new ResponseObject("failed", "Company's name should not have /", "")
-                );
+                        new ResponseObject("failed", "Company's name should not have /", ""));
             }
 
             // Upload image to cloudinary
@@ -87,15 +85,14 @@ public class PolicyController {
             policyData.setName(policyData.getName().trim());
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Insert company successfully", repository.save(policyData))
-            );
+                    new ResponseObject("ok", "Insert company successfully", repository.save(policyData)));
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject("failed", exception.getMessage(), "")
-            );
+                    new ResponseObject("failed", exception.getMessage(), ""));
         }
     }
 
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseObject> deletePolicy(@PathVariable String id) {
         try {
@@ -107,24 +104,22 @@ public class PolicyController {
                 repository.deleteById(id);
 
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject("ok", "Deleted policy successfully", foundpolicy)
-                );
+                        new ResponseObject("ok", "Deleted policy successfully", foundpolicy));
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", "Can not find policy with id = " + id, "")
-            );
-        } catch (Exception exception){
+                    new ResponseObject("failed", "Can not find policy with id = " + id, ""));
+        } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", exception.getMessage(), "")
-            );
+                    new ResponseObject("failed", exception.getMessage(), ""));
         }
     }
 
     // UPDATE
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PatchMapping("/{id}")
     ResponseEntity<ResponseObject> updateCompany(@PathVariable String id,
-                                                 @RequestPart(value = "symbol", required = false) MultipartFile symbol,
-                                                 @RequestParam ("data") String data) throws JsonProcessingException {
+            @RequestPart(value = "symbol", required = false) MultipartFile symbol,
+            @RequestParam("data") String data) throws JsonProcessingException {
         // Convert String to JSON
         ObjectMapper objectMapper = new ObjectMapper();
         Policy policyData = objectMapper.readValue(data, Policy.class);
@@ -138,42 +133,39 @@ public class PolicyController {
             BeanUtils.copyProperties(policyData, foundPolicy.get());
 
             // Update img
-            if (symbol != null && symbol.getSize() !=0) {
+            if (symbol != null && symbol.getSize() != 0) {
                 storageService.deleteFile(oldUrlLogo);
                 // Upload image to cloudinary
                 String mainImgFileName = storageService.storeFile(symbol);
                 foundPolicy.get().setSymbol(mainImgFileName);
             }
 
-
             Policy resNews = repository.save(foundPolicy.get());
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Update policy successfully", resNews)
-            );
+                    new ResponseObject("ok", "Update policy successfully", resNews));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("failed", "Can not find policy with id = " + policyData.getId(), "")
-            );
+                    new ResponseObject("failed", "Can not find policy with id = " + policyData.getId(), ""));
         }
     }
 
-
-    //  BANNER HEADER
+    // BANNER HEADER
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @GetMapping("/header")
     public ResponseEntity<ResponseObject> getHeader() {
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Get header successfully", contentPageRepository.findHomePageByTypeName("policy::header"))
-        );
+                new ResponseObject("ok", "Get header successfully",
+                        contentPageRepository.findHomePageByTypeName("policy::header")));
     }
 
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PostMapping("/header")
     public ResponseEntity<ResponseObject> addHeader(@RequestParam("image") MultipartFile image) {
         Optional<ContentPage> foundHeader = contentPageRepository.findHomePageByTypeName("policy::header");
 
         if (foundHeader.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ResponseObject("failed", "Type name already taken", "")
-            );
+                    new ResponseObject("failed", "Type name already taken", ""));
         }
 
         String imageFile = storageService.storeFile(image);
@@ -181,12 +173,14 @@ public class PolicyController {
         ContentPage entity = new ContentPage(null, "Chính sách", null, imageFile, null, "policy::header");
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject("ok", "Add header successfully", contentPageRepository.save(entity))
-        );
+                new ResponseObject("ok", "Add header successfully", contentPageRepository.save(entity)));
     }
 
+    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PatchMapping("/header")
-    public ResponseEntity<ResponseObject> updateHeader(@RequestParam("data") String data, @RequestParam(name = "image", required = false) MultipartFile image) throws JsonMappingException, JsonProcessingException {
+    public ResponseEntity<ResponseObject> updateHeader(@RequestParam("data") String data,
+            @RequestParam(name = "image", required = false) MultipartFile image)
+            throws JsonMappingException, JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         ContentPage entity = objectMapper.readValue(data, ContentPage.class);
 
@@ -206,13 +200,11 @@ public class PolicyController {
                 header.setType("policy::header");
 
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObject("ok", "Update header successfully", contentPageRepository.save(header))
-                );
+                        new ResponseObject("ok", "Update header successfully", contentPageRepository.save(header)));
             }
         }
 
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                new ResponseObject("failed", "Cannot found your data", "")
-        );
+                new ResponseObject("failed", "Cannot found your data", ""));
     }
 }
