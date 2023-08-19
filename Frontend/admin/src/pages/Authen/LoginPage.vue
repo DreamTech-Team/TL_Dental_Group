@@ -87,9 +87,9 @@ const handleLogin = () => {
       <div :class="$style.wrap_btn">
         <button @click="handleLogin">Đăng nhập</button>
       </div>
-      <div :class="$style.wrap_route">
+      <!-- <div :class="$style.wrap_route">
         <router-link to="/forgot" :class="$style.wrap_cancel">Quên mật khẩu?</router-link>
-      </div>
+      </div> -->
     </div>
     <div :class="$style.authen_welcome">
       <div :class="$style.authen_welcome_img"></div>
