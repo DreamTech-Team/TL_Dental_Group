@@ -46,8 +46,6 @@ const fetchData = async () => {
   const { response, isLoading } = useAxios<DataResponse>('get', '/cate', {}, {}, valueChange.value);
   isLoadingCategory.value = isLoading.value;
 
-  await response;
-
   watch(response, () => {
     isLoadingCategory.value = isLoading.value;
 

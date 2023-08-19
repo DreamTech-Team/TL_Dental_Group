@@ -25,6 +25,7 @@
     "element-plus": "^2.3.7",
     "pinia": "^2.0.36",
     "postcss": "^8.4.23",
+    "qrcode.vue": "^3.4.1",
     "qs": "^6.11.2",
     "sweetalert2": "^11.7.22",
     "vue": "^3.3.4",

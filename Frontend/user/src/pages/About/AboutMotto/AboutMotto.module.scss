@@ -5,7 +5,7 @@
     overflow: hidden;
 
     &-title{
-        font-size: $text-4xl;
+        font-size: $text-3xl;
         font-weight: 500;
         line-height: 3.5rem;
         color: $primary_900;
@@ -22,6 +22,8 @@
             gap: 15rem;
             transition: transform 150ms ease-out;
             width: 100%;
+            max-width: 1200px;
+            margin: auto;
             
             &-item{
                 width: calc(33.33% - 100px);
@@ -33,7 +35,7 @@
                 align-items: center;
 
                 img{
-                    width: calc(100vw*0.3333 - 15rem - 1.3rem);
+                    width: calc(100vw*0.3333 - 15rem - 4.3rem);
                     height: calc(100vh*0.333 - 30px);
                     object-fit: cover;
                     border-radius: 6px;

@@ -8,7 +8,7 @@
 
 
     &-title{
-        font-size: $text-4xl;
+        font-size: $text-3xl;
         font-weight: 500;
         line-height: 3.5rem;
         color: $primary_900;
@@ -82,6 +82,7 @@
                 }
     
                 p{  
+                    text-align: center;
                     width: 100%;
                     font-size: $text-base-mobile;
                     line-height: 2.6rem;

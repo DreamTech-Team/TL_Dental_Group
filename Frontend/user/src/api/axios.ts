@@ -17,7 +17,6 @@ axiosClient.interceptors.request.use((config: InternalAxiosRequestConfig) => con
 
 axiosClient.interceptors.response.use(
   (response: AxiosResponse) => {
-    console.log(response);
     if (response && response.data) {
       return response;
     }

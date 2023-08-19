@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { RouterLink } from 'vue-router';
-import { ref } from 'vue';
+import { ref, toRefs } from 'vue';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { categories } from '../HeaderHandle';
+import { useDataRenderStore } from '@/stores/counter';
 
 const props = defineProps({
   pageMobile: String,
   currentItem: String,
   hiddenNav: Function
 });
+
+const { dataRender } = toRefs(useDataRenderStore());
 
 const subActive = ref('none');
 </script>
@@ -25,13 +28,13 @@ const subActive = ref('none');
         ]
       ]"
     >
-      <li v-for="item in categories" :key="item.slug" :class="$style['hder-category__item']">
+      <li v-for="item in dataRender" :key="item.slug" :class="$style['hder-category__item']">
         <router-link
           to=""
           :class="$style['hder-category__item-link']"
           v-on:click="subActive = subActive === item.slug ? 'none' : item.slug"
         >
-          <p>{{ item.name }}</p>
+          <p>{{ item.title }}</p>
           <font-awesome-icon :icon="faChevronDown" size="xs" />
         </router-link>
 
@@ -43,7 +46,7 @@ const subActive = ref('none');
           ]"
         >
           <li
-            v-for="subItem in item.list.slice(0, 4)"
+            v-for="subItem in item.data.slice(0, 4)"
             :key="subItem.slug"
             :class="$style['hder-category__item']"
           >
@@ -62,6 +65,11 @@ const subActive = ref('none');
             </router-link>
           </li>
         </ul>
+      </li>
+      <li :class="$style['hder-category__item']">
+        <router-link to="/sanpham" :class="$style['hder-category__item-link']" @click="hiddenNav">
+          <p>Xem tất cả...</p>
+        </router-link>
       </li>
     </ul>
   </div>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import IcSortDown from '@/assets/icons/IcSortDown.svg';
 import { ref, onMounted, computed, onUnmounted } from 'vue';
+import { useRoute } from 'vue-router';
 import { products } from '../Product/ProductHandle';
 import { bestsale } from '../Search/BestSale';
 import ProductCard from '@/components/Card/ProductCard.vue';
@@ -37,6 +38,9 @@ const sortTypeClasses = ref(styles['sort__type']);
 const sortContentClasses = ref(styles['sort__content']);
 const dropdownListClasses = ref(styles['dropdown-list']);
 const dropdownItemClasses = ref(styles['dropdown-item']);
+
+const route = useRoute();
+console.log(route.query);
 
 const scrollToTop = (top: number) => {
   window.scrollTo({
@@ -131,7 +135,7 @@ onUnmounted(() => {
         <div v-if="isDesktop" :class="$style.sort">
           <p :class="$style['sort__info']">
             Tìm thấy <strong>{{ products.length }}</strong> kết quả với từ khóa là
-            <strong>“kềm”</strong>
+            <strong>“{{ route?.query?.search }}”</strong>
           </p>
           <div></div>
           <div :class="sortTypeClasses" @click="toggleDropdown">

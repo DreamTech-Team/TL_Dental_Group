@@ -8,7 +8,7 @@ import {
   faPhoneVolume,
   faCircleCheck
 } from '@fortawesome/free-solid-svg-icons';
-import qr from '../../assets/imgs/QR.png';
+import QrcodeVue, { Level, RenderAs } from 'qrcode.vue';
 import { useDataRenderStore, saveDataContact } from '@/stores/counter';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
@@ -25,6 +25,9 @@ const { dataFacility, dataContact } = toRefs(saveDataContact());
 const variableChange = ref([]);
 const listPolicy = ref<AboutPolicy[]>([]);
 
+const level = ref<Level>('M');
+const renderAs = ref<RenderAs>('svg');
+
 const { response } = useAxios<DataResponse>('get', '/policy', {}, {}, variableChange.value);
 
 watch(response, () => {
@@ -36,7 +39,9 @@ watch(response, () => {
     <div :class="$style.footer__info">
       <div :class="$style['footer__info-item']">
         <p>TL DENTAL GROUP</p>
-        <img :src="qr" alt="logo" width="100" />
+        <div style="padding: 10px; background-color: white; display: inline-block">
+          <qrcode-vue :value="dataContact.facebook.content" :level="level" :render-as="renderAs" />
+        </div>
       </div>
       <div :class="$style['footer__info-item']">
         <h4 :class="$style['footer__info-item--title']">Sản phẩm</h4>

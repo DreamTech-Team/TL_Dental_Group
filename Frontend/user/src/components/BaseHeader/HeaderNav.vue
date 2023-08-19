@@ -79,6 +79,10 @@ const hiddenNav = () => {
         <font-awesome-icon :icon="faBars" size="xl" />
       </div>
       <div
+        @click="flagMobile = !flagMobile"
+        :class="$style[flagMobile ? 'header__nav-mobile--blur' : '']"
+      ></div>
+      <div
         :class="[
           $style['header__nav-mobile--list'],
           $style[flagMobile ? 'header__nav-mobile--show' : '']

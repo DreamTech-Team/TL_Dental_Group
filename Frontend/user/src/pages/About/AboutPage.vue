@@ -16,9 +16,9 @@ const route = useRoute();
     <about-header />
     <bread-crumb :tags="route.path" />
     <about-thanks />
-    <about-infoCompany />
+    <about-info-company />
     <about-motto />
-    <about-businessItems :style="{ marginTop: '6rem' }" />
+    <about-business-items :style="{ marginTop: '6rem' }" />
     <about-policy />
     <about-facility />
   </div>

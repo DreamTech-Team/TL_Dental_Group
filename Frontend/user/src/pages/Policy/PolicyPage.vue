@@ -94,18 +94,18 @@ const handleActiveNav = () => {
                 $style[`container__content-nav-item`]
               ]"
             >
-              {{ item.title }}
+              {{ item?.title }}
             </div>
           </li>
         </ul>
       </div>
       <div :class="$style['container__content-section']">
         <div :class="$style['container__content-section-title']">
-          {{ listPolicy[selectedItem].title }}
+          {{ listPolicy[selectedItem]?.title }}
         </div>
         <div
           :class="$style['container__content-section-details']"
-          v-html="listPolicy[selectedItem].content"
+          v-html="listPolicy[selectedItem]?.content"
         ></div>
       </div>
     </div>

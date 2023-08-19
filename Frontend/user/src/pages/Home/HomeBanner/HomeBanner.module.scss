@@ -83,6 +83,15 @@
       }
     }
 
+    @keyframes rotateHidden {
+      0% {
+        transform: rotate(-90deg);
+      }
+      100% {
+        transform: rotate(-180deg);
+      }
+    }
+
     .home__banner-bg {
       display: flex;
       align-items: center;
@@ -94,10 +103,19 @@
       width: 154%;
       border-radius: 50%;
 
-      animation: rotateParent 0.8s forwards;
-
+      
       transform-origin: bottom center;
       z-index: 2;
+      
+      &--hidden {
+        animation: rotateHidden 0.8s forwards;
+        transform-origin: bottom center;
+      }
+      
+      &--show {
+        animation: rotateParent 0.8s forwards;
+        transform-origin: bottom center;
+      }
 
       .home__banner-radial {
         display: flex;
@@ -212,7 +230,7 @@
 
     &-right {
       .home__banner-bg {
-        left: 60%;
+        left: 70%;
         top: -105%;
         height: 147%;
         width: 125%;
@@ -266,6 +284,7 @@
         z-index: 1;
         flex: 0 0 100%;
         margin-right: 5px;
+        padding-bottom: 20px;
         margin-left: 5px;
 
         .home__bannerMB-left {
