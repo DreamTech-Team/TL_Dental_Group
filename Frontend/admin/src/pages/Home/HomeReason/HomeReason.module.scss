@@ -27,7 +27,7 @@
   &-right {
     background-color: white;
     flex: 1;
-    padding-left: 10px;
+    padding-left: 16px;
 
     h4 {
       font-style: normal;
@@ -57,7 +57,6 @@
         margin-bottom: 40px;
 
         .home__reason-icon {
-          flex: 1;
           display: flex;
           width: 68px;
           height: 68px;
@@ -113,10 +112,11 @@
           p {
             font-style: normal;
             font-weight: 400;
-            font-size: $text-xl;
+            font-size: $text-base;
             line-height: 26px;
             color: black;
             width: auto;
+            text-align: justify;
           }
         }
       }

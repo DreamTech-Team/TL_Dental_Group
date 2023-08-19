@@ -6,18 +6,39 @@ import Icon4 from '@/assets/icons/IconDB4.png';
 import { ref, computed, onMounted, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
+interface Staff {
+  id: string;
+  email: string;
+  fullname: string;
+  phonenumber: string;
+  address: string;
+  password: string;
+  changed: boolean;
+  createAt: string;
+  roles: string;
+}
+
 //GET DATA
 const deps = ref([]);
 const lengthArray = ref([]);
 const totalProduct = ref();
+const totalAdmin = ref();
 const getProducts = useAxios<DataResponse>('get', '/products/total', {}, {}, deps.value);
 const getCompanies = useAxios<DataResponse>('get', '/company', {}, {}, deps.value);
 const getActivites = useAxios<DataResponse>('get', '/news/total', {}, {}, deps.value);
+const getAdmins = useAxios<DataResponse>(
+  'get',
+  '/employees?page=0&pageSize=10000',
+  {},
+  {},
+  deps.value
+);
 
 //Init value stored data
 const products = ref();
 const companies = ref();
 const activities = ref();
+const admins = ref<Staff[]>([]);
 
 //Get total products
 watch(getProducts.response, () => {
@@ -35,6 +56,14 @@ watch(getCompanies.response, () => {
 watch(getActivites.response, () => {
   totalProduct.value = getActivites.response.value?.data;
   activities.value = totalProduct.value;
+});
+
+//Get total admins
+watch(getAdmins.response, () => {
+  console.log(getAdmins.response);
+
+  totalAdmin.value = getAdmins.response.value?.data?.data;
+  admins.value = totalAdmin.value.filters((item: Staff) => item.roles === 'ROLE_ADMIN');
 });
 
 //Properties
@@ -124,7 +153,7 @@ onMounted(() => {
       </div>
       <div :class="$style['dashboard_control-item']" style="background-color: #28c76f">
         <div :class="$style['dashboard_control-item-left']">
-          <h3 :class="$style['dashboard_control-item-left-title']">10</h3>
+          <h3 :class="$style['dashboard_control-item-left-title']">{{ admins.length }}</h3>
           <span>Quản trị viên</span>
         </div>
         <div :class="$style['dashboard_control-item-right']">

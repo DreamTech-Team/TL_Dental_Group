@@ -12,6 +12,8 @@
   background-color: rgb(255, 255, 255);
   filter: drop-shadow(0px 1px 5px rgba(0, 0, 0, 0.1));
   cursor: pointer;
+  width: 100%;
+  min-width: 230px;
 
   &__header {
     width: 100%;
@@ -19,6 +21,39 @@
     background: linear-gradient(244.87deg, #6b5ab0 -26.72%, #4592ec 39.12%, #2a3c97 92.91%);
     border-radius: 10px 10px 0px 0px;
     position: relative;
+
+    &--factors {
+      position: absolute;
+      right: 16px;
+      z-index: 2;
+      width: 18%;
+      height: 100%;
+      min-width: 52px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding-bottom: 20px;
+
+      &-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+
+        img {
+          width: 100%;
+          height: auto;
+        }
+        p {
+          font-style: normal;
+          font-weight: 600;
+          font-size: 6px;
+          color: #fc5151;
+        }
+      }
+    }
 
     &--container {
       background: #ffffff;
@@ -32,67 +67,6 @@
       border-radius: 4px 4px 0 0;
       z-index: 1;
 
-      .card__header--genuine {
-        width: 5.5rem;
-        display: flex;
-        position: absolute;
-        flex-direction: column;
-        top: 17%;
-        right: 4%;
-        align-items: center;
-        &-sticker {
-          width: 100%;
-          height: 100%;
-        }
-        &-text {
-          font-style: normal;
-          font-weight: 600;
-          font-size: 6px;
-          color: #fc5151;
-          align-items: center;
-        }
-      }
-  
-      .card__header--insurance {
-        display: flex;
-        position: absolute;
-        flex-direction: column;
-        top: 40%;
-        right: 4%;
-        align-items: center;
-        width: 5.5rem;
-        &-sticker {
-          width: 100%;
-          height: 100%;
-        }
-        &-text {
-          font-style: normal;
-          font-weight: 600;
-          font-size: 6px;
-          color: #fc5151;
-        }
-      }
-  
-      .card__header--support {
-        display: flex;
-        position: absolute;
-        flex-direction: column;
-        top: 63%;
-        right: 4%;
-        align-items: center;
-        width: 5.5rem;
-        &-sticker {
-          width: 100%;
-          height: 100%;
-        }
-        &-text {
-          font-style: normal;
-          font-weight: 600;
-          font-size: 6px;
-          color: #fc5151;
-        }
-      }
-  
       .card__header--genuine,
       .card__header--insurance,
       .card__header--support {
@@ -104,12 +78,8 @@
 
     &--wgenuine {
       position: absolute;
-      border-left: 30px solid transparent;
-      border-right: 0px solid transparent;
-      border-top: 37px solid #3c448c;
-      height: 0;
-      width: 130px;
-      z-index: 2;
+      height: 35px;
+      width: 50%;
       top: 93%;
       right: 0%;
 
@@ -117,31 +87,30 @@
         position: relative;
         width: 100%;
         height: 100%;
-
-        &::before {
-          position: absolute;
-          content: '';
-          width: 0;
-          height: 0;
-          border-left: 13px solid transparent;
-          border-right: 13px solid transparent;
-          border-bottom: 16px solid #1c2a5c;
-          top: -37px;
-          left: -43px;
-        }
-      }
-
-      .card__header--txtconfirm {
-        position: absolute;
-        width: 100%;
-        height: 100%;
+        display: flex;
+        flex-direction: row;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 25% 100%);
+        background-color: #3c448c;
         color: #ffffff;
         text-transform: uppercase;
         font-weight: 700;
-        top: -24px;
-        right: 5px;
-        z-index: 2;
+        align-items: center;
+        justify-content: center;
         font-size: 1.2rem;
+        padding-left: 10%;
+        z-index: 4;
+      }
+
+      &-trigle {
+        position: absolute;
+        content: '';
+        width: 33px;
+        height: 16px;
+        clip-path: polygon(50% 0%, 0% 100%, 150% 100%);
+        background-color: #1c2a5c;
+        top: 0px;
+        z-index: 2;
+        left: -15.5px;
       }
     }
 
@@ -170,7 +139,6 @@
       display: grid;
       aspect-ratio: 1/1;
       width: 50%;
-      margin-bottom: 20%;
     }
   }
 
@@ -234,7 +202,6 @@
     height: 100%;
     z-index: 3;
     position: absolute;
-    min-height: 40.1rem;
     box-sizing: border-box;
     border-radius: 1.2rem;
     background-color: rgba(39, 38, 38, 0.775);
@@ -294,5 +261,6 @@
   .card__show--info-button {
     display: block;
     animation: fade-in 0.3s forwards;
+    text-align: center;
   }
 }

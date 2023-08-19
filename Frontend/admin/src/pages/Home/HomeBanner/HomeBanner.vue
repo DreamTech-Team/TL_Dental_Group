@@ -95,7 +95,9 @@ const onUpdateContent = (data: object) => {
 const companies = ref<Company[]>([]);
 const deps1 = ref([]);
 const results = useAxios<DataResponse>('get', '/company?highlight=true', {}, {}, deps1.value);
-const bannerItems = ref([{ src: '', alt: '', width: '0', height: '0', name: '', product: '' }]);
+const bannerItems = ref([
+  { src: '', alt: '', width: '0', height: '0', name: '', product: '', slug: '', idx: 0 }
+]);
 
 //Calculate width for each company logo
 const calculateWidths = () => {
@@ -247,14 +249,16 @@ watch(
           : results.response.value?.data;
       companies.value = randomHighlightedCompanies;
 
-      bannerItems.value = companies.value.map((company: Company) => {
+      bannerItems.value = companies.value.map((company: Company, idx) => {
         return {
           src: company.company.logo,
           alt: company.company.name,
           width: '',
           height: '30',
           name: company.outstandingProduct.name,
-          product: company.outstandingProduct.mainImg
+          product: company.outstandingProduct.mainImg,
+          slug: company.outstandingProduct.slug,
+          idx: idx
         };
       });
 
@@ -298,8 +302,12 @@ onUnmounted(() => {
     </div>
     <div :class="$style['home__banner-right']">
       <div
-        v-if="showBannerBg"
-        :class="$style['home__banner-bg']"
+        v-for="(item, idx) in bannerItems"
+        :key="idx"
+        :class="[
+          $style['home__banner-bg'],
+          $style[idx === selectedItem.idx ? 'home__banner-bg--show' : 'home__banner-bg--hidden']
+        ]"
         :style="{ background: bannerBgColor }"
       >
         <div :class="$style['home__banner-radial']">

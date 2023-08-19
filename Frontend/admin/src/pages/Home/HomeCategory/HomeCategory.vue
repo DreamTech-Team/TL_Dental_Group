@@ -118,7 +118,7 @@ onUnmounted(() => {
             :class="$style['home__category-item']"
             :style="{ background: getCategoryColor(index), width: widthItemComputed }"
           >
-            <span>{{ item.title }}</span>
+            <p>{{ item.title }}</p>
             <div :class="$style['home__category-ctn']">
               <div :class="$style['home__category-img']">
                 <img :src="item.img" :alt="item.title" />

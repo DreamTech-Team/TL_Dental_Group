@@ -33,7 +33,7 @@
       line-height: 19px;
       background-color: #0cbbc7;
       transition: opacity 0.3s ease;
-      margin-top: 55px;
+      margin-top: 30px;
 
       &:hover {
         opacity: 0.8;
@@ -48,7 +48,7 @@
 
     img {
       width: 100%;
-      height: 100%;
+      height: auto;
       border-radius: 5px;
     }
 
@@ -64,6 +64,7 @@
       border-radius: 10px;
       bottom: 0;
       right: -70%;
+      box-shadow: 1px 1px 4px #ddd;
 
       .home__intro-logo {
         display: flex;
