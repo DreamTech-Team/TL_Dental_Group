@@ -377,8 +377,6 @@ watch(
           : results.response.value?.data;
       companies.value = randomHighlightedCompanies;
 
-      console.log(companies.value);
-
       bannerItems.value = companies.value.map((company: Company, idx) => {
         return {
           src: company.company.logo,
