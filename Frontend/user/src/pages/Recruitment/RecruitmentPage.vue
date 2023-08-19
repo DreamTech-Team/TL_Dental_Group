@@ -311,23 +311,25 @@ onMounted(() => {
         <recruitment-card :items="contentVisionItems" :style="'type2'" />
       </div>
     </div>
-    <div :class="$style.container__value">
-      <div :class="$style['container__value-heading']">
-        <div :class="$style['container__value-heading-title']">
-          <div :class="$style['container__value-heading-title-main']">
-            <div :class="$style['container__value-heading-title-main-1']">Giá Trị</div>
-            <div :class="$style['container__value-heading-title-main-2']">Cốt Lõi</div>
+    <div style="padding: 5rem">
+      <div :class="$style.container__value">
+        <div :class="$style['container__value-heading']">
+          <div :class="$style['container__value-heading-title']">
+            <div :class="$style['container__value-heading-title-main']">
+              <div :class="$style['container__value-heading-title-main-1']">Giá Trị</div>
+              <div :class="$style['container__value-heading-title-main-2']">Cốt Lõi</div>
+            </div>
+            <div :class="$style['container__value-heading-title-3']">Từ TL Dental Group</div>
           </div>
-          <div :class="$style['container__value-heading-title-3']">Từ TL Dental Group</div>
+          <div :class="$style['container__value-heading-content']">
+            <p>
+              {{ contentValueMainItem }}
+            </p>
+          </div>
         </div>
-        <div :class="$style['container__value-heading-content']">
-          <p>
-            {{ contentValueMainItem }}
-          </p>
+        <div :class="$style['container__value-list']">
+          <recruitment-card :items="contentValueItems" :style="'type3'" />
         </div>
-      </div>
-      <div :class="$style['container__value-list']">
-        <recruitment-card :items="contentValueItems" :style="'type3'" />
       </div>
     </div>
     <div :class="$style.container__envir">
