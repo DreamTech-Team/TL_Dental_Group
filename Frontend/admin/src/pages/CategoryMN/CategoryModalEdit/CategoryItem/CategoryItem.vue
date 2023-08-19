@@ -2,8 +2,6 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faTrash, faPen, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
-import { ref } from 'vue';
-
 const props = defineProps({
   openEdit: { type: Boolean, required: false },
   type: { type: String, require: false },

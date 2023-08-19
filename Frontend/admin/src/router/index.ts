@@ -34,8 +34,8 @@ const routes = [
     component: AboutPage
   },
   {
-    path: '/tuyendung',
-    name: 'tuyendung',
+    path: '/mnuirecruitment',
+    name: 'mnuirecruitment',
     component: RecruitmentPage
   },
   {
