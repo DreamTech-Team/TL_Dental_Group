@@ -268,9 +268,7 @@
 
 @include responsive_tablet() {
   .card {
- 
     &__header {
-  
       &--factors {
         width: 16%;
       }
@@ -280,14 +278,13 @@
 
 @include responsive_mobile() {
   .card {
-  
     &__body {
       width: 100%;
       border-radius: 1.2rem;
       display: flex;
       flex-direction: column;
       margin-top: 0.5rem;
-  
+
       &--name {
         color: #000;
         font-size: $text-base-mobile;
@@ -311,7 +308,7 @@
         margin: 1.5rem 0;
         padding: 0 1.6rem;
         margin-top: 2rem;
-  
+
         &-company {
           width: auto;
           height: 3rem;

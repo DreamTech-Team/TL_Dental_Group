@@ -81,11 +81,12 @@ const totalProduct = ref();
 
 const slugCategory1 = ref('');
 const slugCategory2 = ref('');
+const sortPriceType = ref('asc');
 
 // Xử lí sort
 const isDropdownOpen = ref(false);
-const selectedOption = ref('Sắp xếp');
-const options = ['Mới nhất', 'Giá tăng dần', 'Giá giảm dần'];
+const selectedOption = ref('Giá tăng dần');
+const options = ['Giá tăng dần', 'Giá giảm dần'];
 
 //Đặt biến API ban đầu: gọi tổng sản phẩm hiện có
 const apiTotalProduct = `/products/total${
@@ -99,7 +100,7 @@ const apiProduct = `/products?page=${currentPage.value}&pageSize=${pageSize.valu
   slugCategory1.value
     ? `&cate1=${slugCategory1.value}` + (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
     : ''
-}`;
+}&sortPrice=${sortPriceType.value}`;
 
 const {
   response: productRes,
@@ -126,6 +127,13 @@ const closeDropdown = () => {
 
 function updateSelectedOption(option: string) {
   selectedOption.value = option;
+  if (selectedOption.value == 'Giá tăng dần') {
+    sortPriceType.value = 'asc';
+    console.log(sortPriceType);
+  } else {
+    sortPriceType.value = 'desc';
+    console.log(sortPriceType);
+  }
   closeDropdown();
 }
 
@@ -193,7 +201,7 @@ watch(totalRes, () => {
 });
 
 watch(
-  [currentPage, slugCategory1, slugCategory2, apiProduct],
+  [currentPage, slugCategory1, slugCategory2, apiProduct, sortPriceType],
   () => {
     const {
       response: responseChanged,
@@ -206,10 +214,19 @@ watch(
           ? `&cate1=${slugCategory1.value}` +
             (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
           : ''
-      }`,
+      }&sortPrice=${sortPriceType.value}`,
       {},
       {},
       deps1.value
+    );
+
+    console.log(
+      `/products?page=${currentPage.value}&pageSize=${pageSize.value}${
+        slugCategory1.value
+          ? `&cate1=${slugCategory1.value}` +
+            (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+          : ''
+      }&sortPrice=${sortPriceType.value}`
     );
 
     // Truy xuất giá trị response.value và gán vào responseData
@@ -224,7 +241,7 @@ watch(
 
 onMounted(() => {
   checkScreenSize();
-  updateSelectedOption('Sắp xếp');
+  // updateSelectedOption('Giá tăng dần');
 });
 window.addEventListener('resize', checkScreenSize);
 </script>
