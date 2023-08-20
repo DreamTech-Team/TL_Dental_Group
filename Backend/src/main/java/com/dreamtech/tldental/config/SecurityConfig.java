@@ -35,6 +35,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers("GET", "/api/v1/**")
                     .permitAll()
+                    .requestMatchers("POST", "/api/v1/contact/**")
+                    .permitAll()
                     .anyRequest()
                     .authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

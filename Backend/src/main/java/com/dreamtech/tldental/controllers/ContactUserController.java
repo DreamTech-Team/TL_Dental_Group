@@ -41,7 +41,6 @@ public class ContactUserController {
         );
     }
 
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN') || hasRole('ROLE_STAFF')")
     @PostMapping("")
     ResponseEntity<ResponseObject> createContact(@RequestBody ContactUser data) {
         return ResponseEntity.status(HttpStatus.OK).body(
