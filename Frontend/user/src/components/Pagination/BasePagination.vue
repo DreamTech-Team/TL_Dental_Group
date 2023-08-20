@@ -18,8 +18,6 @@ const totals = ref(props.total);
 watch(props, () => {
   currentPageRef.value = props.currentPage;
   totals.value = props.total;
-  console.log(currentPageRef.value);
-  console.log(totals.value);
 });
 
 const handleSizeChange = (val: number) => {

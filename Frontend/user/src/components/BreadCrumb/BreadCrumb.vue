@@ -202,7 +202,7 @@ const getAllCategory = () => {
 };
 
 watch(
-  [predefinedItems, route.fullPath],
+  [predefinedItems, route?.fullPath],
   () => {
     updateSlug();
   },

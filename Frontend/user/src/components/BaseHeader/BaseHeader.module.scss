@@ -269,6 +269,10 @@
 
 @include responsive_mobile() {
   .header {
+    &__contact {
+      display: none;
+    }
+    
     &__nav {
       padding: 0 10px;
 

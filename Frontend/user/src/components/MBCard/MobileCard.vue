@@ -95,7 +95,7 @@ defineProps({
       <h4 :class="$style['mbcard__right-title']">
         {{ product.nameProduct }}
       </h4>
-      <p>{{ product.summary }}</p>
+      <p v-html="product.summary"></p>
       <div :class="$style['mbcard__right-list']">
         <div :class="$style['mbcard__right--genuine']">
           <img :class="$style['mbcard__right-sticker']" :src="OkSticker" alt="sticker" />

@@ -68,6 +68,7 @@ const filterTags = ref();
 const popular = ref();
 const isLoading = ref(false);
 const pageSize = ref(8);
+const totalNews = ref();
 const isDesktop = ref(true);
 
 watch(content, () => {
@@ -75,6 +76,7 @@ watch(content, () => {
   popular.value = content.popularStatus;
   filterTags.value = content.path;
   isLoading.value = content.loading;
+  totalNews.value = content.totalPage;
 });
 
 watch(isLoading, () => {
@@ -191,7 +193,7 @@ onUnmounted(() => {
         v-if="content.listItem"
         :class="$style['news__context-left-pagination']"
         style="margin-top: 50px"
-        :total="content.totalPage ? content.totalPage : 0"
+        :total="totalNews"
         :current-page="currentPage"
         :page-size="pageSize"
         @current-change="handlePageChange"
