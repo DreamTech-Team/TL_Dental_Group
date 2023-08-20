@@ -128,8 +128,8 @@ onUnmounted(() => {
 });
 </script>
 <template>
-  <div>
-    <div>
+  <div style="margin: 0 50px">
+    <div style="max-width: 1280px; margin: auto">
       <div v-if="products.length > 0">
         <bread-crumb :tags="pathBC" />
         <div v-if="isDesktop" :class="$style.sort">

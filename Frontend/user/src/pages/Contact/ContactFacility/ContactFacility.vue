@@ -34,7 +34,7 @@ const { dataFacility, dataContact } = toRefs(saveDataContact());
           <p>{{ dataContact.email.content }}</p>
         </div>
 
-        <div>
+        <div :class="$style['contact__facility-facebook-tablet']">
           <img :src="Facebook" :class="$style['contact__facility-ic']" />
           <a :href="dataContact.facebook.content" target="_blank">{{
             dataContact.facebook.content

@@ -7,7 +7,7 @@
   height: 5.7rem;
   display: flex;
   flex-direction: row;
-  margin: 0 7rem 0 7rem;
+  margin: 0 3.6rem;
   justify-content: space-between;
   border-bottom: 1px solid #e2e2e2;
   padding-bottom: 1rem;
@@ -129,10 +129,12 @@
 .product {
   width: 100%;
   margin: 0 7rem 0 7rem;
+
   &__container {
-    margin: 3rem 7rem 3rem 7rem;
+    margin: 3.6rem;
     transition: 500ms;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    // grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 3.5rem;
     max-width: 100%;
     border-radius: 10px;
