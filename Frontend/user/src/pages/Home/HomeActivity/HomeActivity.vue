@@ -64,6 +64,8 @@ watch(response, () => {
   feedbacks.value = response.value?.data;
   if (window.innerWidth < 739) {
     activities.value = feedbacks.value.map((item) => item).slice(0, 4);
+  } else if (window.innerWidth > 740 && window.innerWidth < 1024) {
+    activities.value = feedbacks.value.map((item) => item).slice(0, 6);
   } else {
     activities.value = feedbacks.value.map((item) => item).slice(0, 8);
   }
@@ -83,6 +85,8 @@ const filterTags = (selectedTag: string) => {
   if (selectedTag === 'all') {
     if (window.innerWidth < 739) {
       activities.value = feedbacks.value.map((item) => item).slice(0, 4);
+    } else if (window.innerWidth > 740 && window.innerWidth < 1024) {
+      activities.value = feedbacks.value.map((item) => item).slice(0, 6);
     } else {
       activities.value = feedbacks.value.map((item) => item).slice(0, 8);
     }
@@ -91,6 +95,10 @@ const filterTags = (selectedTag: string) => {
       activities.value = feedbacks.value
         .filter((item) => item.tags.some((tag) => tag.name === selectedTag))
         .slice(0, 4);
+    } else if (window.innerWidth > 740 && window.innerWidth < 1024) {
+      activities.value = feedbacks.value
+        .filter((item) => item.tags.some((tag) => tag.name === selectedTag))
+        .slice(0, 6);
     } else {
       activities.value = feedbacks.value
         .filter((item) => item.tags.some((tag) => tag.name === selectedTag))
@@ -115,8 +123,10 @@ onMounted(() => {
   const width = sourceElement.value?.clientWidth;
 
   if (width !== undefined) {
-    if (window.innerWidth >= 739) {
+    if (window.innerWidth >= 1024) {
       itemWidth.value = (width - 200) / 4;
+    } else if (window.innerWidth > 740 && window.innerWidth < 1024) {
+      itemWidth.value = (width - 145) / 3;
     } else {
       isPhone.value = true;
       itemWidth.value = (width - 35) / 2;
@@ -125,8 +135,10 @@ onMounted(() => {
 
   resizeListener = function () {
     if (width !== undefined) {
-      if (window.innerWidth >= 739) {
+      if (window.innerWidth >= 1024) {
         itemWidth.value = (width - 200) / 4;
+      } else if (window.innerWidth > 740 && window.innerWidth < 1024) {
+        itemWidth.value = (width - 145) / 3;
       } else {
         isPhone.value = true;
         itemWidth.value = (width - 35) / 2;
