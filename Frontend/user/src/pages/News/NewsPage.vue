@@ -66,6 +66,11 @@ const onUpdateSlug = (data: { listrs: Item[] }) => {
   watch(updateSlug.response, () => {
     dataContext.value = updateSlug.response.value?.data?.data;
   });
+
+  const getTotal = useAxios<DataResponse>('get', `/news/total?${path.value}`, {}, {}, deps.value);
+  watch(getTotal.response, () => {
+    totalPage.value = getTotal.response.value?.data;
+  });
 };
 
 //Update current page
