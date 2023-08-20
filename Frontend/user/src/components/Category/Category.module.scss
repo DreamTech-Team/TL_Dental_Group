@@ -1,4 +1,5 @@
 @import '@/styles/base';
+@import '@/styles/responsive';
 
 .category {
   flex: 1;
@@ -95,4 +96,19 @@
       color: #404dc2;
     }
   }
+}
+
+
+@include responsive_tablet() {
+  .category {
+ 
+    &__title {
+      min-width: 19rem;
+    }
+  
+    &__firstX {
+      font-size: $text-base-mobile;
+  
+    }
+  }  
 }

@@ -14,11 +14,15 @@
     &-time{
         display: flex;
         align-items: center;
-        margin: 2rem 0;
+        margin: 2rem 0 3rem;
+
+        img {
+            width: 20px;
+        }
 
         p{
-            font-size: $text-lg;
-            margin-left: 2rem;
+            font-size: $text-base;
+            margin-left: 1rem;
             font-weight: 300;
         }
 
@@ -75,6 +79,7 @@
         &-wrap{
             width: 100%;
             // overflow: hidden;
+            margin-bottom: 5rem;
 
             img{
                 width: 100px !important;

@@ -220,7 +220,7 @@ const submitForm = () => {
         </div>
 
         <button :class="$style['contact__form-info-button']" @click="handleClick">
-          <p>{{ isCLick ? 'Liên hệ nhanh' : 'Liên hệ qua form' }}</p>
+          <p>{{ isCLick ? 'Liên hệ nhanh' : 'Liên hệ tư vấn ngay' }}</p>
         </button>
       </div>
     </div>

@@ -102,6 +102,10 @@ onMounted(() => {
         const aspectRatio = item.height / item.width;
         item.width = window.innerWidth - 30;
         item.height = item.width * aspectRatio;
+      } else if (window.innerWidth < 1100) {
+        const aspectRatio = item.height / item.width;
+        item.width = window.innerWidth - 400;
+        item.height = item.width * aspectRatio;
       }
     });
   }
