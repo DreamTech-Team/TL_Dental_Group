@@ -8,7 +8,7 @@ import {
   faPhoneVolume,
   faCircleCheck
 } from '@fortawesome/free-solid-svg-icons';
-import QrcodeVue, { Level, RenderAs } from 'qrcode.vue';
+import QrcodeVue, { type Level, type RenderAs } from 'qrcode.vue';
 import { useDataRenderStore, saveDataContact } from '@/stores/counter';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
@@ -62,7 +62,7 @@ watch(response, () => {
         <h4 :class="$style['footer__info-item--title']">Chính sách</h4>
         <ul :class="$style['footer__info-item--list']" v-for="(item, idx) in listPolicy" :key="idx">
           <li>
-            <router-link to="">{{ item.name }}</router-link>
+            <router-link to="/chinhsach">{{ item.name }}</router-link>
           </li>
         </ul>
       </div>

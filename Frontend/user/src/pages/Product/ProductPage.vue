@@ -234,7 +234,7 @@ window.addEventListener('resize', checkScreenSize);
     <div :class="$style['product__header']">
       <product-banner :class="$style['product__header-banner']" />
     </div>
-    <div style="margin: 0 50px">
+    <div :class="$style['product__wrapper']">
       <div style="margin: auto; max-width: 1280px">
         <bread-crumb :tags="pathBC" />
         <div :class="$style['product__content']">
