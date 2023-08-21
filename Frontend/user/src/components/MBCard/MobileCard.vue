@@ -81,7 +81,6 @@ defineProps({
 <template>
   <div :class="$style.mbcard" @click="goToDetailPage">
     <div :class="$style['mbcard__left']">
-      <!-- <img :class="$style['mbcard__left-image']" :src="LogoCompany" alt="logo" /> -->
       <div :class="$style['mbcard__left-header']">
         <img :src="product.brand" alt="logo" />
       </div>
