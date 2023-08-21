@@ -89,7 +89,7 @@ const handleClickRight = () => {
 
 // Xử lí resize lại tấm ảnh để phù hợp với mobile
 onMounted(() => {
-  const parent = document.getElementById('haha');
+  const parent = document.getElementById('content_body');
   // parent.getElementsByTagName('img');
   if (parent) {
     const a = ref<HTMLImageElement[] | null>(null);
@@ -123,7 +123,7 @@ onMounted(() => {
 
     <div :class="$style['newsdetail__content-main']">
       <div
-        id="haha"
+        id="content_body"
         :class="$style['newsdetail__content-main-wrap']"
         v-html="dataRender.detail"
       ></div>
