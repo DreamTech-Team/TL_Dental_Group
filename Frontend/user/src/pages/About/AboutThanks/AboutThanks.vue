@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
@@ -53,30 +53,6 @@ const handleLeave = () => {
     }
   }
 };
-
-// Xử lí resize lại tấm ảnh để phù hợp với mobile
-// onMounted(() => {
-//   const parent = document.getElementById('content_letter');
-//   // parent.getElementsByTagName('img');
-//   if (parent) {
-//     const a = ref<HTMLImageElement[] | null>(null);
-//     const images = parent.getElementsByTagName('img');
-//     const imageArray = Array.from(images);
-//     a.value = imageArray;
-
-//     a.value.forEach((item) => {
-//       if (window.innerWidth < 736) {
-//         const aspectRatio = item.height / item.width;
-//         item.width = window.innerWidth - 30;
-//         item.height = item.width * aspectRatio;
-//       } else if (window.innerWidth < 1100) {
-//         const aspectRatio = item.height / item.width;
-//         item.width = window.innerWidth - 400;
-//         item.height = item.width * aspectRatio;
-//       }
-//     });
-//   }
-// });
 </script>
 <template>
   <div :class="$style.about__thanks">

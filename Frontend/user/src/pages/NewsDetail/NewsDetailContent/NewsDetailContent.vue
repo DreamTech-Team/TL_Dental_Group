@@ -90,7 +90,6 @@ const handleClickRight = () => {
 // Xử lí resize lại tấm ảnh để phù hợp với mobile
 onMounted(() => {
   const parent = document.getElementById('content_body');
-  // parent.getElementsByTagName('img');
   if (parent) {
     const a = ref<HTMLImageElement[] | null>(null);
     const images = parent.getElementsByTagName('img');
