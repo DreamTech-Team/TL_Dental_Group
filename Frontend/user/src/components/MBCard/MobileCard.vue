@@ -55,6 +55,7 @@ interface Item {
   summary: string;
   tag: string;
   company: string;
+  logo: string;
   image: string;
   brand: string;
   slug: string;
@@ -63,6 +64,11 @@ const router = useRouter();
 
 const goToDetailPage = () => {
   router.push('/chitiet');
+};
+
+//Function 1000 to 1.000
+const formatNumberWithCommas = (num: number) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 
 defineProps({
@@ -77,16 +83,15 @@ defineProps({
     <div :class="$style['mbcard__left']">
       <!-- <img :class="$style['mbcard__left-image']" :src="LogoCompany" alt="logo" /> -->
       <div :class="$style['mbcard__left-header']">
-        <img :src="LogoCompany" alt="logo" />
+        <img :src="product.brand" alt="logo" />
       </div>
       <div :class="$style['mbcard__left-cpn']">
-        <img :src="ProductPic" alt="product" />
+        <img :src="product.image" alt="product" />
       </div>
 
       <div :class="$style['mbcard__left-infor']">
         <div :class="$style['mbcard__left-logo']">
           <img :class="$style['mbcard__left-logo']" :src="LogoNoBg" alt="logo" />
-          <p>Group</p>
         </div>
         <h3>{{ product.tag }} {{ product.company }}</h3>
       </div>
@@ -110,7 +115,9 @@ defineProps({
           <p :class="$style['mbcard__right-text']">Hỗ trợ đổi trả</p>
         </div>
       </div>
-      <h4 :class="$style['mbcard__right-price']">{{ product.price }}</h4>
+      <h4 :class="$style['mbcard__right-price']">
+        {{ formatNumberWithCommas(product.price) + 'đ' }}
+      </h4>
     </div>
   </div>
 </template>

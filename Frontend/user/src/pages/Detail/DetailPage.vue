@@ -2,6 +2,7 @@
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
 import ServiceQuality from '@/components/ServiceQuality/ServiceQuality.vue';
 import SimilarProduct from '@/components/SimilarProduct/SimilarProduct.vue';
+import HomeTrend from '../Home/HomeTrend/HomeTrend.vue';
 import DetailImage from '@/assets/imgs/Product/Rectangle.png';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faRegistered } from '@fortawesome/free-solid-svg-icons';
@@ -12,7 +13,7 @@ import {
   faMagnifyingGlassPlus,
   faTimes
 } from '@fortawesome/free-solid-svg-icons';
-import ZaloImg from '@/assets/imgs/Contact/zalo.svg';
+import ZaloImg from '@/assets/imgs/Contact/Zalo.png';
 import Product1 from '@/assets/imgs/Product/Rectangle2061.png';
 import Product2 from '@/assets/imgs/Product/Rectangle2062.png';
 import Product3 from '@/assets/imgs/Product/Rectangle2063.png';
@@ -21,7 +22,7 @@ import { ref, watch, onMounted, onUnmounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-interface Product {
+export interface Product {
   id: string;
   name: string;
   slug: string;
@@ -66,6 +67,19 @@ const route = useRoute();
 const inforProduct = ref<Product>();
 const pathBC = ref();
 
+// const images = [DetailImage, Product1, Product2, Product3, Product4];
+
+const isDesktop = ref(false);
+
+const wItem = ref(0);
+const tranfX = ref(0);
+let resizeListener: () => void;
+const isDialogOpen = ref(false);
+const currentIndex = ref(0);
+const startIndex = ref(0);
+const displayedImagesCount = ref();
+const currentImage = ref();
+
 const deps = ref([]);
 const { response } = useAxios<DataResponse>(
   'get',
@@ -75,48 +89,53 @@ const { response } = useAxios<DataResponse>(
   deps.value
 );
 
-//Create path for breadcrumb
+const images = ref<string[]>([]);
+
 watch(response, () => {
   inforProduct.value = response.value?.data;
-  // eslint-disable-next-line max-len
-  pathBC.value =
-    'sanpham' +
-    '/' +
-    inforProduct.value?.fkCategory.cate1Id.slug +
-    '/' +
-    inforProduct.value?.fkCategory.cate2Id.slug +
-    '/' +
-    inforProduct.value?.slug;
+
+  if (inforProduct.value) {
+    const apiResponseImg = inforProduct.value.imgs;
+    if (apiResponseImg) {
+      const cleanedResponse = apiResponseImg.substring(1, apiResponseImg.length - 1);
+      const imageUrls = cleanedResponse.split(',').map((url: string) => url.trim());
+
+      // Tạo một mảng mới chứa inforProduct.value?.mainImg và imageUrls
+      images.value.splice(0, images.value.length, ...imageUrls);
+      displayedImagesCount.value = 3;
+    }
+
+    // eslint-disable-next-line max-len
+    pathBC.value =
+      'sanpham' +
+      '/' +
+      inforProduct.value.fkCategory.cate1Id.slug +
+      '/' +
+      inforProduct.value.fkCategory.cate2Id.slug +
+      '/' +
+      inforProduct.value.slug;
+  }
+
+  currentImage.value = images.value[0];
 });
-
-const images = [DetailImage, Product1, Product2, Product3, Product4];
-const isDesktop = ref(false);
-
-const wItem = ref(0);
-const tranfX = ref(0);
-let resizeListener: () => void;
-const isDialogOpen = ref(false);
-const currentIndex = ref(0);
-const startIndex = ref(0);
-const displayedImagesCount = 3;
 
 const setCurrentImage = (index: number) => {
   currentIndex.value = index;
 };
 
 const displayedImages = computed(() =>
-  images.slice(startIndex.value, startIndex.value + displayedImagesCount)
+  images.value.slice(startIndex.value, startIndex.value + displayedImagesCount.value)
 );
 
 const nextImage = () => {
-  currentIndex.value = (currentIndex.value + 1) % images.length;
+  currentIndex.value = (currentIndex.value + 1) % images.value.length;
 };
 
 const prevImage = () => {
-  currentIndex.value = (currentIndex.value - 1 + images.length) % images.length;
+  currentIndex.value = (currentIndex.value - 1 + images.value.length) % images.value.length;
 };
 
-const currentImage = computed(() => images[currentIndex.value]);
+// const currentImage = computed(() => images[currentIndex.value]);
 
 const showDialog = () => {
   isDialogOpen.value = true;
@@ -125,6 +144,10 @@ const showDialog = () => {
 const closeDialog = () => {
   isDialogOpen.value = false;
 };
+
+watch(currentIndex, () => {
+  currentImage.value = images.value[currentIndex.value];
+});
 
 onMounted(() => {
   const container = document.getElementById('trend-wrapper');
@@ -158,6 +181,11 @@ onMounted(() => {
   window.addEventListener('resize', resizeListener);
 });
 
+//Function 1000 to 1.000
+const formatNumberWithCommas = (num: number) => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+};
+
 onUnmounted(() => {
   window.removeEventListener('resize', resizeListener);
 });
@@ -187,7 +215,7 @@ onUnmounted(() => {
         <div v-if="isDialogOpen" :class="$style.dialog" @click="closeDialog">
           <img
             @click.stop
-            :src="currentImage"
+            :src="inforProduct?.mainImg"
             alt="Detail Product"
             :class="$style['dialog-image']"
           />
@@ -212,6 +240,7 @@ onUnmounted(() => {
           />
           <div :class="$style['detail__image--multi-products']">
             <img
+              v-if="images.length > 3"
               :class="[
                 $style['detail__image--multi-product'],
                 {
@@ -222,6 +251,7 @@ onUnmounted(() => {
               alt="product4"
             />
             <div
+              v-if="images.length > 3"
               :class="[
                 $style['detail__image--multi-products-count'],
                 {
@@ -231,6 +261,7 @@ onUnmounted(() => {
             >
               <p>+ {{ images.length - 3 }}</p>
             </div>
+            <p v-else></p>
           </div>
         </div>
         <div v-if="!isDesktop" :class="$style['detail__image--counts']">
@@ -239,41 +270,24 @@ onUnmounted(() => {
       </div>
       <div :class="$style.detail__content">
         <div :class="$style['detail__content--name']">
-          Kẹp gấp mắc cài R6,7/ Kẹp gấp TUBE - PMC ORTHO
+          {{ inforProduct?.name }}
         </div>
-        <div :class="$style['detail__content--price']">4.000.000đ</div>
-        <div :class="$style['detail__content--object']">Chính Sách Bảo Hành - Đổi Trả</div>
-        <ul :class="$style['detail__content--list']">
-          <li :class="$style['detail__content--list-detail']">
-            Sản phẩm chính hãng, được bảo hành lên đến 12 tháng
-          </li>
-          <li :class="$style['detail__content--list-detail']">Miễn phí vận chuyển toàn quốc</li>
-          <li :class="$style['detail__content--list-detail']">
-            Miễn phí kiểm tra và thử sản phẩm (nội thành TP. HCM)
-          </li>
-          <li :class="$style['detail__content--list-detail']">
-            Đổi trả miễn phí trong 30 ngày (chưa qua sử dụng)
-          </li>
-        </ul>
+        <div :class="$style['detail__content--price']">
+          {{
+            inforProduct?.price !== undefined
+              ? formatNumberWithCommas(inforProduct.price) + 'đ'
+              : 'N/A'
+          }}
+        </div>
 
-        <div :class="$style['detail__content--object']">
-          Tại sao nên mua hàng tại TL Dental Group
-        </div>
-        <ul :class="$style['detail__content--list']">
-          <li :class="$style['detail__content--list-detail']">
-            Thương hiệu uy tín, nhà phân phối độc quyền
-          </li>
-          <li :class="$style['detail__content--list-detail']">
-            Mức giá cạnh tranh, chất lượng cao
-          </li>
-          <li :class="$style['detail__content--list-detail']">
-            Đội ngũ nhân viên tận tâm, giàu kinh nghiệm
-          </li>
-        </ul>
+        <div :class="$style['detail__content--object']" v-html="inforProduct?.summary"></div>
+
         <div :class="$style['detail__content--brand']">
           <font-awesome-icon :icon="faRegistered" :class="$style['detail__content--brand-icon']" />
           <p :class="$style['detail__content--brand-text']">Thương hiệu:</p>
-          <p :class="$style['detail__content--brand-company']">Biocon</p>
+          <p :class="$style['detail__content--brand-company']">
+            {{ inforProduct?.fkCategory.companyId.name }}
+          </p>
         </div>
         <div :class="$style['detail__content--contact']">
           <div :class="$style['detail__content--contact-btn1']">
@@ -292,37 +306,12 @@ onUnmounted(() => {
         <div :class="$style['description__title--line']"></div>
         <p :class="$style['description__title--text']">MÔ TẢ CHI TIẾT SẢN PHẨM</p>
       </div>
-      <div :class="$style.description__name">Kẹp gấp mắc cài R6,7/ Kẹp gấp TUBE - PMC ORTHO</div>
+      <div :class="$style.description__name">{{ inforProduct?.name }}</div>
       <div :class="$style.list">
-        <ul>
-          <p :class="$style.list__title">1. Thông tin sản phẩm</p>
-          <li :class="$style['list__content']">Kẹp gắp đầu cong để gắp mắc cài R6,7 và button.</li>
-          <li :class="$style['list__content']">
-            Kẹp gấp mắc cài được thiết kế rộng đầu kẹp giúp hỗ trợ tốt hơn khi đặt mắc cài.
-          </li>
-          <li :class="$style['list__content']">
-            Dùng tay bóp kẹp và gắp mắc cài, sau đó giữ kẹp không tạo lực và gắn mắc cài lên răng.
-            Sau đó bóp kẹp và lấy kẹp ra.
-          </li>
-        </ul>
-        <ul>
-          <p :class="$style.list__title">2. Thông tin thương hiệu</p>
-          <li :class="$style['list__content']">
-            TL Dental Group là một trong những đơn vị cung cấp dụng cụ chỉnh nha uy tín và đảm bảo
-            chất lượng dẫn đầu thị trường.
-          </li>
-          <li :class="$style['list__content']">
-            Tất cả các sản phẩm đều có nguồn gốc xuất xứ rõ ràng, có nhãn mác và chứng nhận của bộ y
-            tế.
-          </li>
-          <li :class="$style['list__content']">
-            Khách hàng sẽ nhận được những sản phẩm với mức giá vô cùng cạnh tranh và ưu đãi, đảm bảo
-            mang tới cho khách hàng sự hài lòng tuyệt đối.
-          </li>
-        </ul>
+        <div v-html="inforProduct?.description"></div>
       </div>
     </div>
-    <similar-product />
+    <home-trend />
     <service-quality />
   </div>
 </template>

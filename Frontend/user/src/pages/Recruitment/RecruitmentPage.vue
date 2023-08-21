@@ -26,6 +26,7 @@ import RecruitmentCard from './RecruitmentCard/RecruitmentCard.vue';
 import RecruitmentCardWork from './RecruitmentCardWork/RecruitmentCardWork.vue';
 import { ref, onMounted, computed, type Ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import TheAnimate from '@/components/TheAnimate/TheAnimate.vue';
 
 interface CardElementItem {
   id: string;
@@ -280,7 +281,12 @@ onMounted(() => {
         <h4>Với bề dày hơn <span>2 năm</span> kinh doanh và phát triển</h4>
         <h3>Công ty sở hữu số lượng vật liệu và dụng cụ nha khoa</h3>
         <h2>LỚN NHẤT VIỆT NAM</h2>
-        <h1>#TOP1</h1>
+        <h1>
+          <span style="position: relative"
+            >#TOP1
+            <the-animate />
+          </span>
+        </h1>
       </div>
       <div :class="$style['container__poster-value']">
         <div :class="$style['container__poster-value-item']">

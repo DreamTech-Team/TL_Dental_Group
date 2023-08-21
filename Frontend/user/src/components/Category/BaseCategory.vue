@@ -36,7 +36,8 @@ interface DataRender {
 }
 
 const dataCate = useDataRenderStore();
-// const { selectedCategoryItem } = toRefs(saveActive());
+const { selectedCategoryItem } = toRefs(saveActive());
+
 const { isAnimationVisible } = toRefs(setAnnimation());
 
 const saveState = saveActive();
@@ -45,7 +46,6 @@ const selectedItem = ref(-1);
 const selectedCategory1 = ref();
 const selectedCategory2 = ref('');
 const emit = defineEmits(['slug-category1', 'slug-category2']);
-const selectedCategoryItem = ref({ categoryIndex: -1, itemIndex: -1 });
 // Lấy thông tin đang định tuyến từ Vue Router
 const router = useRouter();
 
@@ -90,7 +90,6 @@ const toggleAnimation = (index: number) => {
     isAnimationVisible.value = true;
     setAnni.setAnnimationCategory(isAnimationVisible.value);
     selectedItem.value = index;
-    selectedCategoryItem.value = { categoryIndex: -1, itemIndex: -1 }; // Reset selectedCategoryItem
   }
   if (isAnimationVisible.value) {
     nextTick(() => {
@@ -122,42 +121,47 @@ const idDefine = (index: number) => {
 const logAndSelectCategory1 = (categoryIndex: number) => {
   // Kiểm tra trang hiện tại
   const newCategory1 = dataRender.value[categoryIndex].slug;
-  console.log('1111111');
-
   // Reset selectedCategory2 only if a new category 1 is selected
   if (newCategory1 !== selectedCategory1.value) {
     selectedCategory1.value = newCategory1;
     selectedCategory2.value = ''; // Reset selectedCategory2
     emit('slug-category1', selectedCategory1.value);
     emit('slug-category2', selectedCategory2.value);
-    selectedCategoryItem.value = { categoryIndex: -1, itemIndex: -1 }; // Reset selectedCategoryItem
-  }
-  if (router.currentRoute.value.name !== 'sanpham') {
-    // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
-    router.push({ name: 'sanpham', query: { slug1: newCategory1 } });
   }
 };
 
 const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
-  saveState.setActiveCategory(selectedCategoryItem.value);
+  saveState.setActiveCategory({ categoryIndex, itemIndex });
   const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
   const selectedCategory = dataRender.value[categoryIndex]; // Giá trị của category cấp 1
-  console.log('Selected Category:', selectedCategory.slug);
-  console.log('Selected Sub-Category:', selectedSubCategory.slug);
   emit('slug-category2', selectedSubCategory.slug);
   selectedCategory2.value = selectedSubCategory.slug; // Update selectedCategory2
   selectedCategoryItem.value = { categoryIndex, itemIndex };
+  if (router.currentRoute.value.name !== 'sanpham') {
+    selectedCategoryItem.value = { categoryIndex, itemIndex };
+    // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
+    router.push(`/sanpham?slug1=${selectedCategory1.value}&slug2=${selectedCategory2.value}`);
+  }
 };
 
 const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
-  const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
   return (
     selectedCategoryItem.value.categoryIndex === categoryIndex &&
-    selectedCategoryItem.value.itemIndex === itemIndex &&
-    selectedSubCategory.slug === selectedCategory2.value
+    selectedCategoryItem.value.itemIndex === itemIndex
   );
 };
+
+watch([selectedCategory1, selectedCategory2], () => {
+  const matchedIndex = dataRender.value.findIndex((item) => item.slug === selectedCategory1.value);
+  if (matchedIndex !== -1) {
+    selectedItem.value = matchedIndex;
+    logAndSelectCategory1(selectedItem.value);
+  } else {
+    console.log(`Category "${selectedCategory1.value}" not found in dataRender`);
+  }
+});
 </script>
+
 <template>
   <div id="dropdown-container" :class="$style.category" v-if="!isLoadingCategory">
     <div :class="$style['category__title']">Danh mục</div>

@@ -273,6 +273,12 @@
   }
 }
 
+.product__search_pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 @include responsive_mobile() {
   .sort {
     display: none;

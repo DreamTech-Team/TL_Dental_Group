@@ -80,14 +80,11 @@ const isDesktop = ref(true);
 const isActive = ref(false);
 const totalProduct = ref();
 
-const slugCategory1 = ref('');
-const slugCategory2 = ref('');
-const sortPriceType = ref('asc');
 const router = useRouter();
 const route = useRoute();
-
-// Trích xuất dữ liệu từ query parameters
-const selectedCategory1FromQuery = route.query.selectedCategory1;
+const slugCategory1 = ref(route.query.slug1);
+const slugCategory2 = ref('');
+const sortPriceType = ref('asc');
 
 // Xử lí sort
 const isDropdownOpen = ref(false);
@@ -117,11 +114,7 @@ const {
   isLoading
 } = useAxios<DataResponse>('get', apiProduct.value, {}, {}, deps.value);
 
-const {
-  response: totalRes,
-  error: totalErr,
-  isLoading: loadErr
-} = useAxios<DataResponse>('get', apiTotalProduct, {}, {}, deps.value);
+const { response: totalRes } = useAxios<DataResponse>('get', apiTotalProduct, {}, {}, deps.value);
 
 // Define methods
 const toggleDropdown = () => {
@@ -138,10 +131,8 @@ function updateSelectedOption(option: string) {
   selectedOption.value = option;
   if (selectedOption.value == 'Giá tăng dần') {
     sortPriceType.value = 'asc';
-    console.log(sortPriceType);
   } else {
     sortPriceType.value = 'desc';
-    console.log(sortPriceType);
   }
   closeDropdown();
 }
@@ -172,27 +163,27 @@ const handlePageChange = (page: number) => {
 
 const handleCategory1Selected = (selectedCategory1: string) => {
   slugCategory1.value = selectedCategory1;
-  console.log('Selected Category1:', selectedCategory1);
 };
 const handleCategory2Selected = (selectedCategory2: string) => {
   slugCategory2.value = selectedCategory2;
-  console.log('Selected Category2:', selectedCategory2);
 };
 
 //Cập nhật lại nội dung cần để show sản phẩm ra màn hình
 const updateShowResults = () => {
-  products.value = filterAllProduct.value.map((item: Product) => {
-    return {
-      nameProduct: item.name,
-      price: item.price,
-      summary: item.summary,
-      tag: item.fkCategory.cate1Id.title,
-      company: item.fkCategory.companyId.name,
-      image: item.mainImg,
-      brand: item.fkCategory.companyId.logo,
-      slug: item.slug
-    };
-  });
+  if (filterAllProduct.value) {
+    products.value = filterAllProduct.value.map((item: Product) => {
+      return {
+        nameProduct: item.name,
+        price: item.price,
+        summary: item.summary,
+        tag: item.fkCategory.cate1Id.title,
+        company: item.fkCategory.companyId.name,
+        image: item.mainImg,
+        brand: item.fkCategory.companyId.logo,
+        slug: item.slug
+      };
+    });
+  }
 };
 
 // Truy xuất giá trị response.value và gán vào responseData
@@ -226,25 +217,37 @@ watch(
       deps1.value
     );
 
-    console.log(
-      `/products?page=${currentPage.value}&pageSize=${pageSize.value}${
-        slugCategory1.value
-          ? `&cate1=${slugCategory1.value}` +
-            (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
-          : ''
-      }&sortPrice=${sortPriceType.value}`
-    );
-
-    console.log(responseChanged);
-
     // Truy xuất giá trị response.value và gán vào responseData
-    watch(responseChanged, () => {
-      console.log('jsdfjhsdjfhsdjfhdsj');
+    watch(
+      responseChanged,
+      () => {
+        dataRes.value = responseChanged?.value?.data;
+        filterAllProduct.value = responseChanged?.value?.data?.data;
+        updateShowResults();
 
-      dataRes.value = responseChanged?.value?.data;
-      filterAllProduct.value = responseChanged?.value?.data?.data;
-      updateShowResults();
-    });
+        const {
+          response: totalRes,
+          error: totalErr,
+          isLoading: loadErr
+        } = useAxios<DataResponse>(
+          'get',
+          `/products/total${
+            slugCategory1.value
+              ? `?cate1=${slugCategory1.value}` +
+                (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+              : ''
+          }`,
+          {},
+          {},
+          deps.value
+        );
+
+        watch(totalRes, () => {
+          totalProduct.value = totalRes?.value?.data;
+        });
+      },
+      { immediate: true }
+    );
   },
   { immediate: false }
 );
@@ -259,7 +262,8 @@ onMounted(() => {
   const { query } = router.currentRoute.value;
   if (query.slug1) {
     slugCategory1.value = query.slug1.toString();
-    console.log(slugCategory1.value);
+    // // Xóa toàn bộ query string và cập nhật URL
+    // router.replace({ query: {} });
   }
 });
 
@@ -271,7 +275,7 @@ window.addEventListener('resize', checkScreenSize);
     <div :class="$style['product__header']">
       <product-banner :class="$style['product__header-banner']" />
     </div>
-    <div style="margin: 0 50px">
+    <div :class="$style['product__wrapper']">
       <div style="margin: auto; max-width: 1280px">
         <bread-crumb :tags="pathBC" />
         <div :class="$style['product__content']">
@@ -312,7 +316,6 @@ window.addEventListener('resize', checkScreenSize);
                 </ul>
               </div>
             </div>
-
             <!-- mobile sort-->
             <div v-if="!isDesktop" :class="$style['product__content-mbsort']">
               <div
