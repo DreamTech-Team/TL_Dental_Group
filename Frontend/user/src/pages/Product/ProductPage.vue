@@ -9,8 +9,9 @@ import BasePagination from '@/components/Pagination/BasePagination.vue';
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch, onBeforeUnmount } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import { useRouter, useRoute } from 'vue-router';
 import { faArrowDownShortWide } from '@fortawesome/free-solid-svg-icons';
 
 interface Product {
@@ -79,13 +80,16 @@ const isDesktop = ref(true);
 const isActive = ref(false);
 const totalProduct = ref();
 
-const slugCategory1 = ref('');
+const router = useRouter();
+const route = useRoute();
+const slugCategory1 = ref(route.query.slug1);
 const slugCategory2 = ref('');
+const sortPriceType = ref('asc');
 
 // Xử lí sort
 const isDropdownOpen = ref(false);
-const selectedOption = ref('Sắp xếp');
-const options = ['Mới nhất', 'Giá tăng dần', 'Giá giảm dần'];
+const selectedOption = ref('Giá tăng dần');
+const options = ['Giá tăng dần', 'Giá giảm dần'];
 
 //Đặt biến API ban đầu: gọi tổng sản phẩm hiện có
 const apiTotalProduct = `/products/total${
@@ -95,23 +99,22 @@ const apiTotalProduct = `/products/total${
 }`;
 
 //Đặt biến API ban đầu: gọi danh sách sản phẩm theo category
-const apiProduct = `/products?page=${currentPage.value}&pageSize=${pageSize.value}${
-  slugCategory1.value
-    ? `&cate1=${slugCategory1.value}` + (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
-    : ''
-}`;
+const apiProduct = computed(() => {
+  return `/products?page=${currentPage.value}&pageSize=${pageSize.value}${
+    slugCategory1.value
+      ? `&cate1=${slugCategory1.value}` +
+        (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+      : ''
+  }&sortPrice=${sortPriceType.value}`;
+});
 
 const {
   response: productRes,
   error,
   isLoading
-} = useAxios<DataResponse>('get', apiProduct, {}, {}, deps.value);
+} = useAxios<DataResponse>('get', apiProduct.value, {}, {}, deps.value);
 
-const {
-  response: totalRes,
-  error: totalErr,
-  isLoading: loadErr
-} = useAxios<DataResponse>('get', apiTotalProduct, {}, {}, deps.value);
+const { response: totalRes } = useAxios<DataResponse>('get', apiTotalProduct, {}, {}, deps.value);
 
 // Define methods
 const toggleDropdown = () => {
@@ -126,6 +129,11 @@ const closeDropdown = () => {
 
 function updateSelectedOption(option: string) {
   selectedOption.value = option;
+  if (selectedOption.value == 'Giá tăng dần') {
+    sortPriceType.value = 'asc';
+  } else {
+    sortPriceType.value = 'desc';
+  }
   closeDropdown();
 }
 
@@ -155,27 +163,27 @@ const handlePageChange = (page: number) => {
 
 const handleCategory1Selected = (selectedCategory1: string) => {
   slugCategory1.value = selectedCategory1;
-  console.log('Selected Category1:', selectedCategory1);
 };
 const handleCategory2Selected = (selectedCategory2: string) => {
   slugCategory2.value = selectedCategory2;
-  console.log('Selected Category2:', selectedCategory2);
 };
 
 //Cập nhật lại nội dung cần để show sản phẩm ra màn hình
 const updateShowResults = () => {
-  products.value = filterAllProduct.value.map((item: Product) => {
-    return {
-      nameProduct: item.name,
-      price: item.price,
-      summary: item.summary,
-      tag: item.fkCategory.cate1Id.title,
-      company: item.fkCategory.companyId.name,
-      image: item.mainImg,
-      brand: item.fkCategory.companyId.logo,
-      slug: item.slug
-    };
-  });
+  if (filterAllProduct.value) {
+    products.value = filterAllProduct.value.map((item: Product) => {
+      return {
+        nameProduct: item.name,
+        price: item.price,
+        summary: item.summary,
+        tag: item.fkCategory.cate1Id.title,
+        company: item.fkCategory.companyId.name,
+        image: item.mainImg,
+        brand: item.fkCategory.companyId.logo,
+        slug: item.slug
+      };
+    });
+  }
 };
 
 // Truy xuất giá trị response.value và gán vào responseData
@@ -187,13 +195,10 @@ watch(productRes, () => {
 
 watch(totalRes, () => {
   totalProduct.value = totalRes?.value?.data;
-  console.log(apiTotalProduct);
-  console.log(apiProduct);
-  console.log(totalProduct.value);
 });
 
 watch(
-  [currentPage, slugCategory1, slugCategory2, apiProduct],
+  [currentPage, slugCategory1, slugCategory2, apiProduct, sortPriceType],
   () => {
     const {
       response: responseChanged,
@@ -206,26 +211,62 @@ watch(
           ? `&cate1=${slugCategory1.value}` +
             (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
           : ''
-      }`,
+      }&sortPrice=${sortPriceType.value}`,
       {},
       {},
       deps1.value
     );
 
     // Truy xuất giá trị response.value và gán vào responseData
-    watch(responseChanged, () => {
-      dataRes.value = responseChanged?.value?.data;
-      filterAllProduct.value = responseChanged?.value?.data?.data;
-      updateShowResults();
-    });
+    watch(
+      responseChanged,
+      () => {
+        dataRes.value = responseChanged?.value?.data;
+        filterAllProduct.value = responseChanged?.value?.data?.data;
+        updateShowResults();
+
+        const {
+          response: totalRes,
+          error: totalErr,
+          isLoading: loadErr
+        } = useAxios<DataResponse>(
+          'get',
+          `/products/total${
+            slugCategory1.value
+              ? `?cate1=${slugCategory1.value}` +
+                (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+              : ''
+          }`,
+          {},
+          {},
+          deps.value
+        );
+
+        watch(totalRes, () => {
+          totalProduct.value = totalRes?.value?.data;
+        });
+      },
+      { immediate: true }
+    );
   },
   { immediate: false }
 );
 
 onMounted(() => {
   checkScreenSize();
-  updateSelectedOption('Sắp xếp');
+  // updateSelectedOption('Giá tăng dần');
 });
+
+// Lấy dữ liệu từ URL query parameters khi trang được tạo
+onMounted(() => {
+  const { query } = router.currentRoute.value;
+  if (query.slug1) {
+    slugCategory1.value = query.slug1.toString();
+    // // Xóa toàn bộ query string và cập nhật URL
+    // router.replace({ query: {} });
+  }
+});
+
 window.addEventListener('resize', checkScreenSize);
 </script>
 
@@ -275,7 +316,6 @@ window.addEventListener('resize', checkScreenSize);
                 </ul>
               </div>
             </div>
-
             <!-- mobile sort-->
             <div v-if="!isDesktop" :class="$style['product__content-mbsort']">
               <div

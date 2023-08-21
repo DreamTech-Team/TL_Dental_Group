@@ -143,19 +143,25 @@ const predefinedItems = ref<Dictionaries[]>(breadcrumbs.value.concat(news.value,
 
 //Properties
 const route = useRoute();
-const pathSegments = ref();
+const pathSegments = ref<string[]>([]);
+const pathMain = ref(pathAD.tags ? pathAD.tags : '/chitiet');
 const breadcrumbItems = ref();
 let isAllCategoryLoaded = false;
 
 //Function Update Slug
 const updateSlug = () => {
-  pathSegments.value = pathAD.tags.split('/').filter((segment) => segment !== '');
+  pathSegments.value = pathMain.value.split('/').filter((segment) => segment !== '');
 
   breadcrumbItems.value = pathSegments.value.map((segment: string) => {
     const predefinedItem = predefinedItems.value.find((item) => item.slug === segment);
     return predefinedItem ? predefinedItem.name : segment;
   });
 };
+
+watch(pathAD, () => {
+  pathMain.value = pathAD.tags;
+  updateSlug();
+});
 
 //Init dependencies
 const deps = ref([]);
@@ -202,7 +208,7 @@ const getAllCategory = () => {
 };
 
 watch(
-  [predefinedItems, route?.fullPath],
+  [predefinedItems],
   () => {
     updateSlug();
   },
@@ -249,7 +255,6 @@ if (route.path.startsWith('/tintuc')) {
         predefinedItems.value.push(news);
       });
       saveCate.setSlugCates(predefinedItems.value);
-      updateSlug();
     });
     getAllCategory();
   } else {
