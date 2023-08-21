@@ -143,6 +143,15 @@
   }
 }
 
+@include responsive_tablet() {
+  .home__activities {
+    &-grid {
+      padding-left: 50px;
+      padding-right: 50px;
+    }
+  }
+}
+
 @include responsive_mobile() {
   .home__activities {
     h3 {

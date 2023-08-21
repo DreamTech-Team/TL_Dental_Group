@@ -198,6 +198,16 @@
   }
 }
 
+@include responsive_tablet() {
+  .home__feedback {
+    &-ctn {
+      .home__feedback-wrapper {
+        width: 85%;
+      }
+    }
+  }
+}
+
 @include responsive_mobile() {
   .home__feedback {
     margin-top: 100px;
