@@ -63,6 +63,7 @@ const products = ref<Item[]>([]);
 
 //Properties
 const isPhone = ref(false);
+const isTablet = ref(false);
 const MIN_SWIPE_DISTANCE_CM = 3;
 const TOUCH_SENSITIVITY = 20;
 const touchstartX = ref(0);
@@ -87,6 +88,12 @@ const scrollLeft = () => {
 const scrollRight = () => {
   if (window.innerWidth < 739) {
     if (-tranfX.value + wItem.value * 2 < wItem.value * products.value.length) {
+      tranfX.value -= wItem.value;
+    } else {
+      tranfX.value = 0;
+    }
+  } else if (window.innerWidth >= 739 && window.innerWidth <= 1024) {
+    if (-tranfX.value + wItem.value * 3 < wItem.value * products.value.length) {
       tranfX.value -= wItem.value;
     } else {
       tranfX.value = 0;
@@ -158,6 +165,9 @@ onMounted(() => {
     if (window.innerWidth < 739) {
       wItem.value = container.offsetWidth / 2;
       isPhone.value = true;
+    } else if (window.innerWidth >= 739 && window.innerWidth <= 1024) {
+      wItem.value = container.offsetWidth / 3;
+      isTablet.value = true;
     } else {
       wItem.value = container.offsetWidth / 4;
     }
@@ -169,6 +179,9 @@ onMounted(() => {
       if (window.innerWidth < 739) {
         wItem.value = container.offsetWidth / 2;
         isPhone.value = true;
+      } else if (window.innerWidth >= 739 && window.innerWidth <= 1024) {
+        wItem.value = container.offsetWidth / 3;
+        isTablet.value = true;
       } else {
         wItem.value = container.offsetWidth / 4;
       }
@@ -215,7 +228,11 @@ onUnmounted(() => {
         <font-awesome-icon :icon="faChevronLeft" :class="$style['home__trend-ic']" />
       </button>
       <button
-        v-show="(!isPhone && lenght > 4) || (isPhone && lenght > 2)"
+        v-show="
+          (!isPhone && !isTablet && lenght > 4) ||
+          (isPhone && lenght > 2) ||
+          (isTablet && lenght > 3)
+        "
         :class="$style['home__trend-right']"
         @click="scrollRight"
       >

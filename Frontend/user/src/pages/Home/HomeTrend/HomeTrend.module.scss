@@ -115,6 +115,21 @@
   }
 }
 
+@include responsive_tablet() {
+  .home__trend {
+    &-ctn {
+      .home__trend-wrapper {
+        .home__trend-list {
+          .home__trend-item {
+            margin-left: 12px;
+            margin-right: 12px;
+          }
+        }
+      }
+    }
+  }
+}
+
 @include responsive_mobile() {
   .home__trend {
     text-align: center;
