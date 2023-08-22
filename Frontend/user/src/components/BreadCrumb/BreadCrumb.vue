@@ -185,6 +185,7 @@ const getAllCategory = () => {
           predefinedItems.value.push(news);
         });
         saveCate.setSlugCates(predefinedItems.value);
+        updateSlug();
       }
     });
 
@@ -199,11 +200,11 @@ const getAllCategory = () => {
           };
           predefinedItems.value.push(news);
         });
+        updateSlug();
       }
     });
 
     isAllCategoryLoaded = true;
-    updateSlug();
   }
 };
 
