@@ -69,12 +69,12 @@
         }
     
         &__wrapper{
-            display: block;
+            display: flex;
             width: 100%;
             padding: 3rem 1rem;
 
             &-category{
-                display: none;
+                display: block;
             }
         }
     

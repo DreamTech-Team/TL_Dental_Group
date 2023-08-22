@@ -136,8 +136,6 @@
                     color: $primary_900;
                 }
             }
-
-            
         }
     }
 }
@@ -285,7 +283,7 @@
 
 @include responsive_tablet() {
     .newsdetail__content{
-        width: 100%;
+        width: 75%;
         padding-right: 2rem;
     
         h1{
@@ -368,9 +366,8 @@
     
             &-footer{
                 display: flex;
-                flex-direction: column;
                 justify-content: space-between;
-                margin-bottom: 1rem;
+                margin-top: 1rem;
     
                 &-button-left{
                     display: flex;
@@ -381,7 +378,7 @@
                     border-radius: 5px;
                     background: #fff;
                     padding: 1rem;
-                    max-width: 100%;
+                    max-width: 50rem;
     
                     p{
                         text-align: start;
@@ -405,7 +402,7 @@
                     border-radius: 5px;
                     background: #fff;
                     padding: 1rem 1.4rem;
-                    max-width: 100%;
+                    max-width: 50rem;
     
                     p{
                         text-align: start;
@@ -420,8 +417,6 @@
                         color: $primary_900;
                     }
                 }
-    
-                
             }
         }
     }
