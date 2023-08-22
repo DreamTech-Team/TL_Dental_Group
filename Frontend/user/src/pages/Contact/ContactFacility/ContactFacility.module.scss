@@ -18,9 +18,9 @@
         align-items: center;
         background-color: #EAF8FF;
         border-radius: 3.5rem;
-        margin: 6rem 8rem;
+        margin: 6rem auto;
         padding: 4rem 8rem;
-        max-width: 100%;
+        max-width: 1200px;
 
         .contact__facility-left{
             width: 50%;
@@ -57,6 +57,7 @@
                     font-size: $text-lg;
                     line-height: 2.8rem;
                     color: #000;
+                    text-align: center;
                 }
             }
 
