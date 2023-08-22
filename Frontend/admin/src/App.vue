@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import { RouterView, useRoute } from 'vue-router';
+import { RouterView, useRoute, useRouter } from 'vue-router';
 import BaseHeader from './components/BaseHeader/BaseHeader.vue';
 import BaseSidebar from './components/BaseSidebar/BaseSidebar.vue';
-import { onMounted, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 const checkLoginPage = ref(false);
-
+const getInforAdmin = localStorage.getItem('infor_admin');
+const router = useRouter();
 watch(useRoute(), (value) => {
   if (value.path.includes('/login')) checkLoginPage.value = true;
   else checkLoginPage.value = false;
+
+  if (!getInforAdmin && !value.path.includes('/login')) router.push('/login');
+
+  if (getInforAdmin && value.path.includes('/login')) router.push('/');
 });
 </script>
 

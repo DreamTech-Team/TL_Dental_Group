@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faUnlockKeyhole } from '@fortawesome/free-solid-svg-icons';
 import { ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
-import { useInforAdminStore } from '@/stores/counter';
 import { useRouter } from 'vue-router';
 
 const accountInput = ref({ email: '', pass: '' });
@@ -13,7 +12,6 @@ const isLoading = ref(false);
 const paramAxios = ref();
 const router = useRouter();
 
-const { setInforAdmin } = useInforAdminStore();
 const handleLogin = () => {
   const postAccount = useAxios<DataResponse>(
     'post',
@@ -25,6 +23,7 @@ const handleLogin = () => {
     {},
     paramAxios.value
   );
+  console.log(localStorage.getItem('infor_admin'));
 
   watch(postAccount.error, (value) => {
     console.log(value);
@@ -48,8 +47,7 @@ const handleLogin = () => {
       token: value?.data.jwt
     };
 
-    setInforAdmin(newInfor);
-
+    localStorage.setItem('infor_admin', JSON.stringify(newInfor));
     router.push('/');
   });
 };
@@ -77,6 +75,7 @@ const handleLogin = () => {
         <input
           id="user-pass"
           v-model="accountInput.pass"
+          type="password"
           placeholder="Nhập mật khẩu"
           :class="$style['custom-input']"
         />

@@ -5,11 +5,24 @@ import axios, {
 } from 'axios';
 import qs from 'qs';
 
+const getInforAdmin = localStorage.getItem('infor_admin');
+const handleSetHeaders = () => {
+  if (getInforAdmin) {
+    const inforAdmin = JSON.parse(getInforAdmin);
+
+    return inforAdmin.token
+      ? {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + inforAdmin.token
+        }
+      : {
+          'Content-Type': 'application/json'
+        };
+  }
+};
 const axiosClient: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_ENDPOINT,
-  headers: {
-    'Content-Type': 'application/json'
-  },
+  headers: handleSetHeaders(),
   paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'brackets' })
 });
 
