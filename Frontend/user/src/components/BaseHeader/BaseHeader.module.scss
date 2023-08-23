@@ -101,6 +101,7 @@
       margin: 0 14px;
       display: inline;
       position: relative;
+      cursor: pointer;
 
       &-link {
         line-height: 70px;
@@ -182,6 +183,7 @@
         }
 
         &--item {
+          cursor: pointer;
           
           a {
             padding: 16px 12px;
@@ -249,6 +251,7 @@
         &--item {
           
           a {
+            cursor: pointer;
             padding: 16px 12px;
             border-bottom: 1px solid white;
             color: white;
@@ -322,6 +325,7 @@
         &--item {
           
           a {
+            cursor: pointer;
             padding: 16px 12px;
             border-bottom: 1px solid white;
             color: white;

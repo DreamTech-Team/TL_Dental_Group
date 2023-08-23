@@ -6,6 +6,7 @@ import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue
 const variableChange = ref([]);
 const contentLetter = ref('');
 const isLoadingLetter = ref(false);
+const canHover = ref(true);
 
 const { response, isLoading } = useAxios<DataResponse>(
   'get',
@@ -20,12 +21,12 @@ watch(response, () => {
   contentLetter.value = response?.value?.data?.content;
 });
 
-let countHover = 0; // biến đếm số lần hover
-
 // hàm scroll theo lá thư khi hover vào bức thư
 const handleOpen = () => {
-  if (countHover == 0) {
-    const mobileElement = document.getElementById('haha');
+  if (window.innerWidth > 1100) {
+    canHover.value = true; // Vô hiệu hóa hover trong 2 giây
+
+    const mobileElement = document.getElementById('letter');
 
     if (mobileElement) {
       window.scrollTo({
@@ -34,32 +35,46 @@ const handleOpen = () => {
       });
     }
   }
-  countHover++;
 };
 
 // Xử lí scroll khi không hover nữa
 const handleLeave = () => {
-  countHover = 0;
-  const mobileElement = document.getElementById('haha');
+  canHover.value = false; // Đặt lại isHovering thành false
 
-  if (mobileElement) {
-    window.scrollTo({
-      top: mobileElement.offsetHeight,
-      behavior: 'smooth'
-    });
+  // Sau 3 giây, kích hoạt lại việc hover
+  setTimeout(() => {
+    canHover.value = true;
+  }, 3000);
+
+  if (window.innerWidth > 1100) {
+    const mobileElement = document.getElementById('letter');
+
+    if (mobileElement) {
+      window.scrollTo({
+        top: mobileElement.offsetHeight,
+        behavior: 'smooth'
+      });
+    }
   }
 };
 </script>
 <template>
-  <div :class="$style.about__thanks">
+  <div :class="$style.about__thanks" :style="{ pointerEvents: canHover ? 'auto' : 'none' }">
     <span>LỜI CẢM ƠN</span>
 
-    <div :class="$style['about__thanks-wrapper']" @mouseover="handleOpen" @mouseleave="handleLeave">
-      <div :class="$style['about__thanks-mail']">
+    <div
+      :class="$style['about__thanks-wrapper']"
+      @mouseenter="handleOpen"
+      @mouseleave="handleLeave"
+    >
+      <div
+        :class="$style['about__thanks-mail']"
+        :style="{ pointerEvents: canHover ? 'auto' : 'none' }"
+      >
         <div :class="$style['about__thanks-cover']"></div>
-        <div :class="$style['about__thanks-letter']" id="haha" v-if="!isLoadingLetter">
+        <div :class="$style['about__thanks-letter']" id="letter" v-if="!isLoadingLetter">
           <h1>LỜI CẢM ƠN</h1>
-          <p v-html="contentLetter"></p>
+          <p v-html="contentLetter" id="content_letter"></p>
         </div>
         <loading-component v-else />
       </div>

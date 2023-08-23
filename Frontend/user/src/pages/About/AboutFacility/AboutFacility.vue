@@ -108,7 +108,7 @@ if (
 
         <div>
           <img :src="Telephone" :class="$style['about__facility-ic']" />
-          <p>{{ dataFacility.hotline }}</p>
+          <p>{{ dataFacility.phoneNumber }}</p>
         </div>
 
         <div>

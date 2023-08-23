@@ -145,6 +145,9 @@ const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
 };
 
 const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
+  console.log(selectedCategoryItem.value.categoryIndex);
+  console.log(selectedCategoryItem.value.itemIndex);
+
   return (
     selectedCategoryItem.value.categoryIndex === categoryIndex &&
     selectedCategoryItem.value.itemIndex === itemIndex
