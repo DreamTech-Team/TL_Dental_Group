@@ -60,10 +60,8 @@ watch(getActivites.response, () => {
 
 //Get total admins
 watch(getAdmins.response, () => {
-  console.log(getAdmins.response);
-
   totalAdmin.value = getAdmins.response.value?.data?.data;
-  admins.value = totalAdmin.value.filters((item: Staff) => item.roles === 'ROLE_ADMIN');
+  admins.value = totalAdmin.value.filter((item: Staff) => item.roles === 'ROLE_ADMIN');
 });
 
 //Properties
