@@ -3,8 +3,36 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faPhone, faEnvelope, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import Avatar from '@/assets/imgs/adminavt.png';
 import { ref, onMounted, onUnmounted } from 'vue';
+import router from '@/router';
+
+interface Infor {
+  id: string;
+  email: string;
+  fullName: string;
+  phoneNumber: string;
+  address: string;
+  password: string;
+  roles: 'ROLE_ADMIN';
+  token: string;
+}
 
 const isOpen = ref(false);
+const storedInfor = window.localStorage.getItem('infor_admin');
+
+let inforAdmin: Infor | null = null;
+
+if (storedInfor !== null) {
+  try {
+    inforAdmin = JSON.parse(storedInfor);
+  } catch (error) {
+    console.error('Error parsing stored information:', error);
+  }
+}
+
+const handleLogout = () => {
+  router.push('/login');
+  localStorage.clear();
+};
 
 //Close Modal when click outside
 const handleClickOutside = (event: MouseEvent) => {
@@ -29,11 +57,11 @@ onUnmounted(() => {
     <div :class="$style['header__infor']">
       <div :class="$style['header__infor-item']">
         <font-awesome-icon :icon="faPhone" :class="$style['header__ic']" />
-        <p>(+84) 898923230</p>
+        <p>{{ inforAdmin?.phoneNumber }}</p>
       </div>
       <div :class="$style['header__infor-item']">
         <font-awesome-icon :icon="faEnvelope" :class="$style['header__ic']" />
-        <p>admin@gmail.com</p>
+        <p>{{ inforAdmin?.email }}</p>
       </div>
       <div
         id="personal"
@@ -47,11 +75,11 @@ onUnmounted(() => {
           <li :class="$style['header__list-item']">
             <img :src="Avatar" alt="avatar" />
             <div>
-              <h4>Anh Khoi</h4>
+              <h4>{{ inforAdmin?.fullName }}</h4>
               <p>Admin</p>
             </div>
           </li>
-          <li :class="$style['header__list-item']">
+          <li :class="$style['header__list-item']" @click="handleLogout">
             <font-awesome-icon :icon="faArrowRightFromBracket" :class="$style['person__ic']" />
             <p>Đăng xuất</p>
           </li>
