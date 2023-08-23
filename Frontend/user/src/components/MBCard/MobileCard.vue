@@ -55,7 +55,6 @@ interface Item {
   summary: string;
   tag: string;
   company: string;
-  logo: string;
   image: string;
   brand: string;
   slug: string;

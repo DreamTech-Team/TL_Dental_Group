@@ -276,10 +276,9 @@ window.addEventListener('resize', checkScreenSize);
       <product-banner :class="$style['product__header-banner']" />
     </div>
     <div :class="$style['product__wrapper']">
-      <div style="margin: auto; max-width: 1280px">
+      <div style="margin: auto; max-width: 1480px">
         <bread-crumb :tags="pathBC" />
         <div :class="$style['product__content']">
-          <!-- category -->
           <base-category
             v-if="isDesktop"
             @slug-category1="handleCategory1Selected"
