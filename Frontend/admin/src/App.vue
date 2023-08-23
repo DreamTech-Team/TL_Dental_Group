@@ -5,15 +5,18 @@ import BaseSidebar from './components/BaseSidebar/BaseSidebar.vue';
 import { ref, watch } from 'vue';
 
 const checkLoginPage = ref(false);
-const getInforAdmin = localStorage.getItem('infor_admin');
 const router = useRouter();
 watch(useRoute(), (value) => {
+  const getInforAdmin = localStorage.getItem('infor_admin');
+
   if (value.path.includes('/login')) checkLoginPage.value = true;
   else checkLoginPage.value = false;
 
   if (!getInforAdmin && !value.path.includes('/login')) router.push('/login');
 
   if (getInforAdmin && value.path.includes('/login')) router.push('/');
+
+  console.log(getInforAdmin);
 });
 </script>
 
