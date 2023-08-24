@@ -58,7 +58,7 @@ const context = defineProps({
   }
 });
 
-const emit = defineEmits(['close']);
+const $emit = defineEmits(['close']);
 
 const variableChange = ref([]);
 const nameCompanyInput = ref(context.item.name);
@@ -140,7 +140,9 @@ const submitForm = () => {
         },
         deps.value
       );
-      context.change({} as ManageCompany, isLoading.value);
+      watch(isLoading, () => {
+        context.change({} as ManageCompany, isLoading.value);
+      });
 
       watch(response, () => {
         if (response) {
@@ -175,7 +177,9 @@ const submitForm = () => {
         },
         deps.value
       );
-      context.change({} as ManageCompany, isLoading.value);
+      watch(isLoading, () => {
+        context.change({} as ManageCompany, isLoading.value);
+      });
 
       watch(response, () => {
         if (response) {

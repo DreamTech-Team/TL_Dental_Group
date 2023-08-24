@@ -99,7 +99,9 @@ const submitForm = () => {
         deps.value
       );
 
-      props.change(dataAdded.value, isLoading.value);
+      watch(isLoading, () => {
+        props.change(dataAdded.value, isLoading.value);
+      });
 
       watch(response, () => {
         if (response.value?.status === 'ok') {
@@ -111,8 +113,6 @@ const submitForm = () => {
             slug: response.value?.data?.slug,
             type: response.value?.data?.type
           };
-
-          props.change(dataAdded.value, isLoading.value);
         }
       });
     }

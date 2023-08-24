@@ -22,15 +22,6 @@ interface ManageCompany {
   outstandingProductId: string;
 }
 
-interface ManageOutstanding {
-  id: string;
-}
-
-interface DataCompany {
-  outstandingProduct: ManageOutstanding;
-  company: ManageCompany;
-}
-
 interface Products {
   id: string;
   name: string;
@@ -65,6 +56,10 @@ const isLoadingCompany = ref(false);
 const getCompany = useAxios<DataResponse>('get', '/company', {}, {}, variableChangeCompany.value);
 
 const getProducts = useAxios<DataResponse>('get', '/products', {}, {}, variableChangeProduct.value);
+
+watch(getCompany.isLoading, () => {
+  isLoadingCompany.value = getCompany.isLoading.value;
+});
 
 watch(getCompany.response, () => {
   companyRender.value = getCompany.response.value?.data
@@ -156,11 +151,13 @@ const deleteCompany = (id: string) => {
         {},
         deps.value
       );
-      isLoadingCompany.value = isLoading.value;
+
+      watch(isLoading, () => {
+        isLoadingCompany.value = isLoading.value;
+      });
 
       watch(response, () => {
         companyRender.value = companyRender.value.filter((product) => product.id !== id);
-        isLoadingCompany.value = isLoading.value;
         if (!isLoading.value) {
           if (response.value?.status === 'ok') {
             Swal.fire({
@@ -281,11 +278,11 @@ const handleUpdateHighLight = (index: number) => {
       {},
       variableChange.value
     );
-    isLoadingCompany.value = isLoading.value;
+    watch(isLoading, () => {
+      isLoadingCompany.value = isLoading.value;
+    });
 
     watch(response, () => {
-      isLoadingCompany.value = isLoading.value;
-
       if (!isLoading.value) {
         if (response.value?.status === 'ok') {
           Swal.fire({

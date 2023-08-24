@@ -93,7 +93,9 @@ const submitForm = () => {
         },
         deps.value
       );
-      props.changeAddedCompany({} as ManageCompany, isLoading.value);
+      watch(isLoading, () => {
+        props.changeAddedCompany({} as ManageCompany, isLoading.value);
+      });
 
       watch(response, () => {
         if (response.value) {

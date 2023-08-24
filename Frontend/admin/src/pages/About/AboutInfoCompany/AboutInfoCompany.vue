@@ -31,13 +31,17 @@ const isEdit = ref(false);
 const isLoadingInfo = ref(false);
 const isPatchData = ref(false);
 
-const { response } = useAxios<DataResponse>(
+const { response, isLoading } = useAxios<DataResponse>(
   'get',
   '/introduce/company-info',
   {},
   {},
   variableChange.value
 );
+
+watch(isLoading, () => {
+  isLoadingInfo.value = isLoading.value;
+});
 
 watch(response, () => {
   contentInfoComapny.value = response?.value?.data;

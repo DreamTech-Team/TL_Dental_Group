@@ -10,6 +10,7 @@ import ModalInfoCustomer from './component/ModalInfoCustomer.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import dayjs from 'dayjs'; // Import dayjs library
 import 'dayjs/locale/vi'; // Import Vietnamese locale (optional)
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface Info {
   id: string;
@@ -37,13 +38,17 @@ const isChart = ref(true);
 const time = ref('');
 const isLoadingInfo = ref(false);
 
-const { response } = useAxios<DataResponse>(
+const { response, isLoading } = useAxios<DataResponse>(
   'get',
   '/contact?sort=desc',
   {},
   {},
   variableChange.value
 );
+
+watch(isLoading, () => {
+  isLoadingInfo.value = isLoading.value;
+});
 
 watch(response, () => {
   if (response.value?.status === 'ok') {
@@ -242,10 +247,11 @@ const handleCheckBox = (e: Event, index: number) => {
       {},
       variableChange.value
     );
+    watch(isLoading, () => {
+      isLoadingInfo.value = isLoading.value;
+    });
 
     watch(response, () => {
-      isLoadingInfo.value = isLoading.value;
-
       if (!isLoading.value) {
         if (response.value?.status === 'ok') {
           infoCustomerRender.value[index].contacted = checkbox.checked;
@@ -301,41 +307,44 @@ const handleCheckBox = (e: Event, index: number) => {
         <!-- <p style="width: 12%">Xóa</p> -->
       </div>
 
-      <div :class="$style['mn_customer--table-list']" v-if="filteredProducts.length > 0">
-        <div
-          :class="$style['mn_customer--table-row']"
-          v-for="(customer, index) in displayNews"
-          :key="index"
-          @click="handleShowInfo(index)"
+      <loading-component v-if="isLoadingInfo" style="height: calc(100vh - 295px)" />
+      <div v-else>
+        <div :class="$style['mn_customer--table-list']" v-if="filteredProducts.length > 0">
+          <div
+            :class="$style['mn_customer--table-row']"
+            v-for="(customer, index) in displayNews"
+            :key="index"
+            @click="handleShowInfo(index)"
+          >
+            <p :class="$style['mn_customer--table-row-1']">{{ index + 1 }}</p>
+            <p :class="$style['mn_customer--table-row-2']">{{ customer.fullname }}</p>
+            <p :class="$style['mn_customer--table-row-3']">{{ customer.phone }}</p>
+            <p :class="$style['mn_customer--table-row-4']">{{ customer.email }}</p>
+            <p :class="$style['mn_customer--table-row-5']">{{ formatTime(customer.createAt) }}</p>
+            <input
+              :title="customer.contacted ? 'Đã liên hệ' : 'Chưa liên hệ'"
+              type="checkbox"
+              :id="'myCheckbox' + index"
+              style="width: 16%"
+              :checked="customer.contacted"
+              @click="(e) => handleCheckBox(e, index)"
+            />
+            <!-- <div :class="$style['mn_customer--table-row-6']">
+        <button
+          @click="
+            (e) => {
+              deleteInfoCustomer(customer.id, e);
+            }
+          "
         >
-          <p :class="$style['mn_customer--table-row-1']">{{ index + 1 }}</p>
-          <p :class="$style['mn_customer--table-row-2']">{{ customer.fullname }}</p>
-          <p :class="$style['mn_customer--table-row-3']">{{ customer.phone }}</p>
-          <p :class="$style['mn_customer--table-row-4']">{{ customer.email }}</p>
-          <p :class="$style['mn_customer--table-row-5']">{{ formatTime(customer.createAt) }}</p>
-          <input
-            :title="customer.contacted ? 'Đã liên hệ' : 'Chưa liên hệ'"
-            type="checkbox"
-            :id="'myCheckbox' + index"
-            style="width: 16%"
-            :checked="customer.contacted"
-            @click="(e) => handleCheckBox(e, index)"
-          />
-          <!-- <div :class="$style['mn_customer--table-row-6']">
-            <button
-              @click="
-                (e) => {
-                  deleteInfoCustomer(customer.id, e);
-                }
-              "
-            >
-              <font-awesome-icon :icon="faTrash" :class="$style['mn_customer--table-ic']" />
-            </button>
-          </div> -->
+          <font-awesome-icon :icon="faTrash" :class="$style['mn_customer--table-ic']" />
+        </button>
+      </div> -->
+          </div>
         </div>
-      </div>
-      <div :class="$style['mn_customer--table-row-notfonund']" v-else>
-        <p>Không tìm thấy kết quả mong muốn</p>
+        <div :class="$style['mn_customer--table-row-notfonund']" v-else>
+          <p>Không tìm thấy kết quả mong muốn</p>
+        </div>
       </div>
     </div>
 

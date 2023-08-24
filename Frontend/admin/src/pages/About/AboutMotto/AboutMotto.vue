@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import {
   faPencil,
-  faCheck,
   faClose,
   faChevronRight,
   faChevronLeft,
@@ -53,13 +52,17 @@ const handleGetWidthItem = () => {
   if (widthItem) widthItemEdit.value = widthItem.offsetWidth;
 };
 
-const { response } = useAxios<DataResponse>(
+const { response, isLoading } = useAxios<DataResponse>(
   'get',
   '/introduce/section1',
   {},
   {},
   variableChange.value
 );
+
+watch(isLoading, () => {
+  isLoadingItem.value = isLoading.value;
+});
 
 watch(response, () => {
   mottoItems.value = response?.value?.data;
@@ -141,7 +144,6 @@ const handleRemoveItem = () => {
     {},
     deps.value
   );
-  isLoadingItem.value = isLoading.value;
   items.value.splice(indexItems.value, 1);
 
   indexItems.value = 0;
@@ -150,9 +152,11 @@ const handleRemoveItem = () => {
   isDisableLeftEdit.value = true;
   isDisableRightEdit.value = false;
 
-  watch(response, () => {
+  watch(isLoading, () => {
     isLoadingItem.value = isLoading.value;
+  });
 
+  watch(response, () => {
     if (response.value?.status === 'ok') {
       // Hiển thị thông báo xóa thành công
       Swal.fire({
@@ -260,14 +264,13 @@ const handleChangeAdd = (dataAdded: AboutMotto, isLoading: boolean) => {
   isOpenAdd.value = false;
 
   if (!isLoading) {
-    items.value.unshift(dataAdded);
-
     Swal.fire({
       title: 'Thêm thành công',
       icon: 'success',
       confirmButtonText: 'Hoàn tất',
       width: '50rem',
       padding: '0 2rem 2rem 2rem',
+      timer: 2000,
       customClass: {
         confirmButton: styles['confirm-button'],
         cancelButton: styles['cancel-button'],
@@ -278,6 +281,8 @@ const handleChangeAdd = (dataAdded: AboutMotto, isLoading: boolean) => {
         Swal.close();
       }
     });
+
+    items.value.unshift(dataAdded);
 
     indexItems.value = 0;
     moveEdit.value = 0;
@@ -306,6 +311,7 @@ const handleChangeAdd = (dataAdded: AboutMotto, isLoading: boolean) => {
     <p :class="$style['about__motto-title']">PHƯƠNG CHÂM - GIÁ TRỊ</p>
 
     <div :class="$style['about__motto-position']" v-if="!isEdit">
+      <loading-component v-if="isLoadingItem" />
       <div
         :class="$style['about__motto-slider']"
         id="motto-list"
@@ -313,6 +319,7 @@ const handleChangeAdd = (dataAdded: AboutMotto, isLoading: boolean) => {
           transform: 'translateX' + '(' + move + 'px' + ')',
           justifyContent: isOneItem ? 'center' : ''
         }"
+        v-if="!isLoadingItem"
       >
         <div
           :class="$style['about__motto-slider-item']"
@@ -330,7 +337,7 @@ const handleChangeAdd = (dataAdded: AboutMotto, isLoading: boolean) => {
         </div>
       </div>
 
-      <div :class="$style['about__motto-curtain']">
+      <div :class="$style['about__motto-curtain']" v-if="!isLoadingItem">
         <div :class="$style['about__motto-curtain-left']"></div>
 
         <div :class="$style['about__motto-curtain-button']">

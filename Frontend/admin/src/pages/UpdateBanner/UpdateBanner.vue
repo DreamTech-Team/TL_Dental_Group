@@ -61,6 +61,14 @@ const getImagePolicy = useAxios<DataResponse>(
 
 const getImageNews = useAxios<DataResponse>('get', 'news/header', {}, {}, variableChange.value);
 
+watch(getImagePolicy.isLoading, () => {
+  isLoadingPolicy.value = getImagePolicy.isLoading.value;
+});
+
+watch(getImageNews.isLoading, () => {
+  isLoadingNews.value = getImageNews.isLoading.value;
+});
+
 watch(getImagePolicy.response, () => {
   dataHeaderPolicy.value = getImagePolicy.response.value?.data;
   imageFile.value = getImagePolicy.response.value?.data?.image;
@@ -131,10 +139,11 @@ const handleUpload = () => {
         },
         deps.value
       );
-      isLoadingPolicy.value = isLoading.value;
+      watch(isLoading, () => {
+        isLoadingPolicy.value = isLoading.value;
+      });
       watch(response, () => {
         if (response.value?.status === 'ok') {
-          isLoadingPolicy.value = isLoading.value;
           dataHeaderPolicy.value.image = response.value?.data?.image;
 
           Swal.fire({
@@ -186,12 +195,11 @@ const handleUpload = () => {
         },
         deps.value
       );
-      isLoadingNews.value = isLoading.value;
-      console.log(isLoadingNews.value);
+      watch(isLoading, () => {
+        isLoadingNews.value = isLoading.value;
+      });
 
       watch(response, () => {
-        isLoadingNews.value = isLoading.value;
-
         if (response.value?.status === 'ok') {
           dataHeaderNews.value.image = response.value?.data?.image;
 

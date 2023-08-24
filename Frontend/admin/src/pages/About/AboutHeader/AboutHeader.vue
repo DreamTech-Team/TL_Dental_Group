@@ -26,13 +26,17 @@ const isCrop = ref(false);
 const isOpenInput = ref(false);
 const isLoadingBanner = ref(false);
 
-const { response } = useAxios<DataResponse>(
+const { response, isLoading } = useAxios<DataResponse>(
   'get',
   '/introduce/header',
   {},
   {},
   variableChange.value
 );
+
+watch(isLoading, () => {
+  isLoadingBanner.value = isLoading.value;
+});
 
 watch(response, () => {
   imageFile.value = response?.value?.data?.image;
@@ -70,12 +74,13 @@ const handleCroppedImage = (result: string) => {
       },
       deps.value
     );
-    isLoadingBanner.value = isLoading.value;
+
+    watch(isLoading, () => {
+      isLoadingBanner.value = isLoading.value;
+    });
 
     watch(response, () => {
       if (response.value?.status === 'ok') {
-        isLoadingBanner.value = isLoading.value;
-
         Swal.fire({
           title: 'Cập nhật thành công',
           icon: 'success',
@@ -94,8 +99,6 @@ const handleCroppedImage = (result: string) => {
           }
         });
       } else {
-        isLoadingBanner.value = isLoading.value;
-
         Swal.fire({
           title: 'Cập nhật thất bại',
           icon: 'success',
@@ -119,7 +122,8 @@ const handleCroppedImage = (result: string) => {
 </script>
 <template>
   <div :class="$style.about__header">
-    <div :class="$style['about__header-introduce']" v-if="!isLoadingBanner">
+    <loading-component v-if="isLoadingBanner" />
+    <div :class="$style['about__header-introduce']" v-else>
       <div v-if="imageFile" :class="$style['about__header-introduce-img']">
         <img :src="imageFile" alt="" />
       </div>
@@ -138,9 +142,6 @@ const handleCroppedImage = (result: string) => {
       </div>
 
       <p>Giới Thiệu</p>
-    </div>
-    <div v-else style="width: 100%; height: 100%">
-      <loading-component />
     </div>
   </div>
 

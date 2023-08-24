@@ -97,7 +97,9 @@ const submitForm = () => {
         },
         deps.value
       );
-      context.change({} as AboutMotto, isLoading.value);
+      watch(isLoading, () => {
+        context.change({} as AboutMotto, isLoading.value);
+      });
 
       watch(response, () => {
         if (response) {
@@ -130,8 +132,9 @@ const submitForm = () => {
         },
         deps.value
       );
-
-      context.change({} as AboutMotto, isLoading.value);
+      watch(isLoading, () => {
+        context.change({} as AboutMotto, isLoading.value);
+      });
 
       watch(response, () => {
         if (response) {
@@ -141,8 +144,6 @@ const submitForm = () => {
         }
       });
     }
-
-    // emit('close');
   }
 };
 

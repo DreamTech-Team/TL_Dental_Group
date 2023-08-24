@@ -23,13 +23,17 @@ const isEdit = ref(false);
 const content = ref('');
 const isLoadingLetter = ref(false);
 
-const { response } = useAxios<DataResponse>(
+const { response, isLoading } = useAxios<DataResponse>(
   'get',
   '/introduce/letter',
   {},
   {},
   variableChange.value
 );
+
+watch(isLoading, () => {
+  isLoadingLetter.value = isLoading.value;
+});
 
 watch(response, () => {
   contentLetter.value = response?.value?.data;
@@ -81,9 +85,14 @@ const handleUpdateContent = () => {
         deps.value
       );
       isLoadingLetter.value = isLoading.value;
+
+      watch(isLoading, () => {
+        isLoadingLetter.value = isLoading.value;
+      });
+
       watch(response, () => {
         if (response.value?.status === 'ok') {
-          isLoadingLetter.value = isLoading.value;
+          contentLetter.value.content = content.value;
 
           Swal.fire({
             title: 'Cập nhật thành công',
@@ -99,14 +108,10 @@ const handleUpdateContent = () => {
             }
           }).then((result) => {
             if (result.isConfirmed) {
-              contentLetter.value.content = content.value;
-
               Swal.close();
             }
           });
         } else {
-          isLoadingLetter.value = isLoading.value;
-
           Swal.fire({
             title: 'Cập nhật thất bại',
             icon: 'success',
