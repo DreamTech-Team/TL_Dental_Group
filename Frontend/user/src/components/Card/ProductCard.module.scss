@@ -140,6 +140,15 @@
       aspect-ratio: 1/1;
       width: 50%;
     }
+
+    &--image {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 0;
+    }
   }
 
   &__body {
@@ -267,8 +276,9 @@
 
 @include responsive_tablet() {
   .card {
-    min-height: 38.5rem;
+    min-height: 32.5rem;
     &__header {
+      height: 70%;
       &--factors {
         width: 16%;
       }
@@ -279,18 +289,33 @@
         }
       }
 
-      &--wgenuine{
+      &--container {
+        height: 18rem;
+      }
+
+      &--wgenuine {
+        height: 30px;
         &-confirm {
-          font-size: 1.1rem;
+          font-size: 1rem;
+        }
+        &-trigle {
+          width: 29px;
+          height: 13px;
         }
       }
     }
 
-    &__body{
+    &__body {
       &--info {
+        margin: 0;
         &-price {
           font-size: 18px;
         }
+      }
+
+      &--name {
+        margin-bottom: 0;
+        padding: 1rem 1.6rem 0 1.6rem;
       }
     }
   }

@@ -90,16 +90,7 @@ const linkDetail = (slug: string) => {
             {{ product.tag }} {{ product.company }}
           </div>
         </div>
-        <div
-          style="
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-            top: 0;
-          "
-        >
+        <div :class="$style['card__header--image']">
           <img :class="$style['card__header--picture']" :src="product.image" alt="product" />
         </div>
       </div>

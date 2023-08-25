@@ -82,8 +82,11 @@ const currentPage = ref(1);
 const pageSize = ref(12);
 const isDesktop = ref(true);
 const isActive = ref(false);
-const selectedOption = ref('Sắp xếp');
-const dropdownOptions = ['Mới nhất', 'Giá tăng dần', 'Giá giảm dần'];
+
+//Sort
+const selectedOption = ref('Giá tăng dần');
+const dropdownOptions = ['Giá tăng dần', 'Giá giảm dần'];
+const sortPriceType = ref('asc');
 const isDropdownOpen = ref(false);
 //Khởi tạo danh sách sản phẩm để hiển thị ra màn hình
 const products = ref<Item[]>([]);
@@ -101,6 +104,18 @@ const deps = ref([]);
 const { response } = useAxios<DataResponse>(
   'get',
   `/products/search?key=${route.query.search}`,
+  {},
+  {},
+  deps.value
+);
+
+const {
+  response: productRes,
+  error,
+  isLoading
+} = useAxios<DataResponse>(
+  'get',
+  `/products?page=${currentPage.value}&pageSize=${pageSize.value}&sortPrice=${sortPriceType.value}`,
   {},
   {},
   deps.value
@@ -208,8 +223,8 @@ onUnmounted(() => {
 });
 </script>
 <template>
-  <div style="margin: 0 50px">
-    <div style="max-width: 1280px; margin: auto">
+  <div :class="$style.sort_container">
+    <div style="margin: auto; max-width: 1480px">
       <div v-if="products.length > 0">
         <bread-crumb :tags="pathBC" />
         <div v-if="isDesktop" :class="$style.sort">
@@ -320,9 +335,9 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-    <div>
+    <!-- <div>
       <home-trend />
-    </div>
+    </div> -->
   </div>
 </template>
 

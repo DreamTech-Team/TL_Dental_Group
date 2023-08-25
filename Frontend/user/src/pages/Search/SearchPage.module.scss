@@ -3,6 +3,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&display=swap');
 
+.sort_container {
+  padding: 0 50px;
+}
 .sort {
   height: 5.7rem;
   display: flex;
@@ -133,7 +136,7 @@
   &__container {
     margin: 3.6rem;
     transition: 500ms;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(226px, 1fr));
     // grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 3.5rem;
     max-width: 100%;
@@ -279,7 +282,20 @@
   align-items: center;
 }
 
+@include responsive_tablet() {
+  .sort {
+    margin: 0;
+
+    &__type {
+      width: 21rem;
+    }
+  }
+}
+
 @include responsive_mobile() {
+  .sort_container {
+    padding: 0;
+  }
   .sort {
     display: none;
   }
