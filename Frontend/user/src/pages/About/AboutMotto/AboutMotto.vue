@@ -27,8 +27,11 @@ const { response, isLoading } = useAxios<DataResponse>(
   variableChange.value
 );
 
-watch(response, () => {
+watch(isLoading, () => {
   isLoadingMotto.value = isLoading.value;
+});
+
+watch(response, () => {
   mottoItems.value = response?.value?.data;
 
   // Xử lí trường hợp có 1 hoặc 2 item
