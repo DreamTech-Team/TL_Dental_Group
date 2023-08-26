@@ -283,11 +283,34 @@
 }
 
 @include responsive_tablet() {
+  .sort_container {
+    padding: 0 20px;
+  }
   .sort {
     margin: 0;
 
     &__type {
       width: 21rem;
+    }
+  }
+
+  .product {
+    width: 100%;
+
+    &__container {
+      margin: 3rem 0;
+      transition: 500ms;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      // grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 1rem;
+      max-width: 100%;
+      border-radius: 10px;
+      display: grid;
+      justify-items: center;
+      -webkit-border-radius: 10px;
+      -moz-border-radius: 10px;
+      -ms-border-radius: 10px;
+      -o-border-radius: 10px;
     }
   }
 }

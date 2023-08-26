@@ -7,6 +7,7 @@ import ProductNavigation from './ProductNavigation/ProductNavigation.vue';
 import ServiceQuality from '@/components/ServiceQuality/ServiceQuality.vue';
 import BasePagination from '@/components/Pagination/BasePagination.vue';
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { computed, onMounted, ref, watch, onBeforeUnmount } from 'vue';
@@ -83,8 +84,9 @@ const totalProduct = ref();
 const router = useRouter();
 const route = useRoute();
 const slugCategory1 = ref(route.query.slug1);
-const slugCategory2 = ref('');
+const slugCategory2 = ref(route.query.slug2);
 const sortPriceType = ref('asc');
+const isLoadingProduct = ref(false);
 
 // Xử lí sort
 const isDropdownOpen = ref(false);
@@ -187,7 +189,10 @@ const updateShowResults = () => {
 };
 
 // Truy xuất giá trị response.value và gán vào responseData
-watch(productRes, () => {
+watch([productRes], () => {
+  isLoadingProduct.value = isLoading.value;
+  console.log(isLoadingProduct.value);
+
   dataRes.value = productRes?.value?.data;
   filterAllProduct.value = productRes?.value?.data?.data;
   updateShowResults();
@@ -219,8 +224,10 @@ watch(
 
     // Truy xuất giá trị response.value và gán vào responseData
     watch(
-      responseChanged,
+      [responseChanged, isLoading],
       () => {
+        isLoadingProduct.value = isLoading.value;
+        console.log(isLoadingProduct.value);
         dataRes.value = responseChanged?.value?.data;
         filterAllProduct.value = responseChanged?.value?.data?.data;
         updateShowResults();
@@ -252,6 +259,61 @@ watch(
   { immediate: false }
 );
 
+watch(route, () => {
+  slugCategory1.value = route.query.slug1;
+  slugCategory2.value = route.query.slug2;
+  const {
+    response: responseChanged,
+    error,
+    isLoading
+  } = useAxios<DataResponse>(
+    'get',
+    `/products?page=${currentPage.value}&pageSize=${pageSize.value}${
+      slugCategory1.value
+        ? `&cate1=${slugCategory1.value}` +
+          (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+        : ''
+    }&sortPrice=${sortPriceType.value}`,
+    {},
+    {},
+    deps1.value
+  );
+
+  // Truy xuất giá trị response.value và gán vào responseData
+  watch(
+    [responseChanged, isLoading],
+    () => {
+      isLoadingProduct.value = isLoading.value;
+      console.log(isLoadingProduct.value);
+      dataRes.value = responseChanged?.value?.data;
+      filterAllProduct.value = responseChanged?.value?.data?.data;
+      updateShowResults();
+
+      const {
+        response: totalRes,
+        error: totalErr,
+        isLoading: loadErr
+      } = useAxios<DataResponse>(
+        'get',
+        `/products/total${
+          slugCategory1.value
+            ? `?cate1=${slugCategory1.value}` +
+              (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+            : ''
+        }`,
+        {},
+        {},
+        deps.value
+      );
+
+      watch(totalRes, () => {
+        totalProduct.value = totalRes?.value?.data;
+      });
+    },
+    { immediate: true }
+  ),
+    { immediate: false };
+});
 onMounted(() => {
   checkScreenSize();
   // updateSelectedOption('Giá tăng dần');
@@ -284,7 +346,7 @@ window.addEventListener('resize', checkScreenSize);
             @slug-category1="handleCategory1Selected"
             @slug-category2="handleCategory2Selected"
           />
-          <div :class="$style['product__content-wrap']">
+          <div v-if="!isLoadingProduct" :class="$style['product__content-wrap']">
             <div :class="$style['product__content-sort']">
               <p :class="$style['product__content-sort--info']">
                 Hiển thị
@@ -351,8 +413,11 @@ window.addEventListener('resize', checkScreenSize);
               </div>
             </div>
             <div v-if="isActive" :class="$style.overlay" @click="closeDropdown"></div>
-            <!-- mobile content -->
-            <div v-if="isDesktop" :class="$style['product__content-container']">
+            <!-- card content -->
+            <div
+              v-if="isDesktop && products.length > 0"
+              :class="$style['product__content-container']"
+            >
               <product-card
                 v-for="(item, index) in products"
                 :key="index"
@@ -360,10 +425,15 @@ window.addEventListener('resize', checkScreenSize);
                 :class="$style['product__content-container--card']"
               />
             </div>
-            <div v-else :class="$style['product__content-mobile']">
+
+            <div
+              v-else-if="!isDesktop && products.length > 0"
+              :class="$style['product__content-mobile']"
+            >
               <mobile-card v-for="(item1, index1) in products" :key="index1" :product="item1" />
             </div>
-            <div :class="$style['product__pagination']">
+
+            <div v-if="products.length > 0" :class="$style['product__pagination']">
               <base-pagination
                 :total="totalProduct ? totalProduct : 0"
                 :current-page="currentPage"
@@ -371,7 +441,9 @@ window.addEventListener('resize', checkScreenSize);
                 @current-change="handlePageChange"
               />
             </div>
+            <div v-else :class="$style.product__notFound">Không có sản phẩm</div>
           </div>
+          <loading-component v-else />
         </div>
       </div>
     </div>

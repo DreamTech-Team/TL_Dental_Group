@@ -8,6 +8,7 @@ import ProductCard from '@/components/Card/ProductCard.vue';
 import MobileCard from '@/components/MBCard/MobileCard.vue';
 import HomeTrend from '../Home/HomeTrend/HomeTrend.vue';
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 import SimilarProduct from '@/components/SimilarProduct/SimilarProduct.vue';
 import BaseCategory from '@/components/Category/BaseCategory.vue';
 import BasePagination from '@/components/Pagination/BasePagination.vue';
@@ -88,6 +89,7 @@ const selectedOption = ref('Giá tăng dần');
 const dropdownOptions = ['Giá tăng dần', 'Giá giảm dần'];
 const sortPriceType = ref('asc');
 const isDropdownOpen = ref(false);
+const isLoadingSearch = ref(false);
 //Khởi tạo danh sách sản phẩm để hiển thị ra màn hình
 const products = ref<Item[]>([]);
 
@@ -101,42 +103,39 @@ const route = useRoute();
 console.log(route.query);
 
 const deps = ref([]);
-const { response } = useAxios<DataResponse>(
+const { response, isLoading } = useAxios<DataResponse>(
   'get',
-  `/products/search?key=${route.query.search}`,
+  `/products/search?key=${route.query.search}&page=0&pageSize=1000`,
   {},
   {},
   deps.value
 );
 
-const {
-  response: productRes,
-  error,
-  isLoading
-} = useAxios<DataResponse>(
-  'get',
-  `/products?page=${currentPage.value}&pageSize=${pageSize.value}&sortPrice=${sortPriceType.value}`,
-  {},
-  {},
-  deps.value
-);
+watch([response, isLoading], () => {
+  // console.log(isLoading.value);
+  isLoadingSearch.value = isLoading.value;
+  console.log(isLoadingSearch.value);
+  if (response.value?.data.data !== undefined) {
+    console.log(response.value?.data.data);
 
-watch(response, () => {
-  console.log(response.value?.data.data);
-  products.value = response.value?.data.data.map((item: Product) => {
-    return {
-      nameProduct: item.name,
-      price: item.price,
-      summary: item.summary,
-      tag: item.fkCategory.cate1Id.title,
-      company: item.fkCategory.companyId.name,
-      image: item.mainImg,
-      brand: item.fkCategory.companyId.logo,
-      slug: item.slug
-    };
-  });
+    products.value = response.value?.data.data.map((item: Product) => {
+      return {
+        nameProduct: item.name,
+        price: item.price,
+        summary: item.summary,
+        tag: item.fkCategory.cate1Id.title,
+        company: item.fkCategory.companyId.name,
+        image: item.mainImg,
+        brand: item.fkCategory.companyId.logo,
+        slug: item.slug
+      };
+    });
+  }
 });
 
+// watch(isLoading, () => {
+//   console.log(isLoadingSearch.value);
+// });
 const scrollToTop = (top: number) => {
   window.scrollTo({
     top: top,
@@ -222,10 +221,11 @@ onUnmounted(() => {
   window.removeEventListener('resize', resizeListener);
 });
 </script>
+
 <template>
   <div :class="$style.sort_container">
     <div style="margin: auto; max-width: 1480px">
-      <div v-if="products.length > 0">
+      <div v-if="products.length > 0 && !isLoadingSearch">
         <bread-crumb :tags="pathBC" />
         <div v-if="isDesktop" :class="$style.sort">
           <p :class="$style['sort__info']">
@@ -305,14 +305,14 @@ onUnmounted(() => {
         </div>
         <div :class="$style['product__search_pagination']">
           <base-pagination
-            :total="Math.ceil(products.length / pageSize)"
+            :total="products.length ? products.length : 0"
             :current-page="currentPage"
             :page-size="pageSize"
             @current-change="handlePageChange"
           />
         </div>
       </div>
-      <div v-else>
+      <div v-else-if="!isLoadingSearch && products.length == 0">
         <!-- Thẻ thể hiện giá trị rỗng -->
         <div :class="$style.found">
           <div :class="$style['found__content']">
@@ -334,6 +334,7 @@ onUnmounted(() => {
           <base-category :class="$style['found__cate']" />
         </div>
       </div>
+      <loading-component v-else />
     </div>
     <!-- <div>
       <home-trend />

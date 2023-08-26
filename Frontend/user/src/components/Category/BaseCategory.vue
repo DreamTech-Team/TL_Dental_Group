@@ -37,14 +37,14 @@ interface DataRender {
 
 const dataCate = useDataRenderStore();
 const { selectedCategoryItem } = toRefs(saveActive());
-
 const { isAnimationVisible } = toRefs(setAnnimation());
-
 const saveState = saveActive();
+
 const setAnni = setAnnimation();
 const selectedItem = ref(-1);
 const selectedCategory1 = ref();
 const selectedCategory2 = ref('');
+const rotation = ref(0);
 const emit = defineEmits(['slug-category1', 'slug-category2']);
 // Lấy thông tin đang định tuyến từ Vue Router
 const router = useRouter();
@@ -95,7 +95,6 @@ const toggleAnimation = (index: number) => {
     nextTick(() => {
       const animationContainer = document.getElementById(`id-${index}`);
       const dropdownContainer = document.getElementById('dropdown-container');
-
       if (animationContainer && dropdownContainer) {
         const dropdownContainerRect = dropdownContainer.getBoundingClientRect();
         const animationContainerRect = animationContainer.getBoundingClientRect();

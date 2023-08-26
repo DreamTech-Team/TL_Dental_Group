@@ -277,6 +277,7 @@
 @include responsive_tablet() {
   .card {
     min-height: 32.5rem;
+    height: 100%;
     &__header {
       height: 70%;
       &--factors {
