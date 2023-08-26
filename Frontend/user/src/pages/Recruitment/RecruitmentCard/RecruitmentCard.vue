@@ -12,22 +12,32 @@ const props = defineProps({
   items: { type: Object as unknown as PropType<CardElementItem[]>, required: true },
   content: { type: Object, required: false },
   style: { type: String, required: false },
-  onSelected: { type: Number, required: false }
+  onSelected: { type: Number, required: false },
+  handleScrollToTopOfStepRec: { type: Function, required: false }
 });
 
 const indexSelected = ref(0);
 const onActive = ref(-1);
 const listItems: Ref<CardElementItem[]> = ref(props.items || []);
+const screenWidth = ref(true);
 
-const selectedContent = (index: any) => {
-  if (screen.width > 739) {
-    indexSelected.value = index;
-    const element = document.getElementById(`type5-${indexSelected.value}`);
-    element?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+const selectedContent = (index: number) => {
+  if (screenWidth.value) {
+    if (index === 0 && props.handleScrollToTopOfStepRec) props.handleScrollToTopOfStepRec();
+    else {
+      indexSelected.value = index;
+      const element = document.getElementById(`type5-${indexSelected.value}`);
+      element?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    }
   } else {
     if (onActive.value !== index) onActive.value = index;
     else onActive.value = -1;
   }
+};
+
+const checkScreenWidth = () => {
+  const currentWidth = window.innerWidth;
+  screenWidth.value = currentWidth > 739;
 };
 
 watch(
@@ -39,6 +49,7 @@ watch(
 
 onMounted(() => {
   // if (props.style === 'type3') console.log(props.items);
+  window.addEventListener('resize', checkScreenWidth);
 });
 </script>
 
@@ -106,7 +117,6 @@ onMounted(() => {
             </svg>
           </div>
         </div>
-
         <div>
           <div
             :class="$style[`container__card-${style}-content`]"

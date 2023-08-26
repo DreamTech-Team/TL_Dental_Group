@@ -4,12 +4,12 @@ import { useRoute } from 'vue-router';
 import logo from '@/assets/imgs/logo.png';
 import RecruitmentDetailsItem from './RecruitmentDetailsItem/RecruitmentDetailsItem.vue';
 import RecruitmentCard from '../Recruitment/RecruitmentCard/RecruitmentCard.vue';
-import { data, recContentDetails } from './RecruitmentDetailsHandle';
+import { data } from './RecruitmentDetailsHandle';
 import { ic_bag, ic_hourglass, ic_location } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import { ref, watch } from 'vue';
 
-const typeRecuit = [
+const typeRecuit = ref([
   {
     icon: { link: ic_location, style: 'type6' },
     title: { content: '', style: 'type6' },
@@ -24,11 +24,11 @@ const typeRecuit = [
   },
   {
     icon: { link: ic_hourglass, style: 'type6' },
-    title: { content: data.time, style: 'type6' },
+    title: { content: '', style: 'type6' },
     content: { content: '', style: '' },
     image: { link: '', style: '' }
   }
-];
+]);
 
 const contentOrganite = [
   'Cơ hội thăng tiến dựa trên năng lực của bạn',
@@ -41,6 +41,7 @@ const contentOrganite = [
 const linkCurrent = useRoute();
 const descriptionRec = ref();
 const paramAxios = ref();
+const isLoading = ref(false);
 
 const getRecruitmentDetails = useAxios<DataResponse>(
   'get',
@@ -50,23 +51,32 @@ const getRecruitmentDetails = useAxios<DataResponse>(
   paramAxios.value
 );
 
+watch(getRecruitmentDetails.isLoading, (value) => {
+  isLoading.value = value;
+  console.log(value);
+});
+
 watch(getRecruitmentDetails.error, (value) => {
   console.log(value);
 });
 
 watch(getRecruitmentDetails.response, (value) => {
-  console.log(value);
   const tmp = value?.data;
 
-  typeRecuit[0].content.content = tmp.location;
-  typeRecuit[1].content.content = tmp.position;
-  typeRecuit[2].content.content = tmp.working_form;
+  typeRecuit.value[0].title = { content: tmp.location, style: 'type6' };
+  typeRecuit.value[1].title = { content: tmp.position, style: 'type6' };
+  typeRecuit.value[2].title = { content: tmp.working_form, style: 'type6' };
+
+  // console.log(tmp, typeRecuit.value);
 
   descriptionRec.value = tmp.description;
 });
 </script>
 <template>
   <div :class="$style.container">
+    <div v-if="isLoading" :class="$style.container__loading">
+      <div :id="$style.loader"></div>
+    </div>
     <div :class="$style.container__heading">
       <div :class="$style['container__heading-logo']"><img :src="logo" alt="none" /></div>
       <div :class="$style['container__heading-title']">

@@ -26,8 +26,11 @@ const { response, isLoading } = useAxios<DataResponse>(
   variableChange.value
 );
 
-watch(response, () => {
+watch(isLoading, () => {
   isLoadingPolicy.value = isLoading.value;
+});
+
+watch(response, () => {
   listPolicy.value = response?.value?.data;
   if (listPolicy.value.length === 1) oneItem.value = true;
 });

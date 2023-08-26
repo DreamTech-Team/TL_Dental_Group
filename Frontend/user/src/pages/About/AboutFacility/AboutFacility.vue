@@ -75,14 +75,20 @@ if (
     variableChangeContact.value
   );
 
-  watch(getInfo.response, () => {
+  watch(getInfo.isLoading, () => {
     isLoadingFacility.value = getInfo.isLoading.value;
+  });
+
+  watch(getContact.isLoading, () => {
+    isLoadingContact.value = getContact.isLoading.value;
+  });
+
+  watch(getInfo.response, () => {
     dataFacility.value = getInfo.response?.value?.data;
     dataContactStore.setDataFacility(dataFacility.value); // Lưu vào store
   });
 
   watch(getContact.response, () => {
-    isLoadingContact.value = getContact.isLoading.value;
     dataContact.value = getContact.response?.value?.data;
     dataContactStore.setDataContact(dataContact.value); // Lưu vào store
   });

@@ -16,8 +16,11 @@ const { response, isLoading } = useAxios<DataResponse>(
   variableChange.value
 );
 
-watch(response, () => {
+watch(isLoading, () => {
   isLoadingLetter.value = isLoading.value;
+});
+
+watch(response, () => {
   contentLetter.value = response?.value?.data?.content;
 });
 
