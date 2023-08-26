@@ -292,6 +292,11 @@ const checkScreenWidth = () => {
   screenWidth.value = currentWidth > 739;
 };
 
+const handleScrollToTopOfStepRec = () => {
+  const element = document.getElementById(`page`);
+  element?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+};
+
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
   window.addEventListener('resize', checkScreenWidth);
@@ -449,6 +454,7 @@ onMounted(() => {
             :content="recStepItems"
             :style="'type4'"
             :on-selected="itemSeleted"
+            :handleScrollToTopOfStepRec="handleScrollToTopOfStepRec"
           />
         </div>
       </div>

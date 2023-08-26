@@ -12,7 +12,8 @@ const props = defineProps({
   items: { type: Object as unknown as PropType<CardElementItem[]>, required: true },
   content: { type: Object, required: false },
   style: { type: String, required: false },
-  onSelected: { type: Number, required: false }
+  onSelected: { type: Number, required: false },
+  handleScrollToTopOfStepRec: { type: Function, required: false }
 });
 
 const indexSelected = ref(0);
@@ -20,8 +21,10 @@ const onActive = ref(-1);
 const listItems: Ref<CardElementItem[]> = ref(props.items || []);
 const screenWidth = ref(true);
 
-const selectedContent = (index: any) => {
-  if (screenWidth.value) {
+const selectedContent = (index: number) => {
+  if (index === 0) {
+    if (props.handleScrollToTopOfStepRec) props.handleScrollToTopOfStepRec();
+  } else if (screenWidth.value) {
     indexSelected.value = index;
     const element = document.getElementById(`type5-${indexSelected.value}`);
     element?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
