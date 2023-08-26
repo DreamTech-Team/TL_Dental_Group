@@ -4,26 +4,23 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 @Service
 public class ImageStorageService implements IStorageService {
     Cloudinary cloudinary;
 
-    String cloudName = "646e61783174376d34";
-    String apiKey = "393832343431313839353531313934";
-    String apiSecret = "702d5a43534d356f63396e58614d534d574951596a5f5831615863";
-
-
     // constructor
-    public ImageStorageService() throws DecoderException {
+    public ImageStorageService(@Value("${application.cloudinary.name}") String cloudName,
+                               @Value("${application.cloudinary.api-key}") String apiKey,
+                               @Value("${application.cloudinary.api-secret}") String apiSecret) throws DecoderException {
         cloudinary = new Cloudinary(ObjectUtils.asMap(
                 "cloud_name", new String(Hex.decodeHex(cloudName)),
                 "api_key", new String(Hex.decodeHex(apiKey)),
