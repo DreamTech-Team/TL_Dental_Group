@@ -13,12 +13,12 @@ const route = useRoute();
 </script>
 <template>
   <div :class="$style.about">
-    <bread-crumb :tags="route.path" />
     <about-header />
+    <bread-crumb :tags="route.path" />
     <about-thanks />
-    <about-infoCompany />
+    <about-info-company />
     <about-motto />
-    <about-businessItems :style="{ marginTop: '6rem' }" />
+    <about-business-items :style="{ marginTop: '6rem' }" />
     <about-policy />
     <about-facility />
   </div>

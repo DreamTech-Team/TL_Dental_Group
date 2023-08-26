@@ -30,6 +30,7 @@ const colors = [
 
 //Properties
 const isPhone = ref(false);
+const isTablet = ref(false);
 const MIN_SWIPE_DISTANCE_CM = 3;
 const TOUCH_SENSITIVITY = 10;
 const touchstartX = ref(0);
@@ -54,6 +55,12 @@ const scrollLeft = () => {
 const scrollRight = () => {
   if (window.innerWidth < 739) {
     if (-tranfX.value + wItem.value * 2 < wItem.value * categories.value.length) {
+      tranfX.value -= wItem.value;
+    } else {
+      tranfX.value = 0;
+    }
+  } else if (window.innerWidth >= 739 && window.innerWidth <= 1024) {
+    if (-tranfX.value + wItem.value * 3 < wItem.value * categories.value.length) {
       tranfX.value -= wItem.value;
     } else {
       tranfX.value = 0;
@@ -113,6 +120,9 @@ onMounted(() => {
     if (window.innerWidth < 739) {
       isPhone.value = true;
       wItem.value = container.offsetWidth / 2;
+    } else if (window.innerWidth >= 739 && window.innerWidth <= 1024) {
+      wItem.value = container.offsetWidth / 3;
+      isTablet.value = true;
     } else {
       wItem.value = container.offsetWidth / 4;
     }
@@ -124,6 +134,9 @@ onMounted(() => {
       if (window.innerWidth < 739) {
         wItem.value = container.offsetWidth / 2;
         isPhone.value = true;
+      } else if (window.innerWidth >= 739 && window.innerWidth <= 1024) {
+        wItem.value = container.offsetWidth / 3;
+        isTablet.value = true;
       } else {
         wItem.value = container.offsetWidth / 4;
       }
@@ -161,7 +174,7 @@ onUnmounted(() => {
             :class="$style['home__category-item']"
             :style="{ background: getCategoryColor(index), width: widthItemComputed }"
           >
-            <span>{{ item.title }}</span>
+            <p>{{ item.title }}</p>
             <div :class="$style['home__category-ctn']">
               <div :class="$style['home__category-img']">
                 <img :src="item.img" :alt="item.title" />
@@ -173,7 +186,11 @@ onUnmounted(() => {
           <font-awesome-icon :icon="faChevronLeft" :class="$style['home__category-ic']" />
         </button>
         <button
-          v-show="(!isPhone && lenght > 4) || (isPhone && lenght > 2)"
+          v-show="
+            (!isPhone && !isTablet && lenght > 4) ||
+            (isPhone && lenght > 2) ||
+            (isTablet && lenght > 3)
+          "
           :class="$style['home__category-right']"
           @click="scrollRight"
         >

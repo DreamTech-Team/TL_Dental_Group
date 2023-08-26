@@ -4,6 +4,7 @@ import Pagination from '@/components/Pagination/BasePagination.vue';
 import router from '@/router/index';
 import { ref, watch, onMounted, onUnmounted, type PropType } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import LoadingComponentVue from '@/components/LoadingComponent/LoadingComponent.vue';
 
 //GET DATA
 interface ItemRS {
@@ -47,6 +48,9 @@ const content = defineProps({
   path: {
     type: String,
     require: false
+  },
+  loading: {
+    type: Boolean
   }
 });
 
@@ -62,13 +66,21 @@ const listData = ref<ItemRS[]>();
 const addData = ref<ItemRS[]>();
 const filterTags = ref();
 const popular = ref();
+const isLoading = ref(false);
 const pageSize = ref(8);
+const totalNews = ref();
 const isDesktop = ref(true);
 
 watch(content, () => {
   listData.value = content.listItem;
   popular.value = content.popularStatus;
   filterTags.value = content.path;
+  isLoading.value = content.loading;
+  totalNews.value = content.totalPage;
+});
+
+watch(isLoading, () => {
+  console.log(isLoading.value);
 });
 
 const displayNews = ref(listData);
@@ -146,6 +158,7 @@ onUnmounted(() => {
 <template>
   <div :class="$style.news__context">
     <div :class="$style['news__context-left']">
+      <LoadingComponentVue v-if="isLoading" />
       <div
         :class="$style['news__context-item']"
         v-for="(item, index) in displayNews"
@@ -180,7 +193,7 @@ onUnmounted(() => {
         v-if="content.listItem"
         :class="$style['news__context-left-pagination']"
         style="margin-top: 50px"
-        :total="content.totalPage ? content.totalPage : 0"
+        :total="totalNews"
         :current-page="currentPage"
         :page-size="pageSize"
         @current-change="handlePageChange"

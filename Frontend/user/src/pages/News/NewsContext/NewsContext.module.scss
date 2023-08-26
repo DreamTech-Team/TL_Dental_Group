@@ -15,7 +15,6 @@
       display: flex;
       width: 98%;
       height: auto;
-      max-height: 27rem;
       margin-right: auto;
       margin-bottom: 25px;
       cursor: pointer;
@@ -97,7 +96,6 @@
           margin-top: 40px;
           width: 100%;
           background-color: #ffffff;
-          height: 26px;
 
           span {
             font-family: 'Poppins', sans-serif;
@@ -140,6 +138,40 @@
 
   &-right {
     flex: 1;
+  }
+}
+
+@include responsive_tablet() {
+  .news__context {
+    &-left {
+      .news__context-item {
+        .news__item-right {
+          .news__item-date {
+            p {
+              font-size: $text-xs;
+            }
+          }
+          h4 {
+            font-size: $text-xl;
+          }
+          .news__item-summary {
+            span {
+              font-size: $text-sm;
+            }
+          }
+          .news__item-footage {
+            margin-top: 3rem;
+            span {
+              font-size: 1.1rem;
+              line-height: 1rem;
+            }
+          }
+        }
+      }
+    }
+    &-right {
+      display: none;
+    }
   }
 }
 

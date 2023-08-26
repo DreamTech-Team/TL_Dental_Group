@@ -36,7 +36,7 @@
     align-items: center;
     position: -webkit-sticky;
     position: sticky;
-    top: 0;
+    top: -1px;
     z-index: 1000000;
     background-color: white;
     box-shadow: 0 0 10px rgb(0, 0, 0, 0.05);
@@ -76,9 +76,6 @@
         width: 50px;
         color: #fff;
 
-        h4 {
-        }
-
         h5 {
           font-size: 0.8rem;
           font-weight: 600;
@@ -104,6 +101,7 @@
       margin: 0 14px;
       display: inline;
       position: relative;
+      cursor: pointer;
 
       &-link {
         line-height: 70px;
@@ -141,41 +139,7 @@
 
 @include responsize_resolution() {
   .header {
-    &__contact {
-      &-item {
-        p {
-        }
-      }
-
-      &-icon {
-      }
-    }
-
     &__nav {
-      &-logo {
-        div {
-        }
-
-        h4 {
-        }
-
-        p {
-        }
-      }
-
-      &-shield {
-        &-content {
-          h4 {
-          }
-
-          h5 {
-          }
-
-          p {
-          }
-        }
-      }
-
       &-list {
         display: none;
       }
@@ -193,12 +157,22 @@
           border-radius: 4px;
         }
 
+        &--blur {
+          width: 100vw;
+          height: 100vh;
+          background-color: rgba($color: #000000, $alpha: 0.4);
+          position: absolute;
+          right: 0;
+          top: 70px;
+        }
+
         &--list {
           position: absolute;
           min-width: 0;
           width: 0;
           height: 100vh;
           top: 70px;
+          overflow: hidden;
           right: -50px;
           background-color: $color_primary;
           transition: all .3s ease-in-out;
@@ -209,6 +183,7 @@
         }
 
         &--item {
+          cursor: pointer;
           
           a {
             padding: 16px 12px;
@@ -225,61 +200,13 @@
           display: none;
         }
       }
-
-      &-item {
-        &-link {
-        }
-
-        span {
-        }
-
-        .nav-hover {
-        }
-
-        .nav-active {
-        }
-      }
     }
   }
 }
 
 @include responsive_tablet() {
   .header {
-    &__contact {
-      &-item {
-        p {
-        }
-      }
-
-      &-icon {
-      }
-    }
-
     &__nav {
-      &-logo {
-        div {
-        }
-
-        h4 {
-        }
-
-        p {
-        }
-      }
-
-      &-shield {
-        &-content {
-          h4 {
-          }
-
-          h5 {
-          }
-
-          p {
-          }
-        }
-      }
-
       &-list {
         display: none;
       }
@@ -287,6 +214,15 @@
         height: 100%;
         display: flex;
         align-items: center;
+
+        &--blur {
+          width: 100vw;
+          height: 100vh;
+          background-color: rgba($color: #000000, $alpha: 0.4);
+          position: absolute;
+          right: 0;
+          top: 70px;
+        }
 
         &--btn {
           padding: 10px;
@@ -301,12 +237,13 @@
           min-width: 0;
           width: 0;
           height: 100vh;
+          overflow: hidden;
+          right: 0;
           top: 70px;
-          right: -50px;
           background-color: $color_primary;
           transition: all .3s ease-in-out;
         }
-
+        
         &--show {
           min-width: 40vw;
         }
@@ -314,6 +251,7 @@
         &--item {
           
           a {
+            cursor: pointer;
             padding: 16px 12px;
             border-bottom: 1px solid white;
             color: white;
@@ -328,20 +266,6 @@
           display: none;
         }
       }
-
-      &-item {
-        &-link {
-        }
-
-        span {
-        }
-
-        .nav-hover {
-        }
-
-        .nav-active {
-        }
-      }
     }
   }
 }
@@ -350,42 +274,18 @@
   .header {
     &__contact {
       display: none;
-
-      &-item {
-        p {
-        }
-      }
-
-      &-icon {
-      }
     }
-
+    
     &__nav {
       padding: 0 10px;
 
       &-logo {
-        div {
-        }
-
         h4 {
           font-size: $text-xl-mobile;
         }
 
         p {
           font-size: $text-sm-mobile;
-        }
-      }
-
-      &-shield {
-        &-content {
-          h4 {
-          }
-
-          h5 {
-          }
-
-          p {
-          }
         }
       }
 
@@ -409,7 +309,6 @@
 
         &--list {
           position: absolute;
-          width: 100vw;
           height: 0;
           overflow: hidden;
           left: 0;
@@ -426,6 +325,7 @@
         &--item {
           
           a {
+            cursor: pointer;
             padding: 16px 12px;
             border-bottom: 1px solid white;
             color: white;
@@ -459,20 +359,6 @@
             cursor: pointer;
             padding: 0 8px;
           }
-        }
-      }
-
-      &-item {
-        &-link {
-        }
-
-        span {
-        }
-
-        .nav-hover {
-        }
-
-        .nav-active {
         }
       }
     }

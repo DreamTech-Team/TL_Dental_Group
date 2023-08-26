@@ -1,4 +1,5 @@
 @import '@/styles/base';
+@import '@/styles/responsive';
 
 .category {
   flex: 1;
@@ -93,6 +94,25 @@
 
     &--selected {
       color: #404dc2;
+    }
+  }
+}
+
+@include responsive_tablet() {
+  .category {
+    margin-left: 0;
+
+    &__title {
+      min-width: 19rem;
+      padding-left: 0;
+    }
+
+    &__firstX {
+      font-size: $text-base-mobile;
+
+      &--choose {
+        padding: 1.5rem 2rem 1.5rem 0;
+      }
     }
   }
 }

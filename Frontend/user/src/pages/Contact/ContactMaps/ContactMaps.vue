@@ -1,26 +1,11 @@
 <script setup lang="ts">
-import { ref, toRefs } from 'vue';
+import { toRefs } from 'vue';
 import { saveDataContact } from '@/stores/counter';
 
-interface Info {
-  address: string;
-  hotline: string;
-  mapLink: string;
-  image: string;
-  mapIframe: string;
-}
-
+// Lấy dữ liệu từ store
 const { dataFacility } = toRefs(saveDataContact());
 
-// const props = defineProps({
-//   dataFacility: {
-//     type: Object,
-//     required: true
-//   }
-// });
-
-// const dataFacilityRender = ref<Info>({ ...(props.dataFacility as Info) });
-
+// Hàm lấy src từ iframe được call về
 const getSrc = () => {
   // Sử dụng biểu thức chính quy để tìm phần src
   const srcPattern = /src="([^"]*)"/;

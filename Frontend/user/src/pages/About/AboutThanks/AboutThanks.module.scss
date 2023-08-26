@@ -3,12 +3,12 @@
 
 .about__thanks{
     position: relative;
-    height: 75rem;
+    height: 60rem;
 
     span{
         display: block;
         font-weight: 500;
-        font-size: $text-4xl;
+        font-size: $text-3xl;
         line-height: 3.5rem;
         text-align: center;
         color: $primary_900;
@@ -69,15 +69,7 @@
                 font-weight: 700;
                 font-size: $text-3xl;
                 line-height: 5.8rem;
-                // margin-top: 6rem;
             }
-            // .about__thanks-letter h2{
-            //     text-align: center;
-            //     font-size: $text-2xl;
-            //     color:  #0029BB;
-            //     font-weight: 600;
-            //     line-height: 5.8rem;
-            // }
             .about__thanks-letter p{
                 font-size: $text-lg;
                 color:  #000;
@@ -138,6 +130,166 @@
 
 @include responsive_mobile() {
     .about__thanks{
-        display: none;
+        position: static;
+        height: 38rem;
+        margin-top: 2rem;
+        max-width: 100%;
+        margin: 2rem;
+        margin-bottom: 5rem;
+    
+        span{
+            display: none;
+        }
+    
+        &-wrapper{
+            position: static;
+            height: 38rem;
+            top: 0;
+            left: 0;
+            transform: translate(0, 0);
+            transition: all 0s 0s ease;
+    
+            .about__thanks-mail{
+                width: 100%;
+                height: 100%;
+                background-color: transparent;
+                border: none;
+                position: static;
+                transform-style: preserve-3d;
+                cursor: auto;
+                
+                .about__thanks-cover::before{
+                    display: none;
+                }
+    
+                .about__thanks-letter{
+                    position: static;
+                    z-index: 0;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 40rem;
+                    min-height: 0;
+                    transition: all 1s ease;
+                    background-image: url('@/assets/imgs/About/Letter.png');
+                    background-repeat: no-repeat;
+                    background-size: cover;
+                    padding: 4rem;
+                }
+    
+                .about__thanks-letter h1{
+                    text-align: center;
+                    color:  #0029BB;
+                    font-weight: 700;
+                    font-size: $text-lg-mobile;
+                    line-height: 6rem;
+                }
+                .about__thanks-letter p{
+                    font-size: $text-sm-mobile;
+                    color:  #000;
+                    line-height: 2.4rem;
+                    transition: all 1s ease;
+                }
+            }
+    
+            .about__thanks-mail:hover .about__thanks-cover::before{
+                display: none;
+            }
+    
+            .about__thanks-mail::before{
+                display: none;
+            }
+    
+            .about__thanks-mail::after{
+                display: none;
+            }
+        }
+        &-wrapper:hover{
+            pointer-events: none;
+            transform: translateX(0);
+        }
     }
-} 
+}
+
+@include responsive_tablet() {
+    .about__thanks{
+        position: static;
+        height: 38rem;
+        margin-top: 2rem;
+        max-width: 100%;
+        margin: 2rem;
+        margin-bottom: 5rem;
+    
+        span{
+            display: none;
+        }
+    
+        &-wrapper{
+            position: static;
+            height: 38rem;
+            top: 0;
+            left: 0;
+            transform: translate(0, 0);
+            transition: all 0s 0s ease;
+    
+            .about__thanks-mail{
+                width: 100%;
+                height: 100%;
+                background-color: transparent;
+                border: none;
+                position: static;
+                transform-style: preserve-3d;
+                cursor: auto;
+                
+                .about__thanks-cover::before{
+                    display: none;
+                }
+    
+                .about__thanks-letter{
+                    position: static;
+                    z-index: 0;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 40rem;
+                    min-height: 0;
+                    transition: all 1s ease;
+                    background-image: url('@/assets/imgs/About/Letter.png');
+                    background-repeat: no-repeat;
+                    background-size: cover;
+                    padding: 6rem 8rem;
+                }
+    
+                .about__thanks-letter h1{
+                    text-align: center;
+                    color:  #0029BB;
+                    font-weight: 700;
+                    font-size: $text-lg;
+                    line-height: 6rem;
+                }
+                .about__thanks-letter p{
+                    font-size: $text-base;
+                    color:  #000;
+                    line-height: 2.4rem;
+                    transition: all 1s ease;
+                }
+            }
+    
+            .about__thanks-mail:hover .about__thanks-cover::before{
+                display: none;
+            }
+    
+            .about__thanks-mail::before{
+                display: none;
+            }
+    
+            .about__thanks-mail::after{
+                display: none;
+            }
+        }
+        &-wrapper:hover{
+            pointer-events: none;
+            transform: translateX(0);
+        }
+    }
+}

@@ -1,10 +1,24 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, toRefs } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faHome, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import { RouterLink } from 'vue-router';
 import { useRoute } from 'vue-router';
+import { saveBreadcrumbs, saveSlugCates, saveSlugNews } from '@/stores/breadcrumb';
+
+const { breadcrumbs } = toRefs(saveBreadcrumbs());
+const { cates } = toRefs(saveSlugCates());
+const { news } = toRefs(saveSlugNews());
+
+const saveBC = saveBreadcrumbs();
+const saveCate = saveSlugCates();
+const saveNews = saveSlugNews();
+
+interface Dictionaries {
+  slug: string;
+  name: string;
+}
 
 interface News {
   id: string;
@@ -90,7 +104,7 @@ const pathAD = defineProps({
   }
 });
 
-const predefinedItems = ref([
+const defaultDictionaries = ref([
   {
     slug: 'tintuc',
     name: 'Tin tức'
@@ -121,31 +135,43 @@ const predefinedItems = ref([
   }
 ]);
 
+if (breadcrumbs.value.length === 0) {
+  saveBC.setBreadcrumbs(defaultDictionaries.value);
+}
+
+const predefinedItems = ref<Dictionaries[]>(breadcrumbs.value.concat(news.value, cates.value));
+
 //Properties
 const route = useRoute();
-const pathSegments = ref();
+const pathSegments = ref<string[]>([]);
+const pathMain = ref(pathAD.tags ? pathAD.tags : '/chitiet');
 const breadcrumbItems = ref();
 let isAllCategoryLoaded = false;
 
 //Function Update Slug
 const updateSlug = () => {
-  if (typeof pathAD.tags === 'string') {
-    pathSegments.value = pathAD.tags.split('/').filter((segment) => segment !== '');
-    breadcrumbItems.value = pathSegments.value.map((segment: string) => {
-      const predefinedItem = predefinedItems.value.find((item) => item.slug === segment);
-      return predefinedItem ? predefinedItem.name : segment;
-    });
-  }
+  pathSegments.value = pathMain.value.split('/').filter((segment) => segment !== '');
+
+  breadcrumbItems.value = pathSegments.value.map((segment: string) => {
+    const predefinedItem = predefinedItems.value.find((item) => item.slug === segment);
+    return predefinedItem ? predefinedItem.name : segment;
+  });
 };
+
+watch(pathAD, () => {
+  pathMain.value = pathAD.tags;
+  updateSlug();
+});
 
 //Init dependencies
 const deps = ref([]);
-const cate1 = ref<Cate1[]>([]);
-const cate2 = ref<Cate2[]>([]);
-const getCate1 = useAxios<DataResponse>('get', '/cate1', {}, {}, deps.value);
-const getCate2 = useAxios<DataResponse>('get', '/cate2', {}, {}, deps.value);
 
 const getAllCategory = () => {
+  const cate1 = ref<Cate1[]>([]);
+  const cate2 = ref<Cate2[]>([]);
+  const getCate1 = useAxios<DataResponse>('get', '/cate1', {}, {}, deps.value);
+  const getCate2 = useAxios<DataResponse>('get', '/cate2', {}, {}, deps.value);
+
   if (!isAllCategoryLoaded) {
     watch(getCate1.response, () => {
       const responseData = getCate1.response.value?.data;
@@ -158,6 +184,8 @@ const getAllCategory = () => {
           };
           predefinedItems.value.push(news);
         });
+        saveCate.setSlugCates(predefinedItems.value);
+        updateSlug();
       }
     });
 
@@ -172,54 +200,68 @@ const getAllCategory = () => {
           };
           predefinedItems.value.push(news);
         });
+        updateSlug();
       }
     });
 
     isAllCategoryLoaded = true;
-    updateSlug();
   }
 };
 
-getAllCategory();
-updateSlug();
+watch(
+  [predefinedItems],
+  () => {
+    updateSlug();
+  },
+  { immediate: true }
+);
 
 if (route.path.startsWith('/tintuc')) {
-  const news = ref<News[]>([]);
-  const getNews = useAxios<DataResponse>('get', '/news?pageSize=1000000', {}, {}, deps.value);
-  watch(getNews.response, () => {
-    news.value = getNews.response.value?.data?.data;
-    news.value.forEach((item) => {
-      const news = {
-        slug: item.slug,
-        name: item.title
-      };
-      predefinedItems.value.push(news);
+  if (news.value.length === 0) {
+    const news = ref<News[]>([]);
+    const getNews = useAxios<DataResponse>('get', '/news?pageSize=1000000', {}, {}, deps.value);
+    watch(getNews.response, () => {
+      news.value = getNews.response.value?.data?.data;
+      news.value.forEach((item) => {
+        const news = {
+          slug: item.slug,
+          name: item.title
+        };
+        predefinedItems.value.push(news);
+      });
+      saveNews.setSlugNews(predefinedItems.value);
+      updateSlug();
     });
+  } else {
+    predefinedItems.value = news.value;
     updateSlug();
-  });
+  }
 } else if (route.path.startsWith('/chitiet')) {
-  const products = ref<Product[]>([]);
-  const getProducts = useAxios<DataResponse>(
-    'get',
-    '/products?pageSize=100000',
-    {},
-    {},
-    deps.value
-  );
-  watch(getProducts.response, () => {
-    products.value = getProducts.response.value?.data?.data;
-    products.value.forEach((item) => {
-      const news = {
-        slug: item.slug,
-        name: item.name
-      };
-      predefinedItems.value.push(news);
+  if (cates.value.length === 0) {
+    const products = ref<Product[]>([]);
+    const getProducts = useAxios<DataResponse>(
+      'get',
+      '/products?pageSize=300000',
+      {},
+      {},
+      deps.value
+    );
+    watch(getProducts.response, () => {
+      products.value = getProducts.response.value?.data?.data;
+      products.value.forEach((item) => {
+        const news = {
+          slug: item.slug,
+          name: item.name
+        };
+        predefinedItems.value.push(news);
+      });
+      saveCate.setSlugCates(predefinedItems.value);
     });
+    getAllCategory();
+  } else {
+    predefinedItems.value = cates.value;
     updateSlug();
-  });
-  getAllCategory();
-} else if (route.path.startsWith('/sanpham')) {
-  getAllCategory();
+  }
 }
 
 const navigate = (slug: string) => {

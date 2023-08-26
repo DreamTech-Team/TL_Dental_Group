@@ -4,6 +4,7 @@
 .container__card {
   display: flex;
   justify-content: space-between;
+  gap: 10px;
 
   &-left {
     width: 60%;
@@ -28,6 +29,7 @@
       font-size: $text-base;
       color: $color_primary;
       font-weight: 400;
+      min-width: 144px;
     }
 
     &-btn:hover {

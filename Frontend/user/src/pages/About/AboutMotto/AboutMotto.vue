@@ -3,6 +3,7 @@ import { ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface AboutMotto {
   title: string;
@@ -16,9 +17,9 @@ const move = ref(0);
 const isOneItem = ref(false);
 const isDisableLeft = ref(false);
 const isDisableRight = ref(false);
+const isLoadingMotto = ref(false);
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
-const { response, error, isLoading } = useAxios<DataResponse>(
+const { response, isLoading } = useAxios<DataResponse>(
   'get',
   '/introduce/section1',
   {},
@@ -26,7 +27,10 @@ const { response, error, isLoading } = useAxios<DataResponse>(
   variableChange.value
 );
 
-// Truy xuất giá trị response.value và gán vào responseData
+watch(isLoading, () => {
+  isLoadingMotto.value = isLoading.value;
+});
+
 watch(response, () => {
   mottoItems.value = response?.value?.data;
 
@@ -46,9 +50,9 @@ const handleClickLeft = () => {
 
   if (widthItem) {
     isDisableRight.value = false;
-    if (move.value === 0) (move.value = widthItem.offsetWidth + 150), (isDisableLeft.value = true);
+    if (move.value === 0) (move.value = widthItem.offsetWidth + 190), (isDisableLeft.value = true);
     else {
-      move.value += widthItem.offsetWidth + 150;
+      move.value += widthItem.offsetWidth + 190;
     }
   }
 };
@@ -59,10 +63,10 @@ const handleClickRight = () => {
   const widthItem = document.getElementById('1');
 
   if (widthItem) {
-    if (move.value === (3 - mottoItems.value.length) * (widthItem.offsetWidth + 150))
-      (move.value -= widthItem.offsetWidth + 150), (isDisableRight.value = true);
+    if (move.value === (3 - mottoItems.value.length) * (widthItem.offsetWidth + 190))
+      (move.value -= widthItem.offsetWidth + 190), (isDisableRight.value = true);
     else {
-      move.value -= widthItem.offsetWidth + 150;
+      move.value -= widthItem.offsetWidth + 190;
     }
   }
 };
@@ -80,6 +84,7 @@ const handleClickRight = () => {
           transform: 'translateX' + '(' + move + 'px' + ')',
           justifyContent: isOneItem ? 'center' : ''
         }"
+        v-if="!isLoadingMotto"
       >
         <div
           :class="$style['about__motto-slider-item']"
@@ -96,6 +101,7 @@ const handleClickRight = () => {
           </p>
         </div>
       </div>
+      <loading-component v-else />
 
       <div :class="$style['about__motto-curtain']">
         <div :class="$style['about__motto-curtain-left']"></div>

@@ -3,15 +3,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&display=swap');
 
+.sort_container {
+  padding: 0 50px;
+}
 .sort {
   height: 5.7rem;
   display: flex;
   flex-direction: row;
-  margin: 0 7rem 0 7rem;
+  margin: 0 3.6rem;
   justify-content: space-between;
   border-bottom: 1px solid #e2e2e2;
   padding-bottom: 1rem;
-  margin-top: 4rem;
+  margin-top: 2rem;
   position: relative;
 
   &__content {
@@ -129,10 +132,12 @@
 .product {
   width: 100%;
   margin: 0 7rem 0 7rem;
+
   &__container {
-    margin: 3rem 7rem 3rem 7rem;
+    margin: 3.6rem;
     transition: 500ms;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(226px, 1fr));
+    // grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 3.5rem;
     max-width: 100%;
     border-radius: 10px;
@@ -271,7 +276,26 @@
   }
 }
 
+.product__search_pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@include responsive_tablet() {
+  .sort {
+    margin: 0;
+
+    &__type {
+      width: 21rem;
+    }
+  }
+}
+
 @include responsive_mobile() {
+  .sort_container {
+    padding: 0;
+  }
   .sort {
     display: none;
   }

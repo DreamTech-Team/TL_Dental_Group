@@ -18,7 +18,7 @@ const focusComputed = computed(() => {
     </div>
 
     <div :class="$style['header-search__wrapper']" :style="{ width: focusComputed }">
-      <form :class="$style['header-search__input']">
+      <form :class="$style['header-search__input']" action="/timkiem">
         <input type="text" name="search" placeholder="Tìm kiếm" />
         <font-awesome-icon
           :class="$style['header-search__input-icon']"

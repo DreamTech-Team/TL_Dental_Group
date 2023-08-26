@@ -33,7 +33,7 @@
       color: $primary_900;
     }
 
-    span{
+    span {
       color: $primary_900;
     }
   }
@@ -51,9 +51,15 @@
       color: $primary_900;
     }
 
-    span{
+    span {
       color: $primary_900;
     }
+  }
+}
+
+@include responsive_tablet() {
+  .news__breadcrum {
+    margin-left: 0px;
   }
 }
 

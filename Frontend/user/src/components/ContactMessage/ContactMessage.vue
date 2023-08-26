@@ -28,7 +28,6 @@ const dataContact = ref<Contact>({
   }
 });
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
 const getContact = useAxios<DataResponse>(
   'get',
   '/information?type=CONTACT',
@@ -37,11 +36,11 @@ const getContact = useAxios<DataResponse>(
   variableChange.value
 );
 
-// Truy xuất giá trị response.value và gán vào responseData
 watch(getContact.response, () => {
   dataContact.value = getContact.response?.value?.data;
 });
 
+// Hàm xử lí trượt 2 messenger và zalo lên
 const handleMessage = () => {
   const circleWidth = document.getElementById('circle');
   const circle1 = document.getElementById('circle1');
@@ -72,7 +71,7 @@ const handleMessage = () => {
         </div>
       </a>
 
-      <a :href="dataContact.zalo.content" target="_blank">
+      <a :href="'https://zalo.me/' + dataContact.zalo.content" target="_blank">
         <div
           :class="$style['contact__close-circle-social']"
           id="circle2"

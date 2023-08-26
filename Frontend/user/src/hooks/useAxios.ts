@@ -1,6 +1,7 @@
 import { ref, type Ref, watch } from 'vue';
 import axios, { type AxiosRequestConfig, type AxiosResponse, AxiosError } from 'axios';
 import { axiosClient } from '@/api/axios';
+import { getCache, setCache } from '@/utils/sessionStorage';
 
 export interface DataResponse {
   status: string;
@@ -30,8 +31,22 @@ const useAxios = <DataResponse>(
 
   const fetchData = async () => {
     if (!isLoading.value) {
-      isLoading.value = true;
+      setTimeout(() => {
+        isLoading.value = true;
+      }, 0);
       try {
+        // const cachedData = getCache(api);
+        // if (
+        //   cachedData !== null &&
+        //   new Date().getTime() - cachedData.cacheTimestamp < 5 * 60 * 1000
+        // ) {
+        //   setTimeout(() => {
+        //     response.value = cachedData.data;
+        //     isLoading.value = false;
+        //   }, 0);
+        //   return;
+        // }
+
         const res: AxiosResponse<DataResponse> = await axiosClient[method](api, body, {
           ...options,
           cancelToken: axiosController.token
@@ -39,6 +54,7 @@ const useAxios = <DataResponse>(
 
         if (res && res.data) {
           response.value = res.data;
+          setCache(api, res.data);
         }
       } catch (err: unknown) {
         if (err instanceof AxiosError) {
@@ -58,7 +74,6 @@ const useAxios = <DataResponse>(
     },
     { immediate: true }
   );
-
   return { response, error, isLoading };
 };
 

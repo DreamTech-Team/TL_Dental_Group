@@ -8,6 +8,7 @@ import Message from '@/assets/imgs/About/Message.png';
 import Facebook from '@/assets/imgs/About/Facebook.png';
 import { saveDataContact } from '@/stores/counter';
 
+// Lấy dữ liệu từ store
 const { dataFacility, dataContact } = toRefs(saveDataContact());
 </script>
 <template>
@@ -33,7 +34,7 @@ const { dataFacility, dataContact } = toRefs(saveDataContact());
           <p>{{ dataContact.email.content }}</p>
         </div>
 
-        <div>
+        <div :class="$style['contact__facility-facebook-tablet']">
           <img :src="Facebook" :class="$style['contact__facility-ic']" />
           <a :href="dataContact.facebook.content" target="_blank">{{
             dataContact.facebook.content

@@ -8,7 +8,7 @@ import {
   faPhoneVolume,
   faCircleCheck
 } from '@fortawesome/free-solid-svg-icons';
-import qr from '../../assets/imgs/QR.png';
+import QrcodeVue, { type Level, type RenderAs } from 'qrcode.vue';
 import { useDataRenderStore, saveDataContact } from '@/stores/counter';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
@@ -19,12 +19,76 @@ interface AboutPolicy {
   slug: string;
 }
 
-const { dataRender } = toRefs(useDataRenderStore());
-const { dataFacility, dataContact } = toRefs(saveDataContact());
+interface Info {
+  address: string;
+  phoneNumber: string;
+  hotline: string;
+  mapLink: string;
+  image: string;
+  mapIframe: string;
+}
+
+interface Contact {
+  email: {
+    content: string;
+  };
+  facebook: {
+    content: string;
+  };
+  zalo: {
+    content: string;
+  };
+}
+
+//Lấy các hàm ở store về để xử lí
+const { dataRender } = toRefs(useDataRenderStore()); // lấy dữ liệu để render
+const dataContactStore = saveDataContact(); // Lưu data contact và facility lên store
 
 const variableChange = ref([]);
 const listPolicy = ref<AboutPolicy[]>([]);
+const dataFacility = ref<Info>({
+  address: '',
+  phoneNumber: '',
+  hotline: '',
+  mapLink: '',
+  image: '',
+  mapIframe: ''
+});
+const dataContact = ref<Contact>({
+  email: {
+    content: ''
+  },
+  facebook: {
+    content: ''
+  },
+  zalo: {
+    content: ''
+  }
+});
+const variableChangeFacility = ref([]);
+const variableChangeContact = ref([]);
+const level = ref<Level>('M');
+const renderAs = ref<RenderAs>('svg');
 
+const getInfo = useAxios<DataResponse>('get', '/facility/', {}, {}, variableChangeFacility.value);
+
+const getContact = useAxios<DataResponse>(
+  'get',
+  '/information?type=CONTACT',
+  {},
+  {},
+  variableChangeContact.value
+);
+
+watch(getInfo.response, () => {
+  dataFacility.value = getInfo.response?.value?.data;
+  dataContactStore.setDataFacility(dataFacility.value);
+});
+
+watch(getContact.response, () => {
+  dataContact.value = getContact.response?.value?.data;
+  dataContactStore.setDataContact(dataContact.value);
+});
 const { response } = useAxios<DataResponse>('get', '/policy', {}, {}, variableChange.value);
 
 watch(response, () => {
@@ -36,7 +100,9 @@ watch(response, () => {
     <div :class="$style.footer__info">
       <div :class="$style['footer__info-item']">
         <p>TL DENTAL GROUP</p>
-        <img :src="qr" alt="logo" width="100" />
+        <div style="padding: 10px; background-color: white; display: inline-block">
+          <qrcode-vue :value="dataContact.facebook.content" :level="level" :render-as="renderAs" />
+        </div>
       </div>
       <div :class="$style['footer__info-item']">
         <h4 :class="$style['footer__info-item--title']">Sản phẩm</h4>
@@ -57,7 +123,7 @@ watch(response, () => {
         <h4 :class="$style['footer__info-item--title']">Chính sách</h4>
         <ul :class="$style['footer__info-item--list']" v-for="(item, idx) in listPolicy" :key="idx">
           <li>
-            <router-link to="">{{ item.name }}</router-link>
+            <router-link to="/chinhsach">{{ item.name }}</router-link>
           </li>
         </ul>
       </div>
@@ -79,7 +145,7 @@ watch(response, () => {
           <li>
             <font-awesome-icon :icon="faPhoneVolume" />
             <p>
-              <a :href="'tel:+' + dataFacility.phoneNumber">{{ dataFacility.phoneNumber }}</a>
+              <a :href="'tel:' + dataFacility.phoneNumber">{{ dataFacility.phoneNumber }}</a>
             </p>
           </li>
         </ul>

@@ -7,11 +7,11 @@ import ProductNavigation from './ProductNavigation/ProductNavigation.vue';
 import ServiceQuality from '@/components/ServiceQuality/ServiceQuality.vue';
 import BasePagination from '@/components/Pagination/BasePagination.vue';
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
-// import { products } from '../Product/ProductHandle';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch, onBeforeUnmount } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import { useRouter, useRoute } from 'vue-router';
 import { faArrowDownShortWide } from '@fortawesome/free-solid-svg-icons';
 
 interface Product {
@@ -66,47 +66,55 @@ interface Item {
   slug: string;
 }
 
-//Init data structure
+//Khởi tạo danh sách sản phẩm để hiển thị ra màn hình
 const products = ref<Item[]>([]);
 
 const deps = ref([]);
 const deps1 = ref([]);
 const dataRes = ref([]);
 const filterAllProduct = ref([]);
-const slugCategory1 = ref('vat-lieu-chinh-nha');
-const slugCategory2 = ref('kem-chinh-nha');
 const currentPage = ref(0);
-const pageSize = ref(6);
+const pageSize = ref(12);
 const pathBC = 'sanpham';
 const isDesktop = ref(true);
 const isActive = ref(false);
 const totalProduct = ref();
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
-const { response, error, isLoading } = useAxios<DataResponse>(
-  'get',
-  `/products?cate1=${slugCategory1.value}&cate2=${slugCategory2.value}&page=${currentPage.value}&pageSize=${pageSize.value}`,
-  {},
-  {},
-  deps.value
-);
+const router = useRouter();
+const route = useRoute();
+const slugCategory1 = ref(route.query.slug1);
+const slugCategory2 = ref('');
+const sortPriceType = ref('asc');
+
+// Xử lí sort
+const isDropdownOpen = ref(false);
+const selectedOption = ref('Giá tăng dần');
+const options = ['Giá tăng dần', 'Giá giảm dần'];
+
+//Đặt biến API ban đầu: gọi tổng sản phẩm hiện có
+const apiTotalProduct = `/products/total${
+  slugCategory1.value
+    ? `?cate1=${slugCategory1.value}` + (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+    : ''
+}`;
+
+//Đặt biến API ban đầu: gọi danh sách sản phẩm theo category
+const apiProduct = computed(() => {
+  return `/products?page=${currentPage.value}&pageSize=${pageSize.value}${
+    slugCategory1.value
+      ? `&cate1=${slugCategory1.value}` +
+        (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+      : ''
+  }&sortPrice=${sortPriceType.value}`;
+});
 
 const {
-  response: totalRes,
-  error: totalErr,
-  isLoading: loadErr
-} = useAxios<DataResponse>(
-  'get',
-  `/products?cate1=${slugCategory1.value}&cate2=${slugCategory2.value}`,
-  {},
-  {},
-  deps.value
-);
+  response: productRes,
+  error,
+  isLoading
+} = useAxios<DataResponse>('get', apiProduct.value, {}, {}, deps.value);
 
-// Define reactive properties
-const isDropdownOpen = ref(false);
-const selectedOption = ref('Sắp xếp');
-const options = ['Mới nhất', 'Giá tăng dần', 'Giá giảm dần'];
+const { response: totalRes } = useAxios<DataResponse>('get', apiTotalProduct, {}, {}, deps.value);
 
 // Define methods
 const toggleDropdown = () => {
@@ -121,6 +129,11 @@ const closeDropdown = () => {
 
 function updateSelectedOption(option: string) {
   selectedOption.value = option;
+  if (selectedOption.value == 'Giá tăng dần') {
+    sortPriceType.value = 'asc';
+  } else {
+    sortPriceType.value = 'desc';
+  }
   closeDropdown();
 }
 
@@ -141,8 +154,6 @@ const scrollToTop = (top: number) => {
 
 const handlePageChange = (page: number) => {
   currentPage.value = page - 1;
-  console.log('sdjfjksd' + currentPage.value);
-
   if (window.innerWidth < 739) {
     scrollToTop(0);
   } else {
@@ -150,35 +161,44 @@ const handlePageChange = (page: number) => {
   }
 };
 
+const handleCategory1Selected = (selectedCategory1: string) => {
+  slugCategory1.value = selectedCategory1;
+};
+const handleCategory2Selected = (selectedCategory2: string) => {
+  slugCategory2.value = selectedCategory2;
+};
+
+//Cập nhật lại nội dung cần để show sản phẩm ra màn hình
 const updateShowResults = () => {
-  products.value = filterAllProduct.value.map((item: Product) => {
-    return {
-      nameProduct: item.name,
-      price: item.price,
-      summary: item.summary,
-      tag: item.fkCategory.cate1Id.title,
-      company: item.fkCategory.companyId.name,
-      image: item.mainImg,
-      brand: item.fkCategory.companyId.logo,
-      slug: item.slug
-    };
-  });
+  if (filterAllProduct.value) {
+    products.value = filterAllProduct.value.map((item: Product) => {
+      return {
+        nameProduct: item.name,
+        price: item.price,
+        summary: item.summary,
+        tag: item.fkCategory.cate1Id.title,
+        company: item.fkCategory.companyId.name,
+        image: item.mainImg,
+        brand: item.fkCategory.companyId.logo,
+        slug: item.slug
+      };
+    });
+  }
 };
 
 // Truy xuất giá trị response.value và gán vào responseData
-watch(response, () => {
-  dataRes.value = response?.value?.data;
-  filterAllProduct.value = response?.value?.data?.data;
+watch(productRes, () => {
+  dataRes.value = productRes?.value?.data;
+  filterAllProduct.value = productRes?.value?.data?.data;
   updateShowResults();
 });
 
 watch(totalRes, () => {
-  totalProduct.value = totalRes?.value?.data.total;
-  console.log(totalProduct.value);
+  totalProduct.value = totalRes?.value?.data;
 });
 
 watch(
-  [currentPage, slugCategory1, slugCategory2],
+  [currentPage, slugCategory1, slugCategory2, apiProduct, sortPriceType],
   () => {
     const {
       response: responseChanged,
@@ -186,26 +206,67 @@ watch(
       isLoading
     } = useAxios<DataResponse>(
       'get',
-      `/products?cate1=${slugCategory1.value}&cate2=${slugCategory2.value}&page=${currentPage.value}&pageSize=${pageSize.value}`,
+      `/products?page=${currentPage.value}&pageSize=${pageSize.value}${
+        slugCategory1.value
+          ? `&cate1=${slugCategory1.value}` +
+            (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+          : ''
+      }&sortPrice=${sortPriceType.value}`,
       {},
       {},
       deps1.value
     );
 
     // Truy xuất giá trị response.value và gán vào responseData
-    watch(responseChanged, () => {
-      dataRes.value = responseChanged?.value?.data;
-      filterAllProduct.value = responseChanged?.value?.data?.data;
-      updateShowResults();
-    });
+    watch(
+      responseChanged,
+      () => {
+        dataRes.value = responseChanged?.value?.data;
+        filterAllProduct.value = responseChanged?.value?.data?.data;
+        updateShowResults();
+
+        const {
+          response: totalRes,
+          error: totalErr,
+          isLoading: loadErr
+        } = useAxios<DataResponse>(
+          'get',
+          `/products/total${
+            slugCategory1.value
+              ? `?cate1=${slugCategory1.value}` +
+                (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+              : ''
+          }`,
+          {},
+          {},
+          deps.value
+        );
+
+        watch(totalRes, () => {
+          totalProduct.value = totalRes?.value?.data;
+        });
+      },
+      { immediate: true }
+    );
   },
   { immediate: false }
 );
 
 onMounted(() => {
   checkScreenSize();
-  updateSelectedOption('Sắp xếp');
+  // updateSelectedOption('Giá tăng dần');
 });
+
+// Lấy dữ liệu từ URL query parameters khi trang được tạo
+onMounted(() => {
+  const { query } = router.currentRoute.value;
+  if (query.slug1) {
+    slugCategory1.value = query.slug1.toString();
+    // // Xóa toàn bộ query string và cập nhật URL
+    // router.replace({ query: {} });
+  }
+});
+
 window.addEventListener('resize', checkScreenSize);
 </script>
 
@@ -214,96 +275,103 @@ window.addEventListener('resize', checkScreenSize);
     <div :class="$style['product__header']">
       <product-banner :class="$style['product__header-banner']" />
     </div>
-    <bread-crumb :tags="pathBC" />
-    <div :class="$style['product__content']">
-      <!-- category -->
-      <base-category v-if="isDesktop" />
-      <div :class="$style['product__content-wrap']">
-        <div :class="$style['product__content-sort']">
-          <p :class="$style['product__content-sort--info']">
-            Hiển thị
-            <strong>{{ products.length }}</strong> trên <strong>{{ totalProduct }}</strong> kết quả
-          </p>
-
-          <div :class="$style['product__content-sort--type']" @click="toggleDropdown">
-            <p>{{ selectedOption }}</p>
-            <font-awesome-icon :icon="faCaretDown" />
-          </div>
-
-          <div
-            v-if="isDropdownOpen"
-            @click="closeDropdown"
-            :class="$style['product__content-sort--content']"
-          >
-            <!-- Nội dung dropdown -->
-            <ul :class="$style['dropdown-list']">
-              <li
-                :class="$style['dropdown-item']"
-                v-for="option in options"
-                :key="option"
-                @click="updateSelectedOption(option)"
-              >
-                {{ option }}
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- mobile sort-->
-        <div v-if="!isDesktop" :class="$style['product__content-mbsort']">
-          <div
-            :class="[
-              $style['product__content-mbsort--type'],
-              {
-                [$style['product__content-mbsort--active']]: isActive
-              }
-            ]"
-            @click="toggleDropdown"
-          >
-            <font-awesome-icon
-              :class="$style['product__content-mbsort--type--icon']"
-              :icon="faArrowDownShortWide"
-            />
-            <p :class="$style['product__content-mbsort--type--text']">{{ selectedOption }}</p>
-          </div>
-          <div
-            v-if="isDropdownOpen"
-            @click="closeDropdown"
-            :class="$style['product__content-mbsort--contents']"
-          >
-            <!-- Nội dung dropdown -->
-            <ul :class="$style['dropdown-list']">
-              <li
-                :class="$style['dropdown-item']"
-                v-for="option in options"
-                :key="option"
-                @click="updateSelectedOption(option)"
-              >
-                {{ option }}
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div v-if="isActive" :class="$style.overlay" @click="closeDropdown"></div>
-        <!-- mobile content -->
-        <div v-if="isDesktop" :class="$style['product__content-container']">
-          <product-card
-            v-for="(item, index) in products"
-            :key="index"
-            :product="item"
-            :class="$style['product__content-container--card']"
+    <div :class="$style['product__wrapper']">
+      <div style="margin: auto; max-width: 1480px">
+        <bread-crumb :tags="pathBC" />
+        <div :class="$style['product__content']">
+          <base-category
+            v-if="isDesktop"
+            @slug-category1="handleCategory1Selected"
+            @slug-category2="handleCategory2Selected"
           />
-        </div>
-        <div v-else :class="$style['product__content-mobile']">
-          <mobile-card v-for="(item1, index1) in products" :key="index1" :product="item1" />
-        </div>
-        <div :class="$style['product__pagination']">
-          <base-pagination
-            :total="totalProduct ? totalProduct : 0"
-            :current-page="currentPage"
-            :page-size="pageSize"
-            @current-change="handlePageChange"
-          />
+          <div :class="$style['product__content-wrap']">
+            <div :class="$style['product__content-sort']">
+              <p :class="$style['product__content-sort--info']">
+                Hiển thị
+                <strong>{{ products.length }}</strong> trên <strong>{{ totalProduct }}</strong> sản
+                phẩm
+              </p>
+
+              <div :class="$style['product__content-sort--type']" @click="toggleDropdown">
+                <p>{{ selectedOption }}</p>
+                <font-awesome-icon :icon="faCaretDown" />
+              </div>
+
+              <div
+                v-if="isDropdownOpen"
+                @click="closeDropdown"
+                :class="$style['product__content-sort--content']"
+              >
+                <!-- Nội dung dropdown -->
+                <ul :class="$style['dropdown-list']">
+                  <li
+                    :class="$style['dropdown-item']"
+                    v-for="option in options"
+                    :key="option"
+                    @click="updateSelectedOption(option)"
+                  >
+                    {{ option }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <!-- mobile sort-->
+            <div v-if="!isDesktop" :class="$style['product__content-mbsort']">
+              <div
+                :class="[
+                  $style['product__content-mbsort--type'],
+                  {
+                    [$style['product__content-mbsort--active']]: isActive
+                  }
+                ]"
+                @click="toggleDropdown"
+              >
+                <font-awesome-icon
+                  :class="$style['product__content-mbsort--type--icon']"
+                  :icon="faArrowDownShortWide"
+                />
+                <p :class="$style['product__content-mbsort--type--text']">{{ selectedOption }}</p>
+              </div>
+              <div
+                v-if="isDropdownOpen"
+                @click="closeDropdown"
+                :class="$style['product__content-mbsort--contents']"
+              >
+                <!-- Nội dung dropdown -->
+                <ul :class="$style['dropdown-list']">
+                  <li
+                    :class="$style['dropdown-item']"
+                    v-for="option in options"
+                    :key="option"
+                    @click="updateSelectedOption(option)"
+                  >
+                    {{ option }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div v-if="isActive" :class="$style.overlay" @click="closeDropdown"></div>
+            <!-- mobile content -->
+            <div v-if="isDesktop" :class="$style['product__content-container']">
+              <product-card
+                v-for="(item, index) in products"
+                :key="index"
+                :product="item"
+                :class="$style['product__content-container--card']"
+              />
+            </div>
+            <div v-else :class="$style['product__content-mobile']">
+              <mobile-card v-for="(item1, index1) in products" :key="index1" :product="item1" />
+            </div>
+            <div :class="$style['product__pagination']">
+              <base-pagination
+                :total="totalProduct ? totalProduct : 0"
+                :current-page="currentPage"
+                :page-size="pageSize"
+                @current-change="handlePageChange"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

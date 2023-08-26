@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, toRefs } from 'vue';
+import { ref, toRefs, watch } from 'vue';
 import Zalo from '@/assets/imgs/Contact/Zalo.png';
 import Telephone from '@/assets/imgs/Contact/Telephone.png';
 import Message from '@/assets/imgs/Contact/Message.png';
@@ -7,47 +7,51 @@ import Location from '@/assets/imgs/Contact/Location.png';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { saveDataContact } from '@/stores/counter';
+import styles from './ContactForm.module.scss';
+import Swal from 'sweetalert2';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-interface Info {
-  address: string;
-  hotline: string;
-  mapLink: string;
-  image: string;
-  mapIframe: string;
-}
-
-interface Contact {
-  email: {
-    content: string;
-  };
-  facebook: {
-    content: string;
-  };
-  zalo: {
-    content: string;
-  };
-}
-
-// const props = defineProps({
-//   dataFacility: {
-//     type: Object,
-//     required: true
-//   },
-//   dataContact: {
-//     type: Object,
-//     required: true
-//   }
-// });
-
+// Lấy dữ liệu được lưu ở store về
 const { dataFacility, dataContact } = toRefs(saveDataContact());
 
+const variableChange = ref([]);
 const isCLick = ref(false);
 const isSocial = ref(true);
 const move = ref(0);
 const widthLine = ref(69);
-// const dataContactRender = ref<Contact>({ ...(props.dataContact as Contact) });
-// const dataFacilityRender = ref<Info>({ ...(props.dataFacility as Info) });
+const name = ref('');
+const email = ref('');
+const phone = ref('');
+const content = ref('');
+const isLoadingSuccess = ref(false);
 
+// Các hàm lấy dữ liệu từ thẻ input
+const updateName = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+
+  name.value = target.value;
+};
+
+const updateEmail = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+
+  email.value = target.value;
+};
+
+const updatePhone = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+
+  phone.value = target.value;
+};
+
+const updateContent = (e: Event) => {
+  const target = e.target as HTMLInputElement;
+
+  content.value = target.value;
+  console.log(content.value);
+};
+
+// Hàm xử lí khi bấm vào tiêu đề để cái line chạy qua chạy lại ở mobile
 const handleClick = () => {
   isCLick.value = !isCLick.value;
 
@@ -55,6 +59,7 @@ const handleClick = () => {
   else move.value = 0;
 };
 
+// Hàm check tab ở Mobile
 const handleSocialForm = (e: Event) => {
   const target = e.target as HTMLElement; // Ép kiểu 'e.target' thành 'HTMLElement'
 
@@ -66,6 +71,65 @@ const handleSocialForm = (e: Event) => {
       isSocial.value = false;
       widthLine.value = target.offsetWidth;
     }
+  }
+};
+
+// Hàm gửi dữ liệu liên hệ đi
+const submitForm = () => {
+  if (
+    name.value.length < 4 ||
+    phone.value.length < 10 ||
+    email.value.length < 8 ||
+    content.value.length < 4
+  ) {
+    Swal.fire({
+      title: 'Vui lòng điền đủ thông tin',
+      icon: 'error',
+      confirmButtonText: 'Đóng',
+      width: window.innerWidth < 738 ? '25rem' : '50rem',
+      padding: '0 2rem 2rem 2rem',
+      customClass: {
+        confirmButton: styles[window.innerWidth < 738 ? 'confirm-buttonMB' : 'confirm-button'],
+        cancelButton: styles[window.innerWidth < 738 ? 'cancel-buttonMB' : 'cancel-button'],
+        title: styles[window.innerWidth < 738 ? 'titleMB' : 'title']
+      }
+    });
+  } else {
+    const object = {
+      fullname: name.value,
+      email: email.value,
+      phone: phone.value,
+      content: content.value
+    };
+
+    const { response, isLoading } = useAxios<DataResponse>(
+      'post',
+      '/contact',
+      object,
+      {},
+      variableChange.value
+    );
+
+    watch(response, () => {
+      isLoadingSuccess.value = isLoading.value;
+      if (response.value?.status === 'ok')
+        Swal.fire({
+          title: 'Gửi thành công',
+          icon: 'success',
+          confirmButtonText: 'Đóng',
+          width: window.innerWidth < 738 ? '25rem' : '50rem',
+          padding: '0 2rem 2rem 2rem',
+          customClass: {
+            confirmButton: styles[window.innerWidth < 738 ? 'confirm-buttonMB' : 'confirm-button'],
+            cancelButton: styles[window.innerWidth < 738 ? 'cancel-buttonMB' : 'cancel-button'],
+            title: styles[window.innerWidth < 738 ? 'titleMB' : 'title']
+          }
+        });
+      name.value = '';
+      email.value = '';
+      phone.value = '';
+      content.value = '';
+    });
   }
 };
 </script>
@@ -89,7 +153,7 @@ const handleSocialForm = (e: Event) => {
             </a>
           </button>
           <button :class="$style['contact__form-social-button-zalo']">
-            <a :href="dataContact.zalo.content" target="_blank">
+            <a :href="'https://zalo.me/' + dataContact.zalo.content" target="_blank">
               <img :src="Zalo" :class="$style['contact__form-social-button-zalo-ic']" />
               <p>Zalo</p>
             </a>
@@ -97,29 +161,36 @@ const handleSocialForm = (e: Event) => {
         </div>
 
         <div :class="$style['contact__form-content']">
-          <form action="#">
+          <div :class="$style['contact__form-content-form']">
             <div>
-              <p>Họ và tên*</p>
-              <input type="text" name="name" />
+              <p>Họ và tên<span style="color: red"> *</span></p>
+              <input type="text" name="name" :value="name" @input="updateName" />
             </div>
 
             <div>
-              <p>Email*</p>
-              <input type="email" name="email" />
+              <p>Email<span style="color: red"> *</span></p>
+              <input type="email" name="email" :value="email" @input="updateEmail" />
             </div>
 
             <div>
-              <p>Số điện thoại*</p>
-              <input type="text" name="sdt" />
+              <p>Số điện thoại<span style="color: red"> *</span></p>
+              <input type="text" name="sdt" :value="phone" @input="updatePhone" maxlength="10" />
             </div>
 
             <div>
-              <p>Nội dung*</p>
-              <textarea name="" id="" cols="30" rows="10"></textarea>
+              <p>Nội dung<span style="color: red"> *</span></p>
+              <textarea
+                name=""
+                id=""
+                cols="30"
+                rows="10"
+                :value="content"
+                @input="updateContent"
+              ></textarea>
             </div>
 
-            <button>Xác nhận</button>
-          </form>
+            <button @click="submitForm">Xác nhận</button>
+          </div>
         </div>
       </div>
 
@@ -149,7 +220,7 @@ const handleSocialForm = (e: Event) => {
         </div>
 
         <button :class="$style['contact__form-info-button']" @click="handleClick">
-          <p>{{ isCLick ? 'Liên hệ nhanh' : 'Liên hệ qua form' }}</p>
+          <p>{{ isCLick ? 'Liên hệ nhanh' : 'Liên hệ tư vấn ngay' }}</p>
         </button>
       </div>
     </div>
@@ -229,29 +300,36 @@ const handleSocialForm = (e: Event) => {
           :class="$style['contact__form-content']"
           :style="{ transform: 'translateX(' + (isSocial ? '-100%' : '0%') + ')' }"
         >
-          <form action="#">
+          <div :class="$style['contact__form-content-form']">
             <div>
-              <p>Họ và tên*</p>
-              <input type="text" name="name" />
+              <p>Họ và tên<span style="color: red"> *</span></p>
+              <input type="text" name="name" :value="name" @input="updateName" />
             </div>
 
             <div>
-              <p>Email*</p>
-              <input type="email" name="email" />
+              <p>Email<span style="color: red"> *</span></p>
+              <input type="email" name="email" :value="email" @input="updateEmail" />
             </div>
 
             <div>
-              <p>Số điện thoại*</p>
-              <input type="text" name="sdt" />
+              <p>Số điện thoại<span style="color: red"> *</span></p>
+              <input type="text" name="sdt" :value="phone" @input="updatePhone" maxlength="10" />
             </div>
 
             <div>
-              <p>Nội dung*</p>
-              <textarea name="" id="" cols="30" rows="10"></textarea>
+              <p>Nội dung<span style="color: red"> *</span></p>
+              <textarea
+                name=""
+                id=""
+                cols="30"
+                rows="10"
+                :value="content"
+                @input="updateContent"
+              ></textarea>
             </div>
 
-            <button>Xác nhận</button>
-          </form>
+            <button @click="submitForm">Xác nhận</button>
+          </div>
         </div>
       </div>
     </div>

@@ -67,7 +67,7 @@
     align-items: center;
     padding: 1.5rem 3rem;
     margin-bottom: 2.5rem;
-    height: 10rem;
+    // height: 10rem;
     width: 45%;
 
     &-bg1 {
@@ -168,9 +168,9 @@
   }
 
   &-type5 {
-    height: 90vh;
-    padding-left: 45vw;
+    // height: 90vh;
     padding-top: 8rem;
+    width: 50vw;
 
     &-title {
       margin-bottom: 2rem;
@@ -248,6 +248,13 @@
 
   &-image {
     margin-bottom: 8rem;
+    width: 80%;
+    height: auto;
+
+    img {
+      width: 100%;
+      height: auto;
+    }
   }
 }
 

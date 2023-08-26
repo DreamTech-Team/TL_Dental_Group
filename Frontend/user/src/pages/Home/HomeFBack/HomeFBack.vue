@@ -18,6 +18,7 @@ const feedbacks = ref([
 
 //Scroll Properties
 const isPhone = ref(false);
+const isTablet = ref(false);
 const MIN_SWIPE_DISTANCE_CM = 3;
 const TOUCH_SENSITIVITY = 25;
 const touchstartX = ref(0);
@@ -93,6 +94,9 @@ onMounted(() => {
     if (window.innerWidth < 739) {
       isPhone.value = true;
       wItem.value = container.offsetWidth;
+    } else if (window.innerWidth >= 739 && window.innerWidth <= 1024) {
+      wItem.value = container.offsetWidth / 2;
+      isTablet.value = true;
     } else {
       wItem.value = container.offsetWidth / 3;
     }
@@ -104,6 +108,9 @@ onMounted(() => {
       if (window.innerWidth < 739) {
         isPhone.value = true;
         wItem.value = container.offsetWidth;
+      } else if (window.innerWidth >= 739 && window.innerWidth <= 1024) {
+        wItem.value = container.offsetWidth / 2;
+        isTablet.value = true;
       } else {
         wItem.value = container.offsetWidth / 3;
       }
@@ -169,7 +176,11 @@ onUnmounted(() => {
           <font-awesome-icon :icon="faChevronLeft" :class="$style['home__feedback-ic']" />
         </button>
         <button
-          v-show="(!isPhone && lenght > 3) || (isPhone && lenght > 1)"
+          v-show="
+            (!isPhone && !isTablet && lenght > 3) ||
+            (isPhone && lenght > 1) ||
+            (isTablet && lenght > 2)
+          "
           :class="$style['home__feedback-right']"
           @click="scrollRight"
         >

@@ -31,6 +31,7 @@ interface Contact {
   };
 }
 
+// Lưu data của Category
 export const useDataRenderStore = defineStore('dataRender', () => {
   const dataRender = ref<DataRender[]>([]);
 
@@ -41,6 +42,7 @@ export const useDataRenderStore = defineStore('dataRender', () => {
   return { dataRender, setDataRender };
 });
 
+//Hàm lưu trạng thái của category(cate1 và 2 đang có active hay không)
 export const saveActive = defineStore('saveActiveCategory', () => {
   const selectedCategoryItem = ref<Active>({
     categoryIndex: -1,
@@ -48,12 +50,15 @@ export const saveActive = defineStore('saveActiveCategory', () => {
   });
 
   const setActiveCategory = (newActive: Active) => {
+    console.log(newActive);
+
     selectedCategoryItem.value = { ...newActive };
   };
 
   return { selectedCategoryItem, setActiveCategory };
 });
 
+//Hàm lưu annimation của category
 export const setAnnimation = defineStore('setAnnimation', () => {
   const isAnimationVisible = ref(false);
 
@@ -64,6 +69,7 @@ export const setAnnimation = defineStore('setAnnimation', () => {
   return { isAnimationVisible, setAnnimationCategory };
 });
 
+// Hàm lưu data contact
 export const saveDataContact = defineStore('saveDataContact', () => {
   const dataFacility = ref<Info>({
     address: '',
@@ -85,6 +91,7 @@ export const saveDataContact = defineStore('saveDataContact', () => {
     }
   });
 
+  // Hàm lưu data facility
   const setDataFacility = (newDataRender: Info) => {
     dataFacility.value = newDataRender;
   };
@@ -94,13 +101,3 @@ export const saveDataContact = defineStore('saveDataContact', () => {
 
   return { dataFacility, dataContact, setDataFacility, setDataContact };
 });
-
-// export const useCounterStore = defineStore('counter', () => {
-//   const count = ref(0);
-//   const doubleCount = computed(() => count.value * 2);
-//   function increment() {
-//     count.value++;
-//   }
-
-//   return { count, doubleCount, increment };
-// });

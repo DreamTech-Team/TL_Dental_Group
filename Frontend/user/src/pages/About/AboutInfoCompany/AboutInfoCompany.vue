@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface CompanyInfo {
   content: string;
@@ -9,9 +10,9 @@ interface CompanyInfo {
 
 const variableChange = ref([]);
 const contentInfoComapny = ref<CompanyInfo[]>([]);
+const isLoadingInfo = ref(false);
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
-const { response, error, isLoading } = useAxios<DataResponse>(
+const { response, isLoading } = useAxios<DataResponse>(
   'get',
   '/introduce/company-info',
   {},
@@ -19,7 +20,10 @@ const { response, error, isLoading } = useAxios<DataResponse>(
   variableChange.value
 );
 
-// Truy xuất giá trị response.value và gán vào responseData
+watch(isLoading, () => {
+  isLoadingInfo.value = isLoading.value;
+});
+
 watch(response, () => {
   contentInfoComapny.value = response?.value?.data;
 });
@@ -28,7 +32,7 @@ watch(response, () => {
   <div :class="$style.about__infocompany">
     <p :class="$style['about__infocompany-title']">THÔNG TIN CÔNG TY</p>
 
-    <div :class="$style['about__infocompany-content']">
+    <div :class="$style['about__infocompany-content']" v-if="!isLoadingInfo">
       <div
         :class="$style['about__infocompany-content-item']"
         v-for="(company, idx) in contentInfoComapny"
@@ -40,6 +44,7 @@ watch(response, () => {
         </div>
       </div>
     </div>
+    <loading-component v-else />
   </div>
 </template>
 

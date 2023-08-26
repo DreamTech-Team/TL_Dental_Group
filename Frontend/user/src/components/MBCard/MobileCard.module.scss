@@ -10,7 +10,6 @@
     height: max-content;
     min-height: 140px;
     border-bottom: 1px solid rgb(206, 196, 196);
-    padding-bottom: 5px;
     cursor: pointer;
 
     &__left {
@@ -84,6 +83,9 @@
     &__right {
       flex: 1.5;
       padding: 14px 20px 5px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
 
       .mbcard__right-title {
         color: #000;
@@ -141,7 +143,7 @@
       }
 
       .mbcard__right-price {
-        margin-top: 5px;
+        margin-top: 15px;
         width: 100%;
         color: #08c;
         font-size: 14px;

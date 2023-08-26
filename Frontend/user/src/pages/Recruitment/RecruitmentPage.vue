@@ -21,14 +21,17 @@ import {
 } from './RecruitmentHandle';
 import RecruitmentCard from './RecruitmentCard/RecruitmentCard.vue';
 import RecruitmentCardWork from './RecruitmentCardWork/RecruitmentCardWork.vue';
-import { ref, onMounted, computed, type Ref, watch } from 'vue';
+import { ref, onMounted, type Ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
-import RecruitmentPoster from './RecruitmentPoster/RecruitmentPoster.vue';
-import RecruitmentVision from './RecruitmentVision/RecruitmentVision.vue';
-import RecruitmentValue from './RecruitmentValue/RecruitmentValue.vue';
-import RecruitmentEnviroment from './RecruitmentEnviroment/RecruitmentEnviroment.vue';
-import RecruitmentNavScroll from './RecruitmentNavScroll/RecruitmentNavScroll.vue';
-import RecruitmentWork from './RecruitmentWork/RecruitmentWork.vue';
+
+// import RecruitmentPoster from './RecruitmentPoster/RecruitmentPoster.vue';
+// import RecruitmentVision from './RecruitmentVision/RecruitmentVision.vue';
+// import RecruitmentValue from './RecruitmentValue/RecruitmentValue.vue';
+// import RecruitmentEnviroment from './RecruitmentEnviroment/RecruitmentEnviroment.vue';
+// import RecruitmentNavScroll from './RecruitmentNavScroll/RecruitmentNavScroll.vue';
+// import RecruitmentWork from './RecruitmentWork/RecruitmentWork.vue';
+
+import TheAnimate from '@/components/TheAnimate/TheAnimate.vue';
 
 interface CardElementItem {
   id: string;
@@ -66,6 +69,7 @@ const contentValueItems: Ref<CardElementItem[]> = ref([]);
 const contentValueMainItem = ref();
 const recruitWorkItems: Ref<WorkItem[]> = ref([]);
 const screenWidth = ref(true);
+const isLoading = ref([false, false, false, false]);
 
 const callApiContentPoster = () => {
   //Lấy nội dung của poster
@@ -76,6 +80,11 @@ const callApiContentPoster = () => {
     {},
     paramAxios.value
   );
+
+  watch(getContentPoster.isLoading, (value) => {
+    isLoading.value[0] = value;
+    console.log(isLoading.value, value);
+  });
 
   watch(getContentPoster.response, (value) => {
     const tmp = value?.data;
@@ -105,6 +114,11 @@ const callApiContentVision = () => {
     {},
     paramAxios.value
   );
+
+  watch(getContentVision.isLoading, (value) => {
+    isLoading.value[1] = value;
+    console.log(isLoading.value, value);
+  });
 
   watch(getContentVision.error, (value) => console.log(value));
 
@@ -157,6 +171,11 @@ const callApiContentValue = () => {
     paramAxios.value
   );
 
+  watch(getContentValue.isLoading, (value) => {
+    isLoading.value[2] = value;
+    console.log(isLoading.value, value);
+  });
+
   watch(getContentValue.error, (value) => console.log(value));
 
   watch(getContentValue.response, (value) => {
@@ -190,12 +209,17 @@ const callApiPositionRecruitment = () => {
     paramAxios.value
   );
 
+  watch(getPositionRecruitment.isLoading, (value) => {
+    isLoading.value[3] = value;
+    console.log(isLoading.value, value);
+  });
+
   watch(getPositionRecruitment.error, (value) => {
     console.log(value);
   });
 
   watch(getPositionRecruitment.response, (value) => {
-    console.log(value?.data);
+    // console.log(value?.data);
     const tmp = value?.data.data;
     recruitWorkItems.value = [];
 
@@ -250,7 +274,7 @@ const hanldeScrollToVacancies = () => {
 
 //Hàm cập nhật item sau khi loading
 const showPageCompleted = () => {
-  // showMore.value = false;
+  showMore.value = false;
   // if (!recruitWorkItems.value) {
   //   recruitWorkItems.value = [...recruitWorkItems];
   // } else recruitWorkItems.value.forEach((item) => recruitWorkItems.value.push(item));
@@ -275,6 +299,12 @@ onMounted(() => {
 </script>
 <template>
   <div :class="$style.container">
+    <div
+      v-if="isLoading[0] || isLoading[1] || isLoading[2] || isLoading[3]"
+      :class="$style.container__loading"
+    >
+      <div :id="$style.loader"></div>
+    </div>
     <div :class="$style.container__poster">
       <div :class="$style['container__poster-img']">
         <div :class="$style['container__poster-img-content']">
@@ -290,7 +320,12 @@ onMounted(() => {
         <h4>Với bề dày hơn <span>2 năm</span> kinh doanh và phát triển</h4>
         <h3>Công ty sở hữu số lượng vật liệu và dụng cụ nha khoa</h3>
         <h2>LỚN NHẤT VIỆT NAM</h2>
-        <h1>#TOP1</h1>
+        <h1>
+          <span style="position: relative"
+            >#TOP1
+            <the-animate />
+          </span>
+        </h1>
       </div>
       <div :class="$style['container__poster-value']">
         <div :class="$style['container__poster-value-item']">
@@ -321,23 +356,25 @@ onMounted(() => {
         <recruitment-card :items="contentVisionItems" :style="'type2'" />
       </div>
     </div>
-    <div :class="$style.container__value">
-      <div :class="$style['container__value-heading']">
-        <div :class="$style['container__value-heading-title']">
-          <div :class="$style['container__value-heading-title-main']">
-            <div :class="$style['container__value-heading-title-main-1']">Giá Trị</div>
-            <div :class="$style['container__value-heading-title-main-2']">Cốt Lõi</div>
+    <div style="padding: 5rem">
+      <div :class="$style.container__value">
+        <div :class="$style['container__value-heading']">
+          <div :class="$style['container__value-heading-title']">
+            <div :class="$style['container__value-heading-title-main']">
+              <div :class="$style['container__value-heading-title-main-1']">Giá Trị</div>
+              <div :class="$style['container__value-heading-title-main-2']">Cốt Lõi</div>
+            </div>
+            <div :class="$style['container__value-heading-title-3']">Từ TL Dental Group</div>
           </div>
-          <div :class="$style['container__value-heading-title-3']">Từ TL Dental Group</div>
+          <div :class="$style['container__value-heading-content']">
+            <p>
+              {{ contentValueMainItem }}
+            </p>
+          </div>
         </div>
-        <div :class="$style['container__value-heading-content']">
-          <p>
-            {{ contentValueMainItem }}
-          </p>
+        <div :class="$style['container__value-list']">
+          <recruitment-card :items="contentValueItems" :style="'type3'" />
         </div>
-      </div>
-      <div :class="$style['container__value-list']">
-        <recruitment-card :items="contentValueItems" :style="'type3'" />
       </div>
     </div>
     <div :class="$style.container__envir">

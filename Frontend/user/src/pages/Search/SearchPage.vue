@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import IcSortDown from '@/assets/icons/IcSortDown.svg';
-import { ref, onMounted, computed, onUnmounted } from 'vue';
-import { products } from '../Product/ProductHandle';
+import { ref, onMounted, computed, onUnmounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
+// import { products } from '../Product/ProductHandle';
 import { bestsale } from '../Search/BestSale';
 import ProductCard from '@/components/Card/ProductCard.vue';
 import MobileCard from '@/components/MBCard/MobileCard.vue';
@@ -19,6 +20,59 @@ import {
   faChevronRight,
   faArrowDownShortWide
 } from '@fortawesome/free-solid-svg-icons';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  priceSale: number;
+  summary: string;
+  description: string;
+  mainImg: string;
+  imgs: string;
+  highlight: number;
+  createAt: string;
+  fkCategory: {
+    id: string;
+    companyId: {
+      id: string;
+      name: string;
+      logo: string;
+      description: string;
+      highlight: number;
+      slug: string;
+      createAt: string;
+      outstandingProductId: string;
+    };
+    cate1Id: {
+      id: string;
+      title: string;
+      img: string;
+      highlight: 3;
+      slug: string;
+      createAt: string;
+    };
+    cate2Id: {
+      id: string;
+      title: string;
+      slug: string;
+      createAt: string;
+    };
+  };
+}
+
+interface Item {
+  nameProduct: string;
+  price: number;
+  summary: string;
+  tag: string;
+  company: string;
+  image: string;
+  brand: string;
+  slug: string;
+}
 
 const wItem = ref(0);
 const tranfX = ref(0);
@@ -28,15 +82,60 @@ const currentPage = ref(1);
 const pageSize = ref(12);
 const isDesktop = ref(true);
 const isActive = ref(false);
-const selectedOption = ref('Sắp xếp');
-const dropdownOptions = ['Mới nhất', 'Giá tăng dần', 'Giá giảm dần'];
+
+//Sort
+const selectedOption = ref('Giá tăng dần');
+const dropdownOptions = ['Giá tăng dần', 'Giá giảm dần'];
+const sortPriceType = ref('asc');
 const isDropdownOpen = ref(false);
+//Khởi tạo danh sách sản phẩm để hiển thị ra màn hình
+const products = ref<Item[]>([]);
 
 //Scroll Properties
 const sortTypeClasses = ref(styles['sort__type']);
 const sortContentClasses = ref(styles['sort__content']);
 const dropdownListClasses = ref(styles['dropdown-list']);
 const dropdownItemClasses = ref(styles['dropdown-item']);
+
+const route = useRoute();
+console.log(route.query);
+
+const deps = ref([]);
+const { response } = useAxios<DataResponse>(
+  'get',
+  `/products/search?key=${route.query.search}`,
+  {},
+  {},
+  deps.value
+);
+
+const {
+  response: productRes,
+  error,
+  isLoading
+} = useAxios<DataResponse>(
+  'get',
+  `/products?page=${currentPage.value}&pageSize=${pageSize.value}&sortPrice=${sortPriceType.value}`,
+  {},
+  {},
+  deps.value
+);
+
+watch(response, () => {
+  console.log(response.value?.data.data);
+  products.value = response.value?.data.data.map((item: Product) => {
+    return {
+      nameProduct: item.name,
+      price: item.price,
+      summary: item.summary,
+      tag: item.fkCategory.cate1Id.title,
+      company: item.fkCategory.companyId.name,
+      image: item.mainImg,
+      brand: item.fkCategory.companyId.logo,
+      slug: item.slug
+    };
+  });
+});
 
 const scrollToTop = (top: number) => {
   window.scrollTo({
@@ -79,7 +178,7 @@ const selectOption = (option: string) => {
 const displayedProducts = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
-  return products.slice(start, end);
+  return products.value.slice(start, end);
 });
 
 onMounted(() => {
@@ -124,14 +223,14 @@ onUnmounted(() => {
 });
 </script>
 <template>
-  <div>
-    <div>
+  <div :class="$style.sort_container">
+    <div style="margin: auto; max-width: 1480px">
       <div v-if="products.length > 0">
         <bread-crumb :tags="pathBC" />
         <div v-if="isDesktop" :class="$style.sort">
           <p :class="$style['sort__info']">
             Tìm thấy <strong>{{ products.length }}</strong> kết quả với từ khóa là
-            <strong>“kềm”</strong>
+            <strong>“{{ route?.query?.search }}”</strong>
           </p>
           <div></div>
           <div :class="sortTypeClasses" @click="toggleDropdown">
@@ -204,7 +303,7 @@ onUnmounted(() => {
             :product="item1"
           />
         </div>
-        <div>
+        <div :class="$style['product__search_pagination']">
           <base-pagination
             :total="Math.ceil(products.length / pageSize)"
             :current-page="currentPage"
@@ -236,9 +335,9 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-    <div>
-      <similar-product />
-    </div>
+    <!-- <div>
+      <home-trend />
+    </div> -->
   </div>
 </template>
 

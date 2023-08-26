@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import router from '@/router/index';
+import TheAnimate from '@/components/TheAnimate/TheAnimate.vue';
 
 interface Company {
   outstandingProduct: {
@@ -67,7 +68,7 @@ interface Item {
 
 //Define data structure
 const bannerItems = ref([
-  { src: '', alt: '', width: '0', height: '0', name: '', product: '', slug: '' }
+  { src: '', alt: '', width: '0', height: '0', name: '', product: '', slug: '', idx: 0 }
 ]);
 
 //Scroll Properties
@@ -84,6 +85,7 @@ const mobilestatus = ref(true);
 
 //WEB
 const activeIndex = ref(0);
+const oldActiveIndex = ref(0);
 const activeBanner = ref(bannerItems.value[0]);
 const showBannerBg = ref(true);
 const lineWidth = ref(0);
@@ -186,6 +188,10 @@ const selectedItem = computed(() => {
   return bannerItems.value[activeIndex.value];
 });
 
+const oldSelectedItem = computed(() => {
+  return bannerItems.value[oldActiveIndex.value];
+});
+
 //Set background for banner
 const bannerBgColor = computed(() => {
   const colors = [
@@ -195,6 +201,15 @@ const bannerBgColor = computed(() => {
     `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`
   ];
   return colors[activeIndex.value];
+});
+const oldBannerBgColor = computed(() => {
+  const colors = [
+    `radial-gradient(50% 50% at 50% 50%, rgba(135, 255, 126, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`,
+    `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`,
+    `radial-gradient(50% 50% at 50% 50%, rgba(255, 126, 126, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`,
+    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`
+  ];
+  return colors[oldActiveIndex.value];
 });
 
 //Set 4 ellipse color for web
@@ -290,6 +305,9 @@ const elipseColorMB = [
 
 //To do when moveline
 const moveLine = (index: number) => {
+  if (index === activeIndex.value) return;
+  oldActiveIndex.value = activeIndex.value;
+
   activeIndex.value = index;
   activeBanner.value = bannerItems.value[index];
   showBannerBg.value = false;
@@ -377,7 +395,7 @@ watch(
           : results.response.value?.data;
       companies.value = randomHighlightedCompanies;
 
-      bannerItems.value = companies.value.map((company: Company) => {
+      bannerItems.value = companies.value.map((company: Company, idx) => {
         return {
           src: company.company.logo,
           alt: company.company.name,
@@ -385,7 +403,8 @@ watch(
           height: '30',
           name: company.outstandingProduct.name,
           product: company.outstandingProduct.mainImg,
-          slug: company.outstandingProduct.slug
+          slug: company.outstandingProduct.slug,
+          idx: idx
         };
       });
 
@@ -434,7 +453,7 @@ onUnmounted(() => {
 <template>
   <div :class="$style.home__banner">
     <div :class="$style['home__banner-left']">
-      <h2>{{ content.title }}</h2>
+      <h2 style="position: relative">{{ content.title }} <the-animate /></h2>
       <p>{{ content.context }}</p>
       <div id="bannerList" :class="$style['home__banner-list']">
         <div
@@ -454,8 +473,12 @@ onUnmounted(() => {
     </div>
     <div :class="$style['home__banner-right']">
       <div
-        v-if="showBannerBg"
-        :class="$style['home__banner-bg']"
+        v-for="(item, idx) in bannerItems"
+        :key="idx"
+        :class="[
+          $style['home__banner-bg'],
+          $style[idx === selectedItem.idx ? 'home__banner-bg--show' : 'home__banner-bg--hidden']
+        ]"
         :style="{ background: !mobilestatus ? bannerBgColor : '' }"
       >
         <div :class="$style['home__banner-radial']">
@@ -469,6 +492,31 @@ onUnmounted(() => {
             ></div>
           </div>
           <p>{{ selectedItem.name }}</p>
+        </div>
+      </div>
+
+      <div
+        v-for="(item, idx) in bannerItems"
+        :key="idx"
+        :class="[
+          $style['home__banner-bg'],
+          $style[idx === oldSelectedItem.idx ? 'home__banner-bg--hidden' : '']
+        ]"
+        :style="{
+          background: !mobilestatus && idx === oldSelectedItem.idx ? oldBannerBgColor : ''
+        }"
+      >
+        <div :class="$style['home__banner-radial']">
+          <div :class="$style['home__banner-circle']" @click="linkDetail(oldSelectedItem.slug)">
+            <div :class="$style['home__banner-logo']">
+              <img :src="oldSelectedItem.src" :alt="oldSelectedItem.alt" width="127" height="30" />
+            </div>
+            <div
+              :class="$style['home__banner-product']"
+              :style="{ backgroundImage: `url(${oldSelectedItem.product})` }"
+            ></div>
+          </div>
+          <p>{{ oldSelectedItem.name }}</p>
         </div>
       </div>
     </div>

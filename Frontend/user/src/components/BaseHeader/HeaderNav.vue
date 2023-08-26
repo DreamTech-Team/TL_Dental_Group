@@ -79,6 +79,10 @@ const hiddenNav = () => {
         <font-awesome-icon :icon="faBars" size="xl" />
       </div>
       <div
+        @click="flagMobile = !flagMobile"
+        :class="$style[flagMobile ? 'header__nav-mobile--blur' : '']"
+      ></div>
+      <div
         :class="[
           $style['header__nav-mobile--list'],
           $style[flagMobile ? 'header__nav-mobile--show' : '']
@@ -90,6 +94,7 @@ const hiddenNav = () => {
         <!-- List page -->
         <div :class="$style['header__nav-mobile--item']" v-for="item in pages" :key="item.slug">
           <router-link
+            v-if="item.slug !== 'sanpham'"
             :to="'/' + item.slug"
             :class="$style['header__nav-mobile-item-link']"
             @click="
@@ -101,6 +106,19 @@ const hiddenNav = () => {
             >{{ item.name }}
             <font-awesome-icon v-if="item.slug === 'sanpham'" :icon="faChevronDown" size="sm" />
           </router-link>
+
+          <a
+            v-else
+            :class="$style['header__nav-mobile-item-link']"
+            @click="
+              () => {
+                if (item.slug !== 'sanpham') flagMobile = !flagMobile;
+                pageMobile = pageMobile === 'sanpham' ? 'none' : item.slug;
+              }
+            "
+            >{{ item.name }}
+            <font-awesome-icon v-if="item.slug === 'sanpham'" :icon="faChevronDown" size="sm" />
+          </a>
 
           <!-- Category -->
           <header-category-respo
