@@ -22,12 +22,13 @@ const listItems: Ref<CardElementItem[]> = ref(props.items || []);
 const screenWidth = ref(true);
 
 const selectedContent = (index: number) => {
-  if (index === 0) {
-    if (props.handleScrollToTopOfStepRec) props.handleScrollToTopOfStepRec();
-  } else if (screenWidth.value) {
-    indexSelected.value = index;
-    const element = document.getElementById(`type5-${indexSelected.value}`);
-    element?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+  if (screenWidth.value) {
+    if (index === 0 && props.handleScrollToTopOfStepRec) props.handleScrollToTopOfStepRec();
+    else {
+      indexSelected.value = index;
+      const element = document.getElementById(`type5-${indexSelected.value}`);
+      element?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
+    }
   } else {
     if (onActive.value !== index) onActive.value = index;
     else onActive.value = -1;

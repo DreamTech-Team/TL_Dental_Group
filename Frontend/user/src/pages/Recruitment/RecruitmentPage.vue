@@ -83,7 +83,6 @@ const callApiContentPoster = () => {
 
   watch(getContentPoster.isLoading, (value) => {
     isLoading.value[0] = value;
-    console.log(isLoading.value, value);
   });
 
   watch(getContentPoster.response, (value) => {
@@ -117,7 +116,6 @@ const callApiContentVision = () => {
 
   watch(getContentVision.isLoading, (value) => {
     isLoading.value[1] = value;
-    console.log(isLoading.value, value);
   });
 
   watch(getContentVision.error, (value) => console.log(value));
@@ -173,7 +171,6 @@ const callApiContentValue = () => {
 
   watch(getContentValue.isLoading, (value) => {
     isLoading.value[2] = value;
-    console.log(isLoading.value, value);
   });
 
   watch(getContentValue.error, (value) => console.log(value));
@@ -211,7 +208,6 @@ const callApiPositionRecruitment = () => {
 
   watch(getPositionRecruitment.isLoading, (value) => {
     isLoading.value[3] = value;
-    console.log(isLoading.value, value);
   });
 
   watch(getPositionRecruitment.error, (value) => {
