@@ -15,17 +15,22 @@ import {
   ic_light
 } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 import {
-  posterItems,
-  visionItems,
-  valueItems,
   recStep,
   recStepItems
   // recruitWorkItems
 } from './RecruitmentHandle';
 import RecruitmentCard from './RecruitmentCard/RecruitmentCard.vue';
 import RecruitmentCardWork from './RecruitmentCardWork/RecruitmentCardWork.vue';
-import { ref, onMounted, computed, type Ref, watch } from 'vue';
+import { ref, onMounted, type Ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+// import RecruitmentPoster from './RecruitmentPoster/RecruitmentPoster.vue';
+// import RecruitmentVision from './RecruitmentVision/RecruitmentVision.vue';
+// import RecruitmentValue from './RecruitmentValue/RecruitmentValue.vue';
+// import RecruitmentEnviroment from './RecruitmentEnviroment/RecruitmentEnviroment.vue';
+// import RecruitmentNavScroll from './RecruitmentNavScroll/RecruitmentNavScroll.vue';
+// import RecruitmentWork from './RecruitmentWork/RecruitmentWork.vue';
+
 import TheAnimate from '@/components/TheAnimate/TheAnimate.vue';
 
 interface CardElementItem {
@@ -63,6 +68,8 @@ const imageVisionItems: Ref<ListImage[]> = ref([]);
 const contentValueItems: Ref<CardElementItem[]> = ref([]);
 const contentValueMainItem = ref();
 const recruitWorkItems: Ref<WorkItem[]> = ref([]);
+const screenWidth = ref(true);
+const isLoading = ref([false, false, false, false]);
 
 const callApiContentPoster = () => {
   //Lấy nội dung của poster
@@ -73,6 +80,10 @@ const callApiContentPoster = () => {
     {},
     paramAxios.value
   );
+
+  watch(getContentPoster.isLoading, (value) => {
+    isLoading.value[0] = value;
+  });
 
   watch(getContentPoster.response, (value) => {
     const tmp = value?.data;
@@ -102,6 +113,10 @@ const callApiContentVision = () => {
     {},
     paramAxios.value
   );
+
+  watch(getContentVision.isLoading, (value) => {
+    isLoading.value[1] = value;
+  });
 
   watch(getContentVision.error, (value) => console.log(value));
 
@@ -154,6 +169,10 @@ const callApiContentValue = () => {
     paramAxios.value
   );
 
+  watch(getContentValue.isLoading, (value) => {
+    isLoading.value[2] = value;
+  });
+
   watch(getContentValue.error, (value) => console.log(value));
 
   watch(getContentValue.response, (value) => {
@@ -187,12 +206,16 @@ const callApiPositionRecruitment = () => {
     paramAxios.value
   );
 
+  watch(getPositionRecruitment.isLoading, (value) => {
+    isLoading.value[3] = value;
+  });
+
   watch(getPositionRecruitment.error, (value) => {
     console.log(value);
   });
 
   watch(getPositionRecruitment.response, (value) => {
-    console.log(value?.data);
+    // console.log(value?.data);
     const tmp = value?.data.data;
     recruitWorkItems.value = [];
 
@@ -242,12 +265,12 @@ const handleScroll = () => {
 
 const hanldeScrollToVacancies = () => {
   const element = document.getElementById('position-rec');
-  element?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+  element?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
 };
 
 //Hàm cập nhật item sau khi loading
 const showPageCompleted = () => {
-  // showMore.value = false;
+  showMore.value = false;
   // if (!recruitWorkItems.value) {
   //   recruitWorkItems.value = [...recruitWorkItems];
   // } else recruitWorkItems.value.forEach((item) => recruitWorkItems.value.push(item));
@@ -260,12 +283,29 @@ const openLoading = () => {
   setTimeout(showPageCompleted, 3000);
 };
 
+const checkScreenWidth = () => {
+  const currentWidth = window.innerWidth;
+  screenWidth.value = currentWidth > 739;
+};
+
+const handleScrollToTopOfStepRec = () => {
+  const element = document.getElementById(`page`);
+  element?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+};
+
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
+  window.addEventListener('resize', checkScreenWidth);
 });
 </script>
 <template>
   <div :class="$style.container">
+    <div
+      v-if="isLoading[0] || isLoading[1] || isLoading[2] || isLoading[3]"
+      :class="$style.container__loading"
+    >
+      <div :id="$style.loader"></div>
+    </div>
     <div :class="$style.container__poster">
       <div :class="$style['container__poster-img']">
         <div :class="$style['container__poster-img-content']">
@@ -410,10 +450,11 @@ onMounted(() => {
             :content="recStepItems"
             :style="'type4'"
             :on-selected="itemSeleted"
+            :handleScrollToTopOfStepRec="handleScrollToTopOfStepRec"
           />
         </div>
       </div>
-      <div :class="$style['container__recruit-right']" id="page">
+      <div v-if="screenWidth" :class="$style['container__recruit-right']" id="page">
         <recruitment-card :items="recStepItems" :style="'type5'" />
       </div>
     </div>

@@ -108,6 +108,15 @@
       height: 100%;
     }
   }
+
+  &__notFound {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5rem;
+    font-size: 20px;
+    font-weight: bold;
+  }
 }
 
 @include responsive_tablet() {

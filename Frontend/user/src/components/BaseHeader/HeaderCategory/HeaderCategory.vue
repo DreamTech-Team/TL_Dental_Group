@@ -58,7 +58,11 @@ const heightCate2 = (slug: string) => {
             :key="item2.slug"
             :class="$style['header-category__item']"
           >
-            <router-link to="" :class="$style['header-category__item-link']">
+            <!-- ?slug1=vat-lieu-chinh-nha11&slug2=kem-chinh-nha-23 -->
+            <router-link
+              :to="`/sanpham?slug1=${item1.slug}&slug2=${item2.slug}`"
+              :class="$style['header-category__item-link']"
+            >
               <p>{{ item2.name }}</p>
             </router-link>
           </li>
