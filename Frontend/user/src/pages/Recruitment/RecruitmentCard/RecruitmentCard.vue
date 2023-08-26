@@ -18,9 +18,10 @@ const props = defineProps({
 const indexSelected = ref(0);
 const onActive = ref(-1);
 const listItems: Ref<CardElementItem[]> = ref(props.items || []);
+const screenWidth = ref(true);
 
 const selectedContent = (index: any) => {
-  if (screen.width > 739) {
+  if (screenWidth.value) {
     indexSelected.value = index;
     const element = document.getElementById(`type5-${indexSelected.value}`);
     element?.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
@@ -28,6 +29,11 @@ const selectedContent = (index: any) => {
     if (onActive.value !== index) onActive.value = index;
     else onActive.value = -1;
   }
+};
+
+const checkScreenWidth = () => {
+  const currentWidth = window.innerWidth;
+  screenWidth.value = currentWidth > 739;
 };
 
 watch(
@@ -39,6 +45,7 @@ watch(
 
 onMounted(() => {
   // if (props.style === 'type3') console.log(props.items);
+  window.addEventListener('resize', checkScreenWidth);
 });
 </script>
 
@@ -106,7 +113,6 @@ onMounted(() => {
             </svg>
           </div>
         </div>
-
         <div>
           <div
             :class="$style[`container__card-${style}-content`]"

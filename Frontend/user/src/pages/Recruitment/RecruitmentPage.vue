@@ -15,9 +15,6 @@ import {
   ic_light
 } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 import {
-  posterItems,
-  visionItems,
-  valueItems,
   recStep,
   recStepItems
   // recruitWorkItems
@@ -26,6 +23,12 @@ import RecruitmentCard from './RecruitmentCard/RecruitmentCard.vue';
 import RecruitmentCardWork from './RecruitmentCardWork/RecruitmentCardWork.vue';
 import { ref, onMounted, computed, type Ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import RecruitmentPoster from './RecruitmentPoster/RecruitmentPoster.vue';
+import RecruitmentVision from './RecruitmentVision/RecruitmentVision.vue';
+import RecruitmentValue from './RecruitmentValue/RecruitmentValue.vue';
+import RecruitmentEnviroment from './RecruitmentEnviroment/RecruitmentEnviroment.vue';
+import RecruitmentNavScroll from './RecruitmentNavScroll/RecruitmentNavScroll.vue';
+import RecruitmentWork from './RecruitmentWork/RecruitmentWork.vue';
 
 interface CardElementItem {
   id: string;
@@ -62,6 +65,7 @@ const imageVisionItems: Ref<ListImage[]> = ref([]);
 const contentValueItems: Ref<CardElementItem[]> = ref([]);
 const contentValueMainItem = ref();
 const recruitWorkItems: Ref<WorkItem[]> = ref([]);
+const screenWidth = ref(true);
 
 const callApiContentPoster = () => {
   //Lấy nội dung của poster
@@ -241,7 +245,7 @@ const handleScroll = () => {
 
 const hanldeScrollToVacancies = () => {
   const element = document.getElementById('position-rec');
-  element?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+  element?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
 };
 
 //Hàm cập nhật item sau khi loading
@@ -259,8 +263,14 @@ const openLoading = () => {
   setTimeout(showPageCompleted, 3000);
 };
 
+const checkScreenWidth = () => {
+  const currentWidth = window.innerWidth;
+  screenWidth.value = currentWidth > 739;
+};
+
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
+  window.addEventListener('resize', checkScreenWidth);
 });
 </script>
 <template>
@@ -405,7 +415,7 @@ onMounted(() => {
           />
         </div>
       </div>
-      <div :class="$style['container__recruit-right']" id="page">
+      <div v-if="screenWidth" :class="$style['container__recruit-right']" id="page">
         <recruitment-card :items="recStepItems" :style="'type5'" />
       </div>
     </div>
