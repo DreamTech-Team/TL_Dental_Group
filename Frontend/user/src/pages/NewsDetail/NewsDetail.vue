@@ -6,6 +6,7 @@ import Categories from '@/components/Category/BaseCategory.vue';
 import Activity from '../Home/HomeActivity/HomeActivity.vue';
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface NewsDetail {
   title: string;
@@ -30,8 +31,9 @@ const dataRender = ref<NewsDetail>({
   detail: '',
   slug: ''
 });
+const isLoadingContent = ref(false);
 
-const { response } = useAxios<DataResponse>(
+const { response, isLoading } = useAxios<DataResponse>(
   'get',
   '/news/' + path.value,
   {},
@@ -39,12 +41,17 @@ const { response } = useAxios<DataResponse>(
   variableChange.value
 );
 
+watch(isLoading, () => {
+  isLoadingContent.value = isLoading.value;
+});
+
 watch(response, () => {
   dataRender.value = response.value?.data;
 });
 </script>
 <template>
-  <div :class="$style.newsdetail">
+  <loading-component v-if="isLoadingContent" />
+  <div :class="$style.newsdetail" v-else>
     <div :class="$style.newsdetail__img">
       <img :src="dataRender.img" alt="" />
     </div>

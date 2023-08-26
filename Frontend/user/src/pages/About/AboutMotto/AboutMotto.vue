@@ -50,9 +50,9 @@ const handleClickLeft = () => {
 
   if (widthItem) {
     isDisableRight.value = false;
-    if (move.value === 0) (move.value = widthItem.offsetWidth + 190), (isDisableLeft.value = true);
+    if (move.value === 0) (move.value = widthItem.offsetWidth + 150), (isDisableLeft.value = true);
     else {
-      move.value += widthItem.offsetWidth + 190;
+      move.value += widthItem.offsetWidth + 150;
     }
   }
 };
@@ -63,10 +63,10 @@ const handleClickRight = () => {
   const widthItem = document.getElementById('1');
 
   if (widthItem) {
-    if (move.value === (3 - mottoItems.value.length) * (widthItem.offsetWidth + 190))
-      (move.value -= widthItem.offsetWidth + 190), (isDisableRight.value = true);
+    if (move.value === (3 - mottoItems.value.length) * (widthItem.offsetWidth + 150))
+      (move.value -= widthItem.offsetWidth + 150), (isDisableRight.value = true);
     else {
-      move.value -= widthItem.offsetWidth + 190;
+      move.value -= widthItem.offsetWidth + 150;
     }
   }
 };

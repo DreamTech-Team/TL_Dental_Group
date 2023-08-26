@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
@@ -60,6 +60,33 @@ const handleLeave = () => {
     }
   }
 };
+
+// Hàm lấy thẻ p ra để chỉnh lại fontSize cho mobile
+const fetchData = async () => {
+  if (!isLoadingLetter.value) {
+    const parent = document.getElementById('content_letter');
+
+    if (parent) {
+      console.log(parent.getElementsByTagName('p'));
+      const content = ref<HTMLElement[] | null>(null);
+      const contents = parent.getElementsByTagName('p');
+      const contentArray = Array.from(contents);
+
+      content.value = contentArray;
+
+      content.value.forEach((item) => {
+        if (window.innerWidth < 736) {
+          item.style.fontSize = '14px';
+        }
+      });
+    }
+  }
+};
+
+// Sau 1s mới bắt đầu lấy dữ liệu
+onMounted(() => {
+  setTimeout(fetchData, 1000);
+});
 </script>
 <template>
   <div :class="$style.about__thanks" :style="{ pointerEvents: canHover ? 'auto' : 'none' }">
@@ -77,12 +104,17 @@ const handleLeave = () => {
         <div :class="$style['about__thanks-cover']"></div>
         <div :class="$style['about__thanks-letter']" id="letter" v-if="!isLoadingLetter">
           <h1>LỜI CẢM ƠN</h1>
-          <p v-html="contentLetter" id="content_letter"></p>
+          <div v-html="contentLetter"></div>
         </div>
         <loading-component v-else />
       </div>
     </div>
   </div>
+  <div :class="$style['about__thanks-letter-MBTL']" v-if="!isLoadingLetter">
+    <h1>LỜI CẢM ƠN</h1>
+    <div v-html="contentLetter" id="content_letter"></div>
+  </div>
+  <loading-component v-else />
 </template>
 
 <style module scoped lang="scss">

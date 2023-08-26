@@ -49,35 +49,31 @@ const dataContact = ref<Contact>({
     content: ''
   }
 });
-const isLoadingContact = ref(false);
-const isLoadingFacility = ref(false);
 
-// Gọi hàm useAxios để lấy response, error, và isLoading
-const getInfo = useAxios<DataResponse>('get', '/facility/', {}, {}, variableChange.value);
-isLoadingFacility.value = getInfo.isLoading.value;
+const fetchData = async () => {
+  const getInfo = useAxios<DataResponse>('get', '/facility/', {}, {}, variableChange.value);
 
-const getContact = useAxios<DataResponse>(
-  'get',
-  '/information?type=CONTACT',
-  {},
-  {},
-  variableChangeContact.value
-);
+  const getContact = useAxios<DataResponse>(
+    'get',
+    '/information?type=CONTACT',
+    {},
+    {},
+    variableChangeContact.value
+  );
 
-isLoadingContact.value = getContact.isLoading.value;
+  watch(getInfo.response, () => {
+    dataFacility.value = getInfo.response?.value?.data;
+    saveData.setDataFacility(dataFacility.value);
+  });
 
-// Truy xuất giá trị response.value và gán vào responseData
-watch(getInfo.response, () => {
-  dataFacility.value = getInfo.response?.value?.data;
-  saveData.setDataFacility(dataFacility.value);
-  isLoadingFacility.value = getInfo.isLoading.value;
-});
+  watch(getContact.response, () => {
+    dataContact.value = getContact.response?.value?.data;
+    saveData.setDataContact(dataContact.value);
+  });
+};
 
-watch(getContact.response, () => {
-  dataContact.value = getContact.response?.value?.data;
-  saveData.setDataContact(dataContact.value);
-  isLoadingContact.value = getContact.isLoading.value;
-});
+// Gọi fetchData sau 3 giây
+setTimeout(fetchData, 3000);
 </script>
 <template>
   <div :class="$style.header__contact">
