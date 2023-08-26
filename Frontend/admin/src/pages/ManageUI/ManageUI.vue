@@ -45,7 +45,7 @@ const componentUI = [
     icon: faPersonCirclePlus,
     color:
       'linear-gradient(220deg, #B900E8 12%, rgba(255, 102, 221, 0.65) 88%, rgba(185, 0, 232, 0.00) 100%)',
-    path: 'tuyendung'
+    path: 'mnuirecruitment'
   },
   {
     title: 'Tin tức',

@@ -39,7 +39,7 @@ watch(
 );
 
 onMounted(() => {
-  if (props.style === 'type3') console.log(props.items);
+  // if (props.style === 'type3') console.log(props.items);
 });
 </script>
 

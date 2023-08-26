@@ -53,22 +53,6 @@ const limitContent = ref(-1);
 const hiddenCustomizeModal = ref(false);
 const paramAxios = ref();
 
-const handleEditPoster = () => {
-  topicUpdate.value = topics.poster;
-  hiddenCustomizeModal.value = true;
-  contentEdit.value = [];
-
-  contentPosterItems.value?.forEach((value) =>
-    contentEdit.value.push({
-      title: value.title.content,
-      content: value.content.content
-    })
-  );
-
-  isOpen.value = true;
-  disableScroll();
-};
-
 const callApiContentPoster = () => {
   //Lấy nội dung của poster
   const getContentPoster = useAxios<DataResponse>(
@@ -189,6 +173,23 @@ const callApiContentValue = () => {
   });
 };
 
+const handleEditPoster = () => {
+  topicUpdate.value = topics.poster;
+  hiddenCustomizeModal.value = true;
+  contentEdit.value = [];
+
+  contentPosterItems.value?.forEach((value) =>
+    contentEdit.value.push({
+      key: value.title.content.replace(/[\s~`!@#$%^&*()_+={}[\]:;<>,.?/\\|'"-]/g, ''),
+      title: value.title.content,
+      content: value.content.content
+    })
+  );
+
+  isOpen.value = true;
+  disableScroll();
+};
+
 const handleUpdatePoster = (newContent: any) => {
   topicUpdate.value = '';
   hiddenCustomizeModal.value = false;
@@ -224,10 +225,10 @@ const handleUpdatePoster = (newContent: any) => {
     paramAxios.value
   );
 
-  watch(patchContentPoster.response, (value) => {
+  watch(patchContentPoster.response, () => {
     contentPosterItems.value = [];
     contentPosterItems.value = newContentArray;
-    console.log(value);
+    // console.log(value);
   });
 };
 
@@ -238,6 +239,7 @@ const handleEditVision = () => {
 
   contentVisionItems.value.forEach((value) =>
     contentEdit.value.push({
+      key: value.title.content.replace(/[\s~`!@#$%^&*()_+={}[\]:;<>,.?/\\|'"-]/g, ''),
       title: value.title.content,
       content: value.content.content
     })
@@ -249,7 +251,7 @@ const handleEditVision = () => {
 
 const handleUpdateVision = (newContent: any) => {
   topicUpdate.value = '';
-  hiddenCustomizeModal.value = true;
+  hiddenCustomizeModal.value = false;
   const newContentArray: CardElementItem[] = [];
   const dataVision: any = [];
 
@@ -292,19 +294,21 @@ const handleUpdateVision = (newContent: any) => {
     paramAxios.value
   );
 
-  watch(patchContentVision.response, (value) => {
+  watch(patchContentVision.response, () => {
     contentVisionItems.value = [];
     contentVisionItems.value = newContentArray;
-    console.log(value);
+    // console.log(value);
   });
 };
 
 const handleEditValue = () => {
   topicUpdate.value = topics.value;
   contentEdit.value = [];
+  // limitContent.value = 2;
 
   contentValueItems.value.forEach((value) =>
     contentEdit.value.push({
+      key: value.title.content.replace(/[\s~`!@#$%^&*()_+={}[\]:;<>,.?/\\|'"-]/g, ''),
       title: value.title.content,
       content: value.content.content
     })
@@ -318,18 +322,6 @@ const handleUpdateValue = (newContent: any) => {
   topicUpdate.value = '';
   const subItems: { id: string; title: string; content: string; type: string }[] = [];
   const listDelete = [];
-  // contentValueItems.value = [];
-
-  // newContent.forEach((value: any) => {
-  //   contentValueItems.value.push({
-  //     id: '',
-  //     icon: { link: '', style: '' },
-  //     title: { content: value.title, style: 'type3' },
-  //     content: { content: value.content, style: 'type3' },
-  //     image: { link: '', style: '' },
-  //     type: ''
-  //   });
-  // });
 
   newContent.forEach((value: { title: any; content: any }, index: number) => {
     const idItem = contentValueItems.value.length > index ? contentValueItems.value[index].id : '';
@@ -351,7 +343,7 @@ const handleUpdateValue = (newContent: any) => {
     subItem: subItems,
     deletedSubItem: listDelete
   };
-  console.log(dataUpdate);
+  // console.log(dataUpdate);
 
   const patchContentValue = useAxios<DataResponse>(
     'patch',
@@ -363,9 +355,9 @@ const handleUpdateValue = (newContent: any) => {
 
   watch(patchContentValue.error, (error) => console.log(error));
 
-  watch(patchContentValue.response, (value) => {
+  watch(patchContentValue.response, () => {
     callApiContentValue();
-    console.log(value);
+    // console.log(value);
   });
 };
 
@@ -377,6 +369,7 @@ const handleUpdated = (newContent: any) => {
 
 const handleModalClose = () => {
   isOpen.value = false;
+  hiddenCustomizeModal.value = false;
   enableScroll();
 };
 

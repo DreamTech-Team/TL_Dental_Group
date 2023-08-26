@@ -121,7 +121,7 @@ watch(
   () => props.contentValueItems,
   (value) => {
     valueItems.value = value;
-    console.log(value);
+    // console.log(value);
   }
 );
 
@@ -134,7 +134,7 @@ watch(
 
 onMounted(() => {
   valueItems.value = props.contentValueItems;
-  console.log(props.contentValueItems);
+  // console.log(props.contentValueItems);
 });
 </script>
 <template>

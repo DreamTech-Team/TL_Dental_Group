@@ -1,6 +1,6 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import Swal from 'sweetalert2';
 import styles from './ModalUpdateContent.module.scss';
 import Editor from '@tinymce/tinymce-vue';
@@ -23,6 +23,12 @@ const props = defineProps({
 const edited = ref(props.contentEdit);
 const emit = defineEmits(['isFocus', 'close']);
 const hiddenMore = ref(props.limitContent > props.contentEdit.length || props.limitContent === -1);
+
+const isHTMLString = (str: string) => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(str, 'text/html');
+  return Array.from(doc.body.childNodes).some((node) => node.nodeType === 1);
+};
 
 const updateTitle = (e: Event, index: number) => {
   const target = e.target as HTMLInputElement;
@@ -52,14 +58,20 @@ const handleDeleteContent = (index: number) => {
 };
 
 const handleAddContent = (index: number) => {
-  edited.value.splice(index + 1, 0, { title: '', content: '' });
+  const max = 50,
+    min = 1;
+  edited.value.splice(index + 1, 0, {
+    key: Math.floor(Math.random() * (max - min + 1)) + min,
+    title: '',
+    content: ''
+  });
   hiddenMore.value = props.limitContent > edited.value.length || props.limitContent === -1;
 };
+console.log(hiddenMore.value, props.hiddenCustomize);
 
 const handleChangeContent = (e: any, index: number) => {
   const target = e.level.content;
   edited.value[index].content = target;
-  // console.log(target);
 };
 
 const handleModalCancel = () => {
@@ -152,13 +164,14 @@ const handleModalUpdate = () => {
             <div :class="$style['container__modal-update-block-item-content']">
               <p>Nội dung mô tả</p>
               <editor
-                :id="`edid${index}`"
+                v-if="isHTMLString(item.content)"
+                :id="`edid${item.key}`"
                 allowedEvents="onChange"
                 :onChange="(e: any) => handleChangeContent(e, Number(index))"
                 api-key="y70bvcufdhcs3t72wuylxllnf0jyum0u7nf31vzvgvdliy26"
                 :initial-value="item.content"
                 :init="{
-                  selector: `textarea#edid${index}`,
+                  selector: `textarea#edid${item.key}`,
                   placeholder: 'Nhập tiêu đề',
                   height: 200,
                   width: 587,
@@ -188,6 +201,13 @@ const handleModalUpdate = () => {
            bullist numlst outdent indent | removeformat | code table help'
                 }"
               />
+              <textarea
+                v-else
+                id="content"
+                placeholder="Nhập nội dung mô tả"
+                v-model="item.content"
+                @input="(e) => handleChangeContent(e, Number(index))"
+              ></textarea>
             </div>
             <div v-if="!hiddenCustomize" :class="$style['container__modal-update-add']">
               <div

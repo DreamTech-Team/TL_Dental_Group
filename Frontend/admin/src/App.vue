@@ -16,7 +16,7 @@ watch(useRoute(), (value) => {
 
   if (getInforAdmin && value.path.includes('/login')) router.push('/');
 
-  console.log(getInforAdmin);
+  // console.log(getInforAdmin);
 });
 </script>
 
