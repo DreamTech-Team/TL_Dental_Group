@@ -5,6 +5,7 @@ import router from '@/router/index';
 import { ref, watch, onMounted, onUnmounted, type PropType } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import LoadingComponentVue from '@/components/LoadingComponent/LoadingComponent.vue';
+import LoadingComponentVue2 from '@/components/LoadingComponent/LoadingComponent.vue';
 
 //GET DATA
 interface ItemRS {
@@ -67,6 +68,7 @@ const addData = ref<ItemRS[]>();
 const filterTags = ref();
 const popular = ref();
 const isLoading = ref(false);
+const isLoading1 = ref(false);
 const pageSize = ref(8);
 const totalNews = ref();
 const isDesktop = ref(true);
@@ -113,8 +115,9 @@ const handlePageChange = (page: number) => {
 
 //Button Readmore
 const readMore = () => {
+  isLoading1.value = true;
   currentPage.value++;
-  const { response } = useAxios<DataResponse>(
+  const readMore = useAxios<DataResponse>(
     'get',
     // eslint-disable-next-line max-len
     `/news?${filterTags.value}&sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
@@ -122,11 +125,15 @@ const readMore = () => {
     {},
     deps.value
   );
-  watch(response, () => {
-    addData.value = response.value?.data?.data;
+  watch(readMore.response, () => {
+    addData.value = readMore.response.value?.data?.data;
     addData.value?.forEach((item) => {
       displayNews.value?.push(item);
     });
+  });
+
+  watch(readMore.isLoading, () => {
+    isLoading1.value = readMore.isLoading.value;
   });
 };
 
@@ -189,6 +196,7 @@ onUnmounted(() => {
           </div>
         </div>
       </div>
+
       <pagination
         v-if="content.listItem"
         :class="$style['news__context-left-pagination']"
@@ -198,6 +206,7 @@ onUnmounted(() => {
         :page-size="pageSize"
         @current-change="handlePageChange"
       />
+      <LoadingComponentVue2 v-if="isLoading1" />
       <button @click="readMore">Xem thêm</button>
     </div>
     <div :class="$style['news__context-right']">

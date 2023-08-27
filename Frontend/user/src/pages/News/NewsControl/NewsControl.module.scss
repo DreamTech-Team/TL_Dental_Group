@@ -154,6 +154,23 @@
           box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
           transition: all 0.3s ease;
           animation: drop-down 0.4s forwards;
+          max-height: 600px;
+          overflow-y: auto;
+
+          &::-webkit-scrollbar {
+          width: 8px;
+          }
+
+          &::-webkit-scrollbar-track {
+            border-radius: 5px;
+            background-color: #e7e7e7;
+            border: 1px solid #cacaca;
+          }
+
+          &::-webkit-scrollbar-thumb {
+            border-radius: 5px;
+            background-color: #d55959;
+          }
 
           ul {
             width: 100%;
@@ -364,6 +381,23 @@
             box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
             transition: all 0.3s ease;
             animation: drop-down 0.2s ease-in;
+            overflow-y: auto;
+            max-height: 390px;
+
+            &::-webkit-scrollbar {
+            width: 5px;
+            }
+
+            &::-webkit-scrollbar-track {
+              border-radius: 2px;
+              background-color: #e7e7e7;
+              border: 1px solid #cacaca;
+            }
+
+            &::-webkit-scrollbar-thumb {
+              border-radius: 2px;
+              background-color: #e0a4a4;
+            }
 
             ul {
               width: 100%;
