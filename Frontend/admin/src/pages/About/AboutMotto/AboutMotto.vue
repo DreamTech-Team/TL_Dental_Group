@@ -294,8 +294,12 @@ const handleChangeAdd = (dataAdded: AboutMotto, isLoading: boolean) => {
       isOneItem.value = true;
       isDisableRight.value = true;
       isDisableLeft.value = true;
+      isDisableRightEdit.value = true;
+      isDisableLeftEdit.value = true;
     } else if (items.value.length === 2) {
       isDisableLeft.value = false;
+      isDisableRightEdit.value = false;
+      isDisableLeftEdit.value = true;
       isOneItem.value = false;
     } else if (items.value.length === 3) {
       isDisableLeft.value = false;
