@@ -44,7 +44,6 @@ const setAnni = setAnnimation();
 const selectedItem = ref(-1);
 const selectedCategory1 = ref();
 const selectedCategory2 = ref('');
-const rotation = ref(0);
 const emit = defineEmits(['slug-category1', 'slug-category2']);
 // Lấy thông tin đang định tuyến từ Vue Router
 const router = useRouter();
