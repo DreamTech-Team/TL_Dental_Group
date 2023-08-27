@@ -91,12 +91,12 @@ const handleClickRight = () => {
 onMounted(() => {
   const parent = document.getElementById('content_body');
   if (parent) {
-    const a = ref<HTMLImageElement[] | null>(null);
+    const image = ref<HTMLImageElement[] | null>(null);
     const images = parent.getElementsByTagName('img');
     const imageArray = Array.from(images);
-    a.value = imageArray;
+    image.value = imageArray;
 
-    a.value.forEach((item) => {
+    image.value.forEach((item) => {
       if (window.innerWidth < 736) {
         const aspectRatio = item.height / item.width;
         item.width = window.innerWidth - 30;

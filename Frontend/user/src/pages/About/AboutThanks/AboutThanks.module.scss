@@ -128,168 +128,65 @@
     }
 }
 
+.about__thanks-letter-MBTL{
+    display: none;
+}
+
 @include responsive_mobile() {
     .about__thanks{
-        position: static;
-        height: 38rem;
-        margin-top: 2rem;
-        max-width: 100%;
+        display: none;
+    }
+
+    .about__thanks-letter-MBTL{
         margin: 2rem;
-        margin-bottom: 5rem;
-    
-        span{
-            display: none;
-        }
-    
-        &-wrapper{
-            position: static;
-            height: 38rem;
-            top: 0;
-            left: 0;
-            transform: translate(0, 0);
-            transition: all 0s 0s ease;
-    
-            .about__thanks-mail{
-                width: 100%;
-                height: 100%;
-                background-color: transparent;
-                border: none;
-                position: static;
-                transform-style: preserve-3d;
-                cursor: auto;
-                
-                .about__thanks-cover::before{
-                    display: none;
-                }
-    
-                .about__thanks-letter{
-                    position: static;
-                    z-index: 0;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 40rem;
-                    min-height: 0;
-                    transition: all 1s ease;
-                    background-image: url('@/assets/imgs/About/Letter.png');
-                    background-repeat: no-repeat;
-                    background-size: cover;
-                    padding: 4rem;
-                }
-    
-                .about__thanks-letter h1{
-                    text-align: center;
-                    color:  #0029BB;
-                    font-weight: 700;
-                    font-size: $text-lg-mobile;
-                    line-height: 6rem;
-                }
-                .about__thanks-letter p{
-                    font-size: $text-sm-mobile;
-                    color:  #000;
-                    line-height: 2.4rem;
-                    transition: all 1s ease;
-                }
-            }
-    
-            .about__thanks-mail:hover .about__thanks-cover::before{
-                display: none;
-            }
-    
-            .about__thanks-mail::before{
-                display: none;
-            }
-    
-            .about__thanks-mail::after{
-                display: none;
-            }
-        }
-        &-wrapper:hover{
-            pointer-events: none;
-            transform: translateX(0);
-        }
+        display: block;
+        height: 50rem;
+        background-image: url('@/assets/imgs/About/Letter.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        padding: 4rem;
+    }
+
+    .about__thanks-letter-MBTL h1{
+        text-align: center;
+        color:  #0029BB;
+        font-weight: 700;
+        font-size: $text-lg-mobile;
+        line-height: 6rem;
+    }
+    .about__thanks-letter-MBTL p{
+        font-size: $text-sm-mobile;
+        color:  #000;
+        line-height: 2.4rem;
+        transition: all 1s ease;
     }
 }
 
 @include responsive_tablet() {
     .about__thanks{
-        position: static;
-        height: 38rem;
-        margin-top: 2rem;
-        max-width: 100%;
+        display: none;
+    }
+    .about__thanks-letter-MBTL{
+        display: block;
         margin: 2rem;
-        margin-bottom: 5rem;
-    
-        span{
-            display: none;
-        }
-    
-        &-wrapper{
-            position: static;
-            height: 38rem;
-            top: 0;
-            left: 0;
-            transform: translate(0, 0);
-            transition: all 0s 0s ease;
-    
-            .about__thanks-mail{
-                width: 100%;
-                height: 100%;
-                background-color: transparent;
-                border: none;
-                position: static;
-                transform-style: preserve-3d;
-                cursor: auto;
-                
-                .about__thanks-cover::before{
-                    display: none;
-                }
-    
-                .about__thanks-letter{
-                    position: static;
-                    z-index: 0;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 40rem;
-                    min-height: 0;
-                    transition: all 1s ease;
-                    background-image: url('@/assets/imgs/About/Letter.png');
-                    background-repeat: no-repeat;
-                    background-size: cover;
-                    padding: 6rem 8rem;
-                }
-    
-                .about__thanks-letter h1{
-                    text-align: center;
-                    color:  #0029BB;
-                    font-weight: 700;
-                    font-size: $text-lg;
-                    line-height: 6rem;
-                }
-                .about__thanks-letter p{
-                    font-size: $text-base;
-                    color:  #000;
-                    line-height: 2.4rem;
-                    transition: all 1s ease;
-                }
-            }
-    
-            .about__thanks-mail:hover .about__thanks-cover::before{
-                display: none;
-            }
-    
-            .about__thanks-mail::before{
-                display: none;
-            }
-    
-            .about__thanks-mail::after{
-                display: none;
-            }
-        }
-        &-wrapper:hover{
-            pointer-events: none;
-            transform: translateX(0);
-        }
+        height: 70rem;
+        background-image: url('@/assets/imgs/About/Letter.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        padding: 6rem 8rem;
+    }
+
+    .about__thanks-letter-MBTL h1{
+        text-align: center;
+        color:  #0029BB;
+        font-weight: 700;
+        font-size: $text-lg;
+        line-height: 6rem;
+    }
+    .about__thanks-letter-MBTL p{
+        font-size: $text-base;
+        color:  #000;
+        line-height: 2.4rem;
+        transition: all 1s ease;
     }
 }

@@ -1,6 +1,9 @@
 @import '@/styles/responsive';
 
 .newsdetail{
+    max-width: 1480px;
+    margin: 0 auto;
+
     &__img{
         width: 100%;
         height: 46.8rem;
