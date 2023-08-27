@@ -61,8 +61,8 @@ interface Item {
 }
 const router = useRouter();
 
-const goToDetailPage = () => {
-  router.push('/chitiet');
+const goToDetailPage = (slug: string) => {
+  router.push(`/chitiet/${slug}`);
 };
 
 //Function 1000 to 1.000
@@ -78,7 +78,7 @@ defineProps({
 });
 </script>
 <template>
-  <div :class="$style.mbcard" @click="goToDetailPage">
+  <div :class="$style.mbcard" @click="goToDetailPage(product.slug)">
     <div :class="$style['mbcard__left']">
       <div :class="$style['mbcard__left-header']">
         <img :src="product.brand" alt="logo" />
