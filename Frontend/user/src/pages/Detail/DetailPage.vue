@@ -189,7 +189,7 @@ onUnmounted(() => {
 });
 </script>
 <template>
-  <div v-if="isLoadingDetail">
+  <div v-if="!isLoadingDetail && displayedImages">
     <bread-crumb :tags="pathBC" />
     <div :class="$style.detail">
       <div :class="$style.detail__image">
