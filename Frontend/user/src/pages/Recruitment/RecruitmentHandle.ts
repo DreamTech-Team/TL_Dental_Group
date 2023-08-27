@@ -160,7 +160,10 @@ export const recStep = [
 
 export const recStepItems = [
   {
-    icon: '',
+    icon: {
+      link: '',
+      style: ''
+    },
     title: { content: 'Nộp Đơn Ứng Tuyển', style: 'type5' },
     content: {
       content: `Gửi CV ứng tuyển về email: hr@viethungdent.vn 
@@ -170,7 +173,10 @@ export const recStepItems = [
     image: { link: rec_img1, style: 'type1' }
   },
   {
-    icon: '',
+    icon: {
+      link: '',
+      style: ''
+    },
     title: { content: 'Sơ Loại Hồ Sơ Ứng Viên', style: 'type5' },
     content: {
       content: `HR đánh giá và lựa chọn hồ sơ ứng viên trong vòng
@@ -180,7 +186,10 @@ export const recStepItems = [
     image: { link: rec_img2, style: 'type1' }
   },
   {
-    icon: '',
+    icon: {
+      link: '',
+      style: ''
+    },
     title: { content: 'Tham Gia Phỏng Vấn', style: 'type5' },
     content: {
       content: `Bộ phận nhân sự TL Dental Group gửi lời mời phỏng vấn
@@ -190,7 +199,10 @@ export const recStepItems = [
     image: { link: rec_img3, style: 'type1' }
   },
   {
-    icon: '',
+    icon: {
+      link: '',
+      style: ''
+    },
     title: { content: 'Nhận Lời Mời Làm Việc', style: 'type5' },
     content: {
       content: `Phòng nhân sự sẽ gửi thư mời nhận việc đến ứng
@@ -203,24 +215,28 @@ export const recStepItems = [
 
 export const recruitWorkItems = [
   {
+    id: '',
     title: 'VHG – Tuyển Thực Tập Sinh Marketing',
     typeWork: 'Kinh doanh/Marketing',
     time: 'Part-time',
     location: 'Hồ Chí Minh'
   },
   {
+    id: '',
     title: 'VHG – Tuyển Thực Tập Sinh Marketing',
     typeWork: 'Kinh doanh/Marketing',
     time: 'Part-time',
     location: 'Hồ Chí Minh'
   },
   {
+    id: '',
     title: 'VHG – Tuyển Thực Tập Sinh Marketing',
     typeWork: 'Kinh doanh/Marketing',
     time: 'Part-time',
     location: 'Hồ Chí Minh'
   },
   {
+    id: '',
     title: 'VHG – Tuyển Thực Tập Sinh Marketing',
     typeWork: 'Kinh doanh/Marketing',
     time: 'Part-time',

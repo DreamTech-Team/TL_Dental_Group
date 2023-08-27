@@ -128,7 +128,7 @@ const handleModalUpdate = () => {
         <div :class="$style.block__img">
           <img :src="selectedImageEnvir[0]" alt="none" />
           <div :class="$style['block__img-edit']" v-if="editEvir">
-            <input type="file" @change="(e) => handleFileInputChange(e, 0, '')" />
+            <input type="file" @change="(e) => handleFileInputChange(e, 0)" />
             <FontAwesomeIcon :icon="faCameraRotate" />
           </div>
         </div>
@@ -137,7 +137,7 @@ const handleModalUpdate = () => {
         <div :class="$style.block__img">
           <img :src="selectedImageEnvir[1]" alt="none" />
           <div :class="$style['block__img-edit']" v-if="editEvir">
-            <input type="file" @change="(e) => handleFileInputChange(e, 1, '')" />
+            <input type="file" @change="(e) => handleFileInputChange(e, 1)" />
             <FontAwesomeIcon :icon="faCameraRotate" />
           </div>
         </div>
@@ -157,7 +157,7 @@ const handleModalUpdate = () => {
         <div :class="$style.block__img">
           <img :src="selectedImageEnvir[2]" alt="none" />
           <div :class="$style['block__img-edit']" v-if="editEvir">
-            <input type="file" @change="(e) => handleFileInputChange(e, 2, '')" />
+            <input type="file" @change="(e) => handleFileInputChange(e, 2)" />
             <FontAwesomeIcon :icon="faCameraRotate" />
           </div>
         </div>
@@ -178,7 +178,7 @@ const handleModalUpdate = () => {
           <div :class="$style.block__img">
             <img :src="selectedImageEnvir[3]" alt="none" />
             <div :class="$style['block__img-edit']" v-if="editEvir">
-              <input type="file" @change="(e) => handleFileInputChange(e, 3, '')" />
+              <input type="file" @change="(e) => handleFileInputChange(e, 3)" />
               <FontAwesomeIcon :icon="faCameraRotate" />
             </div>
           </div>
@@ -190,7 +190,7 @@ const handleModalUpdate = () => {
         <div :class="$style.block__img">
           <img :src="selectedImageEnvir[4]" alt="none" />
           <div :class="$style['block__img-edit']" v-if="editEvir">
-            <input type="file" @change="(e) => handleFileInputChange(e, 4, '')" />
+            <input type="file" @change="(e) => handleFileInputChange(e, 4)" />
             <FontAwesomeIcon :icon="faCameraRotate" />
           </div>
         </div>

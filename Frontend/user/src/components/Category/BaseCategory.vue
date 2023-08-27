@@ -84,7 +84,6 @@ const toggleAnimation = (index: number) => {
     isAnimationVisible.value = false;
     setAnni.setAnnimationCategory(isAnimationVisible.value);
     selectedItem.value = -1;
-    selectedCategoryItem.value = { categoryIndex: -1, itemIndex: -1 }; // Reset selectedCategoryItem
   } else {
     isAnimationVisible.value = true;
     setAnni.setAnnimationCategory(isAnimationVisible.value);
@@ -112,6 +111,10 @@ const toggleAnimation = (index: number) => {
 
 toggleAnimation(selectedCategoryItem.value.categoryIndex);
 
+watch(selectedCategoryItem, (newValue, oldValue) => {
+  toggleAnimation(newValue.categoryIndex);
+});
+
 const idDefine = (index: number) => {
   return `id-${index}`;
 };
@@ -134,18 +137,15 @@ const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
   const selectedCategory = dataRender.value[categoryIndex]; // Giá trị của category cấp 1
   emit('slug-category2', selectedSubCategory.slug);
   selectedCategory2.value = selectedSubCategory.slug; // Update selectedCategory2
-  selectedCategoryItem.value = { categoryIndex, itemIndex };
+  // selectedCategoryItem.value = { categoryIndex, itemIndex };
   if (router.currentRoute.value.name !== 'sanpham') {
-    selectedCategoryItem.value = { categoryIndex, itemIndex };
+    // selectedCategoryItem.value = { categoryIndex, itemIndex };
     // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
     router.push(`/sanpham?slug1=${selectedCategory1.value}&slug2=${selectedCategory2.value}`);
   }
 };
 
 const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
-  // console.log(selectedCategoryItem.value.categoryIndex);
-  // console.log(selectedCategoryItem.value.itemIndex);
-
   return (
     selectedCategoryItem.value.categoryIndex === categoryIndex &&
     selectedCategoryItem.value.itemIndex === itemIndex
