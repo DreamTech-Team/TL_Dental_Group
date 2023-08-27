@@ -8,6 +8,7 @@ const checkLoginPage = ref(false);
 const router = useRouter();
 watch(useRoute(), (value) => {
   const getInforAdmin = localStorage.getItem('infor_admin');
+  const inforAdmin = getInforAdmin ? JSON.parse(getInforAdmin) : null;
 
   if (value.path.includes('/login')) checkLoginPage.value = true;
   else checkLoginPage.value = false;
@@ -16,7 +17,14 @@ watch(useRoute(), (value) => {
 
   if (getInforAdmin && value.path.includes('/login')) router.push('/');
 
-  // console.log(getInforAdmin);
+  // Kiểm tra nếu roles là ROLE_ADMIN và path là dashboard hoặc "/"
+  if (
+    inforAdmin &&
+    inforAdmin.roles !== 'ROLE_ADMIN' &&
+    (value.path === '/' || value.path.includes('/dashboard') || value.path.includes('/mnstaff'))
+  ) {
+    router.push('/mnui');
+  }
 });
 </script>
 

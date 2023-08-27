@@ -229,7 +229,7 @@ const emits = defineEmits<{
   // eslint-disable-next-line no-unused-vars
   (e: 'close'): void;
   // eslint-disable-next-line no-unused-vars
-  (e: 'update-content', data: { newsAdd: News }): void;
+  (e: 'update-content', newsAdd: News): void;
 }>();
 
 //SWEET ARLERT

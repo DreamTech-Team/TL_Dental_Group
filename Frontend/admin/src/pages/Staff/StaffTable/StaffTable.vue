@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch, watchEffect } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
@@ -7,73 +7,68 @@ import Swal from 'sweetalert2';
 import Pagination from '@/components/Pagination/BasePagination.vue';
 import UpdateStaff from './StaffModal/UpdateStaff.vue';
 import { staffs } from '../Staff';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+interface StaffItem {
+  id: string;
+  email: string;
+  fullname: string;
+  phonenumber: string;
+  address: string;
+  password: string;
+  changed: boolean;
+  createAt: string;
+  roles: string;
+}
+interface MyErrorResponse {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+const props = defineProps({
+  staffArray: {
+    type: Array as () => StaffItem[],
+    required: true
+  }
+});
 
 const searchText = ref('');
-const results = ref(staffs);
+const results = ref(props.staffArray);
+const searchKeyword = ref('');
+const deps = ref([]);
 
-const currentPage = ref(1);
-const pageSize = ref(10);
 const isModalOpen = ref(false);
 const activeTab = ref('activity');
-
-const openModal = () => {
-  isModalOpen.value = true;
-};
 
 const closeModal = () => {
   isModalOpen.value = false;
 };
 
-interface SelectStaff {
-  id: number;
-  name: string;
-  position: string;
-  phone: string;
-  address: string;
-  email: string;
-}
-
-const selectedStaff = ref<Record<string, never> | SelectStaff>({});
+const selectedStaff = ref<Record<string, never> | StaffItem>({});
 
 // Trong phần code xử lý sự kiện
-const editActivity = (staff: SelectStaff) => {
+const editActivity = (staff: StaffItem) => {
   selectedStaff.value = staff;
   isModalOpen.value = true; // Mở modal
   console.log(staff);
 };
 
-const filteredStaffs = computed(() => {
-  if (searchText.value.trim() === '') {
-    return results.value;
-  } else {
-    const searchTerm = searchText.value.toLowerCase();
-    return results.value.filter((activity) => activity.name.toLowerCase().includes(searchTerm));
-  }
+watch(props.staffArray, () => {
+  results.value = props.staffArray;
 });
 
-const handleUpdateStaff = (updatedStaff: SelectStaff) => {
+const filteredStaffs = computed(() => {
+  return props.staffArray.filter((staff) =>
+    staff.fullname.toLowerCase().includes(searchKeyword.value.toLowerCase())
+  );
+});
+
+const handleUpdateStaff = (updatedStaff: StaffItem) => {
   // Cập nhật giá trị cho phần tử đã chỉnh sửa
   selectedStaff.value = updatedStaff;
 };
-
-//Pagination Handle
-const scrollToTop = (top: number) => {
-  window.scrollTo({
-    top: top,
-    behavior: 'smooth'
-  });
-};
-
-const handlePageChange = (page: number) => {
-  currentPage.value = page;
-  scrollToTop(0);
-};
-
-const displayNews = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return filteredStaffs.value.slice(start, end);
-});
 
 const truncateText = (text: string, maxLength: number) => {
   if (text.length > maxLength) {
@@ -82,7 +77,7 @@ const truncateText = (text: string, maxLength: number) => {
   return text;
 };
 
-const deleteActivity = (id: number) => {
+const deleteStaff = async (id: string) => {
   Swal.fire({
     title: 'Bạn có chắc muốn xóa?',
     text: 'Dữ liệu sẽ không thể khôi phục sau khi xóa!',
@@ -92,20 +87,62 @@ const deleteActivity = (id: number) => {
     cancelButtonColor: '#d33',
     confirmButtonText: 'Xóa',
     cancelButtonText: 'Hủy'
-  }).then((result) => {
+  }).then(async (result) => {
     if (result.isConfirmed) {
-      results.value = results.value.filter((activity) => activity.id !== id);
+      try {
+        // Gọi API DELETE bằng cách sử dụng `useAxios`
+        const deleteTagRes = useAxios<DataResponse>(
+          'delete',
+          `/employees/${id}`, // Đặt endpoint URL xóa phần tử cụ thể dựa vào id
+          {},
+          {},
+          deps.value
+        );
 
-      Swal.fire({
-        title: 'Xóa thành công',
-        icon: 'success',
-        confirmButtonText: 'Hoàn tất',
-        width: '30rem'
-      });
+        watch(deleteTagRes.response, () => {
+          console.log(deleteTagRes.response.value);
 
-      setTimeout(function () {
-        Swal.close();
-      }, 1200);
+          if (deleteTagRes.response.value?.status === 'ok') {
+            // props.handleTagDeleted(id);
+            Swal.fire({
+              title: 'Thêm thành công',
+              icon: 'success',
+              confirmButtonText: 'Hoàn tất',
+              width: '30rem'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                location.reload();
+                Swal.close();
+              }
+            });
+          }
+        });
+
+        watch(deleteTagRes.error, () => {
+          const errorValue: MyErrorResponse | null = deleteTagRes.error
+            .value as MyErrorResponse | null;
+          if (errorValue !== null) {
+            if (errorValue?.response?.data?.message === "Tag's name already taken") {
+              Swal.fire({
+                title: 'Tag đã tồn tại',
+                icon: 'error',
+                confirmButtonText: 'Đóng',
+                width: '50rem',
+                padding: '0 2rem 2rem 2rem'
+              });
+              return;
+            }
+          }
+        });
+      } catch (error) {
+        console.error('Error deleting item:', error);
+        Swal.fire({
+          title: 'Xóa không thành công',
+          text: 'Có lỗi xảy ra khi xóa!',
+          icon: 'error',
+          width: '30rem'
+        });
+      }
     }
   });
 };
@@ -116,7 +153,7 @@ const deleteActivity = (id: number) => {
       <div :class="$style.mn_activity_control">
         <div :class="$style['mn_activity_control-input1']">
           <font-awesome-icon :icon="faMagnifyingGlass" :class="$style['mn_activity_control-ic2']" />
-          <input v-model="searchText" placeholder="Tìm kiếm" />
+          <input v-model="searchKeyword" placeholder="Tìm kiếm" />
         </div>
       </div>
       <div :class="$style.mn_activity_body">
@@ -137,15 +174,15 @@ const deleteActivity = (id: number) => {
           <table :class="$style.mn_activity_table">
             <tbody>
               <template v-if="filteredStaffs.length > 0">
-                <tr v-for="(item, index) in displayNews" :key="index">
+                <tr v-for="(item, index) in filteredStaffs" :key="index">
                   <td style="width: 5%">{{ index + 1 }}</td>
-                  <td style="width: 18%">{{ truncateText(item.name, 20) }}</td>
-                  <td style="width: 10%">{{ truncateText(item.position, 10) }}</td>
-                  <td style="width: 12%">{{ truncateText(item.phone, 15) }}</td>
+                  <td style="width: 18%">{{ truncateText(item.fullname, 20) }}</td>
+                  <td style="width: 10%">{{ truncateText(item.roles, 10) }}</td>
+                  <td style="width: 12%">{{ truncateText(item.phonenumber, 15) }}</td>
                   <td style="width: 25%">{{ truncateText(item.address, 30) }}</td>
                   <td style="width: 20%">{{ truncateText(item.email, 20) }}</td>
                   <td style="width: 10%">
-                    <button :class="$style['btn-room-trash']" @click="deleteActivity(item.id)">
+                    <button :class="$style['btn-room-trash']" @click="deleteStaff(item.id)">
                       <font-awesome-icon :icon="faTrash" />
                     </button>
                     <button @click="editActivity(item)" :class="$style['edit-room-btn']">
@@ -162,14 +199,6 @@ const deleteActivity = (id: number) => {
             </tbody>
           </table>
         </div>
-      </div>
-      <div :class="$style['mn_activity_pagination']">
-        <pagination
-          :total="Math.ceil(filteredStaffs.length / pageSize)"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          @current-change="handlePageChange"
-        />
       </div>
     </div>
     <div :class="$style.activity_overlay" v-if="isModalOpen">

@@ -23,7 +23,6 @@ const handleLogin = () => {
     {},
     paramAxios.value
   );
-  console.log(localStorage.getItem('infor_admin'));
 
   watch(postAccount.error, (value) => {
     console.log(value);
@@ -48,6 +47,8 @@ const handleLogin = () => {
     };
 
     localStorage.setItem('infor_admin', JSON.stringify(newInfor));
+    console.log(localStorage.getItem('infor_admin'));
+
     router.push('/');
   });
 };

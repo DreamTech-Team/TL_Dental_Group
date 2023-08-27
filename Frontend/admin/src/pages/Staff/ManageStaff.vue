@@ -1,11 +1,23 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { staffs } from './Staff';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import StaffTable from './StaffTable/StaffTable.vue';
 import StaffModal from './StaffTable/StaffModal/StaffModal.vue';
-
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+interface StaffItem {
+  id: string;
+  email: string;
+  fullname: string;
+  phonenumber: string;
+  address: string;
+  password: string;
+  changed: boolean;
+  createAt: string;
+  roles: string;
+}
+const staffArray = ref<StaffItem[]>([]);
 const isModalOpen = ref(false);
 const activeTab = ref('activity');
 
@@ -16,6 +28,23 @@ const openModal = () => {
 const closeModal = () => {
   isModalOpen.value = false;
 };
+
+const deps = ref([]);
+
+// //GET DATA
+const { response, isLoading } = useAxios<DataResponse>(
+  'get',
+  `/employees?page=0&pageSize=1000000`,
+  {},
+  {},
+  deps.value
+);
+
+watch([response, isLoading], () => {
+  if (response.value?.data?.data != undefined) {
+    staffArray.value = response.value?.data?.data;
+  }
+});
 </script>
 <template>
   <div>
@@ -24,7 +53,7 @@ const closeModal = () => {
 
       <div v-if="activeTab === 'activity'" :class="$style['mn_activity--total']">
         <p>
-          Có tất cả <span :class="$style.highlight">{{ staffs.length }}</span> nhân viên
+          Có tất cả <span :class="$style.highlight">{{ staffArray.length }}</span> nhân viên
         </p>
 
         <button @click="openModal" :class="$style.mn_activity_control">
@@ -32,7 +61,7 @@ const closeModal = () => {
           THÊM NHÂN NHÂN SỰ
         </button>
       </div>
-      <staff-table />
+      <staff-table :staffArray="staffArray" />
     </div>
     <div :class="$style.activity_overlay" v-if="isModalOpen">
       <staff-modal :closeModal="closeModal" @click.stop @close="closeModal" />
