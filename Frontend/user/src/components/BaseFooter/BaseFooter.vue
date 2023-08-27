@@ -19,76 +19,17 @@ interface AboutPolicy {
   slug: string;
 }
 
-interface Info {
-  address: string;
-  phoneNumber: string;
-  hotline: string;
-  mapLink: string;
-  image: string;
-  mapIframe: string;
-}
-
-interface Contact {
-  email: {
-    content: string;
-  };
-  facebook: {
-    content: string;
-  };
-  zalo: {
-    content: string;
-  };
-}
-
-//Lấy các hàm ở store về để xử lí
-const { dataRender } = toRefs(useDataRenderStore()); // lấy dữ liệu để render
-const dataContactStore = saveDataContact(); // Lưu data contact và facility lên store
+// lấy dữ liệu category từ store để render
+const { dataRender } = toRefs(useDataRenderStore());
+// Lấy dữ liệu facility và contact từ store
+const { dataFacility, dataContact } = toRefs(saveDataContact());
 
 const variableChange = ref([]);
 const listPolicy = ref<AboutPolicy[]>([]);
-const dataFacility = ref<Info>({
-  address: '',
-  phoneNumber: '',
-  hotline: '',
-  mapLink: '',
-  image: '',
-  mapIframe: ''
-});
-const dataContact = ref<Contact>({
-  email: {
-    content: ''
-  },
-  facebook: {
-    content: ''
-  },
-  zalo: {
-    content: ''
-  }
-});
-const variableChangeFacility = ref([]);
-const variableChangeContact = ref([]);
+
 const level = ref<Level>('M');
 const renderAs = ref<RenderAs>('svg');
 
-const getInfo = useAxios<DataResponse>('get', '/facility/', {}, {}, variableChangeFacility.value);
-
-const getContact = useAxios<DataResponse>(
-  'get',
-  '/information?type=CONTACT',
-  {},
-  {},
-  variableChangeContact.value
-);
-
-watch(getInfo.response, () => {
-  dataFacility.value = getInfo.response?.value?.data;
-  dataContactStore.setDataFacility(dataFacility.value);
-});
-
-watch(getContact.response, () => {
-  dataContact.value = getContact.response?.value?.data;
-  dataContactStore.setDataContact(dataContact.value);
-});
 const { response } = useAxios<DataResponse>('get', '/policy', {}, {}, variableChange.value);
 
 watch(response, () => {

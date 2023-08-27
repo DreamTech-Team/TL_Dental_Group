@@ -37,14 +37,14 @@ interface DataRender {
 
 const dataCate = useDataRenderStore();
 const { selectedCategoryItem } = toRefs(saveActive());
-
 const { isAnimationVisible } = toRefs(setAnnimation());
-
 const saveState = saveActive();
+
 const setAnni = setAnnimation();
 const selectedItem = ref(-1);
 const selectedCategory1 = ref();
 const selectedCategory2 = ref('');
+const rotation = ref(0);
 const emit = defineEmits(['slug-category1', 'slug-category2']);
 // Lấy thông tin đang định tuyến từ Vue Router
 const router = useRouter();
@@ -85,7 +85,6 @@ const toggleAnimation = (index: number) => {
     isAnimationVisible.value = false;
     setAnni.setAnnimationCategory(isAnimationVisible.value);
     selectedItem.value = -1;
-    selectedCategoryItem.value = { categoryIndex: -1, itemIndex: -1 }; // Reset selectedCategoryItem
   } else {
     isAnimationVisible.value = true;
     setAnni.setAnnimationCategory(isAnimationVisible.value);
@@ -95,7 +94,6 @@ const toggleAnimation = (index: number) => {
     nextTick(() => {
       const animationContainer = document.getElementById(`id-${index}`);
       const dropdownContainer = document.getElementById('dropdown-container');
-
       if (animationContainer && dropdownContainer) {
         const dropdownContainerRect = dropdownContainer.getBoundingClientRect();
         const animationContainerRect = animationContainer.getBoundingClientRect();
@@ -113,6 +111,10 @@ const toggleAnimation = (index: number) => {
 };
 
 toggleAnimation(selectedCategoryItem.value.categoryIndex);
+
+watch(selectedCategoryItem, (newValue, oldValue) => {
+  toggleAnimation(newValue.categoryIndex);
+});
 
 const idDefine = (index: number) => {
   return `id-${index}`;
@@ -136,18 +138,15 @@ const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
   const selectedCategory = dataRender.value[categoryIndex]; // Giá trị của category cấp 1
   emit('slug-category2', selectedSubCategory.slug);
   selectedCategory2.value = selectedSubCategory.slug; // Update selectedCategory2
-  selectedCategoryItem.value = { categoryIndex, itemIndex };
+  // selectedCategoryItem.value = { categoryIndex, itemIndex };
   if (router.currentRoute.value.name !== 'sanpham') {
-    selectedCategoryItem.value = { categoryIndex, itemIndex };
+    // selectedCategoryItem.value = { categoryIndex, itemIndex };
     // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
     router.push(`/sanpham?slug1=${selectedCategory1.value}&slug2=${selectedCategory2.value}`);
   }
 };
 
 const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
-  console.log(selectedCategoryItem.value.categoryIndex);
-  console.log(selectedCategoryItem.value.itemIndex);
-
   return (
     selectedCategoryItem.value.categoryIndex === categoryIndex &&
     selectedCategoryItem.value.itemIndex === itemIndex

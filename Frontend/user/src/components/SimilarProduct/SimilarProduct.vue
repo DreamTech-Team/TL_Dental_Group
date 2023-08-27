@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { ref, onMounted, computed, onUnmounted } from 'vue';
 import ProductCard from '@/components/Card/ProductCard.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -169,4 +169,4 @@ onUnmounted(() => {
 <style module scoped lang="scss">
 // @import './HomeTrend.module.scss';
 @import './SimilarProduct.module.scss';
-</style>
+</style> -->

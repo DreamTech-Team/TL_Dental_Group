@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
 import ServiceQuality from '@/components/ServiceQuality/ServiceQuality.vue';
-import SimilarProduct from '@/components/SimilarProduct/SimilarProduct.vue';
 import HomeTrend from '../Home/HomeTrend/HomeTrend.vue';
 import DetailImage from '@/assets/imgs/Product/Rectangle.png';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -14,10 +13,7 @@ import {
   faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import ZaloImg from '@/assets/imgs/Contact/Zalo.png';
-import Product1 from '@/assets/imgs/Product/Rectangle2061.png';
-import Product2 from '@/assets/imgs/Product/Rectangle2062.png';
-import Product3 from '@/assets/imgs/Product/Rectangle2063.png';
-import Product4 from '@/assets/imgs/Product/Rectangle2064.png';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 import { ref, watch, onMounted, onUnmounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
@@ -79,9 +75,10 @@ const currentIndex = ref(0);
 const startIndex = ref(0);
 const displayedImagesCount = ref();
 const currentImage = ref();
+const isLoadingDetail = ref(false);
 
 const deps = ref([]);
-const { response } = useAxios<DataResponse>(
+const { response, isLoading } = useAxios<DataResponse>(
   'get',
   `/products/${route.params.catchAll[0]}`, //Params slug product
   {},
@@ -93,7 +90,7 @@ const images = ref<string[]>([]);
 
 watch(response, () => {
   inforProduct.value = response.value?.data;
-
+  isLoadingDetail.value = isLoading.value;
   if (inforProduct.value) {
     const apiResponseImg = inforProduct.value.imgs;
     if (apiResponseImg) {
@@ -191,7 +188,7 @@ onUnmounted(() => {
 });
 </script>
 <template>
-  <div>
+  <div v-if="!isLoadingDetail && displayedImages">
     <bread-crumb :tags="pathBC" />
     <div :class="$style.detail">
       <div :class="$style.detail__image">
@@ -215,7 +212,7 @@ onUnmounted(() => {
         <div v-if="isDialogOpen" :class="$style.dialog" @click="closeDialog">
           <img
             @click.stop
-            :src="inforProduct?.mainImg"
+            :src="currentImage"
             alt="Detail Product"
             :class="$style['dialog-image']"
           />
@@ -269,25 +266,30 @@ onUnmounted(() => {
         </div>
       </div>
       <div :class="$style.detail__content">
-        <div :class="$style['detail__content--name']">
-          {{ inforProduct?.name }}
-        </div>
-        <div :class="$style['detail__content--price']">
-          {{
-            inforProduct?.price !== undefined
-              ? formatNumberWithCommas(inforProduct.price) + 'đ'
-              : 'N/A'
-          }}
-        </div>
+        <div>
+          <div :class="$style['detail__content--name']">
+            {{ inforProduct?.name }}
+          </div>
+          <div :class="$style['detail__content--price']">
+            {{
+              inforProduct?.price !== undefined
+                ? formatNumberWithCommas(inforProduct.price) + 'đ'
+                : 'N/A'
+            }}
+          </div>
 
-        <div :class="$style['detail__content--object']" v-html="inforProduct?.summary"></div>
+          <div :class="$style['detail__content--object']" v-html="inforProduct?.summary"></div>
 
-        <div :class="$style['detail__content--brand']">
-          <font-awesome-icon :icon="faRegistered" :class="$style['detail__content--brand-icon']" />
-          <p :class="$style['detail__content--brand-text']">Thương hiệu:</p>
-          <p :class="$style['detail__content--brand-company']">
-            {{ inforProduct?.fkCategory.companyId.name }}
-          </p>
+          <div :class="$style['detail__content--brand']">
+            <font-awesome-icon
+              :icon="faRegistered"
+              :class="$style['detail__content--brand-icon']"
+            />
+            <p :class="$style['detail__content--brand-text']">Thương hiệu:</p>
+            <p :class="$style['detail__content--brand-company']">
+              {{ inforProduct?.fkCategory.companyId.name }}
+            </p>
+          </div>
         </div>
         <div :class="$style['detail__content--contact']">
           <div :class="$style['detail__content--contact-btn1']">
@@ -313,6 +315,9 @@ onUnmounted(() => {
     </div>
     <home-trend />
     <service-quality />
+  </div>
+  <div v-else>
+    <loading-component />
   </div>
 </template>
 

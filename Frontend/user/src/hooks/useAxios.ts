@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ref, type Ref, watch } from 'vue';
 import axios, { type AxiosRequestConfig, type AxiosResponse, AxiosError } from 'axios';
 import { axiosClient } from '@/api/axios';
@@ -6,8 +7,7 @@ import { getCache, setCache } from '@/utils/sessionStorage';
 export interface DataResponse {
   status: string;
   message: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any; // Bổ sung kiểu dữ liệu phù hợp cho data, ví dụ: any[] hoặc object[]
+  data: any;
 }
 
 interface UseAxiosResponse<DataResponse> {
@@ -35,17 +35,18 @@ const useAxios = <DataResponse>(
         isLoading.value = true;
       }, 0);
       try {
-        // const cachedData = getCache(api);
-        // if (
-        //   cachedData !== null &&
-        //   new Date().getTime() - cachedData.cacheTimestamp < 5 * 60 * 1000
-        // ) {
-        //   setTimeout(() => {
-        //     response.value = cachedData.data;
-        //     isLoading.value = false;
-        //   }, 0);
-        //   return;
-        // }
+        // Check Cache
+        const cachedData = getCache(api);
+        if (
+          cachedData !== null &&
+          new Date().getTime() - cachedData.cacheTimestamp < 5 * 60 * 1000
+        ) {
+          setTimeout(() => {
+            response.value = cachedData.data;
+            isLoading.value = false;
+          }, 0);
+          return;
+        }
 
         const res: AxiosResponse<DataResponse> = await axiosClient[method](api, body, {
           ...options,
@@ -54,6 +55,7 @@ const useAxios = <DataResponse>(
 
         if (res && res.data) {
           response.value = res.data;
+          // Save to Cache
           setCache(api, res.data);
         }
       } catch (err: unknown) {

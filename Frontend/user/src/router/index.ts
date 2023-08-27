@@ -83,8 +83,11 @@ const router = createRouter({
   routes
 });
 
-router.afterEach(() => {
-  window.scrollTo(0, 0);
+router.beforeEach((to, from, next) => {
+  if (to.path !== from.path) {
+    window.scrollTo(0, 0);
+  }
+  next();
 });
 
 export default router;
