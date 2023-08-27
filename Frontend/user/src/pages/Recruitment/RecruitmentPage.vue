@@ -32,6 +32,7 @@ import useAxios, { type DataResponse } from '@/hooks/useAxios';
 // import RecruitmentWork from './RecruitmentWork/RecruitmentWork.vue';
 
 import TheAnimate from '@/components/TheAnimate/TheAnimate.vue';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface CardElementItem {
   id: string;
@@ -299,13 +300,8 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div :class="$style.container">
-    <div
-      v-if="isLoading[0] || isLoading[1] || isLoading[2] || isLoading[3]"
-      :class="$style.container__loading"
-    >
-      <div :id="$style.loader"></div>
-    </div>
+  <LoadingComponent v-if="isLoading[0] || isLoading[1] || isLoading[2] || isLoading[3]" />
+  <div v-else :class="$style.container">
     <div :class="$style.container__poster">
       <div :class="$style['container__poster-img']">
         <div :class="$style['container__poster-img-content']">

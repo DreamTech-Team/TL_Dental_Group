@@ -8,6 +8,7 @@ import { data } from './RecruitmentDetailsHandle';
 import { ic_bag, ic_hourglass, ic_location } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import { ref, watch } from 'vue';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 const typeRecuit = ref([
   {
@@ -73,10 +74,8 @@ watch(getRecruitmentDetails.response, (value) => {
 });
 </script>
 <template>
-  <div :class="$style.container">
-    <div v-if="isLoading" :class="$style.container__loading">
-      <div :id="$style.loader"></div>
-    </div>
+  <LoadingComponent v-if="isLoading" />
+  <div v-else :class="$style.container">
     <div :class="$style.container__heading">
       <div :class="$style['container__heading-logo']"><img :src="logo" alt="none" /></div>
       <div :class="$style['container__heading-title']">
