@@ -449,7 +449,7 @@ window.addEventListener('resize', checkScreenSize);
     </div>
 
     <div>
-      <ServiceQuality />
+      <!-- <ServiceQuality /> -->
     </div>
   </div>
 </template>

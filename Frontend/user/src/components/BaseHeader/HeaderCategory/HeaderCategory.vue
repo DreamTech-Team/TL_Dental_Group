@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { RouterLink } from 'vue-router';
 import { computed, ref, toRefs } from 'vue';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-// import { categories } from '../HeaderHandle';
 import { useDataRenderStore } from '@/stores/counter';
 
 const { dataRender } = toRefs(useDataRenderStore());

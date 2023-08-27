@@ -68,27 +68,6 @@
 @include responsize_resolution() {
   .header-search {
     flex: 1;
-
-    &__icon {
-      float: right;
-
-      &:hover {
-      }
-
-      &-svg {
-      }
-    }
-
-    &__wrapper {
-    }
-
-    &__input {
-      input {
-      }
-
-      &-icon {
-      }
-    }
   }
 }
 
@@ -98,23 +77,6 @@
 
     &__icon {
       float: right;
-
-      &:hover {
-      }
-
-      &-svg {
-      }
-    }
-
-    &__wrapper {
-    }
-
-    &__input {
-      input {
-      }
-
-      &-icon {
-      }
     }
   }
 }
@@ -126,23 +88,6 @@
 
     &__icon {
       float: right;
-
-      &:hover {
-      }
-
-      &-svg {
-      }
-    }
-
-    &__wrapper {
-    }
-
-    &__input {
-      input {
-      }
-
-      &-icon {
-      }
     }
   }
 }

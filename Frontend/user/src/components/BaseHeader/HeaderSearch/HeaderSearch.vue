@@ -8,7 +8,7 @@ const focusComputed = computed(() => {
   if (window.innerWidth < 1240) {
     return isFocus.value ? '100%' : '0px';
   }
-  return isFocus.value ? 'calc(100vw - 100px)' : '0px';
+  return isFocus.value ? 'calc(100vw - 390px)' : '0px';
 });
 </script>
 <template>
