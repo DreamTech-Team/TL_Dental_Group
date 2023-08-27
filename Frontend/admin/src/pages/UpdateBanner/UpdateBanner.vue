@@ -152,6 +152,7 @@ const handleUpload = () => {
             confirmButtonText: 'Hoàn tất',
             width: '50rem',
             padding: '0 2rem 2rem 2rem',
+            timer: 2000,
             customClass: {
               confirmButton: styles['confirm-button'],
               cancelButton: styles['cancel-button'],
@@ -159,11 +160,10 @@ const handleUpload = () => {
             }
           }).then((result) => {
             if (result.isConfirmed) {
-              isUpdate.value = false;
-
               Swal.close();
             }
           });
+          isUpdate.value = false;
         } else {
           Swal.fire({
             title: 'Cập nhật thất bại',
