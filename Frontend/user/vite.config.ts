@@ -19,7 +19,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://dry-ants-production.up.railway.app/api/v1',
+        target: JSON.stringify(process.env.VITE_API_ENDPOINT),
         changeOrigin: true
       }
     }

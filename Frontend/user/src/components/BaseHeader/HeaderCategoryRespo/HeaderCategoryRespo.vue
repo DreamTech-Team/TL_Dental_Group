@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { RouterLink } from 'vue-router';
 import { ref, toRefs } from 'vue';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import { categories } from '../HeaderHandle';
 import { useDataRenderStore } from '@/stores/counter';
 
 const props = defineProps({
@@ -50,7 +49,11 @@ const subActive = ref('none');
             :key="subItem.slug"
             :class="$style['hder-category__item']"
           >
-            <router-link to="" :class="$style['hder-category__item-link']" @click="hiddenNav">
+            <router-link
+              :to="`/sanpham?slug1=${item.slug}&slug2=${subItem.slug}`"
+              :class="$style['hder-category__item-link']"
+              @click="hiddenNav"
+            >
               <p>{{ subItem.name }}</p>
             </router-link>
           </li>

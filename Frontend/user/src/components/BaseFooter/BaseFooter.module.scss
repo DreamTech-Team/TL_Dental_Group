@@ -126,6 +126,24 @@
 
 
 // RESPONSIVE
+@include responsive_tablet {
+  .footer {
+
+    &__info {
+
+      &-item {
+        &:first-child {
+          display: none;
+        }
+      }
+
+      &-contact {
+        width: 90%;
+      }
+    }
+  }
+}
+
 @include responsive_mobile {
   .footer {
 

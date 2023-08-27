@@ -51,6 +51,12 @@
       justify-content: space-between;
       cursor: pointer;
       padding: 1.5rem 2rem 1.5rem 3rem;
+
+      p {
+        &:hover {
+          color: #0088cc;
+        }
+      }
     }
 
     &--active {
@@ -75,7 +81,7 @@
     }
 
     &--show-animation {
-      animation: ani 1s ease-out forwards;
+      animation: ani 3s ease-out forwards;
     }
   }
 
@@ -93,6 +99,10 @@
     cursor: pointer;
 
     &--selected {
+      color: #404dc2;
+    }
+
+    &:hover {
       color: #404dc2;
     }
   }

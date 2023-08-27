@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
 import ServiceQuality from '@/components/ServiceQuality/ServiceQuality.vue';
-import SimilarProduct from '@/components/SimilarProduct/SimilarProduct.vue';
 import HomeTrend from '../Home/HomeTrend/HomeTrend.vue';
 import DetailImage from '@/assets/imgs/Product/Rectangle.png';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -189,7 +188,7 @@ onUnmounted(() => {
 });
 </script>
 <template>
-  <div v-if="isLoadingDetail">
+  <div v-if="!isLoadingDetail && displayedImages">
     <bread-crumb :tags="pathBC" />
     <div :class="$style.detail">
       <div :class="$style.detail__image">
