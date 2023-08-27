@@ -45,6 +45,9 @@ const selectedItem = ref(-1);
 const selectedCategory1 = ref();
 const selectedCategory2 = ref('');
 const emit = defineEmits(['slug-category1', 'slug-category2']);
+// Tạo biến lưu index của category cấp 1 được chọn và category cấp 2 được chọn
+const selectedCategory1Index = ref(-1);
+const selectedCategory2Index = ref(-1);
 // Lấy thông tin đang định tuyến từ Vue Router
 const router = useRouter();
 
@@ -122,24 +125,35 @@ const idDefine = (index: number) => {
 const logAndSelectCategory1 = (categoryIndex: number) => {
   // Kiểm tra trang hiện tại
   const newCategory1 = dataRender.value[categoryIndex].slug;
-  // Reset selectedCategory2 only if a new category 1 is selected
+
   if (newCategory1 !== selectedCategory1.value) {
     selectedCategory1.value = newCategory1;
-    selectedCategory2.value = ''; // Reset selectedCategory2
+
+    // Reset index của category cấp 2 khi chọn một category cấp 1 khác
+    selectedCategory2.value = '';
+    selectedCategory2Index.value = -1;
+
+    selectedCategory1Index.value = categoryIndex;
+
     emit('slug-category1', selectedCategory1.value);
     emit('slug-category2', selectedCategory2.value);
   }
 };
 
+// Hàm chọn category cấp 2
 const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
   saveState.setActiveCategory({ categoryIndex, itemIndex });
+
+  // Lưu index của category cấp 2 được chọn
+  selectedCategory2Index.value = itemIndex;
+
   const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
   const selectedCategory = dataRender.value[categoryIndex]; // Giá trị của category cấp 1
+
   emit('slug-category2', selectedSubCategory.slug);
   selectedCategory2.value = selectedSubCategory.slug; // Update selectedCategory2
-  // selectedCategoryItem.value = { categoryIndex, itemIndex };
+
   if (router.currentRoute.value.name !== 'sanpham') {
-    // selectedCategoryItem.value = { categoryIndex, itemIndex };
     // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
     router.push(`/sanpham?slug1=${selectedCategory1.value}&slug2=${selectedCategory2.value}`);
   }

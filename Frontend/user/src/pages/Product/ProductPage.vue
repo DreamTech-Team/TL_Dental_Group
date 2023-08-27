@@ -422,7 +422,7 @@ window.addEventListener('resize', checkScreenSize);
             </div>
             <loading-component v-else />
           </div>
-          <div v-if="products" :class="$style['product__pagination']">
+          <div v-if="products.length > 0" :class="$style['product__pagination']">
             <base-pagination
               :total="totalProduct ? totalProduct : 0"
               :current-page="currentPage"
