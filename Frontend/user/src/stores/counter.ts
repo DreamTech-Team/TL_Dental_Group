@@ -50,8 +50,6 @@ export const saveActive = defineStore('saveActiveCategory', () => {
   });
 
   const setActiveCategory = (newActive: Active) => {
-    console.log(newActive);
-
     selectedCategoryItem.value = { ...newActive };
   };
 
