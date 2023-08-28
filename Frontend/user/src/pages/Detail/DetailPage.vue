@@ -2,7 +2,6 @@
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
 import ServiceQuality from '@/components/ServiceQuality/ServiceQuality.vue';
 import HomeTrend from '../Home/HomeTrend/HomeTrend.vue';
-import DetailImage from '@/assets/imgs/Product/Rectangle.png';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faRegistered } from '@fortawesome/free-solid-svg-icons';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
