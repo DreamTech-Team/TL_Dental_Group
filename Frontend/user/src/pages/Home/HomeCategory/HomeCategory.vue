@@ -3,6 +3,7 @@ import { ref, onMounted, computed, onUnmounted, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import { RouterLink } from 'vue-router';
 
 interface Category {
   id: string;
@@ -168,11 +169,12 @@ onUnmounted(() => {
           id="category-list"
           :style="{ width: widthComputed, transform: 'translateX(' + tranfX + 'px)' }"
         >
-          <div
+          <router-link
             v-for="(item, index) in categories"
             :key="index"
             :class="$style['home__category-item']"
             :style="{ background: getCategoryColor(index), width: widthItemComputed }"
+            :to="'/sanpham?slug1=' + item.slug"
           >
             <p>{{ item.title }}</p>
             <div :class="$style['home__category-ctn']">
@@ -180,7 +182,7 @@ onUnmounted(() => {
                 <img :src="item.img" :alt="item.title" />
               </div>
             </div>
-          </div>
+          </router-link>
         </div>
         <button v-show="tranfX !== 0" :class="$style['home__category-left']" @click="scrollLeft">
           <font-awesome-icon :icon="faChevronLeft" :class="$style['home__category-ic']" />

@@ -2,6 +2,7 @@
 import { ref, watch, onMounted, onUnmounted } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import { RouterLink } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 //GET DATA
 interface Item {
@@ -48,6 +49,7 @@ const uniqueTags = ref([
 ]);
 
 //Properties
+const route = useRoute();
 let resizeListener: () => void;
 const isPhone = ref(false);
 const selectedItem = ref(-1);
@@ -78,6 +80,12 @@ watch(response, () => {
   });
 
   uniqueTags.value = Array.from(uniqueTagsMap.values());
+});
+
+watch(route, () => {
+  if (route.fullPath.includes('/tintuc/')) {
+    location.reload();
+  }
 });
 
 //Function filter tags by news
