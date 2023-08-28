@@ -83,7 +83,7 @@ const tranfX = ref(0);
 const widthItemMB = ref(0);
 const mobilestatus = ref(true);
 const isTouch = ref(false);
-let scrollInterval = 0;
+let scrollInterval: ReturnType<typeof setInterval>;
 
 //WEB
 const activeIndex = ref(0);
@@ -136,11 +136,11 @@ const scrollRight = () => {
 const startScroll = () => {
   scrollInterval = setInterval(() => {
     scrollRight();
-  }, 6000);
+  }, 5000);
 };
 
 const pauseScroll = () => {
-  clearInterval(scrollInterval);
+  if (scrollInterval !== null) clearInterval(scrollInterval);
 };
 
 const scrollLeft = () => {
@@ -185,11 +185,11 @@ const handleTouchstart = (e: TouchEvent) => {
 const handleTouchend = (e: TouchEvent) => {
   touchendX.value = e.changedTouches[0].screenX;
   checkDirection();
-  clearInterval(scrollInterval);
+  if (scrollInterval) clearInterval(scrollInterval);
 
   setTimeout(() => {
     isTouch.value = false;
-  }, 6000);
+  }, 5000);
 };
 
 //Transform line active
