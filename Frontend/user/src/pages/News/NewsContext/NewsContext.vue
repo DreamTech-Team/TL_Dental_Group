@@ -5,7 +5,6 @@ import router from '@/router/index';
 import { ref, watch, onMounted, onUnmounted, type PropType } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import LoadingComponentVue from '@/components/LoadingComponent/LoadingComponent.vue';
-import LoadingComponentVue2 from '@/components/LoadingComponent/LoadingComponent.vue';
 
 //GET DATA
 interface ItemRS {
@@ -79,10 +78,6 @@ watch(content, () => {
   filterTags.value = content.path;
   isLoading.value = content.loading;
   totalNews.value = content.totalPage;
-});
-
-watch(isLoading, () => {
-  console.log(isLoading.value);
 });
 
 const displayNews = ref(listData);
@@ -206,8 +201,15 @@ onUnmounted(() => {
         :page-size="pageSize"
         @current-change="handlePageChange"
       />
-      <LoadingComponentVue2 v-if="isLoading1" />
-      <button @click="readMore">Xem thêm</button>
+      <div :class="$style['news__context-left-loading']">
+        <ul :class="$style['loader-list']" v-if="isLoading1">
+          <li>
+            <div :class="[$style['loader-5'], $style['center']]"><span></span></div>
+          </li>
+        </ul>
+      </div>
+
+      <button v-if="!isLoading1" @click="readMore">Xem thêm</button>
     </div>
     <div :class="$style['news__context-right']">
       <category :class="$style['news__context-right-category']" style="margin-top: 0" />
