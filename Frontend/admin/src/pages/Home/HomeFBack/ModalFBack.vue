@@ -15,6 +15,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import CropImage from '@/components/CropImage/CropImage.vue';
+import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface ItemRS {
   id: string;
@@ -34,6 +35,7 @@ const content = defineProps({
 });
 
 //Properties
+const isLoading = ref(false);
 const feedbacks = ref(content.listItem?.length ? content.listItem : []);
 const selectedItem = ref(0);
 const currentItem = ref(-1);
@@ -168,6 +170,7 @@ const deleteItem = () => {
     cancelButtonText: 'Hủy'
   }).then((result) => {
     if (result.isConfirmed) {
+      isLoading.value = true;
       const deps = ref([]);
       const object = {};
       const { response } = useAxios<DataResponse>(
@@ -183,6 +186,7 @@ const deleteItem = () => {
       );
 
       watch(response, () => {
+        isLoading.value = false;
         if (response.value?.status === 'ok') {
           emits('update-content', {
             listrs: feedbacks.value
@@ -260,6 +264,7 @@ const updateForm = () => {
   validateInform();
 
   if (!isName.value && !isCont.value && !isPos.value) {
+    isLoading.value = true;
     if (!addStatus.value) {
       const deps = ref([]);
       const object = {
@@ -287,6 +292,7 @@ const updateForm = () => {
 
       watch(response, () => {
         if (response.value?.status === 'ok') {
+          isLoading.value = false;
           emits('update-content', {
             listrs: feedbacks.value
           });
@@ -325,6 +331,7 @@ const updateForm = () => {
       );
       watch(response, () => {
         if (response.value?.status === 'ok') {
+          isLoading.value = false;
           feedbacks.value[selectedItem.value].id = response.value.data?.id;
           emits('update-content', {
             listrs: feedbacks.value
@@ -502,6 +509,9 @@ const addItem = () => {
             <button v-if="addStatus === true" @click="updateForm">Thêm</button>
           </div>
         </div>
+      </div>
+      <div v-show="isLoading" :class="$style.loading__overlay">
+        <Loading />
       </div>
     </div>
   </div>

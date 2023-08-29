@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import Pagination from '@/components/Pagination/BasePagination.vue';
 import ModalUpdate from './ModalRecruitment/ModalUpdate.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface RecruitmentItem {
   id: string;
@@ -40,6 +41,7 @@ const searchText = ref('');
 const results = ref(products); //Final Render
 const scrollContainer = ref<HTMLElement | null>(null); //Scroll table to top when change page
 const debounceTimer = ref<number | null>(null); //searchData delay
+const loadingStatus = ref(false);
 
 const totalPage = ref(0);
 const currentPage = ref(0);
@@ -60,7 +62,7 @@ watch(context, () => {
 });
 
 //GET DATA
-const { response } = useAxios<DataResponse>(
+const { response, isLoading } = useAxios<DataResponse>(
   'get',
   `/recruitment/?page=${currentPage.value}&pageSize=10`,
   {},
@@ -105,6 +107,7 @@ const updateRecruitment = (id: string) => {
 
 //Function call API Search
 const searchProduct = () => {
+  loadingStatus.value = true;
   const searchProduct = useAxios<DataResponse>(
     'get',
     `/recruitment/?q=${searchText.value}`,
@@ -123,6 +126,10 @@ const searchProduct = () => {
         type: item.working_form
       };
     });
+  });
+
+  watch(searchProduct.isLoading, () => {
+    loadingStatus.value = searchProduct.isLoading.value;
   });
 };
 //Search Products
@@ -164,7 +171,7 @@ const truncateText = (text: string, maxLength: number) => {
 };
 
 watch(currentPage, () => {
-  const { response } = useAxios<DataResponse>(
+  const { response, isLoading } = useAxios<DataResponse>(
     'get',
     `/recruitment/?page=${currentPage.value}&pageSize=10`,
     {},
@@ -184,6 +191,14 @@ watch(currentPage, () => {
       };
     });
   });
+
+  watch(isLoading, () => {
+    loadingStatus.value = isLoading.value;
+  });
+});
+
+watch(isLoading, () => {
+  loadingStatus.value = isLoading.value;
 });
 
 //Delete Product
@@ -267,6 +282,7 @@ const deleteRecruitment = (id: string) => {
           </thead>
         </table>
         <div :class="$style.mn_activity_table_ctn">
+          <loading v-if="loadingStatus" />
           <table :class="$style.mn_activity_table">
             <tbody>
               <template v-if="filteredRecruitments.length > 0">

@@ -144,6 +144,7 @@ const onUpdateContent2 = (data: { productAdd: ProductItem }) => {
 
 //Function call API Search
 const searchProduct = () => {
+  loadingStatus.value = true;
   const searchProduct = useAxios<DataResponse>(
     'get',
     `/products/search?key=${searchText.value}`,
@@ -163,6 +164,10 @@ const searchProduct = () => {
         price: formatNumberWithCommas(item.price) + ' VNĐ'
       };
     });
+  });
+
+  watch(searchProduct.isLoading, () => {
+    loadingStatus.value = searchProduct.isLoading.value;
   });
 };
 
