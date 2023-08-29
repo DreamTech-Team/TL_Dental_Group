@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { ElPagination } from 'element-plus/lib/components/index.js';
+import { ElPagination } from 'element-plus';
 import 'element-plus/dist/index.css';
 
 const props = defineProps({
