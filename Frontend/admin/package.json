@@ -29,7 +29,7 @@
     "croppie": "^2.6.5",
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.9",
-    "element-plus": "^2.3.7",
+    "element-plus": "^2.3.12",
     "font-awesome-picker": "^2.0.0",
     "pinia": "^2.1.6",
     "postcss": "^8.4.23",
