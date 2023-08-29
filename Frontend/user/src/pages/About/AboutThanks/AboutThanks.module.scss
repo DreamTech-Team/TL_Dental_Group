@@ -20,7 +20,7 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        transition: all 1s 1s ease;
+        transition: all 0.8s 0.8s ease;
 
         .about__thanks-mail{
             width: 80rem;
@@ -31,6 +31,7 @@
             position: relative;
             transform-style: preserve-3d;
             cursor: pointer;
+            // overflow: hidden;
             
             .about__thanks-cover::before{
                 content: '';
@@ -45,7 +46,7 @@
                 z-index: 6;
                 transform-origin: top;
                 transform: rotateX(0deg);
-                transition: all 1s 1s ease;
+                transition: all 0.8s 0.8s ease;
             }
 
             .about__thanks-letter{
@@ -53,14 +54,12 @@
                 z-index: 3;
                 top: 0;
                 left: 1rem;
-                background-color: #dedede;
-                width: 78rem;
-                min-height: 48rem;
-                transition: all 1s ease;
+                width: calc(100% - 2rem);
+                transition: all 0.8s ease;
                 background-image: url('@/assets/imgs/About/Letter.png');
                 background-repeat: no-repeat;
                 background-size: cover;
-                padding: 10rem 12rem;
+                padding: 8rem 10rem;
             }
 
             .about__thanks-letter h1{
@@ -74,23 +73,23 @@
                 font-size: $text-lg;
                 color:  #000;
                 line-height: 1.2rem;
-                transition: all 1s ease;
+                transition: all 0.8s ease;
             }
         }
 
         .about__thanks-mail:hover .about__thanks-cover::before{
             transform: rotateX(180deg);
-            transition: all 1s ease;
+            transition: all 0.8s ease;
             z-index: 1;
         }
 
         .about__thanks-mail:hover .about__thanks-letter{
-            top: -80rem;
-            height: 80rem;
-            transition: all 1s 1s ease;
+            // top: -80rem;
+            // max-height: 80rem;
+            transition: all 0.8s 0.8s ease;
 
             p{
-                transition: all 1s 1s ease;
+                transition: all 0.8s 0.8s ease;
                 line-height: 3rem;
             }
         }
@@ -137,28 +136,34 @@
         display: none;
     }
 
-    .about__thanks-letter-MBTL{
-        margin: 2rem;
-        display: block;
-        height: 50rem;
-        background-image: url('@/assets/imgs/About/Letter.png');
-        background-repeat: no-repeat;
-        background-size: cover;
-        padding: 4rem;
-    }
+    .about__thanks-letter-MBTL {
+        margin: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    
+        .background-image {
+            background-image: url('@/assets/imgs/About/Letter.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            padding: 4rem;
+            padding-bottom: 8rem;
+            border-radius: 8px;
 
-    .about__thanks-letter-MBTL h1{
-        text-align: center;
-        color:  #0029BB;
-        font-weight: 700;
-        font-size: $text-lg-mobile;
-        line-height: 6rem;
-    }
-    .about__thanks-letter-MBTL p{
-        font-size: $text-sm-mobile;
-        color:  #000;
-        line-height: 2.4rem;
-        transition: all 1s ease;
+            h1{
+                text-align: center;
+                color:  #0029BB;
+                font-weight: 700;
+                font-size: $text-lg-mobile;
+                line-height: 6rem;
+            }
+            p{
+                font-size: $text-sm-mobile;
+                color:  #000;
+                line-height: 2.4rem;
+                transition: all 0.8s ease;
+            }
+        }
     }
 }
 
@@ -166,27 +171,32 @@
     .about__thanks{
         display: none;
     }
-    .about__thanks-letter-MBTL{
-        display: block;
+    .about__thanks-letter-MBTL {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         margin: 2rem;
-        height: 70rem;
-        background-image: url('@/assets/imgs/About/Letter.png');
-        background-repeat: no-repeat;
-        background-size: cover;
-        padding: 6rem 8rem;
-    }
-
-    .about__thanks-letter-MBTL h1{
-        text-align: center;
-        color:  #0029BB;
-        font-weight: 700;
-        font-size: $text-lg;
-        line-height: 6rem;
-    }
-    .about__thanks-letter-MBTL p{
-        font-size: $text-base;
-        color:  #000;
-        line-height: 2.4rem;
-        transition: all 1s ease;
+    
+        .background-image {
+            background-image: url('@/assets/imgs/About/Letter.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            padding: 6rem 8rem;
+            border-radius: 8px;
+ 
+            h1{
+                text-align: center;
+                color:  #0029BB;
+                font-weight: 700;
+                font-size: $text-lg-mobile;
+                line-height: 6rem;
+            }
+            p{
+                font-size: $text-base;
+                color:  #000;
+                line-height: 2.4rem;
+                transition: all 0.8s ease;
+            }
+        }
     }
 }

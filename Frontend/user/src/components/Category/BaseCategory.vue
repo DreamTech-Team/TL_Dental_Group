@@ -115,6 +115,8 @@ const toggleAnimation = (index: number) => {
 toggleAnimation(selectedCategoryItem.value.categoryIndex);
 
 watch(selectedCategoryItem, (newValue, oldValue) => {
+  console.log('mới: ', newValue);
+  console.log('cũ: ', oldValue);
   toggleAnimation(newValue.categoryIndex);
 });
 
