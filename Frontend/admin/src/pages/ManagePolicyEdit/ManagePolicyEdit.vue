@@ -9,6 +9,7 @@ import type { DataResponse } from '@/hooks/useAxios';
 import useAxios from '@/hooks/useAxios';
 import styles from './ManagePolicyEdit.module.scss';
 import Swal from 'sweetalert2';
+import LoadingComponentVue from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface PolicyDetail {
   id: string;
@@ -29,8 +30,13 @@ const emit = defineEmits(['close', 'handle-update-policy']);
 const selectedSymbol = ref(props.content?.symbol || no_icon);
 const namePolicy = ref(props.content?.name || '');
 const contentPolicyDetail = ref(props.content?.detail || '');
+const isLoading = ref({ update: false, add: false });
 
 const paramAxios = ref();
+
+const removeExtraSpaces = (inputString: string) => {
+  return inputString.replace(/\s+/g, ' ').trim();
+};
 
 const base64ToBlob = (base64Data: string) => {
   const byteString = atob(base64Data.split(',')[1]);
@@ -78,7 +84,7 @@ const handleFileInputChange = (event: Event) => {
 const updateDetailContent = (content: any) => {
   contentPolicyDetail.value = content.level.content;
 
-  console.log(content, contentPolicyDetail.value);
+  // console.log(content, contentPolicyDetail.value);
 };
 
 const handleAddPolicy = () => {
@@ -97,7 +103,10 @@ const handleAddPolicy = () => {
       }
     });
   } else {
-    const dataPolicy = { name: namePolicy.value, detail: contentPolicyDetail.value };
+    const dataPolicy = {
+      name: removeExtraSpaces(namePolicy.value),
+      detail: contentPolicyDetail.value
+    };
     const symbolPolicy = new File([base64ToBlob(selectedSymbol.value)], 'image.png', {
       type: 'image/png'
     });
@@ -119,7 +128,7 @@ const handleAddPolicy = () => {
     );
 
     watch(postNewPolicy.response, (value) => {
-      console.log(value?.data);
+      // console.log(value?.data);
       emit('handle-update-policy', value?.data);
       emit('close');
       Swal.fire({
@@ -133,8 +142,21 @@ const handleAddPolicy = () => {
       });
     });
 
-    watch(postNewPolicy.error, (value) => {
-      console.log(value);
+    watch(postNewPolicy.error, () => {
+      Swal.fire({
+        title: 'Tên chính sách đã tồn tại!',
+        icon: 'error',
+        customClass: {
+          popup: styles['container-popup'],
+          confirmButton: styles['confirm-button'],
+          denyButton: styles['deny-button']
+        }
+      });
+      // console.log(value);
+    });
+
+    watch(postNewPolicy.isLoading, (value) => {
+      isLoading.value.add = value;
     });
   }
 };
@@ -184,7 +206,7 @@ const handleUpdatePolicy = () => {
     );
 
     watch(postNewPolicy.response, (value) => {
-      console.log(value?.data);
+      // console.log(value?.data);
       emit('handle-update-policy', value?.data, props.editType);
       emit('close');
       Swal.fire({
@@ -198,8 +220,21 @@ const handleUpdatePolicy = () => {
       });
     });
 
-    watch(postNewPolicy.error, (value) => {
-      console.log(value);
+    watch(postNewPolicy.error, () => {
+      // console.log(value, dataPolicy);
+      Swal.fire({
+        title: 'Tên chính sách đã tồn tại!',
+        icon: 'error',
+        customClass: {
+          popup: styles['container-popup'],
+          confirmButton: styles['confirm-button'],
+          denyButton: styles['deny-button']
+        }
+      });
+    });
+
+    watch(postNewPolicy.isLoading, (value) => {
+      isLoading.value.update = value;
     });
   }
 };
@@ -224,7 +259,8 @@ const handleModalCancel = () => {
 };
 </script>
 <template>
-  <div :class="$style.container">
+  <LoadingComponentVue v-if="isLoading.add || isLoading.update" />
+  <div :class="$style.container" v-else>
     <div :class="$style.container__back" @click="handleModalCancel">
       <font-awesome-icon :icon="faChevronLeft" />
       <p>Trở về</p>

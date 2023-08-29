@@ -99,8 +99,8 @@ const handleDeletePolicy = (item: PolicyDetail) => {
         paramAxios.value
       );
 
-      watch(deleteCate.response, (value) => {
-        console.log(value);
+      watch(deleteCate.response, () => {
+        // console.log(value);
         // displayNews.value.splice(
         //   displayNews.value.findIndex((e: PolicyDetail) => e.id === item.id),
         //   1
@@ -109,7 +109,7 @@ const handleDeletePolicy = (item: PolicyDetail) => {
           results.value.findIndex((e: PolicyDetail) => e.id === item.id),
           1
         );
-        console.log(results.value, displayNews.value);
+        // console.log(results.value, displayNews.value);
 
         Swal.fire({
           title: 'Xóa chính sách thành công!',
@@ -122,8 +122,8 @@ const handleDeletePolicy = (item: PolicyDetail) => {
         });
       });
 
-      watch(deleteCate.error, (value) => {
-        console.log(value);
+      watch(deleteCate.error, () => {
+        // console.log(value);
         Swal.fire({
           title: 'Lỗi!',
           icon: 'error',
