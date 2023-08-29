@@ -12,7 +12,9 @@ const isLoading = ref(false);
 const paramAxios = ref();
 const router = useRouter();
 
-const handleLogin = () => {
+const handleLogin = (e: Event) => {
+  e.preventDefault();
+
   const postAccount = useAxios<DataResponse>(
     'post',
     '/auth/login',
@@ -62,31 +64,33 @@ const handleLogin = () => {
         <font-awesome-icon :icon="faUnlockKeyhole" :class="$style['authen_container_wrap_ic']" />
         <a href="https://www.dental.com">https://www.dental.com</a>
       </div>
-      <div :class="$style.wrap_title">
-        <label :class="$style['wrap_title--text']" for="user-name">Email</label>
-        <input
-          id="user-name"
-          v-model="accountInput.email"
-          placeholder="Nhập email"
-          :class="$style['custom-input']"
-        />
-      </div>
-      <div :class="$style.wrap_title">
-        <label :class="$style['wrap_title--text']" for="user-pass">Mật khẩu</label>
-        <input
-          id="user-pass"
-          v-model="accountInput.pass"
-          type="password"
-          placeholder="Nhập mật khẩu"
-          :class="$style['custom-input']"
-        />
-      </div>
-      <p v-if="checkAccount === true" :class="$style.checkAccount">
-        *Email hoặc mật khẩu không chính xác
-      </p>
-      <div :class="$style.wrap_btn">
-        <button @click="handleLogin">Đăng nhập</button>
-      </div>
+      <form @submit="handleLogin">
+        <div :class="$style.wrap_title">
+          <label :class="$style['wrap_title--text']" for="user-name">Email</label>
+          <input
+            id="user-name"
+            v-model="accountInput.email"
+            placeholder="Nhập email"
+            :class="$style['custom-input']"
+          />
+        </div>
+        <div :class="$style.wrap_title">
+          <label :class="$style['wrap_title--text']" for="user-pass">Mật khẩu</label>
+          <input
+            id="user-pass"
+            v-model="accountInput.pass"
+            type="password"
+            placeholder="Nhập mật khẩu"
+            :class="$style['custom-input']"
+          />
+        </div>
+        <p v-if="checkAccount === true" :class="$style.checkAccount">
+          *Email hoặc mật khẩu không chính xác
+        </p>
+        <div :class="$style.wrap_btn">
+          <button @click="handleLogin">Đăng nhập</button>
+        </div>
+      </form>
       <!-- <div :class="$style.wrap_route">
         <router-link to="/forgot" :class="$style.wrap_cancel">Quên mật khẩu?</router-link>
       </div> -->
