@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import LogoNoBg from '@/assets/imgs/logo_nobg.png';
-import ProductPic from '@/assets/imgs/Product/product.png';
-import LogoCompany from '@/assets/imgs/Product/logoCompany.png';
 import OkSticker from '@/assets/imgs/Product/GroupOk.svg';
 import Insurance from '@/assets/imgs/Product/GroupInsurance.svg';
 import SupportSticker from '@/assets/imgs/Product/GroupSupport.svg';
