@@ -67,6 +67,7 @@ const addData = ref<ItemRS[]>();
 const filterTags = ref();
 const popular = ref();
 const isLoading = ref(false);
+const isLoading1 = ref(false);
 const pageSize = ref(8);
 const totalNews = ref();
 const isDesktop = ref(true);
@@ -77,10 +78,6 @@ watch(content, () => {
   filterTags.value = content.path;
   isLoading.value = content.loading;
   totalNews.value = content.totalPage;
-});
-
-watch(isLoading, () => {
-  console.log(isLoading.value);
 });
 
 const displayNews = ref(listData);
@@ -113,8 +110,9 @@ const handlePageChange = (page: number) => {
 
 //Button Readmore
 const readMore = () => {
+  isLoading1.value = true;
   currentPage.value++;
-  const { response } = useAxios<DataResponse>(
+  const readMore = useAxios<DataResponse>(
     'get',
     // eslint-disable-next-line max-len
     `/news?${filterTags.value}&sort=desc&page=${currentPage.value}&pageSize=8&popular=${popular.value}`,
@@ -122,11 +120,15 @@ const readMore = () => {
     {},
     deps.value
   );
-  watch(response, () => {
-    addData.value = response.value?.data?.data;
+  watch(readMore.response, () => {
+    addData.value = readMore.response.value?.data?.data;
     addData.value?.forEach((item) => {
       displayNews.value?.push(item);
     });
+  });
+
+  watch(readMore.isLoading, () => {
+    isLoading1.value = readMore.isLoading.value;
   });
 };
 
@@ -189,6 +191,7 @@ onUnmounted(() => {
           </div>
         </div>
       </div>
+
       <pagination
         v-if="content.listItem"
         :class="$style['news__context-left-pagination']"
@@ -198,7 +201,15 @@ onUnmounted(() => {
         :page-size="pageSize"
         @current-change="handlePageChange"
       />
-      <button @click="readMore">Xem thêm</button>
+      <div :class="$style['news__context-left-loading']">
+        <ul :class="$style['loader-list']" v-if="isLoading1">
+          <li>
+            <div :class="[$style['loader-5'], $style['center']]"><span></span></div>
+          </li>
+        </ul>
+      </div>
+
+      <button v-if="!isLoading1" @click="readMore">Xem thêm</button>
     </div>
     <div :class="$style['news__context-right']">
       <category :class="$style['news__context-right-category']" style="margin-top: 0" />

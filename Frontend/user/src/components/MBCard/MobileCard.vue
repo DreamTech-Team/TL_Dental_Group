@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import LogoNoBg from '@/assets/imgs/logo_nobg.png';
-import ProductPic from '@/assets/imgs/Product/product.png';
-import LogoCompany from '@/assets/imgs/Product/logoCompany.png';
 import OkSticker from '@/assets/imgs/Product/GroupOk.svg';
 import Insurance from '@/assets/imgs/Product/GroupInsurance.svg';
 import SupportSticker from '@/assets/imgs/Product/GroupSupport.svg';
@@ -61,8 +59,8 @@ interface Item {
 }
 const router = useRouter();
 
-const goToDetailPage = () => {
-  router.push('/chitiet');
+const goToDetailPage = (slug: string) => {
+  router.push(`/chitiet/${slug}`);
 };
 
 //Function 1000 to 1.000
@@ -78,7 +76,7 @@ defineProps({
 });
 </script>
 <template>
-  <div :class="$style.mbcard" @click="goToDetailPage">
+  <div :class="$style.mbcard" @click="goToDetailPage(product.slug)">
     <div :class="$style['mbcard__left']">
       <div :class="$style['mbcard__left-header']">
         <img :src="product.brand" alt="logo" />
