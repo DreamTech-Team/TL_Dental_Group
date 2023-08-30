@@ -17,8 +17,10 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
+        align-items: stretch;
 
         .about__policy-items{
+            width: 20%;
 
             &-links{
                 display: flex;
@@ -27,6 +29,7 @@
                 padding: 2rem 4rem;
                 border: 1px solid #ccc;
                 cursor: pointer;
+                height: 100%;
 
                 p{
                     max-width: 22rem;

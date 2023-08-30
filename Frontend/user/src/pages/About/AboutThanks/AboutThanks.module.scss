@@ -84,8 +84,6 @@
         }
 
         .about__thanks-mail:hover .about__thanks-letter{
-            // top: -80rem;
-            // max-height: 80rem;
             transition: all 0.8s 0.8s ease;
 
             p{
@@ -139,7 +137,6 @@
     .about__thanks-letter-MBTL {
         margin: 1rem;
         display: flex;
-        justify-content: center;
         align-items: center;
     
         .background-image {
