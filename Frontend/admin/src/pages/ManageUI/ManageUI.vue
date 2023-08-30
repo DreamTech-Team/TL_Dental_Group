@@ -34,25 +34,11 @@ const componentUI = [
     path: 'mnbanner'
   },
   {
-    title: 'Sản phẩm',
-    icon: faBoxArchive,
-    color:
-      'linear-gradient(220deg, #E80E00 12%, rgba(255, 130, 102, 0.65) 88%, rgba(232, 42, 0, 0.00) 100%)',
-    path: 'mnproduct'
-  },
-  {
     title: 'Tuyển dụng',
     icon: faPersonCirclePlus,
     color:
       'linear-gradient(220deg, #B900E8 12%, rgba(255, 102, 221, 0.65) 88%, rgba(185, 0, 232, 0.00) 100%)',
     path: 'mnuirecruitment'
-  },
-  {
-    title: 'Tin tức',
-    icon: faNewspaper,
-    color:
-      'linear-gradient(220deg, #E8A700 12%, rgba(255, 221, 102, 0.65) 88%, rgba(199, 232, 0, 0.00) 100%)',
-    path: 'activity'
   }
 ];
 </script>
