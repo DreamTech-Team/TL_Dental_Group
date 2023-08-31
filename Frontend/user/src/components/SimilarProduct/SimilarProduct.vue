@@ -1,4 +1,4 @@
-<!-- <script setup lang="ts">
+<script setup lang="ts">
 import { ref, onMounted, computed, onUnmounted } from 'vue';
 import ProductCard from '@/components/Card/ProductCard.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -147,13 +147,13 @@ onUnmounted(() => {
           :class="$style['home__trend-list']"
           :style="{ width: widthComputed, transform: 'translateX(' + tranfX + 'px)' }"
         >
-          <product-card
+          <!-- <product-card
             v-for="(item, index) in products"
             :key="index"
             :product="item"
             :class="$style['home__trend-item']"
             :style="{ width: widthItemComputed }"
-          />
+          /> -->
         </div>
       </div>
       <button :class="$style['trend__title--ctn-left']" @click="scrollLeft">
@@ -169,4 +169,4 @@ onUnmounted(() => {
 <style module scoped lang="scss">
 // @import './HomeTrend.module.scss';
 @import './SimilarProduct.module.scss';
-</style> -->
+</style>

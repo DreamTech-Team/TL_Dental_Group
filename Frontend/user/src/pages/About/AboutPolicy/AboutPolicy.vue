@@ -16,7 +16,6 @@ interface AboutPolicy {
 const variableChange = ref([]);
 const listPolicy = ref<AboutPolicy[]>([]);
 const isLoadingPolicy = ref(false);
-const oneItem = ref(false);
 
 const { response, isLoading } = useAxios<DataResponse>(
   'get',
@@ -32,18 +31,13 @@ watch(isLoading, () => {
 
 watch(response, () => {
   listPolicy.value = response?.value?.data;
-  if (listPolicy.value.length === 1) oneItem.value = true;
 });
 </script>
 <template>
   <div :class="$style.about__policy">
     <h3>CHÍNH SÁCH CÔNG TY</h3>
 
-    <div
-      :class="$style['about__policy-list']"
-      v-if="!isLoadingPolicy"
-      :style="{ justifyContent: oneItem ? 'center' : 'space-between' }"
-    >
+    <div :class="$style['about__policy-list']" v-if="!isLoadingPolicy">
       <div
         :class="$style['about__policy-items']"
         v-for="(itemPolicy, index) in listPolicy"

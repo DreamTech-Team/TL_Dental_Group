@@ -82,6 +82,8 @@ const circleActive = ref(0);
 const tranfX = ref(0);
 const widthItemMB = ref(0);
 const mobilestatus = ref(true);
+const isTouch = ref(false);
+let scrollInterval: ReturnType<typeof setInterval>;
 
 //WEB
 const activeIndex = ref(0);
@@ -131,6 +133,16 @@ const scrollRight = () => {
   }
 };
 
+const startScroll = () => {
+  scrollInterval = setInterval(() => {
+    scrollRight();
+  }, 5000);
+};
+
+const pauseScroll = () => {
+  if (scrollInterval !== null) clearInterval(scrollInterval);
+};
+
 const scrollLeft = () => {
   const container = document.getElementById('list_item');
   if (container) {
@@ -166,11 +178,18 @@ const checkDirection = () => {
 
 const handleTouchstart = (e: TouchEvent) => {
   touchstartX.value = e.changedTouches[0].screenX;
+  isTouch.value = true;
+  pauseScroll();
 };
 
 const handleTouchend = (e: TouchEvent) => {
   touchendX.value = e.changedTouches[0].screenX;
   checkDirection();
+  if (scrollInterval) clearInterval(scrollInterval);
+
+  setTimeout(() => {
+    isTouch.value = false;
+  }, 5000);
 };
 
 //Transform line active
@@ -202,6 +221,7 @@ const bannerBgColor = computed(() => {
   ];
   return colors[activeIndex.value];
 });
+
 const oldBannerBgColor = computed(() => {
   const colors = [
     `radial-gradient(50% 50% at 50% 50%, rgba(135, 255, 126, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`,
@@ -416,19 +436,21 @@ watch(
   { immediate: true }
 );
 
+watch(
+  isTouch,
+  () => {
+    if (!isTouch.value) {
+      startScroll();
+    }
+  },
+  { immediate: true }
+);
+
 onMounted(() => {
   mobilestatus.value = false;
 
   // Find width slider
   widthItemMB.value = window.innerWidth;
-
-  const startScroll = () => {
-    setInterval(() => {
-      scrollRight();
-    }, 6000);
-  };
-
-  startScroll();
 
   // Resize Screen
   resizeListener = function () {
