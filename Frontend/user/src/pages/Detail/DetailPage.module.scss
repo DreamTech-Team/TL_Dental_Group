@@ -300,6 +300,10 @@
           border-radius: 1rem;
         }
       }
+
+      &-btn1:hover {
+        background-color: #093ea9;
+      }
       &-btn2 {
         height: 6rem;
         gap: 2rem;
@@ -322,6 +326,10 @@
           background-color: #fff;
           border-radius: 1rem;
         }
+      }
+
+      &-btn2:hover {
+        background-color: rgb(23, 99, 252);
       }
     }
   }
