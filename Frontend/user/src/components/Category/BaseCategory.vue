@@ -160,14 +160,22 @@ const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
   }
 };
 
+// const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
+//   const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
+
+//   return (
+//     selectedItem.value === categoryIndex && // Kiểm tra category cấp 1 đã chọn
+//     selectedCategoryItem.value.categoryIndex === categoryIndex &&
+//     selectedCategoryItem.value.itemIndex === itemIndex &&
+//     selectedSubCategory.slug === selectedCategory2.value // Kiểm tra category cấp 2 đã chọn
+//   );
+// };
 const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
-  const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
+  // const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
 
   return (
-    selectedItem.value === categoryIndex && // Kiểm tra category cấp 1 đã chọn
     selectedCategoryItem.value.categoryIndex === categoryIndex &&
-    selectedCategoryItem.value.itemIndex === itemIndex &&
-    selectedSubCategory.slug === selectedCategory2.value // Kiểm tra category cấp 2 đã chọn
+    selectedCategoryItem.value.itemIndex === itemIndex
   );
 };
 
