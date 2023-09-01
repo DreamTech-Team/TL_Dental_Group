@@ -33,14 +33,25 @@ const useAxios = <DataResponse>(
     if (getInforAdmin) {
       const inforAdmin = JSON.parse(getInforAdmin);
 
-      return inforAdmin.token
-        ? {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + inforAdmin.token
-          }
-        : {
-            'Content-Type': 'application/json'
-          };
+      if (Object.keys(options).length === 0) {
+        return inforAdmin.token
+          ? {
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + inforAdmin.token
+              }
+            }
+          : {
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            };
+      } else {
+        if (options.headers) {
+          options.headers.Authorization = 'Bearer ' + inforAdmin.token;
+        }
+        return options;
+      }
     }
   };
 
@@ -51,8 +62,7 @@ const useAxios = <DataResponse>(
       }, 0);
       try {
         const res: AxiosResponse<DataResponse> = await axiosClient[method](api, body, {
-          ...options,
-          headers: handleSetHeaders(),
+          ...handleSetHeaders(),
           cancelToken: axiosController.token
         });
 
