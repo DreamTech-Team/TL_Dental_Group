@@ -88,7 +88,7 @@ const hiddenNav = () => {
           $style[flagMobile ? 'header__nav-mobile--show' : '']
         ]"
       >
-        <form :class="$style['header__nav-mobile--search']">
+        <form :class="$style['header__nav-mobile--search']" action="/timkiem">
           <input type="text" name="search" placeholder="Tìm kiếm" />
         </form>
         <!-- List page -->
