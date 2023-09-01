@@ -105,7 +105,7 @@ console.log(route.query);
 const deps = ref([]);
 const { response, isLoading } = useAxios<DataResponse>(
   'get',
-  `/products/search?key=${route.query.search}&page=0&pageSize=1000`,
+  `/products/search?key=${route.query.search}&page=0&pageSize=1000&sortPrice=${sortPriceType.value}`,
   {},
   {},
   deps.value
@@ -133,6 +133,37 @@ watch([response, isLoading], () => {
   }
 });
 
+watch(sortPriceType, () => {
+  const { response: responseChanged, isLoading: isLoadingChange } = useAxios<DataResponse>(
+    'get',
+    `/products/search?key=${route.query.search}&page=0&pageSize=1000&sortPrice=${sortPriceType.value}`,
+    {},
+    {},
+    deps.value
+  );
+
+  watch([responseChanged, isLoadingChange], () => {
+    isLoadingSearch.value = isLoadingChange.value;
+    console.log(isLoadingSearch.value);
+    if (responseChanged.value?.data.data !== undefined) {
+      console.log(responseChanged.value?.data.data);
+
+      products.value = responseChanged.value?.data.data.map((item: Product) => {
+        return {
+          nameProduct: item.name,
+          price: item.price,
+          summary: item.summary,
+          tag: item.fkCategory.cate1Id.title,
+          company: item.fkCategory.companyId.name,
+          image: item.mainImg,
+          brand: item.fkCategory.companyId.logo,
+          slug: item.slug
+        };
+      });
+    }
+  });
+});
+
 // watch(isLoading, () => {
 //   console.log(isLoadingSearch.value);
 // });
@@ -149,7 +180,7 @@ const handlePageChange = (page: number) => {
     isDesktop.value = false;
     scrollToTop(0);
   } else {
-    scrollToTop(400);
+    scrollToTop(0);
   }
 };
 
@@ -166,13 +197,14 @@ const closeDropdown = () => {
 
 function updateSelectedOption(option: string) {
   selectedOption.value = option;
+  if (selectedOption.value == 'Giá giảm dần') {
+    sortPriceType.value = 'desc';
+  } else {
+    sortPriceType.value = 'asc';
+  }
+  console.log(sortPriceType);
   closeDropdown();
 }
-
-const selectOption = (option: string) => {
-  selectedOption.value = option;
-  isDropdownOpen.value = false;
-};
 
 const displayedProducts = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
@@ -182,7 +214,7 @@ const displayedProducts = computed(() => {
 
 onMounted(() => {
   const container = document.getElementById('trend-wrapper');
-  updateSelectedOption('Sắp xếp');
+  // updateSelectedOption('Sắp xếp');
   if (window.innerWidth < 739) {
     isDesktop.value = false;
   } else {
@@ -244,7 +276,7 @@ onUnmounted(() => {
                 :class="dropdownItemClasses"
                 v-for="(option, index) in dropdownOptions"
                 :key="index"
-                @click="selectOption(option)"
+                @click="updateSelectedOption(option)"
               >
                 {{ option }}
               </li>

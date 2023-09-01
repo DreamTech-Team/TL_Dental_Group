@@ -4,6 +4,7 @@ import ServiceQuality from '@/components/ServiceQuality/ServiceQuality.vue';
 import HomeTrend from '../Home/HomeTrend/HomeTrend.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faRegistered } from '@fortawesome/free-solid-svg-icons';
+import { saveDataContact } from '@/stores/counter';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import {
   faChevronLeft,
@@ -13,7 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import ZaloImg from '@/assets/imgs/Contact/Zalo.png';
 import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
-import { ref, watch, onMounted, onUnmounted, computed } from 'vue';
+import { ref, watch, onMounted, onUnmounted, computed, toRefs } from 'vue';
 import { useRoute } from 'vue-router';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
@@ -61,6 +62,7 @@ export interface Product {
 const route = useRoute();
 const inforProduct = ref<Product>();
 const pathBC = ref();
+const { dataFacility, dataContact } = toRefs(saveDataContact());
 
 // const images = [DetailImage, Product1, Product2, Product3, Product4];
 
@@ -291,14 +293,23 @@ onUnmounted(() => {
           </div>
         </div>
         <div :class="$style['detail__content--contact']">
-          <div :class="$style['detail__content--contact-btn1']">
+          <a
+            :class="$style['detail__content--contact-btn1']"
+            :href="dataContact.facebook.content"
+            target="_blank"
+          >
             <font-awesome-icon :class="$style['fb-logo']" :icon="faFacebook" />
             <p :class="$style['detail__content--contact-btn1-text']">Tư vấn qua Facebook</p>
-          </div>
-          <div :class="$style['detail__content--contact-btn2']">
+          </a>
+
+          <a
+            :class="$style['detail__content--contact-btn2']"
+            :href="'https://zalo.me/' + dataContact.zalo.content"
+            target="_blank"
+          >
             <img :class="$style['zalo-logo']" :src="ZaloImg" alt="Zalo logo" />
             <p :class="$style['detail__content--contact-btn2-text']">Tư vấn qua Zalo</p>
-          </div>
+          </a>
         </div>
       </div>
     </div>

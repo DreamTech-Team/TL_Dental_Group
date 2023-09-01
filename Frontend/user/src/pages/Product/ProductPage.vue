@@ -215,14 +215,14 @@ watch(
       {},
       deps1.value
     );
-    console.log(currentPage.value);
+    // console.log(currentPage.value);
 
     // Truy xuất giá trị response.value và gán vào responseData
     watch(
       [responseChanged, isLoadingChange],
       () => {
         isLoadingProduct.value = isLoadingChange.value;
-        console.log(isLoadingProduct.value);
+        // console.log(isLoadingProduct.value);
 
         dataRes.value = responseChanged?.value?.data;
         filterAllProduct.value = responseChanged?.value?.data?.data;

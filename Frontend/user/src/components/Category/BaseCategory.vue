@@ -115,7 +115,12 @@ const toggleAnimation = (index: number) => {
 toggleAnimation(selectedCategoryItem.value.categoryIndex);
 
 watch(selectedCategoryItem, (newValue, oldValue) => {
-  toggleAnimation(newValue.categoryIndex);
+  if (newValue.categoryIndex !== oldValue.categoryIndex) {
+    // Chỉ thực hiện toggleAnimation khi chọn category cấp 1
+    toggleAnimation(newValue.categoryIndex);
+  } else if (newValue.itemIndex !== oldValue.itemIndex && newValue.categoryIndex !== -1) {
+    toggleAnimation(newValue.categoryIndex);
+  }
 });
 
 const idDefine = (index: number) => {
@@ -125,18 +130,15 @@ const idDefine = (index: number) => {
 const logAndSelectCategory1 = (categoryIndex: number) => {
   // Kiểm tra trang hiện tại
   const newCategory1 = dataRender.value[categoryIndex].slug;
-
+  // Reset selectedCategory2 only if a new category 1 is selected
   if (newCategory1 !== selectedCategory1.value) {
     selectedCategory1.value = newCategory1;
-
-    // Reset index của category cấp 2 khi chọn một category cấp 1 khác
-    selectedCategory2.value = '';
-    selectedCategory2Index.value = -1;
-
-    selectedCategory1Index.value = categoryIndex;
-
+    selectedCategory2.value = ''; // Reset selectedCategory2
     emit('slug-category1', selectedCategory1.value);
     emit('slug-category2', selectedCategory2.value);
+
+    // Đặt lại giá trị selectedItem để xóa màu category cấp 2 trước đó
+    selectedItem.value = categoryIndex;
   }
 };
 
@@ -149,7 +151,6 @@ const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
 
   const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
   const selectedCategory = dataRender.value[categoryIndex]; // Giá trị của category cấp 1
-
   emit('slug-category2', selectedSubCategory.slug);
   selectedCategory2.value = selectedSubCategory.slug; // Update selectedCategory2
 
@@ -160,9 +161,13 @@ const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
 };
 
 const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
+  const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
+
   return (
+    selectedItem.value === categoryIndex && // Kiểm tra category cấp 1 đã chọn
     selectedCategoryItem.value.categoryIndex === categoryIndex &&
-    selectedCategoryItem.value.itemIndex === itemIndex
+    selectedCategoryItem.value.itemIndex === itemIndex &&
+    selectedSubCategory.slug === selectedCategory2.value // Kiểm tra category cấp 2 đã chọn
   );
 };
 
