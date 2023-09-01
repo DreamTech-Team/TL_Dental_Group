@@ -168,7 +168,6 @@
   }
 
   &-type5 {
-    // height: 90vh;
     padding-top: 8rem;
     width: 50vw;
 
@@ -433,7 +432,8 @@
 
     &-type5 {
       height: auto;
-      padding-left: 0;
+      width: auto;
+      // padding-left: 0;
       padding-top: 2rem;
 
       &-title {
@@ -465,6 +465,8 @@
       padding-bottom: 2rem;
       display: flex;
       justify-content: center;
+      width: 100%;
+
       img {
         width: 80vw;
         height: auto;
