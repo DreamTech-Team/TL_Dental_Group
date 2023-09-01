@@ -30,7 +30,6 @@ const useAxios = <DataResponse>(
 
   const handleSetHeaders = () => {
     const getInforAdmin = localStorage.getItem('infor_admin');
-    console.log(getInforAdmin);
     if (getInforAdmin) {
       const inforAdmin = JSON.parse(getInforAdmin);
 
