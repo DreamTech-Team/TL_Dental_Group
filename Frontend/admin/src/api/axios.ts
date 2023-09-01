@@ -5,8 +5,8 @@ import axios, {
 } from 'axios';
 import qs from 'qs';
 
-const getInforAdmin = localStorage.getItem('infor_admin');
 const handleSetHeaders = () => {
+  const getInforAdmin = localStorage.getItem('infor_admin');
   if (getInforAdmin) {
     const inforAdmin = JSON.parse(getInforAdmin);
 

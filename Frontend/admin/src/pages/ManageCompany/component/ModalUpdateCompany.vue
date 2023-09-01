@@ -276,7 +276,7 @@ const handleDataProduct = (
   <div :class="$style.mncompany__overlay" v-if="!isOpen">
     <div :class="$style.mncompany__modal">
       <div :class="$style.mncompany__modal__heading">
-        THÊM CÔNG TY
+        CẬP NHẬT CÔNG TY
         <font-awesome-icon
           :icon="faXmark"
           :class="$style['mncompany__modal-ic']"

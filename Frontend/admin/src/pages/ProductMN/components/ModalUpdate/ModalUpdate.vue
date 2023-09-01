@@ -335,6 +335,7 @@ const alertDialog = (context: string, page: number) => {
 
 //Get categories 2 and updateIDCate1
 const handleSelectedCate1Change = (event: Event) => {
+  selectedCate2.value = '';
   cate1ID.value = (event.target as HTMLSelectElement).value;
 
   const getCategories2 = useAxios<DataResponse>(
@@ -532,6 +533,8 @@ const submitForm = () => {
 
 //Render Data
 watch(selectedCompany, () => {
+  selectedCate1.value = '';
+  selectedCate2.value = '';
   const getCategories1 = useAxios<DataResponse>(
     'get',
     `/cate?companyId=${compID.value}`,

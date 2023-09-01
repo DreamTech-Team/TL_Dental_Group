@@ -185,7 +185,7 @@ const submitForm = () => {
           />
         </div>
         <div :class="$style['modal__buttons']">
-          <button>Hủy</button>
+          <button @click="$emit('close')">Hủy</button>
           <button @click="submitForm">Cập nhật</button>
         </div>
       </div>

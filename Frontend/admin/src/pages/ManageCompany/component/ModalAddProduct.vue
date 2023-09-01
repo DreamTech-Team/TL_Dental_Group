@@ -51,6 +51,8 @@ const formatDescription = (str: string): string | null => {
   }
 };
 
+console.log(context.product.description);
+
 const contentInput = ref(formatDescription(context.product.description));
 const selectedImage: Ref<string | null> = ref(context.product.mainImg);
 const dataSearchTerm = ref(context.product.name !== undefined ? context.product.name : '');
@@ -154,7 +156,7 @@ const handleOption = (item: Products, id: string) => {
   listData.value.forEach((value) => {
     if (value.id === id) {
       idProduct.value = id;
-      contentInput.value = value.description;
+      contentInput.value = formatDescription(value.description);
       selectedImage.value = value.mainImg;
     }
   });
@@ -202,7 +204,7 @@ const handleOption = (item: Products, id: string) => {
           :value="contentInput"
           @change="updateContent"
           readonly
-          :style="{ cursor: 'auto' }"
+          :style="{ cursor: 'auto', border: 'none' }"
         />
 
         <h4>Ảnh sản phẩm</h4>

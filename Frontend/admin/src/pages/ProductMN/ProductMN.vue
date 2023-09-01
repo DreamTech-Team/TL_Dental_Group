@@ -77,7 +77,7 @@ const searchText = ref('');
 const results = ref(products); //Final Render
 const scrollContainer = ref<HTMLElement | null>(null); //Scroll table to top when change page
 
-const debounceTimer = ref<number | null>(null); //searchData delay
+const debounceTimer = ref<ReturnType<typeof setTimeout> | null>(null); //searchData delay
 const loadingStatus = ref(false);
 
 const totalPage = ref(0);
@@ -144,6 +144,7 @@ const onUpdateContent2 = (data: { productAdd: ProductItem }) => {
 
 //Function call API Search
 const searchProduct = () => {
+  loadingStatus.value = true;
   const searchProduct = useAxios<DataResponse>(
     'get',
     `/products/search?key=${searchText.value}`,
@@ -163,6 +164,10 @@ const searchProduct = () => {
         price: formatNumberWithCommas(item.price) + ' VNĐ'
       };
     });
+  });
+
+  watch(searchProduct.isLoading, () => {
+    loadingStatus.value = searchProduct.isLoading.value;
   });
 };
 
