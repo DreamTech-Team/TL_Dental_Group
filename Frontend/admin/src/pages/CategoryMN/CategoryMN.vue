@@ -68,6 +68,7 @@ const listCategoryEdit: Ref<{ fullCate: Cate1Object[]; currentCate: Cate1Object[
 });
 const checkCate1: Ref<CheckCate1[]> = ref([]);
 const numCate = ref(1);
+const resetSelectedCate1 = ref(false);
 
 // Gọi hàm useAxios để lấy response, error, và isLoading
 const getCompany = useAxios<DataResponse>('get', '/company', {}, {}, listCompany.value.lst);
@@ -89,6 +90,8 @@ const getCategoryFull2 = useAxios<DataResponse>(
 //Hàm mở cate1 khi select company
 const handleSelectCompany = (infCompapy: any) => {
   itemSelected.value.company = infCompapy;
+  listCategory2.value.lst = [];
+  listCategory2.value.lstEmpty = false;
 
   if (infCompapy) {
     const getCategories = useAxios<DataResponse>(
@@ -136,14 +139,12 @@ const handleSelectCompany = (infCompapy: any) => {
     listCategory1.value.lst = [];
     listCategory1.value.lstEmpty = false;
   }
-
-  listCategory2.value.lst = [];
-  listCategory2.value.lstEmpty = false;
 };
 
 //Hàm mở cate 2 khi select cate1
 const handleSelectCategory1 = (infCategory1: any) => {
   itemSelected.value.cate1 = infCategory1;
+  // resetSelectedCate1.value = false;
 
   if (infCategory1) {
     // console.log(itemSelected.value, infCategory1);
@@ -194,6 +195,8 @@ const removeObjectsFromArray1 = (arr1: any, arr2: any) => {
 
 //Hàm mở edit cate1
 const handleOpenEditCategory1 = () => {
+  resetSelectedCate1.value = true;
+
   if (itemSelected.value.company.id !== '') {
     listCategoryEdit.value.fullCate = removeObjectsFromArray1(
       listCategory1.value.lst,
@@ -216,6 +219,9 @@ const handleOpenEditCategory1 = () => {
       }
     });
   }
+
+  listCategory2.value.lst = [];
+  listCategory2.value.lstEmpty = false;
 };
 
 const handleOpenEditCategory2 = () => {
@@ -260,7 +266,9 @@ const handleUpdateCateCompany = (itemsAdd: any, itemsDelete: any, type: number) 
   if (type === 1) {
     listCategory1.value.lst = tmp;
     listCategory1.value.lstEmpty = listCategory1.value.lst.length === 0;
-  } else {
+    listCategory2.value.lst = [];
+    listCategory2.value.lstEmpty = false;
+  } else if (type === 2) {
     listCategory2.value.lst = tmp;
     listCategory2.value.lstEmpty = listCategory2.value.lst.length === 0;
   }
@@ -334,6 +342,7 @@ watch(getCategoryFull2.response, (value) => {
               :is-empty-items="listCategory1.lstEmpty"
               :handle-selected="handleSelectCategory1"
               :open-edit="handleOpenEditCategory1"
+              :reset-selected="resetSelectedCate1"
             />
           </div>
         </div>

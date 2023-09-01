@@ -8,7 +8,8 @@ const props = defineProps({
   data: { type: Object, require: true },
   isEmptyItems: { type: Boolean, required: true },
   handleSelected: { type: Function, required: false },
-  openEdit: { type: Function, required: false }
+  openEdit: { type: Function, required: false },
+  resetSelected: { type: Boolean, required: false }
 });
 
 const emptyItem = '<<Trống>>';
@@ -26,6 +27,7 @@ const handleClickItem = (index: number, item: object) => {
       props.handleSelected(item);
     }
 };
+console.log(props.isEmptyItems);
 
 watch(
   () => props.data,
@@ -35,6 +37,13 @@ watch(
     if (!value?.id) {
       selectedItem.value = -1;
     }
+  }
+);
+
+watch(
+  () => props.resetSelected,
+  () => {
+    if (props.resetSelected) selectedItem.value = -1;
   }
 );
 </script>
@@ -61,10 +70,9 @@ watch(
       </div>
     </div>
     <div :class="$style['container-add']">
-      <div :class="$style['container-add-block']" @click="props.openEdit">
+      <div :class="$style['container-add-block']" v-if="cateType !== 0" @click="props.openEdit">
         <FontAwesomeIcon :icon="faPlus" />
-        <p v-if="cateType === 0">Thêm Công ty</p>
-        <p v-else-if="cateType === 1">Thêm Danh Mục 1</p>
+        <p v-if="cateType === 1">Thêm Danh Mục 1</p>
         <p v-else>Thêm Danh Mục 2</p>
       </div>
     </div>
