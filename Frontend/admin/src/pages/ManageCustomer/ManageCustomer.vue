@@ -31,9 +31,9 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
 const indexRow = ref(0);
-const widthLine = ref(75);
-const widthLine1 = ref(0);
-const widthLine2 = ref(0);
+// const widthLine = ref(75);
+// const widthLine1 = ref(0);
+// const widthLine2 = ref(0);
 const isChart = ref(true);
 const time = ref('');
 const isLoadingInfo = ref(false);
@@ -151,25 +151,25 @@ const handlePageChange = (page: number) => {
   scrollToTop(0);
 };
 
-// Check Tab và xử lí line dưới các title của tab
-const handleLine = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  const widthSpan1 = document.getElementById('text1');
-  const widthSpan2 = document.getElementById('text2');
+// // Check Tab và xử lí line dưới các title của tab
+// const handleLine = (e: Event) => {
+//   const target = e.target as HTMLInputElement;
+//   const widthSpan1 = document.getElementById('text1');
+//   const widthSpan2 = document.getElementById('text2');
 
-  if (widthSpan1 && widthSpan2) {
-    widthLine1.value = widthSpan1.offsetWidth;
-    widthLine2.value = widthSpan2.offsetWidth;
+//   if (widthSpan1 && widthSpan2) {
+//     widthLine1.value = widthSpan1.offsetWidth;
+//     widthLine2.value = widthSpan2.offsetWidth;
 
-    if (target.textContent === 'Thông số') {
-      isChart.value = true;
-      widthLine.value = widthSpan1.offsetWidth;
-    } else {
-      isChart.value = false;
-      widthLine.value = widthSpan2.offsetWidth;
-    }
-  }
-};
+//     if (target.textContent === 'Thông số') {
+//       isChart.value = true;
+//       widthLine.value = widthSpan1.offsetWidth;
+//     } else {
+//       isChart.value = false;
+//       widthLine.value = widthSpan2.offsetWidth;
+//     }
+//   }
+// };
 
 const formatTime = (inputString: string) => {
   const outputFormat = 'HH:mm, DD/MM/YYYY';
@@ -266,8 +266,8 @@ const handleCheckBox = (e: Event, index: number) => {
     <h2>DANH SÁCH CÔNG TY</h2>
 
     <div :class="$style['mn_customer--search']">
-      <div :class="$style['mn_customer--search-input']">
-        <div :class="$style['mn_customer--search-input-left']">
+      <div :class="$style['mn_customer--search-input']" :style="{ justifyContent: 'flex-end' }">
+        <!-- <div :class="$style['mn_customer--search-input-left']">
           <span id="text1" @click="handleLine" :class="$style[isChart ? 'active' : '']"
             >Thông số</span
           >
@@ -281,9 +281,9 @@ const handleCheckBox = (e: Event, index: number) => {
               transform: 'translateX' + '(' + (isChart ? 0 : widthLine1 + 20) + 'px' + ')'
             }"
           ></div>
-        </div>
+        </div> -->
 
-        <div :class="$style['mn_customer--search-input-right']" v-if="!isChart">
+        <div :class="$style['mn_customer--search-input-right']" v-if="isChart">
           <input type="text" placeholder="Tìm kiếm" v-model="searchText" />
 
           <font-awesome-icon :icon="faSearch" :class="$style['mn_customer--search-ic']" />
@@ -296,7 +296,7 @@ const handleCheckBox = (e: Event, index: number) => {
       </div>
     </div>
 
-    <div :class="$style['mn_customer--table']" v-if="!isChart">
+    <div :class="$style['mn_customer--table']" v-if="isChart">
       <div :class="$style['mn_customer--table-titlebar']">
         <p style="width: 8%">STT</p>
         <p style="width: 16%">Họ và tên</p>
