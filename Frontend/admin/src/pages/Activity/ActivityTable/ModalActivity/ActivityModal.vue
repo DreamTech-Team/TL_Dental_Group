@@ -333,9 +333,7 @@ const submitForm = () => {
         }).then((result) => {
           if (result.isConfirmed) {
             Swal.close();
-            emits('update-content', {
-              newsAdd: createNews.response.value?.data
-            });
+            emits('update-content', createNews?.response?.value?.data);
             emits('close');
           }
         });

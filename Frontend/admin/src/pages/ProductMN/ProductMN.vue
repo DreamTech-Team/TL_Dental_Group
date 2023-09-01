@@ -77,7 +77,7 @@ const searchText = ref('');
 const results = ref(products); //Final Render
 const scrollContainer = ref<HTMLElement | null>(null); //Scroll table to top when change page
 
-const debounceTimer = ref<number | null>(null); //searchData delay
+const debounceTimer = ref<ReturnType<typeof setTimeout> | null>(null); //searchData delay
 const loadingStatus = ref(false);
 
 const totalPage = ref(0);

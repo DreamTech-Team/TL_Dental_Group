@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, watchEffect, type Ref, PropType } from 'vue';
+import { ref, computed, watch, watchEffect, type Ref, type PropType } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
@@ -81,7 +81,7 @@ const activeTab = ref('activity');
 
 const deps = ref([]);
 const depsTag = ref([]);
-const debounceTimer = ref<number | null>(null);
+const debounceTimer = ref<ReturnType<typeof setTimeout> | null>(null);
 const resultListTags = ref<Array<Tags>>([]);
 
 const activitiesResList = ref<News[]>(props.dataNews);

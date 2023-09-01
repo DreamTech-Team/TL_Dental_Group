@@ -76,7 +76,7 @@ const emits = defineEmits<{
 }>();
 
 //Properties
-const debounceTimer = ref<number | null>(null); //searchData delay
+const debounceTimer = ref<ReturnType<typeof setTimeout> | null>(null); //searchData delay
 const searchText = ref('');
 const loadingStatus = ref(false);
 
