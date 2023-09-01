@@ -1,3 +1,4 @@
+import { useInforAdminStore } from '@/stores/counter';
 import axios, {
   type AxiosInstance,
   type AxiosResponse,
@@ -7,8 +8,9 @@ import qs from 'qs';
 
 const handleSetHeaders = () => {
   const getInforAdmin = localStorage.getItem('infor_admin');
+  const infoAdminStore = useInforAdminStore();
   if (getInforAdmin) {
-    const inforAdmin = JSON.parse(getInforAdmin);
+    const inforAdmin = JSON.parse(getInforAdmin) || infoAdminStore.inforAdmin;
 
     return inforAdmin.token
       ? {

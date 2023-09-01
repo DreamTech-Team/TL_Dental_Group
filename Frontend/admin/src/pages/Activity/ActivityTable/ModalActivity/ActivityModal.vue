@@ -16,7 +16,6 @@ import imageAct from '../../../../assets/imgs/Activity/image.png';
 import icPhoto from '../../../../assets/icons/camera.svg';
 import CropImage from '@/components/CropImage/CropImage.vue';
 import { type PropType } from 'vue';
-import { id } from 'element-plus/lib/locale/index.js';
 import { tags } from '../../Activity';
 import Swal from 'sweetalert2';
 

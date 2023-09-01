@@ -13,7 +13,6 @@ import {
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import imageAct from '../../../../assets/imgs/Activity/image.png';
 import { type PropType } from 'vue';
-import { id } from 'element-plus/lib/locale/index.js';
 import Swal from 'sweetalert2';
 import CropImage from '@/components/CropImage/CropImage.vue';
 

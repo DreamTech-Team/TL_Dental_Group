@@ -7,7 +7,6 @@ import Swal from 'sweetalert2';
 // import ModalAdd from './components/ModalAdd.vue';
 import UpdateTag from './ModalTag/UpdateTag.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
-import { flattedChildren } from 'element-plus/es/utils';
 
 interface Tags {
   id: string;

@@ -5,12 +5,14 @@ import { faUnlockKeyhole } from '@fortawesome/free-solid-svg-icons';
 import { ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import { useRouter } from 'vue-router';
+import { useInforAdminStore } from '@/stores/counter';
 
 const accountInput = ref({ email: '', pass: '' });
 const checkAccount = ref(false);
 const isLoading = ref(false);
 const paramAxios = ref();
 const router = useRouter();
+const infoAdminStore = useInforAdminStore();
 
 const handleLogin = (e: Event) => {
   e.preventDefault();
@@ -49,6 +51,7 @@ const handleLogin = (e: Event) => {
     };
 
     localStorage.setItem('infor_admin', JSON.stringify(newInfor));
+    infoAdminStore.setInforAdmin(newInfor);
     console.log(localStorage.getItem('infor_admin'));
 
     router.push('/');
