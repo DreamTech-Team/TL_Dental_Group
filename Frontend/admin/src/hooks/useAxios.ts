@@ -28,6 +28,23 @@ const useAxios = <DataResponse>(
 
   const axiosController = axios.CancelToken.source();
 
+  const handleSetHeaders = () => {
+    const getInforAdmin = localStorage.getItem('infor_admin');
+    console.log(getInforAdmin);
+    if (getInforAdmin) {
+      const inforAdmin = JSON.parse(getInforAdmin);
+
+      return inforAdmin.token
+        ? {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + inforAdmin.token
+          }
+        : {
+            'Content-Type': 'application/json'
+          };
+    }
+  };
+
   const fetchData = async () => {
     if (!isLoading.value) {
       setTimeout(() => {
@@ -36,6 +53,7 @@ const useAxios = <DataResponse>(
       try {
         const res: AxiosResponse<DataResponse> = await axiosClient[method](api, body, {
           ...options,
+          headers: handleSetHeaders(),
           cancelToken: axiosController.token
         });
 

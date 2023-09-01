@@ -1,4 +1,3 @@
-import { useInforAdminStore } from '@/stores/counter';
 import axios, {
   type AxiosInstance,
   type AxiosResponse,
@@ -6,25 +5,8 @@ import axios, {
 } from 'axios';
 import qs from 'qs';
 
-const handleSetHeaders = () => {
-  const getInforAdmin = localStorage.getItem('infor_admin');
-  const infoAdminStore = useInforAdminStore();
-  if (getInforAdmin) {
-    const inforAdmin = JSON.parse(getInforAdmin) || infoAdminStore.inforAdmin;
-
-    return inforAdmin.token
-      ? {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + inforAdmin.token
-        }
-      : {
-          'Content-Type': 'application/json'
-        };
-  }
-};
 const axiosClient: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_ENDPOINT,
-  headers: handleSetHeaders(),
   paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'brackets' })
 });
 
