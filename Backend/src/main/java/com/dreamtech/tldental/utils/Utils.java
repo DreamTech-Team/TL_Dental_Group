@@ -12,10 +12,12 @@ public class Utils {
     }
 
     public static String generateSlug(String str) {
-        String slug = Normalizer.normalize(str, Normalizer.Form.NFD)
-                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+        String cleanedStr = str.replaceAll("[^a-zA-Z0-9]", " ");
 
-        return slug.toLowerCase(Locale.getDefault())
-                .replaceAll("\\s+", "-");
+        String slug = Normalizer.normalize(cleanedStr, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                .toLowerCase(Locale.getDefault());
+
+        return slug.replaceAll("\\s+", "-");
     }
 }
