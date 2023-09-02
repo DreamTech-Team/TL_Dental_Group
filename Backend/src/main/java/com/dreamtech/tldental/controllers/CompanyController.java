@@ -182,7 +182,7 @@ public class CompanyController {
     @PreAuthorize(value = "hasRole('ROLE_ADMIN')")
     @PatchMapping("/outstanding/{id}")
     ResponseEntity<ResponseObject> updateOutstandingCompany(@PathVariable String id,
-            @RequestParam("idProduct") String idProduct) {
+            @RequestParam(value = "idProduct", required = false) String idProduct) {
         try {
             Optional<Company> foundCompany = companyRepository.findById(id);
 
@@ -191,7 +191,7 @@ public class CompanyController {
                         new ResponseObject("failed", "Can not find company with id = " + id, ""));
             }
 
-            if (idProduct == null || idProduct == "") {
+            if (idProduct == null) {
                 foundCompany.get().setHighlight(0);
                 foundCompany.get().setOutstandingProductId(null);
                 return ResponseEntity.status(HttpStatus.OK).body(
