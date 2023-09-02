@@ -47,6 +47,15 @@ const uniqueTags = ref([
   }
 ]);
 
+//Truncate text
+const truncateText = (str: string, maxLength: number) => {
+  if (str.length <= maxLength) {
+    return str;
+  } else {
+    return str.substring(0, maxLength - 3) + '...';
+  }
+};
+
 //Filter news by Tag
 const filterTags = (selectedTag: string) => {
   if (selectedTag === 'all') {
@@ -157,7 +166,7 @@ onUnmounted(() => {
         >
           <div :class="$style['home__activities-text']">
             <h4>{{ activity.title }}</h4>
-            <span>{{ activity.summary }}</span>
+            <span v-html="truncateText(activity.summary, 195)"></span>
           </div>
         </div>
       </div>

@@ -7,6 +7,7 @@ import CamBtn from '@/components/ImageBtn/ImageBtn.vue';
 import CropImage from '@/components/CropImage/CropImage.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import AltImage from '@/assets/imgs/Home/Meeting.png';
+import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
 
 const context = defineProps({
   uuid: {
@@ -39,6 +40,7 @@ const isCrop = ref(false);
 const isOpenInput = ref(false);
 const fileData = ref();
 const finalImage = ref();
+const isLoading = ref(false);
 
 //Open file image
 const openFileInput = () => {
@@ -65,6 +67,7 @@ const handleCroppedImage = (result: string) => {
 };
 
 const submitForm = () => {
+  isLoading.value = true;
   const deps = ref([]);
 
   const object = {
@@ -91,6 +94,7 @@ const submitForm = () => {
 
   watch(response, () => {
     if (response.value?.status === 'ok') {
+      isLoading.value = false;
       Swal.fire({
         title: 'Cập nhật thành công',
         icon: 'success',
@@ -132,6 +136,9 @@ const submitForm = () => {
           <button @click="$emit('close')">Hủy</button>
           <button @click="submitForm">Cập nhật</button>
         </div>
+      </div>
+      <div v-show="isLoading" :class="$style.loading__overlay">
+        <Loading />
       </div>
     </div>
   </div>
