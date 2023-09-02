@@ -53,8 +53,8 @@ watch(getNews.response, () => {
     showButtonRight.value = true;
     contentButtonRight.value = dataNews.value[indexNews.value + 1].title;
   } else if (indexNews.value === dataNews.value.length - 1) {
-    showButtonLeft.value = false;
-    showButtonRight.value = true;
+    showButtonLeft.value = true;
+    showButtonRight.value = false;
     contentButtonLeft.value = dataNews.value[indexNews.value - 1].title;
   } else {
     showButtonLeft.value = true;

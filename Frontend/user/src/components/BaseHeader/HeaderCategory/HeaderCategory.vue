@@ -23,11 +23,18 @@ const heightCate2 = (slug: string) => {
 };
 
 const handleGetIndexCate1 = (categoryIndex: number) => {
+  saveIndexState.setTypeCategory('cate1Header' + categoryIndex);
   saveIndexState.setActiveCategory({ categoryIndex, itemIndex: -1 });
 };
 
 const handleGetIndexCate2 = (categoryIndex: number, itemIndex: number) => {
+  saveIndexState.setTypeCategory('cate2Header' + categoryIndex + '' + itemIndex);
   saveIndexState.setActiveCategory({ categoryIndex: categoryIndex, itemIndex: itemIndex });
+};
+
+const handleResetCate = () => {
+  saveIndexState.setTypeCategory('reset');
+  saveIndexState.setActiveCategory({ categoryIndex: -1, itemIndex: -1 });
 };
 </script>
 <template>
@@ -89,7 +96,11 @@ const handleGetIndexCate2 = (categoryIndex: number, itemIndex: number) => {
       </li>
 
       <li :class="$style['header-category__more']" key="xemtatca">
-        <router-link to="/sanpham" :class="$style['header-category__more-link']">
+        <router-link
+          to="/sanpham"
+          :class="$style['header-category__more-link']"
+          @click="handleResetCate"
+        >
           Xem tất cả
         </router-link>
       </li>

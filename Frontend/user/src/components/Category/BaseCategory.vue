@@ -36,7 +36,7 @@ interface DataRender {
 }
 
 const dataCate = useDataRenderStore();
-const { selectedCategoryItem } = toRefs(saveActive());
+const { selectedCategoryItem, typeCate } = toRefs(saveActive());
 const { isAnimationVisible } = toRefs(setAnnimation());
 const saveState = saveActive();
 
@@ -114,14 +114,31 @@ const toggleAnimation = (index: number) => {
 
 toggleAnimation(selectedCategoryItem.value.categoryIndex);
 
-watch(selectedCategoryItem, (newValue, oldValue) => {
-  if (newValue.categoryIndex !== oldValue.categoryIndex) {
-    // Chỉ thực hiện toggleAnimation khi chọn category cấp 1
-    toggleAnimation(newValue.categoryIndex);
-  } else if (newValue.itemIndex !== oldValue.itemIndex && newValue.categoryIndex !== -1) {
-    toggleAnimation(newValue.categoryIndex);
+watch(typeCate, () => {
+  if (typeCate.value !== 'notHeader') {
+    toggleAnimation(selectedCategoryItem.value.categoryIndex);
+
+    if (typeCate.value.includes('cate2Header')) {
+      console.log(typeCate.value[typeCate.value.length - 1]);
+
+      // toggleAnimation(selectedCategoryItem.value.categoryIndex);
+      // toggleAnimation(selectedCategoryItem.value.categoryIndex);
+    }
   }
 });
+
+// watch(typeCate, () => {
+//   // if (newValue.categoryIndex !== oldValue.categoryIndex) {
+//   //   // Chỉ thực hiện toggleAnimation khi chọn category cấp 1
+//   //   toggleAnimation(newValue.categoryIndex);
+//   //   // toggleAnimation(newValue.categoryIndex);
+//   // } else if (newValue.itemIndex !== oldValue.itemIndex && newValue.categoryIndex !== -1) {
+//   //   toggleAnimation(newValue.categoryIndex);
+//   // } else if (newValue.categoryIndex === -1) {
+//   //   toggleAnimation(newValue.categoryIndex);
+//   // }
+//   toggleAnimation(selectedCategoryItem.value.categoryIndex);
+// });
 
 const idDefine = (index: number) => {
   return `id-${index}`;
@@ -145,6 +162,7 @@ const logAndSelectCategory1 = (categoryIndex: number) => {
 // Hàm chọn category cấp 2
 const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
   saveState.setActiveCategory({ categoryIndex, itemIndex });
+  saveState.setTypeCategory('notHeader');
 
   // Lưu index của category cấp 2 được chọn
   selectedCategory2Index.value = itemIndex;

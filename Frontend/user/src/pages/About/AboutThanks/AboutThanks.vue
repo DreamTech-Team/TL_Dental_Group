@@ -7,7 +7,7 @@ const variableChange = ref([]);
 const contentLetter = ref('');
 const isLoadingLetter = ref(false);
 const canHover = ref(true);
-const a = ref(false);
+const hoverSetHeight = ref(false);
 const heightLetter = ref(0);
 
 const { response, isLoading } = useAxios<DataResponse>(
@@ -31,15 +31,13 @@ const handleOpen = () => {
   if (window.innerWidth > 1100) {
     canHover.value = true; // Vô hiệu hóa hover trong 2 giây
 
-    setTimeout(() => {
-      const b = document.getElementById('letter');
-      if (b) {
-        console.log(b.offsetHeight);
-        heightLetter.value = b.offsetHeight;
-      }
+    const letter = document.getElementById('letter');
+    if (letter) {
+      console.log(letter.offsetHeight);
+      heightLetter.value = letter.offsetHeight;
+    }
 
-      a.value = true;
-    }, 100);
+    hoverSetHeight.value = true;
 
     const mobileElement = document.getElementById('letter');
 
@@ -56,9 +54,7 @@ const handleOpen = () => {
 const handleLeave = () => {
   canHover.value = false; // Đặt lại isHovering thành false
 
-  a.value = false;
-  // setTimeout(() => {
-  // }, 1400);
+  hoverSetHeight.value = false;
 
   // Sau 3 giây, kích hoạt lại việc hover
   setTimeout(() => {
@@ -118,7 +114,7 @@ onMounted(() => {
           :class="$style['about__thanks-letter']"
           id="letter"
           v-if="!isLoadingLetter"
-          :style="{ top: a ? -heightLetter - 200 + 'px' : 0 }"
+          :style="{ top: hoverSetHeight ? -heightLetter - 200 + 'px' : 0 }"
         >
           <h1>LỜI CẢM ƠN</h1>
           <p v-html="contentLetter" id="content_letter"></p>

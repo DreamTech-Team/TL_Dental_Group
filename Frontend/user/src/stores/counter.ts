@@ -49,11 +49,17 @@ export const saveActive = defineStore('saveActiveCategory', () => {
     itemIndex: -1
   });
 
+  const typeCate = ref('');
+
   const setActiveCategory = (newActive: Active) => {
     selectedCategoryItem.value = { ...newActive };
   };
 
-  return { selectedCategoryItem, setActiveCategory };
+  const setTypeCategory = (type: string) => {
+    typeCate.value = type;
+  };
+
+  return { selectedCategoryItem, setActiveCategory, typeCate, setTypeCategory };
 });
 
 //Hàm lưu annimation của category
