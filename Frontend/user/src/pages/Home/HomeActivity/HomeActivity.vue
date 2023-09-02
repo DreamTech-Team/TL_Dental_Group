@@ -58,6 +58,15 @@ const itemWidth = ref(0);
 const tags = ref('all');
 const feedbacks = ref<Item[]>([]);
 
+//Truncate text
+const truncateText = (str: string, maxLength: number) => {
+  if (str.length <= maxLength) {
+    return str;
+  } else {
+    return str.substring(0, maxLength - 3) + '...';
+  }
+};
+
 //Get highlight news
 const deps = ref([]);
 const { response } = useAxios<DataResponse>('get', '/news/highlight', {}, {}, deps.value);
@@ -206,7 +215,7 @@ onUnmounted(() => {
         >
           <div :class="$style['home__activities-text']">
             <h4>{{ activity.title }}</h4>
-            <span>{{ activity.summary }}</span>
+            <span v-html="truncateText(activity.summary, 195)"></span>
           </div>
         </div>
       </router-link>
