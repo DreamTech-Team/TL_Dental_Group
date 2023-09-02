@@ -185,6 +185,20 @@ public class CompanyController {
             @RequestParam("idProduct") String idProduct) {
         try {
             Optional<Company> foundCompany = companyRepository.findById(id);
+
+            if (foundCompany == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject("failed", "Can not find company with id = " + id, ""));
+            }
+
+            if (idProduct == null || idProduct == "") {
+                foundCompany.get().setHighlight(0);
+                foundCompany.get().setOutstandingProductId(null);
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObject("ok", "Update outstanding company successfully",
+                                companyRepository.save(foundCompany.get())));
+            }
+
             Optional<Product> foundProduct = productRepository.findById(idProduct);
             if (!foundProduct.isPresent() || !foundCompany.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
@@ -193,11 +207,6 @@ public class CompanyController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                         new ResponseObject("failed", "This product is not belong to " + foundCompany.get().getName(),
                                 ""));
-            }
-
-            if (foundCompany == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new ResponseObject("failed", "Can not find company with id = " + id, ""));
             }
 
             foundCompany.get().setHighlight(1);

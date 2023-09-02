@@ -30,7 +30,7 @@ public class News {
     @Column(length = 300)
     private String summary;
 
-    @Column(length = 5000)
+    @Column(length = 10000)
     private String detail;
 
     @Column(name = "detail_mobile", length = 5000)
