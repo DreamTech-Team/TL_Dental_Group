@@ -55,8 +55,8 @@ const hanldeConvertPage = (link: string) => {
   <div :class="$style.container__sidebar">
     <div
       :class="[$style.sidebar, $style[showSidebar ? 'show' : '']]"
-      v-on:mouseover="showBtnSidebar = true"
-      v-on:mouseout="showBtnSidebar = false"
+      v-on:mouseover="showSidebar = true"
+      v-on:mouseout="showSidebar = false"
     >
       <div :class="$style['sidebar__logo']">
         <img :src="ic_logo" alt="none" />

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { watch, reactive } from 'vue';
 
 const props = defineProps({
@@ -32,7 +31,6 @@ watch(
         </div>
         <p>{{ obj.label }}</p>
       </div>
-      <font-awesome-icon :class="$style['container__btn-right-icon']" :icon="faAngleRight" />
     </div>
   </router-link>
 </template>
