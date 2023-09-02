@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import CamBtn from '@/components/ImageBtn/ImageBtn.vue';
 import CropImage from '@/components/CropImage/CropImage.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import AltImage from '@/assets/imgs/Home/Meeting.png';
 
 const context = defineProps({
   uuid: {
@@ -68,8 +69,11 @@ const submitForm = () => {
   const object = {
     id: context.uuid,
     title: context.title,
-    content: context.tags
+    content: context.tags,
+    image: context.image ? context.image : 'NO IMAGE'
   };
+
+  console.log(object);
 
   const formData = new FormData();
   formData.append('data', JSON.stringify(object));
@@ -120,7 +124,7 @@ const submitForm = () => {
       </div>
       <div :class="$style.cammt__modal__body">
         <div :class="$style.cammt__ctn">
-          <img v-if="urlFile" :src="urlFile" alt="meeting" />
+          <img :src="urlFile ? urlFile : AltImage" alt="meeting" />
           <div :class="$style.cammt__image_overlay">
             <CamBtn @click="openFileInput" />
           </div>
