@@ -51,8 +51,6 @@ const formatDescription = (str: string): string | null => {
   }
 };
 
-console.log(context.product.description);
-
 const contentInput = ref(formatDescription(context.product.description));
 const selectedImage: Ref<string | null> = ref(context.product.mainImg);
 const dataSearchTerm = ref(context.product.name !== undefined ? context.product.name : '');
