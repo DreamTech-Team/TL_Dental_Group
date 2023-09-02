@@ -1,4 +1,5 @@
 import axios, {
+  AxiosError,
   type AxiosInstance,
   type AxiosResponse,
   type InternalAxiosRequestConfig
@@ -7,10 +8,26 @@ import qs from 'qs';
 
 const axiosClient: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_ENDPOINT,
+  timeout: 10000,
   paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'brackets' })
 });
 
-axiosClient.interceptors.request.use((config: InternalAxiosRequestConfig) => config);
+// axiosClient.interceptors.request.use((config: InternalAxiosRequestConfig) => config);
+axiosClient.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    const getInforAdmin = localStorage.getItem('infor_admin');
+    if (getInforAdmin) {
+      const inforAdmin = JSON.parse(getInforAdmin);
+      if (inforAdmin.token) {
+        config.headers['Authorization'] = 'Bearer ' + inforAdmin.token;
+      }
+    }
+    return config;
+  },
+  (error: AxiosError) => {
+    return Promise.reject(error);
+  }
+);
 
 axiosClient.interceptors.response.use(
   (response: AxiosResponse) => {

@@ -58,7 +58,7 @@ watch([response, isLoading], () => {
 
         <button @click="openModal" :class="$style.mn_activity_control">
           <font-awesome-icon :icon="faPlus" :class="$style['mn_activity--total-ic1']" />
-          THÊM NHÂN NHÂN SỰ
+          THÊM NHÂN SỰ
         </button>
       </div>
       <staff-table :staffArray="staffArray" />
