@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { ref, watchEffect, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { format } from 'date-fns';
-import { faPlus, faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import ActivityTable from '@/pages/Activity/ActivityTable/ActivityTable.vue';
 import ActivityTag from '@/pages/Activity/ActivityTag/ActivityTag.vue';
 import ActivityModal from './ActivityTable/ModalActivity/ActivityModal.vue';
 import ModalAddTag from './ActivityTag/ModalTag/ModalTag.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
+import Pagination from '@/components/Pagination/BasePagination.vue';
 
 interface Tags {
   id: string;
@@ -39,14 +40,21 @@ interface News {
 const currentPage = ref(0);
 const pageSize = ref(10);
 const deps = ref([]);
+const isLoadingState = ref(false);
 
 const listNews = ref<News[]>([]);
 const api = ref(`/news?pageSize=${pageSize.value}&page=${currentPage.value}`);
-const {
-  response: dataNews,
-  error,
-  isLoading
-} = useAxios<DataResponse>('get', api.value, {}, {}, deps.value);
+const { response: dataNews, isLoading } = useAxios<DataResponse>(
+  'get',
+  api.value,
+  {},
+  {},
+  deps.value
+);
+
+watch(isLoading, () => {
+  isLoadingState.value = isLoading.value;
+});
 
 watch(dataNews, () => {
   listNews.value = dataNews?.value?.data?.data;
@@ -61,20 +69,20 @@ const {
 } = useAxios<DataResponse>('get', `/news/total`, {}, {}, deps.value);
 
 watch(
-  currentPage,
+  [currentPage, isLoading],
   () => {
     // console.log(12345);
-    const {
-      response: responseChanged,
-      error,
-      isLoading
-    } = useAxios<DataResponse>(
+    const { response: responseChanged, isLoading } = useAxios<DataResponse>(
       'get',
       `/news?pageSize=${pageSize.value}&page=${currentPage.value}`,
       {},
       {},
       deps.value
     );
+
+    watch(isLoading, () => {
+      isLoadingState.value = isLoading.value;
+    });
     watch(responseChanged, () => {
       dataNews.value = responseChanged.value;
     });
@@ -83,11 +91,13 @@ watch(
 );
 
 //Call API tags
-const {
-  response: totalTagsResponsive,
-  error: errorTags,
-  isLoading: loadingTags
-} = useAxios<DataResponse>('get', '/tags', {}, {}, deps.value);
+const { response: totalTagsResponsive } = useAxios<DataResponse>(
+  'get',
+  '/tags',
+  {},
+  {},
+  deps.value
+);
 
 const isModalOpen = ref(false);
 const activeTab = ref('activity');
@@ -124,6 +134,20 @@ const handleChangeAdd = (dataAdded: Tags) => {
 const handleUpdateData = (newsAdd: News) => {
   listNews.value.push(newsAdd);
   location.reload();
+};
+
+//Pagination Handle
+const scrollToTop = (top: number) => {
+  window.scrollTo({
+    top: top,
+    behavior: 'smooth'
+  });
+};
+
+const handlePageChange = (page: number) => {
+  currentPage.value = page - 1;
+  scrollToTop(0);
+  // console.log(currentPage.value);
 };
 
 watchEffect(() => {
@@ -176,16 +200,27 @@ watchEffect(() => {
       <hr />
       <!-- Hoạt động -->
       <div v-if="activeTab === 'activity'">
+        <loading-component v-if="isLoadingState" style="height: calc(100vh - 200px)" />
         <activity-table
+          v-else
           :change="handleNewsDeleted"
           :dataNews="listNews"
           @current-page="updateCurrentPage"
           :totalPage="totalActivity"
         />
+        <div :class="$style['mn_activity_pagination']">
+          <pagination
+            :total="totalActivity ? totalActivity : 0"
+            :current-page="currentPage"
+            :page-size="pageSize"
+            @current-change="handlePageChange"
+          />
+        </div>
       </div>
       <!-- Tags -->
       <div v-else-if="activeTab === 'tags'">
-        <activity-tag :listTags="listTags" :handleTagDeleted="handleTagDeleted" />
+        <loading-component v-if="isLoadingState" style="height: calc(100vh - 200px)" />
+        <activity-tag v-else :listTags="listTags" :handleTagDeleted="handleTagDeleted" />
       </div>
     </div>
     <div :class="$style.activity_overlay" v-if="isModalOpen">

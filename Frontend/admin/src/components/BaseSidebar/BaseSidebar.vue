@@ -12,7 +12,8 @@ import {
   faNewspaper,
   faLayerGroup,
   faUniversalAccess,
-  faBuildingShield
+  faBuildingShield,
+  faBars
 } from '@fortawesome/free-solid-svg-icons';
 import { ref, reactive } from 'vue';
 
@@ -20,6 +21,7 @@ let btnItems = [
   { icon: faChartLine, label: 'Dashboard', link: '/' },
   { icon: faDashboard, label: 'Quản lý giao diện', link: '/mnui' },
   { icon: faLayerGroup, label: 'Quản lý sản phẩm', link: '/mnproduct' },
+  { icon: faBars, label: 'Quản lý danh mục', link: '/mncategory' },
   { icon: faNewspaper, label: 'Quản lý tin tức', link: 'mnactivity' },
   { icon: faPeopleGroup, label: 'Quản lý nhân viên', link: '/mnstaff' },
   { icon: faUniversalAccess, label: 'Quản lý tuyển dụng', link: '/mnrecruitment' },

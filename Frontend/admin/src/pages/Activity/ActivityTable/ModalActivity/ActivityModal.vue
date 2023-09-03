@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Editor from '@tinymce/tinymce-vue';
 import { ref, computed, watch } from 'vue';
-import type { CSSProperties } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import {
   faPlus,
@@ -11,14 +10,10 @@ import {
   faDownload
 } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
-
-import imageAct from '../../../../assets/imgs/Activity/image.png';
-import icPhoto from '../../../../assets/icons/camera.svg';
 import CropImage from '@/components/CropImage/CropImage.vue';
 import { type PropType } from 'vue';
-import { id } from 'element-plus/lib/locale/index.js';
-import { tags } from '../../Activity';
 import Swal from 'sweetalert2';
+import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface Tags {
   id: string;
@@ -92,13 +87,7 @@ const isOpenInput = ref(false);
 const indexCur = ref(1);
 const listTags = ref<Array<Tags>>([]);
 const isCrop = ref(false);
-
-//SUB Images
-const subFile = ref();
-const subfileData = ref();
-const imgsFile = ref();
-const subImageSrc = ref<string[]>([]);
-const subImagesFile = ref<File[]>([]);
+const isLoading = ref(false);
 
 const nextStep = () => {
   currentStep.value = 2;
@@ -110,7 +99,6 @@ const prevStep = () => {
 
 //Step 1
 const activityTitle = ref();
-const imageActivity = ref(imageAct);
 const mainFile = ref();
 const fileData = ref();
 const avatarFile = ref();
@@ -162,7 +150,6 @@ const handleCroppedImage = (result: string) => {
 };
 
 //Step 2
-
 const valueDescription = ref<string | undefined>('');
 const descriptionInput = ref<TextAreaValue>({
   level: {
@@ -246,19 +233,6 @@ const alertDialog = (context: string, page: number) => {
   indexCur.value = page;
 };
 
-//Handle change image in step 2
-const handleImageChange = (event: Event) => {
-  const file = (event.target as HTMLInputElement).files?.[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const imageUrl = URL.createObjectURL(file);
-      imageActivity.value = imageUrl;
-    };
-    reader.readAsDataURL(file);
-  }
-};
-
 const selectedTag = (tag: Tags) => {
   if (!selectedTags.value.includes(tag)) {
     selectedTags.value.push(tag);
@@ -297,6 +271,8 @@ const submitForm = () => {
     alertDialog('Mô tả quá ngắn', 2);
     return;
   } else {
+    isLoading.value = true;
+
     const object = {
       title: activityTitle.value, //step 1
       summary: summaryInput.value.level.content, //step 1
@@ -324,7 +300,11 @@ const submitForm = () => {
       deps.value
     );
     watch(createNews.response, () => {
+      console.log(createNews.response);
+
       if (createNews.response.value?.status === 'ok') {
+        isLoading.value = false;
+
         Swal.fire({
           title: 'Thêm thành công',
           icon: 'success',
@@ -343,10 +323,13 @@ const submitForm = () => {
     watch(createNews.error, () => {
       const errorValue: MyErrorResponse | null = createNews.error.value as MyErrorResponse | null;
       if (errorValue !== null) {
-        if (errorValue?.response?.data?.message === 'News name already taken') {
-          alertDialog('Tên sản tin tức đã tồn tại', 1);
-          return;
-        }
+        Swal.fire({
+          title: 'Tên hoạt động đã tồn tại',
+          icon: 'error',
+          confirmButtonText: 'Đóng',
+          width: '50rem',
+          padding: '0 2rem 2rem 2rem'
+        });
       }
     });
   }
@@ -402,7 +385,7 @@ const submitForm = () => {
             <p>Cập nhật ảnh bìa</p>
             <div v-if="!mainFile" :class="$style['adding__modal-upload']" @click="openFileInput">
               <font-awesome-icon :icon="faDownload" :class="$style['adding__modal-upload-ic']" />
-              <span>Chọn file hoặc kéo vào đây</span>
+              <span>Chọn file </span>
             </div>
             <template v-if="mainFile">
               <div :class="$style['adding__item-ctn']">
@@ -530,6 +513,10 @@ const submitForm = () => {
         <button :class="$style.wrap_step2_btn_back" @click="prevStep">Quay lại</button>
         <button :class="$style.wrap_step2_btn_done" @click="submitForm">Thêm</button>
       </div>
+    </div>
+
+    <div v-show="isLoading" :class="$style.loading__overlay">
+      <Loading />
     </div>
   </div>
   <crop-image

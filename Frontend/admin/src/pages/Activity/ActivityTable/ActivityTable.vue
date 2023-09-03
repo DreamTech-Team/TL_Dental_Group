@@ -10,6 +10,8 @@ import Pagination from '@/components/Pagination/BasePagination.vue';
 import UpdateActivity from './ModalActivity/UpdateActivity.vue';
 // import { activities } from '../Activity';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import styles from '../Activity.module.scss';
+import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface News {
   id: string;
@@ -35,6 +37,14 @@ interface Tags {
   name: string;
   slug: string;
   createAt: string;
+}
+
+interface MyErrorResponse {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
 }
 
 interface dataUpdate {
@@ -75,7 +85,6 @@ const emits = defineEmits<{
 
 const searchText = ref('');
 const currentPage = ref(0);
-const pageSize = ref(10);
 const isModalOpen = ref(false);
 const activeTab = ref('activity');
 
@@ -83,13 +92,12 @@ const deps = ref([]);
 const depsTag = ref([]);
 const debounceTimer = ref<ReturnType<typeof setTimeout> | null>(null);
 const resultListTags = ref<Array<Tags>>([]);
+const isLoading = ref(false);
 
 const activitiesResList = ref<News[]>(props.dataNews);
 watch(props, () => {
   activitiesResList.value = props.dataNews;
   currentPage.value;
-
-  console.log(activitiesResList.value);
 });
 
 const {
@@ -112,7 +120,7 @@ const selectedActivity = ref<Record<string, never> | News>({});
 const editActivity = (activity: News) => {
   selectedActivity.value = activity;
   isModalOpen.value = true; // Mở modal
-  console.log(activity);
+  // console.log(activity);
 };
 
 //Function call API Search
@@ -131,12 +139,8 @@ const searchNews = () => {
 };
 
 const handleUpdateNews = (data: dataUpdate) => {
-  console.log(data);
-
-  console.log('vinh đẹp trai');
   activitiesResList.value.forEach((item) => {
     if (item.id === data.id) {
-      // Cập nhật các thuộc tính của 'item.news' từ 'data.news'
       item.title = data.title;
       item.img = data.img;
       item.slug = data.slug;
@@ -146,9 +150,9 @@ const handleUpdateNews = (data: dataUpdate) => {
   });
 };
 
-watch(activitiesResList, () => {
-  console.log(activitiesResList.value);
-});
+// watch(activitiesResList, () => {
+//   console.log(activitiesResList.value);
+// });
 
 //Search Products
 watch(searchText, () => {
@@ -161,21 +165,6 @@ watch(searchText, () => {
     searchNews();
   }, 400);
 });
-
-//Pagination Handle
-const scrollToTop = (top: number) => {
-  window.scrollTo({
-    top: top,
-    behavior: 'smooth'
-  });
-};
-
-const handlePageChange = (page: number) => {
-  currentPage.value = page - 1;
-  scrollToTop(0);
-  emits('current-page', currentPage.value);
-  // console.log(currentPage.value);
-};
 
 //Hàm giới hạn chiều dài khung
 const truncateText = (text: string, maxLength: number) => {
@@ -205,6 +194,61 @@ const formatDateTime = (dateTimeStr: string) => {
   return formattedDateTime;
 };
 
+// Hàm lấy dữ liệu trả về khi update Highlight công ty
+const handleUpdateHighLight = (index: number) => {
+  const checkbox = document.getElementById(`myCheckbox${index}`);
+  // console.log(props.dataNews[index].slug);
+
+  if (checkbox instanceof HTMLInputElement) {
+    // Gọi hàm useAxios để lấy response, error, và isLoading
+    const { response } = useAxios<DataResponse>(
+      'patch',
+      '/news/highlight/' +
+        props.dataNews[index].slug +
+        '?' +
+        'highlight=' +
+        (checkbox.checked ? 1 : 0),
+      {},
+      {},
+      deps.value
+    );
+
+    watch(response, () => {
+      if (!isLoading.value) {
+        if (response.value?.status === 'ok') {
+          Swal.fire({
+            title: 'Cập nhật sản phẩm nổi bậc thành công',
+            icon: 'success',
+            confirmButtonText: 'Hoàn tất',
+            timer: 2000,
+            width: '50rem',
+            padding: '0 2rem 2rem 2rem',
+            customClass: {
+              confirmButton: styles['confirm-button'],
+              cancelButton: styles['cancel-button'],
+              title: styles['title']
+            }
+          });
+        } else {
+          Swal.fire({
+            title: 'Cập nhật công ty nổi bậc thất bại',
+            icon: 'success',
+            confirmButtonText: 'Hoàn tất',
+            timer: 2000,
+            width: '50rem',
+            padding: '0 2rem 2rem 2rem',
+            customClass: {
+              confirmButton: styles['confirm-button'],
+              cancelButton: styles['cancel-button'],
+              title: styles['title']
+            }
+          });
+        }
+      }
+    });
+  }
+};
+
 const deleteActivity = async (id: string) => {
   Swal.fire({
     title: 'Bạn có chắc muốn xóa?',
@@ -217,42 +261,69 @@ const deleteActivity = async (id: string) => {
     cancelButtonText: 'Hủy'
   }).then(async (result) => {
     if (result.isConfirmed) {
-      // Gọi API DELETE bằng cách sử dụng `useAxios`
-      const deleteNews = useAxios<DataResponse>(
-        'delete',
-        `/news/${id}`, // Đặt endpoint URL xóa phần tử cụ thể dựa vào id
-        {},
-        {},
-        deps.value
-      );
-      console.log(id);
+      try {
+        // Gọi API DELETE bằng cách sử dụng `useAxios`
+        const deleteNews = useAxios<DataResponse>(
+          'delete',
+          `/news/${id}`, // Đặt endpoint URL xóa phần tử cụ thể dựa vào id
+          {},
+          {},
+          deps.value
+        );
+        // console.log(id);
 
-      watch(deleteNews.response, () => {
-        // console.log(deleteNews.response.value);
+        watch(deleteNews.isLoading, () => {
+          isLoading.value = deleteNews.isLoading.value;
+        });
 
-        if (deleteNews.response.value?.status === 'ok') {
-          // Xóa phần tử trong activitiesResList
-          if (activitiesResList.value) {
-            activitiesResList.value = activitiesResList.value.filter(
-              (item: { id: string }) => item.id !== id
-            );
-          }
-          props.change(id);
+        watch(deleteNews.response, () => {
+          // console.log(deleteNews.response.value);
 
-          Swal.fire({
-            title: 'Xóa thành công',
-            icon: 'success',
-            confirmButtonText: 'Hoàn tất',
-            width: '30rem'
-          }).then((result) => {
-            if (result.isConfirmed) {
-              setTimeout(function () {
-                Swal.close();
-              }, 1200);
+          if (deleteNews.response.value?.status === 'ok') {
+            // Xóa phần tử trong activitiesResList
+            if (activitiesResList.value) {
+              activitiesResList.value = activitiesResList.value.filter(
+                (item: { id: string }) => item.id !== id
+              );
             }
-          });
-        }
-      });
+            props.change(id);
+
+            Swal.fire({
+              title: 'Xóa thành công',
+              icon: 'success',
+              confirmButtonText: 'Hoàn tất',
+              width: '30rem'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                setTimeout(function () {
+                  Swal.close();
+                }, 1200);
+              }
+            });
+          }
+        });
+
+        watch(deleteNews.error, () => {
+          const errorValue: MyErrorResponse | null = deleteNews.error
+            .value as MyErrorResponse | null;
+          if (errorValue !== null) {
+            Swal.fire({
+              title: 'Xóa không thành công!',
+              icon: 'error',
+              confirmButtonText: 'Đóng',
+              width: '50rem',
+              padding: '0 2rem 2rem 2rem'
+            });
+          }
+        });
+      } catch (error) {
+        Swal.fire({
+          title: 'Xóa không thành công',
+          text: 'Có lỗi xảy ra khi xóa!',
+          icon: 'error',
+          width: '30rem'
+        });
+      }
     }
   });
 };
@@ -272,33 +343,43 @@ const deleteActivity = async (id: string) => {
           <thead>
             <tr>
               <th style="width: 5%">STT</th>
-              <th style="width: 30%">Tên hoạt động</th>
+              <th style="width: 28%">Tên hoạt động</th>
               <th style="width: 30%">Tags</th>
               <th style="width: 18%">Thời gian diễn ra</th>
-              <th style="width: 17%">Chỉnh sửa</th>
+              <th style="width: 9%">Nổi bật</th>
+              <th style="width: 10%">Chỉnh sửa</th>
             </tr>
           </thead>
         </table>
-        <div :class="$style.mn_activity_table_ctn">
+        <div v-if="!isLoading" :class="$style.mn_activity_table_ctn">
           <table :class="$style.mn_activity_table">
             <tbody>
               <template v-if="activitiesResList?.length > 0">
                 <tr v-for="(item, index) in activitiesResList" :key="index">
                   <td style="width: 5%">{{ index + 1 }}</td>
-                  <td style="max-width: 30%">
+                  <td style="max-width: 28%">
                     {{ truncateText(item?.title, 50) }}
                   </td>
                   <td style="width: 30%">
                     <span v-for="(tag, idx) in item?.tags" :key="idx">
                       {{ truncateText(tag.name, 40) }}
-                      <span style="max-width: 30%" v-if="idx !== item.tags.length - 1">{{
-                        ', '
-                      }}</span>
+                      <span style="width: 30%" v-if="idx !== item.tags.length - 1">{{ ', ' }}</span>
                     </span>
                   </td>
 
-                  <td style="width: 20%">{{ formatDateTime(item?.createAt) }}</td>
-                  <td style="width: 15%">
+                  <td style="width: 18%">{{ formatDateTime(item?.createAt) }}</td>
+                  <td style="width: 9%">
+                    <input
+                      :title="
+                        item.highlight === 0 ? 'Hoạt động không nổi bật' : 'Hoạt động nổi bật'
+                      "
+                      :id="`myCheckbox${index}`"
+                      @change="handleUpdateHighLight(index)"
+                      type="checkbox"
+                      :checked="item.highlight !== 0 ? true : false"
+                    />
+                  </td>
+                  <td style="width: 10%">
                     <button :class="$style['btn-room-trash']" @click="deleteActivity(item.id)">
                       <font-awesome-icon :icon="faTrash" />
                     </button>
@@ -316,14 +397,7 @@ const deleteActivity = async (id: string) => {
             </tbody>
           </table>
         </div>
-      </div>
-      <div :class="$style['mn_activity_pagination']">
-        <pagination
-          :total="props.totalPage ? props.totalPage : 0"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          @current-change="handlePageChange"
-        />
+        <Loading v-else style="height: calc(100vh - 200px)" />
       </div>
     </div>
     <div :class="$style.activity_overlay" v-if="isModalOpen">

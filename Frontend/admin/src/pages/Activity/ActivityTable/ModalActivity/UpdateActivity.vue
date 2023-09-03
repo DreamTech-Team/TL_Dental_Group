@@ -16,32 +16,13 @@ import { type PropType } from 'vue';
 import { id } from 'element-plus/lib/locale/index.js';
 import Swal from 'sweetalert2';
 import CropImage from '@/components/CropImage/CropImage.vue';
+import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface Tags {
   id: string;
   name: string;
   slug: string;
   createAt: string;
-}
-
-interface News {
-  id: string;
-  title: string;
-  img: string;
-  slug: string;
-  summary: string;
-  detail: string;
-  detailMobile: string;
-  highlight: number;
-  createAt: string;
-  tags: [
-    {
-      id: string;
-      name: string;
-      slug: string;
-      createAt: string;
-    }
-  ];
 }
 
 interface dataUpdate {
@@ -90,10 +71,6 @@ const props = defineProps({
     type: Object, // Kiểu dữ liệu của prop
     required: true // Bắt buộc phải truyền giá trị cho prop
   }
-  // change: {
-  //   type: Function as PropType<(newData: News) => void>,
-  //   required: true
-  // }
 });
 
 const searchInput = ref('');
@@ -102,13 +79,7 @@ const isOpenInput = ref(false);
 const indexCur = ref(1);
 const listTags = ref<Array<Tags>>([]);
 const isCrop = ref(false);
-
-//SUB Images
-const subFile = ref();
-const subfileData = ref();
-const imgsFile = ref();
-const subImageSrc = ref<string[]>([]);
-const subImagesFile = ref<File[]>([]);
+const isLoading = ref(false);
 
 const nextStep = () => {
   currentStep.value = 2;
@@ -120,7 +91,6 @@ const prevStep = () => {
 
 //Step 1
 const activityTitle = ref(props.selectedActivity?.title);
-const imageActivity = ref(imageAct);
 const mainFile = ref(props.selectedActivity?.img);
 const fileData = ref();
 const avatarFile = ref();
@@ -265,9 +235,7 @@ const alertDialog = (context: string, page: number) => {
 const selectedTag = (tag: Tags) => {
   if (!selectedTags.value.includes(tag)) {
     selectedTags.value.push(tag);
-    // console.log(selectedTags);
     listIdTags.value.push(tag.id);
-    // console.log(listIdTags);
   }
 };
 
@@ -303,6 +271,8 @@ const submitForm = () => {
     alertDialog('Mô tả quá ngắn', 2);
     return;
   } else {
+    isLoading.value = true;
+
     const object = {
       id: props.selectedActivity?.id,
       title: activityTitle.value, //step 1
@@ -321,10 +291,7 @@ const submitForm = () => {
       formData.append('tags', item);
     });
 
-    //["id1"]
     formData.append('data', JSON.stringify(object));
-    // console.log(formData);
-
     const updateNews = useAxios<DataResponse>(
       'patch',
       `/news/${props.selectedActivity?.id}`,
@@ -338,6 +305,8 @@ const submitForm = () => {
     );
     watch(updateNews.response, () => {
       if (updateNews.response.value?.status === 'ok') {
+        isLoading.value = false;
+
         Swal.fire({
           title: 'Cập nhật thành công',
           icon: 'success',
@@ -357,10 +326,13 @@ const submitForm = () => {
     watch(updateNews.error, () => {
       const errorValue: MyErrorResponse | null = updateNews.error.value as MyErrorResponse | null;
       if (errorValue !== null) {
-        if (errorValue?.response?.data?.message === 'News name already taken') {
-          alertDialog('Tên sản tin tức đã tồn tại', 1);
-          return;
-        }
+        Swal.fire({
+          title: 'Tên hoạt động đã tồn tại',
+          icon: 'error',
+          confirmButtonText: 'Đóng',
+          width: '50rem',
+          padding: '0 2rem 2rem 2rem'
+        });
       }
     });
   }
@@ -544,6 +516,9 @@ const submitForm = () => {
         <button :class="$style.wrap_step2_btn_back" @click="prevStep">Quay lại</button>
         <button :class="$style.wrap_step2_btn_done" @click="submitForm">Cập nhật</button>
       </div>
+    </div>
+    <div v-show="isLoading" :class="$style.loading__overlay">
+      <Loading />
     </div>
   </div>
   <crop-image
