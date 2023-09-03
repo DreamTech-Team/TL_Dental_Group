@@ -1,13 +1,12 @@
 <script setup lang="ts">
+import { ref, watch, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-
 import logo from '@/assets/imgs/logo.png';
 import RecruitmentDetailsItem from './RecruitmentDetailsItem/RecruitmentDetailsItem.vue';
 import RecruitmentCard from '../Recruitment/RecruitmentCard/RecruitmentCard.vue';
 import { data } from './RecruitmentDetailsHandle';
 import { ic_bag, ic_hourglass, ic_location } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
-import { ref, watch } from 'vue';
 import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 const typeRecuit = ref([
@@ -72,6 +71,34 @@ watch(getRecruitmentDetails.response, (value) => {
 
   descriptionRec.value = tmp.description;
 });
+
+// Xử lí resize lại tấm ảnh, linehight để phù hợp với mobile
+const handleResizeData = () => {
+  const parent = document.getElementById('content_body');
+
+  if (parent) {
+    const content = ref<HTMLElement[] | null>(null);
+    const tagli = ref<HTMLElement[] | null>(null);
+    const contents = parent.getElementsByTagName('p');
+    const listli = parent.getElementsByTagName('li');
+    const contentArray = Array.from(contents);
+    const liArray = Array.from(listli);
+    content.value = contentArray;
+    tagli.value = liArray;
+
+    content.value.forEach((item) => {
+      item.style.lineHeight = '1.8';
+    });
+
+    tagli.value.forEach((item) => {
+      item.style.lineHeight = '1.8';
+      item.style.marginLeft = '15px';
+      item.style.paddingLeft = '5px';
+    });
+  }
+};
+
+setTimeout(handleResizeData, 1000);
 </script>
 <template>
   <LoadingComponent v-if="isLoading" />
@@ -97,7 +124,11 @@ watch(getRecruitmentDetails.response, (value) => {
         <div :class="$style['container__content-right-type']">
           <recruitment-card :items="typeRecuit" :style="'type6'" />
         </div>
-        <div :class="$style['container__content-right-content']" v-html="descriptionRec"></div>
+        <div
+          :class="$style['container__content-right-content']"
+          id="content_body"
+          v-html="descriptionRec"
+        ></div>
       </div>
     </div>
   </div>

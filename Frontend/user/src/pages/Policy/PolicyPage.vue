@@ -52,6 +52,32 @@ const handleSelected = (index: number) => {
 const handleActiveNav = () => {
   showNav.value = !showNav.value;
 };
+
+const handleResizeData = () => {
+  const parent = document.getElementById('content_body');
+  if (parent) {
+    const content = ref<HTMLElement[] | null>(null);
+    const tagli = ref<HTMLElement[] | null>(null);
+    const contents = parent.getElementsByTagName('p');
+    const listli = parent.getElementsByTagName('li');
+    const contentArray = Array.from(contents);
+    const liArray = Array.from(listli);
+    content.value = contentArray;
+    tagli.value = liArray;
+
+    content.value.forEach((item) => {
+      item.style.lineHeight = '1.8';
+    });
+
+    tagli.value.forEach((item) => {
+      item.style.lineHeight = '1.8';
+      item.style.marginLeft = '15px';
+      item.style.paddingLeft = '5px';
+    });
+  }
+};
+
+setTimeout(handleResizeData, 1000);
 </script>
 <template>
   <div :class="$style.container">
@@ -104,6 +130,7 @@ const handleActiveNav = () => {
           {{ listPolicy[selectedItem]?.title }}
         </div>
         <div
+          id="content_body"
           :class="$style['container__content-section-details']"
           v-html="listPolicy[selectedItem]?.content"
         ></div>

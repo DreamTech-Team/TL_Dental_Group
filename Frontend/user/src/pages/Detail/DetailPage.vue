@@ -184,6 +184,54 @@ const formatNumberWithCommas = (num: number) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 
+const handleResizeData = () => {
+  const parent = document.getElementById('content_body');
+  const parent1 = document.getElementById('content_body1');
+
+  if (parent) {
+    const content = ref<HTMLElement[] | null>(null);
+    const tagli = ref<HTMLElement[] | null>(null);
+    const contents = parent.getElementsByTagName('p');
+    const listli = parent.getElementsByTagName('li');
+    const contentArray = Array.from(contents);
+    const liArray = Array.from(listli);
+    content.value = contentArray;
+    tagli.value = liArray;
+
+    content.value.forEach((item) => {
+      item.style.lineHeight = '1.8';
+    });
+
+    tagli.value.forEach((item) => {
+      item.style.lineHeight = '1.8';
+      item.style.marginLeft = '15px';
+      item.style.paddingLeft = '5px';
+    });
+  }
+  if (parent1) {
+    const content = ref<HTMLElement[] | null>(null);
+    const tagli = ref<HTMLElement[] | null>(null);
+    const contents = parent1.getElementsByTagName('p');
+    const listli = parent1.getElementsByTagName('li');
+    const contentArray = Array.from(contents);
+    const liArray = Array.from(listli);
+    content.value = contentArray;
+    tagli.value = liArray;
+
+    content.value.forEach((item) => {
+      item.style.lineHeight = '1.8';
+    });
+
+    tagli.value.forEach((item) => {
+      item.style.lineHeight = '1.8';
+      item.style.marginLeft = '15px';
+      item.style.paddingLeft = '5px';
+    });
+  }
+};
+
+setTimeout(handleResizeData, 1000);
+
 onUnmounted(() => {
   window.removeEventListener('resize', resizeListener);
 });
@@ -279,7 +327,11 @@ onUnmounted(() => {
             }}
           </div>
 
-          <div :class="$style['detail__content--object']" v-html="inforProduct?.summary"></div>
+          <div
+            :class="$style['detail__content--object']"
+            id="content_body"
+            v-html="inforProduct?.summary"
+          ></div>
 
           <div :class="$style['detail__content--brand']">
             <font-awesome-icon
@@ -320,7 +372,7 @@ onUnmounted(() => {
       </div>
       <div :class="$style.description__name">{{ inforProduct?.name }}</div>
       <div :class="$style.list">
-        <div v-html="inforProduct?.description"></div>
+        <div id="content_body1" v-html="inforProduct?.description"></div>
       </div>
     </div>
     <home-trend />

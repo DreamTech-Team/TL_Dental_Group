@@ -87,7 +87,7 @@ const handleClickRight = () => {
   }
 };
 
-// Xử lí resize lại tấm ảnh để phù hợp với mobile
+// Xử lí resize lại tấm ảnh, linehight để phù hợp với mobile
 onMounted(() => {
   const parent = document.getElementById('content_body');
   if (parent) {
@@ -117,16 +117,13 @@ onMounted(() => {
     });
 
     content.value.forEach((item) => {
-      if (window.innerWidth > 1100) {
-        item.style.lineHeight = '1.6';
-      }
+      item.style.lineHeight = '1.8';
     });
 
     tagli.value.forEach((item) => {
-      if (window.innerWidth > 1100) {
-        item.style.lineHeight = '1.6';
-        item.style.paddingLeft = '15px';
-      }
+      item.style.lineHeight = '1.8';
+      item.style.marginLeft = '15px';
+      item.style.paddingLeft = '5px';
     });
   }
 });
