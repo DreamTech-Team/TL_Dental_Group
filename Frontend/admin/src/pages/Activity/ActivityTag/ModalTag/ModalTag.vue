@@ -2,7 +2,6 @@
 import { ref, watch, type PropType } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { tags } from '../../Activity';
 import styles from './ModalTag.module.scss';
 import Swal from 'sweetalert2';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';

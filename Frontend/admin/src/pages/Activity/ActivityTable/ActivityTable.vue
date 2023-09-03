@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, watch, watchEffect, type Ref, type PropType } from 'vue';
+import { ref, watch, type PropType } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
-import { AxiosError } from 'axios';
-import { format } from 'date-fns';
-// import ModalAdd from './components/ModalAdd.vue';
-import Pagination from '@/components/Pagination/BasePagination.vue';
 import UpdateActivity from './ModalActivity/UpdateActivity.vue';
-// import { activities } from '../Activity';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import styles from '../Activity.module.scss';
 import Loading from '@/components/LoadingComponent/LoadingComponent.vue';

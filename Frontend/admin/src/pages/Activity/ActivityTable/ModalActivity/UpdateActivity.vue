@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Editor from '@tinymce/tinymce-vue';
 import { ref, computed, watch } from 'vue';
-import type { CSSProperties } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import {
   faPlus,
@@ -11,7 +10,6 @@ import {
   faDownload
 } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
-import imageAct from '../../../../assets/imgs/Activity/image.png';
 import { type PropType } from 'vue';
 import Swal from 'sweetalert2';
 import CropImage from '@/components/CropImage/CropImage.vue';

@@ -12,8 +12,6 @@ import {
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import CropImage from '@/components/CropImage/CropImage.vue';
 import { type PropType } from 'vue';
-import { id } from 'element-plus/lib/locale/index.js';
-import { tags } from '../../Activity';
 import Swal from 'sweetalert2';
 import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
 
