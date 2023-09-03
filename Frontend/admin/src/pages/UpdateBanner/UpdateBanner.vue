@@ -43,12 +43,21 @@ const dataHeaderNews = ref<UpdateBanner>({
   slug: '',
   type: ''
 });
+const dataHeaderProducts = ref<UpdateBanner>({
+  id: '',
+  title: '',
+  content: '',
+  image: '',
+  slug: '',
+  type: ''
+});
 const imageFile: Ref<string | null> = ref(null);
 const isCrop = ref(false);
 const isOpenInput = ref(false);
 const isUpdate = ref(false);
 const isLoadingPolicy = ref(false);
 const isLoadingNews = ref(false);
+const isLoadingProducts = ref(false);
 const isTab = ref('Policy');
 
 const getImagePolicy = useAxios<DataResponse>(
@@ -60,6 +69,13 @@ const getImagePolicy = useAxios<DataResponse>(
 );
 
 const getImageNews = useAxios<DataResponse>('get', 'news/header', {}, {}, variableChange.value);
+const getImageProducts = useAxios<DataResponse>(
+  'get',
+  'products/header',
+  {},
+  {},
+  variableChange.value
+);
 
 watch(getImagePolicy.isLoading, () => {
   isLoadingPolicy.value = getImagePolicy.isLoading.value;
@@ -69,6 +85,10 @@ watch(getImageNews.isLoading, () => {
   isLoadingNews.value = getImageNews.isLoading.value;
 });
 
+watch(getImageProducts.isLoading, () => {
+  isLoadingProducts.value = getImageProducts.isLoading.value;
+});
+
 watch(getImagePolicy.response, () => {
   dataHeaderPolicy.value = getImagePolicy.response.value?.data;
   imageFile.value = getImagePolicy.response.value?.data?.image;
@@ -76,6 +96,9 @@ watch(getImagePolicy.response, () => {
 });
 watch(getImageNews.response, () => {
   dataHeaderNews.value = getImageNews.response.value?.data;
+});
+watch(getImageProducts.response, () => {
+  dataHeaderNews.value = getImageProducts.response.value?.data;
 });
 
 // Xử lí chuyển tab
@@ -90,11 +113,16 @@ const handleTab = (e: Event) => {
 
       imageFile.value = dataHeaderPolicy.value.image;
       dataHeader.value = dataHeaderPolicy.value;
-    } else {
+    } else if (isTab.value === 'News') {
       isUpdate.value = false;
 
       imageFile.value = dataHeaderNews.value.image;
       dataHeader.value = dataHeaderNews.value;
+    } else if (isTab.value === 'Products') {
+      isUpdate.value = false;
+
+      imageFile.value = dataHeaderProducts.value.image;
+      dataHeader.value = dataHeaderProducts.value;
     }
   }
 };
@@ -183,7 +211,7 @@ const handleUpload = () => {
           });
         }
       });
-    } else {
+    } else if (isTab.value === 'News') {
       const { response, isLoading } = useAxios<DataResponse>(
         'patch',
         '/news/header',
@@ -197,6 +225,63 @@ const handleUpload = () => {
       );
       watch(isLoading, () => {
         isLoadingNews.value = isLoading.value;
+      });
+
+      watch(response, () => {
+        if (response.value?.status === 'ok') {
+          dataHeaderNews.value.image = response.value?.data?.image;
+
+          Swal.fire({
+            title: 'Cập nhật thành công',
+            icon: 'success',
+            confirmButtonText: 'Hoàn tất',
+            width: '50rem',
+            padding: '0 2rem 2rem 2rem',
+            customClass: {
+              confirmButton: styles['confirm-button'],
+              cancelButton: styles['cancel-button'],
+              title: styles['title']
+            }
+          }).then((result) => {
+            if (result.isConfirmed) {
+              isUpdate.value = false;
+
+              Swal.close();
+            }
+          });
+        } else {
+          Swal.fire({
+            title: 'Cập nhật thất bại',
+            icon: 'success',
+            confirmButtonText: 'Hoàn tất',
+            width: '50rem',
+            padding: '0 2rem 2rem 2rem',
+            customClass: {
+              confirmButton: styles['confirm-button'],
+              cancelButton: styles['cancel-button'],
+              title: styles['title']
+            }
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.close();
+            }
+          });
+        }
+      });
+    } else if (isTab.value === 'Products') {
+      const { response, isLoading } = useAxios<DataResponse>(
+        'patch',
+        '/products/header',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        },
+        deps.value
+      );
+      watch(isLoading, () => {
+        isLoadingProducts.value = isLoading.value;
       });
 
       watch(response, () => {
@@ -263,6 +348,14 @@ const handleUpload = () => {
           color: isTab === 'News' ? '#fff' : ''
         }"
         >News</span
+      >
+      <span
+        @click="handleTab"
+        :style="{
+          backgroundColor: isTab === 'Products' ? '#1fbab8' : '',
+          color: isTab === 'Products' ? '#fff' : ''
+        }"
+        >Products</span
       >
       <div :class="$style['banner__item--policy']" v-if="!isLoadingNews && !isLoadingPolicy">
         <div

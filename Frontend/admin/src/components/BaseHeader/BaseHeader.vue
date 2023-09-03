@@ -76,7 +76,7 @@ onUnmounted(() => {
             <img :src="Avatar" alt="avatar" />
             <div>
               <h4>{{ inforAdmin?.fullName }}</h4>
-              <p>Admin</p>
+              <p>{{ inforAdmin?.roles }}</p>
             </div>
           </li>
           <li :class="$style['header__list-item']" @click="handleLogout">

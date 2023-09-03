@@ -52,6 +52,7 @@ const outstandingRender = ref({
   name: ''
 });
 const isLoadingCompany = ref(false);
+const isExistProduct = ref(true);
 
 const getCompany = useAxios<DataResponse>('get', '/company', {}, {}, variableChangeCompany.value);
 
@@ -142,54 +143,73 @@ const deleteCompany = (id: string) => {
     }
   }).then((result) => {
     if (result.isConfirmed) {
-      const deps = ref([]);
-
-      const { response, isLoading } = useAxios<DataResponse>(
-        'delete',
-        '/company/' + id,
-        {},
-        {},
-        deps.value
-      );
-
-      watch(isLoading, () => {
-        isLoadingCompany.value = isLoading.value;
-      });
-
-      watch(response, () => {
-        companyRender.value = companyRender.value.filter((product) => product.id !== id);
-        if (!isLoading.value) {
-          if (response.value?.status === 'ok') {
-            Swal.fire({
-              title: 'Xóa thành công',
-              icon: 'success',
-              confirmButtonText: 'Hoàn tất',
-              timer: 2000,
-              width: '50rem',
-              padding: '0 2rem 2rem 2rem',
-              customClass: {
-                confirmButton: styles['confirm-button'],
-                cancelButton: styles['cancel-button'],
-                title: styles['title']
-              }
-            });
-          } else {
-            Swal.fire({
-              title: 'Xóa thất bại',
-              icon: 'success',
-              confirmButtonText: 'Hoàn tất',
-              timer: 2000,
-              width: '50rem',
-              padding: '0 2rem 2rem 2rem',
-              customClass: {
-                confirmButton: styles['confirm-button'],
-                cancelButton: styles['cancel-button'],
-                title: styles['title']
-              }
-            });
-          }
+      products.value.forEach((item) => {
+        if (item.fkCategory.companyId.id === id) {
+          isExistProduct.value = true;
         }
       });
+
+      if (!isExistProduct.value) {
+        const deps = ref([]);
+        const { response, isLoading } = useAxios<DataResponse>(
+          'delete',
+          '/company/' + id,
+          {},
+          {},
+          deps.value
+        );
+        watch(isLoading, () => {
+          isLoadingCompany.value = isLoading.value;
+        });
+        watch(response, () => {
+          companyRender.value = companyRender.value.filter((product) => product.id !== id);
+          if (!isLoading.value) {
+            if (response.value?.status === 'ok') {
+              Swal.fire({
+                title: 'Xóa thành công',
+                icon: 'success',
+                confirmButtonText: 'Hoàn tất',
+                timer: 2000,
+                width: '50rem',
+                padding: '0 2rem 2rem 2rem',
+                customClass: {
+                  confirmButton: styles['confirm-button'],
+                  cancelButton: styles['cancel-button'],
+                  title: styles['title']
+                }
+              });
+            } else {
+              Swal.fire({
+                title: 'Xóa thất bại',
+                icon: 'error',
+                confirmButtonText: 'Hoàn tất',
+                timer: 2000,
+                width: '50rem',
+                padding: '0 2rem 2rem 2rem',
+                customClass: {
+                  confirmButton: styles['confirm-button'],
+                  cancelButton: styles['cancel-button'],
+                  title: styles['title']
+                }
+              });
+            }
+          }
+        });
+      } else {
+        Swal.fire({
+          title: 'Không thể xóa công ty đã có danh mục',
+          icon: 'error',
+          confirmButtonText: 'Hoàn tất',
+          timer: 2000,
+          width: '50rem',
+          padding: '0 2rem 2rem 2rem',
+          customClass: {
+            confirmButton: styles['confirm-button'],
+            cancelButton: styles['cancel-button'],
+            title: styles['title']
+          }
+        });
+      }
     }
   });
 };
@@ -256,9 +276,9 @@ const handleChangeUpdate = (dataUpdated: ManageCompany, isLoading: boolean) => {
 
 // Hàm lấy dữ liệu trả về khi ModalUpdate trả dữ liệu đã update sản phẩm nổi bât về
 const handleChangeUpdateOutstanding = (outstanding: ManageCompany) => {
-  if (outstanding.outstandingProductId !== null) {
-    companyRender.value[indexRow.value].outstandingProductId = outstanding.outstandingProductId;
-  }
+  // if (outstanding.outstandingProductId !== null) {
+  companyRender.value[indexRow.value].outstandingProductId = outstanding.outstandingProductId;
+  // }
 };
 
 // Hàm lấy dữ liệu trả về khi update Highlight công ty
@@ -286,7 +306,7 @@ const handleUpdateHighLight = (index: number) => {
       if (!isLoading.value) {
         if (response.value?.status === 'ok') {
           Swal.fire({
-            title: 'Cập nhật công ty nổi bậc thành công',
+            title: 'Cập nhật công ty nổi bật thành công',
             icon: 'success',
             confirmButtonText: 'Hoàn tất',
             timer: 2000,
@@ -302,7 +322,7 @@ const handleUpdateHighLight = (index: number) => {
         } else {
           Swal.fire({
             title: 'Cập nhật công ty nổi bậc thất bại',
-            icon: 'success',
+            icon: 'error',
             confirmButtonText: 'Hoàn tất',
             timer: 2000,
             width: '50rem',

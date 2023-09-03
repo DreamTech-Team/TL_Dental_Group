@@ -6,6 +6,8 @@ import Swal from 'sweetalert2';
 import CamBtn from '@/components/ImageBtn/ImageBtn.vue';
 import CropImage from '@/components/CropImage/CropImage.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import AltImage from '@/assets/imgs/Home/Meeting.png';
+import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
 
 const context = defineProps({
   uuid: {
@@ -37,6 +39,7 @@ const isCrop = ref(false);
 const isOpenInput = ref(false);
 const fileData = ref();
 const finalImage = ref();
+const isLoading = ref(false);
 
 //Open file image
 const openFileInput = () => {
@@ -63,12 +66,14 @@ const handleCroppedImage = (result: string) => {
 };
 
 const submitForm = () => {
+  isLoading.value = true;
   const deps = ref([]);
 
   const object = {
     id: context.uuid,
     title: context.title,
-    content: context.tags
+    content: context.tags,
+    image: context.image ? context.image : 'NO IMAGE'
   };
 
   const formData = new FormData();
@@ -88,6 +93,7 @@ const submitForm = () => {
 
   watch(response, () => {
     if (response.value?.status === 'ok') {
+      isLoading.value = false;
       Swal.fire({
         title: 'Cập nhật thành công',
         icon: 'success',
@@ -120,7 +126,7 @@ const submitForm = () => {
       </div>
       <div :class="$style.cammt__modal__body">
         <div :class="$style.cammt__ctn">
-          <img v-if="urlFile" :src="urlFile" alt="meeting" />
+          <img :src="urlFile ? urlFile : AltImage" alt="meeting" />
           <div :class="$style.cammt__image_overlay">
             <CamBtn @click="openFileInput" />
           </div>
@@ -129,6 +135,9 @@ const submitForm = () => {
           <button @click="$emit('close')">Hủy</button>
           <button @click="submitForm">Cập nhật</button>
         </div>
+      </div>
+      <div v-show="isLoading" :class="$style.loading__overlay">
+        <Loading />
       </div>
     </div>
   </div>

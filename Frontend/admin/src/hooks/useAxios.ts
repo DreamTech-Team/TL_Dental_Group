@@ -28,6 +28,34 @@ const useAxios = <DataResponse>(
 
   const axiosController = axios.CancelToken.source();
 
+  // const handleSetHeaders = () => {
+  //   const getInforAdmin = localStorage.getItem('infor_admin');
+  //   if (getInforAdmin) {
+  //     const inforAdmin = JSON.parse(getInforAdmin);
+
+  //     if (Object.keys(options).length === 0) {
+  //       console.log(api, inforAdmin.token);
+  //       return inforAdmin.token
+  //         ? {
+  //             headers: {
+  //               'Content-Type': 'application/json',
+  //               Authorization: 'Bearer ' + inforAdmin.token
+  //             }
+  //           }
+  //         : {
+  //             headers: {
+  //               'Content-Type': 'application/json'
+  //             }
+  //           };
+  //     } else {
+  //       if (options.headers) {
+  //         options.headers.Authorization = 'Bearer ' + inforAdmin.token;
+  //       }
+  //       return options;
+  //     }
+  //   }
+  // };
+
   const fetchData = async () => {
     if (!isLoading.value) {
       setTimeout(() => {

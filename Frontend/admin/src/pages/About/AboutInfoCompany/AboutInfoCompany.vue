@@ -94,13 +94,12 @@ const handleUpdateContent = () => {
       contentInfoComapny.value.forEach((item, idx) => {
         const object = {
           id: item.id,
-          content: item.content,
+          content: idx === 0 ? content1.value : content2.value,
           image: item.image
         };
 
         const formData = new FormData();
         formData.append('data', JSON.stringify(object));
-        formData.append('content', idx === 0 ? content1.value : content2.value);
         if (imageSave1.value && idx === 0) formData.append('image', imageSave1.value as Blob);
         else if (imageSave2.value && idx === 1) formData.append('image', imageSave2.value as Blob);
         const patchData = useAxios<DataResponse>(

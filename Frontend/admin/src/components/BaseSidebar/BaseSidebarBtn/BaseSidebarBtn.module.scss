@@ -8,8 +8,13 @@
   margin-left: 1.5rem;
   padding: 1rem 1rem;
   width: fit-content;
+  transition: all 0.2s ease-in-out;
 
   &-left {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
     &-block {
       width: 3rem;
       display: flex;
@@ -22,7 +27,9 @@
     }
 
     p {
-      display: none;
+      // display: none;
+      min-width: 200px;
+      margin-left: 2.6rem;
     }
   }
 
@@ -68,7 +75,7 @@
       p {
         display: block;
         width: fit-content;
-        margin-left: 1rem;
+        margin-left: 2.6rem;
         font-size: $text-base;
         color: $text_700;
       }
@@ -76,7 +83,7 @@
 
     &-right-icon {
       display: block;
-      // margin-left: 1rem;
+      // margin-left: 2.6rem;
       color: $text_700;
     }
   }

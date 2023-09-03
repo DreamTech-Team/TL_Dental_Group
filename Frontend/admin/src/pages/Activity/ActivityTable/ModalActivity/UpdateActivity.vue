@@ -13,7 +13,6 @@ import {
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import imageAct from '../../../../assets/imgs/Activity/image.png';
 import { type PropType } from 'vue';
-import { id } from 'element-plus/lib/locale/index.js';
 import Swal from 'sweetalert2';
 import CropImage from '@/components/CropImage/CropImage.vue';
 import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
@@ -172,8 +171,12 @@ const example_image_upload_handler = (blobInfo: BlobInfo, progress: ProgressFunc
   new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.withCredentials = false;
-    xhr.open('POST', 'https://dry-ants-production.up.railway.app/api/v1/fileUpload');
-
+    xhr.open('POST', import.meta.env.VITE_API_ENDPOINT + '/fileUpload');
+    const getInforAdmin = localStorage.getItem('infor_admin');
+    if (getInforAdmin) {
+      const inforAdmin = JSON.parse(getInforAdmin);
+      xhr.setRequestHeader('Authorization', 'Bearer ' + inforAdmin.token);
+    }
     xhr.upload.onprogress = (e) => {
       progress((e.loaded / e.total) * 100);
     };

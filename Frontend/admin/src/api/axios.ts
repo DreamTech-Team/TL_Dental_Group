@@ -1,32 +1,33 @@
 import axios, {
+  AxiosError,
   type AxiosInstance,
   type AxiosResponse,
   type InternalAxiosRequestConfig
 } from 'axios';
 import qs from 'qs';
 
-const handleSetHeaders = () => {
-  const getInforAdmin = localStorage.getItem('infor_admin');
-  if (getInforAdmin) {
-    const inforAdmin = JSON.parse(getInforAdmin);
-
-    return inforAdmin.token
-      ? {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + inforAdmin.token
-        }
-      : {
-          'Content-Type': 'application/json'
-        };
-  }
-};
 const axiosClient: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_ENDPOINT,
-  headers: handleSetHeaders(),
+  timeout: 10000,
   paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'brackets' })
 });
 
-axiosClient.interceptors.request.use((config: InternalAxiosRequestConfig) => config);
+// axiosClient.interceptors.request.use((config: InternalAxiosRequestConfig) => config);
+axiosClient.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    const getInforAdmin = localStorage.getItem('infor_admin');
+    if (getInforAdmin) {
+      const inforAdmin = JSON.parse(getInforAdmin);
+      if (inforAdmin.token) {
+        config.headers['Authorization'] = 'Bearer ' + inforAdmin.token;
+      }
+    }
+    return config;
+  },
+  (error: AxiosError) => {
+    return Promise.reject(error);
+  }
+);
 
 axiosClient.interceptors.response.use(
   (response: AxiosResponse) => {

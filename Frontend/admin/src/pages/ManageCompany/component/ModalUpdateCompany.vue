@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { type PropType, type Ref, ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faXmark, faRotate, faPencil } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faRotate, faPencil, faClose } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import styles from './ModalUpdateCompany.module.scss';
 import ModalAddProduct from './ModalAddProduct.vue';
@@ -191,9 +191,10 @@ const submitForm = () => {
     }
 
     if (isPatchProduct.value) {
-      // Gọi hàm useAxios để lấy response, error, và isLoading
       const formData = new FormData();
-      formData.append('idProduct', idProduct.value);
+
+      if (idProduct.value !== '') formData.append('idProduct', idProduct.value);
+
       const { response } = useAxios<DataResponse>(
         'patch',
         '/company/outstanding/' + context.idCompany,
@@ -270,6 +271,18 @@ const handleDataProduct = (
   idProduct.value = _idProduct;
   productInput.value = nameProduct;
 };
+
+// Hàm bỏ chọn sản phẩm nổi bậc hiện tại
+const handleCancleProductOutstanding = () => {
+  isPatchProduct.value = true;
+
+  productOutstand.value.name = '';
+  productOutstand.value.description = '';
+  productOutstand.value.mainImg = '';
+
+  idProduct.value = '';
+  productInput.value = '';
+};
 </script>
 
 <template>
@@ -324,14 +337,22 @@ const handleDataProduct = (
 
         <h4>Sản phẩm nổi bật</h4>
         <div :class="$style['category']">
-          <input
-            type="text"
-            placeholder="Đang trống"
-            :value="productInput"
-            @change="updateProduct"
-            readonly
-            :style="{ cursor: 'auto' }"
-          />
+          <div :class="$style['wrap-input']">
+            <input
+              type="text"
+              placeholder="Đang trống"
+              :value="productInput"
+              @change="updateProduct"
+              readonly
+              :style="{ cursor: 'auto' }"
+            />
+            <font-awesome-icon
+              :style="{ display: productInput !== undefined ? 'block' : 'none' }"
+              :icon="faClose"
+              :class="$style['ic-close']"
+              @click="handleCancleProductOutstanding"
+            />
+          </div>
 
           <button @click="isOpen = true">
             <font-awesome-icon :icon="faPencil" :class="$style['category-icon']" />

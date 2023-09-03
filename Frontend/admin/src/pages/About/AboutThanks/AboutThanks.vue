@@ -74,8 +74,10 @@ const handleUpdateContent = () => {
 
       const object = {
         id: contentLetter.value.id,
-        content: contentLetter.value.content
+        content: content.value
       };
+
+      console.log(object);
 
       const { response, isLoading } = useAxios<DataResponse>(
         'patch',
@@ -92,8 +94,6 @@ const handleUpdateContent = () => {
 
       watch(response, () => {
         if (response.value?.status === 'ok') {
-          contentLetter.value.content = content.value;
-
           Swal.fire({
             title: 'Cập nhật thành công',
             icon: 'success',
@@ -129,6 +129,8 @@ const handleUpdateContent = () => {
             }
           });
         }
+
+        contentLetter.value.content = content.value;
       });
     }
   });
