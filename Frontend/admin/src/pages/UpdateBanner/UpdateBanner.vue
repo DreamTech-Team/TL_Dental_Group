@@ -98,7 +98,7 @@ watch(getImageNews.response, () => {
   dataHeaderNews.value = getImageNews.response.value?.data;
 });
 watch(getImageProducts.response, () => {
-  dataHeaderNews.value = getImageProducts.response.value?.data;
+  dataHeaderProducts.value = getImageProducts.response.value?.data;
 });
 
 // Xử lí chuyển tab
@@ -269,7 +269,7 @@ const handleUpload = () => {
         }
       });
     } else if (isTab.value === 'Products') {
-      const { response, isLoading } = useAxios<DataResponse>(
+      const { response, error, isLoading } = useAxios<DataResponse>(
         'patch',
         '/products/header',
         formData,
@@ -281,12 +281,15 @@ const handleUpload = () => {
         deps.value
       );
       watch(isLoading, () => {
+        console.log(error.value);
+        console.log('háhas');
+
         isLoadingProducts.value = isLoading.value;
       });
 
       watch(response, () => {
         if (response.value?.status === 'ok') {
-          dataHeaderNews.value.image = response.value?.data?.image;
+          dataHeaderProducts.value.image = response.value?.data?.image;
 
           Swal.fire({
             title: 'Cập nhật thành công',
