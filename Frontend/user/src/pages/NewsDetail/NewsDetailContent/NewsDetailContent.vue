@@ -92,9 +92,17 @@ onMounted(() => {
   const parent = document.getElementById('content_body');
   if (parent) {
     const image = ref<HTMLImageElement[] | null>(null);
+    const content = ref<HTMLElement[] | null>(null);
+    const tagli = ref<HTMLElement[] | null>(null);
     const images = parent.getElementsByTagName('img');
+    const contents = parent.getElementsByTagName('p');
+    const listli = parent.getElementsByTagName('li');
     const imageArray = Array.from(images);
+    const contentArray = Array.from(contents);
+    const liArray = Array.from(listli);
     image.value = imageArray;
+    content.value = contentArray;
+    tagli.value = liArray;
 
     image.value.forEach((item) => {
       if (window.innerWidth < 736) {
@@ -105,6 +113,19 @@ onMounted(() => {
         const aspectRatio = item.height / item.width;
         item.width = window.innerWidth - 400;
         item.height = item.width * aspectRatio;
+      }
+    });
+
+    content.value.forEach((item) => {
+      if (window.innerWidth > 1100) {
+        item.style.lineHeight = '1.6';
+      }
+    });
+
+    tagli.value.forEach((item) => {
+      if (window.innerWidth > 1100) {
+        item.style.lineHeight = '1.6';
+        item.style.paddingLeft = '15px';
       }
     });
   }
