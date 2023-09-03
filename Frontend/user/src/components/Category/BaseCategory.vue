@@ -178,24 +178,24 @@ const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
   }
 };
 
-// const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
-//   const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
-
-//   return (
-//     selectedItem.value === categoryIndex && // Kiểm tra category cấp 1 đã chọn
-//     selectedCategoryItem.value.categoryIndex === categoryIndex &&
-//     selectedCategoryItem.value.itemIndex === itemIndex &&
-//     selectedSubCategory.slug === selectedCategory2.value // Kiểm tra category cấp 2 đã chọn
-//   );
-// };
 const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
-  // const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
+  const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
 
   return (
+    selectedItem.value === categoryIndex && // Kiểm tra category cấp 1 đã chọn
     selectedCategoryItem.value.categoryIndex === categoryIndex &&
-    selectedCategoryItem.value.itemIndex === itemIndex
+    selectedCategoryItem.value.itemIndex === itemIndex &&
+    selectedSubCategory.slug === selectedCategory2.value // Kiểm tra category cấp 2 đã chọn
   );
 };
+// const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
+//   // const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
+
+//   return (
+//     selectedCategoryItem.value.categoryIndex === categoryIndex &&
+//     selectedCategoryItem.value.itemIndex === itemIndex
+//   );
+// };
 
 watch([selectedCategory1, selectedCategory2], () => {
   const matchedIndex = dataRender.value.findIndex((item) => item.slug === selectedCategory1.value);
