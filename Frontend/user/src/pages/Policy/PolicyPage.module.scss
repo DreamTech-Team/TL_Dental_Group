@@ -18,7 +18,9 @@
     &-nav {
       position: sticky;
       position: -webkit-sticky;
-      width: 30%;
+      width: 40%;
+      min-width: 35rem;
+
       margin-right: 4rem;
 
       ul {
@@ -57,7 +59,7 @@
       }
 
       &-title {
-        svg {
+        &-icon {
           display: none;
         }
         border: 0.1rem solid $text_200;
@@ -104,9 +106,10 @@
         ul {
           position: absolute;
           width: 100%;
+          background-color: white;
 
           .hidden {
-            transition: opacity 1s ease-out;
+            transition: opacity 1s ease-in-out;
             opacity: 0;
             height: 0;
             overflow: hidden;
@@ -129,14 +132,14 @@
           border: 0;
           background-color: $text_200;
 
-          svg {
+          &-icon {
             display: block;
             transition: transform 1s;
             width: 2rem;
             height: auto;
           }
 
-          &-active svg {
+          &-active &-icon {
             transform: rotate(90deg);
           }
 
