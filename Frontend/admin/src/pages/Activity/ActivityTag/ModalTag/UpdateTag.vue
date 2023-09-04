@@ -2,16 +2,16 @@
 import { ref, watch, type PropType } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { tags } from '../../Activity';
 import Swal from 'sweetalert2';
 import styles from './ModalTag.module.scss';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
 
-const tagExist = ref(true);
 const nameTagInput = ref('');
 const _MAX_WORD_TITLE = 70;
 const countWordTitle = ref(_MAX_WORD_TITLE);
 const deps = ref([]);
+const isLoading = ref(false);
 
 interface Tags {
   id: string;
@@ -84,9 +84,7 @@ const submitForm = () => {
       }
     });
   } else {
-    const object = {
-      name: nameTagInput.value
-    };
+    isLoading.value = true;
 
     const updateTag = useAxios<DataResponse>(
       'patch',
@@ -98,6 +96,8 @@ const submitForm = () => {
 
     watch(updateTag.response, () => {
       if (updateTag.response.value?.status === 'ok') {
+        isLoading.value = true;
+
         Swal.fire({
           title: 'Cập nhật thành công',
           icon: 'success',
@@ -167,6 +167,10 @@ const submitForm = () => {
     <div :class="$style['tag_container--btn']">
       <button @click="$emit('close')" :class="$style.button_destroy">Hủy</button>
       <button @click="submitForm" :class="$style.button">Cập nhật</button>
+    </div>
+
+    <div v-show="isLoading" :class="$style.loading__overlay">
+      <Loading />
     </div>
   </div>
 </template>

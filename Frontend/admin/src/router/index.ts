@@ -1,4 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { createRouter, createWebHistory, useRouter } from 'vue-router';
 
 import HomePage from '@/pages/Home/HomePage.vue';
 import ActivityVue from '@/pages/Activity/Activity.vue';
@@ -22,7 +23,16 @@ const routes = [
   {
     path: '/mnhome',
     name: 'mnhome',
-    component: HomePage
+    component: HomePage,
+    beforeEnter: (to: any, from: any, next: () => void) => {
+      const useRouterTo = useRouter();
+
+      const getInforAdmin = localStorage.getItem('infor_admin');
+      if (!getInforAdmin) {
+        useRouterTo.push('/login');
+      }
+      next();
+    }
   },
   {
     path: '/dashboard',
@@ -31,37 +41,100 @@ const routes = [
   {
     path: '/mnabout',
     name: 'mnabout',
-    component: AboutPage
+    component: AboutPage,
+    beforeEnter: (to: any, from: any, next: () => void) => {
+      const useRouterTo = useRouter();
+
+      const getInforAdmin = localStorage.getItem('infor_admin');
+      if (!getInforAdmin) {
+        useRouterTo.push('/login');
+      }
+      next();
+    }
   },
   {
     path: '/mnuirecruitment',
     name: 'mnuirecruitment',
-    component: RecruitmentPage
+    component: RecruitmentPage,
+    beforeEnter: (to: any, from: any, next: () => void) => {
+      const useRouterTo = useRouter();
+
+      const getInforAdmin = localStorage.getItem('infor_admin');
+      if (!getInforAdmin) {
+        useRouterTo.push('/login');
+      }
+      next();
+    }
   },
   {
     path: '/mnproduct',
     name: 'mnproduct',
-    component: ProductMN
+    component: ProductMN,
+    beforeEnter: (to: any, from: any, next: () => void) => {
+      const useRouterTo = useRouter();
+
+      const getInforAdmin = localStorage.getItem('infor_admin');
+      if (!getInforAdmin) {
+        useRouterTo.push('/login');
+      }
+      next();
+    }
   },
   {
     path: '/mnactivity',
     name: 'mnactivity',
-    component: ActivityVue
+    component: ActivityVue,
+    beforeEnter: (to: any, from: any, next: () => void) => {
+      const useRouterTo = useRouter();
+
+      const getInforAdmin = localStorage.getItem('infor_admin');
+      if (!getInforAdmin) {
+        useRouterTo.push('/login');
+      }
+      next();
+    }
   },
   {
     path: '/mnstaff',
     name: 'mnstaff',
-    component: Staff
+    component: Staff,
+    beforeEnter: (to: any, from: any, next: () => void) => {
+      const useRouterTo = useRouter();
+
+      const getInforAdmin = localStorage.getItem('infor_admin');
+      if (!getInforAdmin) {
+        useRouterTo.push('/login');
+      }
+      next();
+    }
   },
   {
     path: '/mncategory',
     name: 'mncategory',
-    component: CategoryMN
+    component: CategoryMN,
+    beforeEnter: (to: any, from: any, next: () => void) => {
+      const useRouterTo = useRouter();
+
+      const getInforAdmin = localStorage.getItem('infor_admin');
+      if (!getInforAdmin) {
+        useRouterTo.push('/login');
+      }
+      next();
+    }
   },
   {
     path: '/',
     name: 'dashboard',
-    component: Dashboard
+    component: Dashboard,
+    beforeEnter: (to: any, from: any, next: () => void) => {
+      const useRouterTo = useRouter();
+
+      const getInforAdmin = localStorage.getItem('infor_admin');
+      if (!getInforAdmin) {
+        useRouterTo.push('/login');
+      }
+      next();
+    }
   },
   {
     path: '/:catchAll(.*)*',
@@ -70,17 +143,44 @@ const routes = [
   {
     path: '/mncompany',
     name: 'mncompany',
-    component: ManageCompany
+    component: ManageCompany,
+    beforeEnter: (to: any, from: any, next: () => void) => {
+      const useRouterTo = useRouter();
+
+      const getInforAdmin = localStorage.getItem('infor_admin');
+      if (!getInforAdmin) {
+        useRouterTo.push('/login');
+      }
+      next();
+    }
   },
   {
     path: '/mnrecruitment',
     name: 'mnrecruitment',
-    component: MNRecruitmentVue
+    component: MNRecruitmentVue,
+    beforeEnter: (to: any, from: any, next: () => void) => {
+      const useRouterTo = useRouter();
+
+      const getInforAdmin = localStorage.getItem('infor_admin');
+      if (!getInforAdmin) {
+        useRouterTo.push('/login');
+      }
+      next();
+    }
   },
   {
     path: '/login',
     name: 'login',
-    component: Login
+    component: Login,
+    beforeEnter: (to: any, from: any, next: () => void) => {
+      const useRouterTo = useRouter();
+
+      const getInforAdmin = localStorage.getItem('infor_admin');
+      if (getInforAdmin) {
+        useRouterTo.push(from.fullPath);
+      }
+      next();
+    }
   },
   {
     path: '/forgot',
@@ -90,27 +190,58 @@ const routes = [
   {
     path: '/mnpolicy',
     name: 'mnpolicy',
-    component: ManagePolicy
+    component: ManagePolicy,
+    beforeEnter: (to: any, from: any, next: () => void) => {
+      const useRouterTo = useRouter();
+
+      const getInforAdmin = localStorage.getItem('infor_admin');
+      if (!getInforAdmin) {
+        useRouterTo.push('/login');
+      }
+      next();
+    }
   },
-  // {
-  //   path: '/mnpolicy/:catchAll(.*)*',
-  //   name: 'mnpolicyedit',
-  //   component: ManagePolicyEdit
-  // },
   {
     path: '/mncustomer',
     name: 'mncustomer',
-    component: ManageCustomer
+    component: ManageCustomer,
+    beforeEnter: (to: any, from: any, next: () => void) => {
+      const useRouterTo = useRouter();
+
+      const getInforAdmin = localStorage.getItem('infor_admin');
+      if (!getInforAdmin) {
+        useRouterTo.push('/login');
+      }
+      next();
+    }
   },
   {
     path: '/mnui',
     name: 'mnui',
-    component: ManageUI
+    component: ManageUI,
+    beforeEnter: (to: any, from: any, next: () => void) => {
+      const useRouterTo = useRouter();
+
+      const getInforAdmin = localStorage.getItem('infor_admin');
+      if (!getInforAdmin) {
+        useRouterTo.push('/login');
+      }
+      next();
+    }
   },
   {
     path: '/mnbanner',
     name: 'mnbanner',
-    component: UpdateBanner
+    component: UpdateBanner,
+    beforeEnter: (to: any, from: any, next: () => void) => {
+      const useRouterTo = useRouter();
+
+      const getInforAdmin = localStorage.getItem('infor_admin');
+      if (!getInforAdmin) {
+        useRouterTo.push('/login');
+      }
+      next();
+    }
   }
 ];
 

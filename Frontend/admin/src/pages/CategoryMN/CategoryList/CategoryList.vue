@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 import { faChevronLeft, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { ref, watch } from 'vue';
@@ -9,7 +10,8 @@ const props = defineProps({
   isEmptyItems: { type: Boolean, required: true },
   handleSelected: { type: Function, required: false },
   openEdit: { type: Function, required: false },
-  resetSelected: { type: Boolean, required: false }
+  resetSelected: { type: Boolean, required: false },
+  isLoading: { type: Boolean, required: true }
 });
 
 const emptyItem = '<<Trống>>';
@@ -27,7 +29,6 @@ const handleClickItem = (index: number, item: object) => {
       props.handleSelected(item);
     }
 };
-console.log(props.isEmptyItems);
 
 watch(
   () => props.data,
@@ -50,23 +51,26 @@ watch(
 <template>
   <div :class="$style.container">
     <div :class="$style['container-list']">
-      <div
-        v-for="(item, index) in listItem"
-        :class="[
-          $style['container-list-item'],
-          $style[selectedItem === Number(index) ? 'container-list-item-active' : '']
-        ]"
-        :key="index"
-        @click="handleClickItem(index, item)"
-      >
-        <p>{{ item.name || item.title }}</p>
-        <FontAwesomeIcon v-if="props.cateType !== 2" :icon="faChevronLeft" />
-      </div>
-      <div
-        v-if="isEmptyItems"
-        :class="[$style['container-list-item'], $style['container-list-item-empty']]"
-      >
-        <p>{{ emptyItem }}</p>
+      <loading-component v-if="isLoading" />
+      <div v-else>
+        <div
+          v-for="(item, index) in listItem"
+          :class="[
+            $style['container-list-item'],
+            $style[selectedItem === Number(index) ? 'container-list-item-active' : '']
+          ]"
+          :key="index"
+          @click="handleClickItem(index, item)"
+        >
+          <p>{{ item.name || item.title }}</p>
+          <FontAwesomeIcon v-if="props.cateType !== 2" :icon="faChevronLeft" />
+        </div>
+        <div
+          v-if="isEmptyItems"
+          :class="[$style['container-list-item'], $style['container-list-item-empty']]"
+        >
+          <p>{{ emptyItem }}</p>
+        </div>
       </div>
     </div>
     <div :class="$style['container-add']">

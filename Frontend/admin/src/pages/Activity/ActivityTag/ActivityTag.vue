@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, computed, watchEffect, watch } from 'vue';
-import { format } from 'date-fns';
+import { ref, computed, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 // import ModalAdd from './components/ModalAdd.vue';
 import UpdateTag from './ModalTag/UpdateTag.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface Tags {
   id: string;
@@ -32,6 +32,7 @@ const props = defineProps<{
   handleTagDeleted: (id: string) => void;
 }>();
 const deps = ref([]);
+const isLoading = ref(false);
 const resultTags = ref(props.listTags);
 
 const selectedTag = ref<Record<string, never> | Tags>({});
@@ -69,7 +70,6 @@ const formatDateTime = (dateTimeStr: string) => {
 const handleChangeAdd = (dataAdded: Tags) => {
   console.log(resultTags);
 
-  // resultTags.value.unshift(dataAdded);
   resultTags.value.forEach((item) => {
     if (item.id === dataAdded.id) {
       item.name = dataAdded.name;
@@ -110,6 +110,10 @@ const deleteTag = async (id: string) => {
           deps.value
         );
 
+        watch(deleteTagRes.isLoading, () => {
+          isLoading.value = deleteTagRes.isLoading.value;
+        });
+
         watch(deleteTagRes.response, () => {
           console.log(deleteTagRes.response.value);
 
@@ -117,7 +121,7 @@ const deleteTag = async (id: string) => {
             props.handleTagDeleted(id);
             console.log('vinh' + props.listTags);
             Swal.fire({
-              title: 'Thêm thành công',
+              title: 'Xóa thành công',
               icon: 'success',
               confirmButtonText: 'Hoàn tất',
               width: '30rem'
@@ -180,7 +184,7 @@ const deleteTag = async (id: string) => {
           </thead>
         </table>
 
-        <div :class="$style.mn_activity_table_ctn">
+        <div v-if="!isLoading" :class="$style.mn_activity_table_ctn">
           <table :class="$style.mn_activity_table">
             <tbody>
               <template v-if="filteredTags?.length > 0">
@@ -208,6 +212,7 @@ const deleteTag = async (id: string) => {
             </tbody>
           </table>
         </div>
+        <Loading v-else />
       </div>
     </div>
 

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { staffs } from './Staff';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import StaffTable from './StaffTable/StaffTable.vue';
 import StaffModal from './StaffTable/StaffModal/StaffModal.vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
+
 interface StaffItem {
   id: string;
   email: string;
@@ -20,6 +21,7 @@ interface StaffItem {
 const staffArray = ref<StaffItem[]>([]);
 const isModalOpen = ref(false);
 const activeTab = ref('activity');
+const isLoadingState = ref(false);
 
 const openModal = () => {
   isModalOpen.value = true;
@@ -39,12 +41,22 @@ const { response, isLoading } = useAxios<DataResponse>(
   {},
   deps.value
 );
-
+watch(isLoading, () => {
+  isLoadingState.value = isLoading.value;
+});
 watch([response, isLoading], () => {
   if (response.value?.data?.data != undefined) {
     staffArray.value = response.value?.data?.data;
   }
 });
+
+const handleChangeAdd = (dataAdded: StaffItem) => {
+  staffArray.value.unshift(dataAdded);
+};
+
+const handleStaffDeleted = (deletedNewsId: string) => {
+  staffArray.value = staffArray.value.filter((item) => item.id !== deletedNewsId);
+};
 </script>
 <template>
   <div>
@@ -61,10 +73,16 @@ watch([response, isLoading], () => {
           THÊM NHÂN SỰ
         </button>
       </div>
-      <staff-table :staffArray="staffArray" />
+      <loading-component v-if="isLoadingState" />
+      <staff-table v-else :staffArray="staffArray" :handleStaffDeleted="handleStaffDeleted" />
     </div>
     <div :class="$style.activity_overlay" v-if="isModalOpen">
-      <staff-modal :closeModal="closeModal" @click.stop @close="closeModal" />
+      <staff-modal
+        :closeModal="closeModal"
+        @click.stop
+        @close="closeModal"
+        :change="handleChangeAdd"
+      />
     </div>
   </div>
 </template>

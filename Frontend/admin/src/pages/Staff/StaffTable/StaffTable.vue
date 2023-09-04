@@ -4,10 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faMagnifyingGlass, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 // import ModalAdd from './components/ModalAdd.vue';
-import Pagination from '@/components/Pagination/BasePagination.vue';
 import UpdateStaff from './StaffModal/UpdateStaff.vue';
-import { staffs } from '../Staff';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import Loading from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface StaffItem {
   id: string;
@@ -31,13 +30,17 @@ const props = defineProps({
   staffArray: {
     type: Array as () => StaffItem[],
     required: true
+  },
+  handleStaffDeleted: {
+    type: Function,
+    required: true
   }
 });
 
-const searchText = ref('');
 const results = ref(props.staffArray);
 const searchKeyword = ref('');
 const deps = ref([]);
+const isLoading = ref(false);
 
 const isModalOpen = ref(false);
 const activeTab = ref('activity');
@@ -55,10 +58,6 @@ const editActivity = (staff: StaffItem) => {
   console.log(staff);
 };
 
-watch(props.staffArray, () => {
-  results.value = props.staffArray;
-});
-
 const filteredStaffs = computed(() => {
   return props.staffArray.filter((staff) =>
     staff.fullname.toLowerCase().includes(searchKeyword.value.toLowerCase())
@@ -66,9 +65,24 @@ const filteredStaffs = computed(() => {
 });
 
 const handleUpdateStaff = (updatedStaff: StaffItem) => {
-  // Cập nhật giá trị cho phần tử đã chỉnh sửa
-  selectedStaff.value = updatedStaff;
+  filteredStaffs.value.forEach((item) => {
+    if (item.id === updatedStaff.id) {
+      (item.fullname = updatedStaff.fullname),
+        (item.email = updatedStaff.email),
+        (item.roles = updatedStaff.roles),
+        (item.phonenumber = updatedStaff.phonenumber),
+        (item.address = updatedStaff.address),
+        (item.password = updatedStaff.password),
+        (item.changed = updatedStaff.changed),
+        (item.createAt = updatedStaff.createAt),
+        (item.id = updatedStaff.id);
+    }
+  });
 };
+
+watch(props, () => {
+  results.value = props.staffArray;
+});
 
 const truncateText = (text: string, maxLength: number) => {
   if (text.length > maxLength) {
@@ -91,40 +105,41 @@ const deleteStaff = async (id: string) => {
     if (result.isConfirmed) {
       try {
         // Gọi API DELETE bằng cách sử dụng `useAxios`
-        const deleteTagRes = useAxios<DataResponse>(
+        const deleteStaffRes = useAxios<DataResponse>(
           'delete',
           `/employees/${id}`, // Đặt endpoint URL xóa phần tử cụ thể dựa vào id
           {},
           {},
           deps.value
         );
-
-        watch(deleteTagRes.response, () => {
-          console.log(deleteTagRes.response.value);
-
-          if (deleteTagRes.response.value?.status === 'ok') {
-            // props.handleTagDeleted(id);
+        watch(deleteStaffRes.isLoading, () => {
+          isLoading.value = deleteStaffRes.isLoading.value;
+          // console.log(isLoading.value);
+        });
+        watch(deleteStaffRes.response, () => {
+          // console.log(deleteTagRes.response.value);
+          if (deleteStaffRes.response.value?.status === 'ok') {
+            props.handleStaffDeleted(id);
             Swal.fire({
-              title: 'Thêm thành công',
+              title: 'Xóa thành công',
               icon: 'success',
               confirmButtonText: 'Hoàn tất',
               width: '30rem'
             }).then((result) => {
               if (result.isConfirmed) {
-                location.reload();
                 Swal.close();
               }
             });
           }
         });
 
-        watch(deleteTagRes.error, () => {
-          const errorValue: MyErrorResponse | null = deleteTagRes.error
+        watch(deleteStaffRes.error, () => {
+          const errorValue: MyErrorResponse | null = deleteStaffRes.error
             .value as MyErrorResponse | null;
           if (errorValue !== null) {
-            if (errorValue?.response?.data?.message === "Tag's name already taken") {
+            if (errorValue?.response?.data?.message === "Staff's email already taken") {
               Swal.fire({
-                title: 'Tag đã tồn tại',
+                title: 'Xóa không thành công!',
                 icon: 'error',
                 confirmButtonText: 'Đóng',
                 width: '50rem',
@@ -170,7 +185,7 @@ const deleteStaff = async (id: string) => {
             </tr>
           </thead>
         </table>
-        <div :class="$style.mn_activity_table_ctn">
+        <div v-if="!isLoading" :class="$style.mn_activity_table_ctn">
           <table :class="$style.mn_activity_table">
             <tbody>
               <template v-if="filteredStaffs.length > 0">
@@ -199,13 +214,14 @@ const deleteStaff = async (id: string) => {
             </tbody>
           </table>
         </div>
+        <Loading v-else />
       </div>
     </div>
     <div :class="$style.activity_overlay" v-if="isModalOpen">
       <update-staff
-        @updateStaff="handleUpdateStaff"
         :selectedStaff="selectedStaff"
         :isModalOpen="isModalOpen"
+        :change="handleUpdateStaff"
         :closeModal="closeModal"
         v-if="activeTab === 'activity'"
         @click.stop

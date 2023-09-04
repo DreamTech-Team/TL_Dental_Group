@@ -29,7 +29,7 @@ const props = defineProps({
 });
 
 const valueItems = ref();
-const valueMainItem = ref();
+const valueMainItem = ref(props.contentValueMainItem.content);
 const showBtnUpdateImg = ref(false);
 const paramAxios = ref();
 
@@ -122,13 +122,6 @@ watch(
   (value) => {
     valueItems.value = value;
     // console.log(value);
-  }
-);
-
-watch(
-  () => props.contentValueMainItem,
-  (value) => {
-    valueMainItem.value = value.content;
   }
 );
 

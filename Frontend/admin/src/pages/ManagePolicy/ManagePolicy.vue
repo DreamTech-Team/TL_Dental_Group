@@ -7,6 +7,7 @@ import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import ManagePolicyEdit from '../ManagePolicyEdit/ManagePolicyEdit.vue';
 import styles from './ManagePolicy.module.scss';
 import Swal from 'sweetalert2';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface PolicyDetail {
   id: string;
@@ -18,10 +19,11 @@ interface PolicyDetail {
 }
 
 const searchText = ref('');
-const results = ref();
+const results = ref<PolicyDetail[]>([]);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const isEdit = ref(false);
+const isLoading = ref(true);
 
 const itemEdit = ref();
 const editType = ref(1);
@@ -48,7 +50,6 @@ const filteredProducts = computed(() => {
 const displayNews = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
-  // console.log(start, end);
   if (filteredProducts.value.length > pageSize.value)
     return filteredProducts.value.slice(start, end);
   else return filteredProducts.value;
@@ -100,11 +101,6 @@ const handleDeletePolicy = (item: PolicyDetail) => {
       );
 
       watch(deleteCate.response, () => {
-        // console.log(value);
-        // displayNews.value.splice(
-        //   displayNews.value.findIndex((e: PolicyDetail) => e.id === item.id),
-        //   1
-        // );
         results.value.splice(
           results.value.findIndex((e: PolicyDetail) => e.id === item.id),
           1
@@ -153,6 +149,10 @@ const handlePageChange = (page: number) => {
 
 watch(getListPolicy.response, (value) => {
   results.value = value?.data;
+});
+
+watch(getListPolicy.isLoading, (value) => {
+  isLoading.value = value;
 });
 
 // watch(displayNews, (value) => {
@@ -218,7 +218,8 @@ watch(getListPolicy.response, (value) => {
         </table>
 
         <div :class="$style['mn_policy-body-table-list']">
-          <table :class="$style['mn_policy-body-table']">
+          <loading-component v-if="isLoading" />
+          <table v-else :class="$style['mn_policy-body-table']">
             <tbody>
               <tr v-for="(item, index) in displayNews" :key="index">
                 <th
