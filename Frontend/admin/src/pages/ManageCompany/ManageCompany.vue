@@ -52,7 +52,7 @@ const outstandingRender = ref({
   name: ''
 });
 const isLoadingCompany = ref(false);
-const isExistProduct = ref(true);
+const isExistProduct = ref(false);
 
 const getCompany = useAxios<DataResponse>('get', '/company', {}, {}, variableChangeCompany.value);
 
@@ -125,6 +125,16 @@ const handleUpdateModal = (idx: number, idOut: string, idCom: string) => {
 
 // Xử lí xóa một công ty
 const deleteCompany = (id: string) => {
+  console.log(products.value);
+
+  products.value.forEach((item) => {
+    if (item.fkCategory.companyId.id === id) {
+      console.log('hihi');
+
+      isExistProduct.value = true;
+    }
+    console.log(1);
+  });
   Swal.fire({
     title: 'Bạn có chắc muốn xóa công ty này không?',
     text: 'Dữ liệu sẽ không thể khôi phục sau khi xóa!',
@@ -143,12 +153,6 @@ const deleteCompany = (id: string) => {
     }
   }).then((result) => {
     if (result.isConfirmed) {
-      products.value.forEach((item) => {
-        if (item.fkCategory.companyId.id === id) {
-          isExistProduct.value = true;
-        }
-      });
-
       if (!isExistProduct.value) {
         const deps = ref([]);
         const { response, isLoading } = useAxios<DataResponse>(
@@ -220,7 +224,7 @@ const handleAddedChange = (dataAdded: ManageCompany, isLoading: boolean) => {
   isOpenAdd.value = false;
 
   if (!isLoading) {
-    companyRender.value.unshift(dataAdded);
+    if (Object.keys(dataAdded).length !== 0) companyRender.value.unshift(dataAdded);
     Swal.fire({
       title: 'Thêm thành công',
       icon: 'success',
