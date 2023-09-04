@@ -333,6 +333,11 @@ const alertDialog = (context: string, page: number) => {
   indexCur.value = page;
 };
 
+const handleSelectCompany = () => {
+  selectedCate1.value = '';
+  selectedCate2.value = '';
+};
+
 //Get categories 2 and updateIDCate1
 const handleSelectedCate1Change = (event: Event) => {
   selectedCate2.value = '';
@@ -533,8 +538,6 @@ const submitForm = () => {
 
 //Render Data
 watch(selectedCompany, () => {
-  selectedCate1.value = '';
-  selectedCate2.value = '';
   const getCategories1 = useAxios<DataResponse>(
     'get',
     `/cate?companyId=${compID.value}`,
@@ -591,7 +594,7 @@ watch(selectedCompany, () => {
             @input="updatePrice"
           />
           <h4>Tên công ty</h4>
-          <select v-model="compID">
+          <select v-model="compID" @change="handleSelectCompany">
             <option disabled value="">Chọn công ty</option>
             <option v-for="(item, index) in companies" :key="index" :value="item.idComp">
               {{ item.name }}
