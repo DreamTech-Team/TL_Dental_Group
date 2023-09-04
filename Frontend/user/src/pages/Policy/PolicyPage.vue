@@ -3,6 +3,8 @@ import { ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import { useRoute } from 'vue-router';
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 interface Policy {
   title: string;
@@ -94,17 +96,7 @@ setTimeout(handleResizeData, 1000);
           ]"
           @click="handleActiveNav"
         >
-          <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none">
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-            <g id="SVGRepo_iconCarrier">
-              <path
-                fill="#000000"
-                fill-rule="evenodd"
-                d="M19 4a1 1 0 01-1 1H2a1 1 0 010-2h16a1 1 0 011 1zm0 6a1 1 0 01-1 1H2a1 1 0 110-2h16a1 1 0 011 1zm-1 7a1 1 0 100-2H2a1 1 0 100 2h16z"
-              ></path>
-            </g>
-          </svg>
+          <font-awesome-icon :icon="faBars" :class="$style['container__content-nav-title-icon']" />
           <h3>Chính sách</h3>
         </div>
         <ul>
