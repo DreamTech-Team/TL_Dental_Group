@@ -44,18 +44,10 @@ watch(getPolicies.response, () => {
 const selectedItem = ref(0);
 const showNav = ref(false);
 
-const handleSelected = (index: number) => {
-  selectedItem.value = Number(index);
-  console.log(index);
-};
-
-const handleActiveNav = () => {
-  showNav.value = !showNav.value;
-};
-
 const handleResizeData = () => {
   const parent = document.getElementById('content_body');
   if (parent) {
+    console.log(parent.getElementsByTagName('p'));
     const content = ref<HTMLElement[] | null>(null);
     const tagli = ref<HTMLElement[] | null>(null);
     const contents = parent.getElementsByTagName('p');
@@ -77,7 +69,16 @@ const handleResizeData = () => {
   }
 };
 
-setTimeout(handleResizeData, 1000);
+watch(getPolicies.isLoading, handleResizeData);
+
+const handleSelected = (index: number) => {
+  selectedItem.value = Number(index);
+  setTimeout(handleResizeData, 1000);
+};
+
+const handleActiveNav = () => {
+  showNav.value = !showNav.value;
+};
 </script>
 <template>
   <div :class="$style.container">

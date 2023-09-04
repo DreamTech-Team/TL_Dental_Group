@@ -51,27 +51,6 @@ const getRecruitmentDetails = useAxios<DataResponse>(
   paramAxios.value
 );
 
-watch(getRecruitmentDetails.isLoading, (value) => {
-  isLoading.value = value;
-  console.log(value);
-});
-
-watch(getRecruitmentDetails.error, (value) => {
-  console.log(value);
-});
-
-watch(getRecruitmentDetails.response, (value) => {
-  const tmp = value?.data;
-
-  typeRecuit.value[0].title = { content: tmp.location, style: 'type6' };
-  typeRecuit.value[1].title = { content: tmp.position, style: 'type6' };
-  typeRecuit.value[2].title = { content: tmp.working_form, style: 'type6' };
-
-  // console.log(tmp, typeRecuit.value);
-
-  descriptionRec.value = tmp.description;
-});
-
 // Xử lí resize lại tấm ảnh, linehight để phù hợp với mobile
 const handleResizeData = () => {
   const parent = document.getElementById('content_body');
@@ -98,7 +77,24 @@ const handleResizeData = () => {
   }
 };
 
-setTimeout(handleResizeData, 1000);
+watch(getRecruitmentDetails.isLoading, (value) => {
+  isLoading.value = value;
+  setTimeout(handleResizeData, 1000);
+});
+
+watch(getRecruitmentDetails.error, (value) => {
+  console.log(value);
+});
+
+watch(getRecruitmentDetails.response, (value) => {
+  const tmp = value?.data;
+
+  typeRecuit.value[0].title = { content: tmp.location, style: 'type6' };
+  typeRecuit.value[1].title = { content: tmp.position, style: 'type6' };
+  typeRecuit.value[2].title = { content: tmp.working_form, style: 'type6' };
+
+  descriptionRec.value = tmp.description;
+});
 </script>
 <template>
   <LoadingComponent v-if="isLoading" />
