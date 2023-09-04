@@ -34,11 +34,18 @@ interface Products {
   };
 }
 
+interface Cate {
+  companyId: {
+    id: string;
+  };
+}
+
 const variableChange = ref([]);
 const variableChangeCompany = ref([]);
 const variableChangeProduct = ref([]);
 const companyRender = ref<ManageCompany[]>([]);
 const products = ref<Products[]>([]);
+const cate = ref<Cate[]>([]);
 const isOpenAdd = ref(false);
 const isOpenUpdate = ref(false);
 const searchText = ref('');
@@ -58,6 +65,8 @@ const getCompany = useAxios<DataResponse>('get', '/company', {}, {}, variableCha
 
 const getProducts = useAxios<DataResponse>('get', '/products', {}, {}, variableChangeProduct.value);
 
+const getCate = useAxios<DataResponse>('get', '/cate', {}, {}, variableChangeProduct.value);
+
 watch(getCompany.isLoading, () => {
   isLoadingCompany.value = getCompany.isLoading.value;
 });
@@ -72,6 +81,10 @@ watch(getCompany.response, () => {
 
 watch(getProducts.response, () => {
   products.value = getProducts.response.value?.data?.data;
+});
+
+watch(getCate.response, () => {
+  cate.value = getCate.response.value?.data;
 });
 
 // Hàm xử lí search
@@ -125,8 +138,8 @@ const handleUpdateModal = (idx: number, idOut: string, idCom: string) => {
 
 // Xử lí xóa một công ty
 const deleteCompany = (id: string) => {
-  products.value.forEach((item) => {
-    if (item.fkCategory.companyId.id === id) {
+  cate.value.forEach((item) => {
+    if (item.companyId.id === id) {
       isExistProduct.value = true;
     }
   });
@@ -150,6 +163,7 @@ const deleteCompany = (id: string) => {
     if (result.isConfirmed) {
       if (!isExistProduct.value) {
         const deps = ref([]);
+
         const { response, isLoading } = useAxios<DataResponse>(
           'delete',
           '/company/' + id,
@@ -208,6 +222,7 @@ const deleteCompany = (id: string) => {
             title: styles['title']
           }
         });
+        isExistProduct.value = false;
       }
     }
   });
