@@ -125,13 +125,10 @@ const handleUpdateModal = (idx: number, idOut: string, idCom: string) => {
 
 // Xử lí xóa một công ty
 const deleteCompany = (id: string) => {
-  console.log(products.value);
-
   products.value.forEach((item) => {
     if (item.fkCategory.companyId.id === id) {
       isExistProduct.value = true;
     }
-    console.log(1);
   });
   Swal.fire({
     title: 'Bạn có chắc muốn xóa công ty này không?',
