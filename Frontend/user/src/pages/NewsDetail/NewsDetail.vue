@@ -52,9 +52,9 @@ watch(response, () => {
 <template>
   <loading-component v-if="isLoadingContent" />
   <div :class="$style.newsdetail" v-else>
-    <div :class="$style.newsdetail__img">
+    <!-- <div :class="$style.newsdetail__img">
       <img :src="dataRender.img" alt="" />
-    </div>
+    </div> -->
 
     <bread-crumb :tags="route.path" />
 
