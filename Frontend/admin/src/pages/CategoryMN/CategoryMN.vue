@@ -48,17 +48,20 @@ const itemSelected = ref({
   cate2: {}
 });
 
-const listCompany: Ref<{ lst: CompanyObject[]; lstEmpty: boolean }> = ref({
+const listCompany: Ref<{ lst: CompanyObject[]; lstEmpty: boolean; isLoading: boolean }> = ref({
   lst: [],
-  lstEmpty: false
+  lstEmpty: false,
+  isLoading: false
 });
-const listCategory1: Ref<{ lst: Cate1Object[]; lstEmpty: boolean }> = ref({
+const listCategory1: Ref<{ lst: Cate1Object[]; lstEmpty: boolean; isLoading: boolean }> = ref({
   lst: [],
-  lstEmpty: false
+  lstEmpty: false,
+  isLoading: false
 });
-const listCategory2: Ref<{ lst: Cate1Object[]; lstEmpty: boolean }> = ref({
+const listCategory2: Ref<{ lst: Cate1Object[]; lstEmpty: boolean; isLoading: boolean }> = ref({
   lst: [],
-  lstEmpty: false
+  lstEmpty: false,
+  isLoading: false
 });
 const listCategoryFull = ref({ cate1: [{}], cate2: [{}] });
 const openModalAdd = ref(false);
@@ -135,6 +138,9 @@ const handleSelectCompany = (infCompapy: any) => {
         console.log('Error data category');
       }
     });
+    watch(getCategories.isLoading, (value) => {
+      listCategory1.value.isLoading = value;
+    });
   } else {
     listCategory1.value.lst = [];
     listCategory1.value.lstEmpty = false;
@@ -181,6 +187,10 @@ const handleSelectCategory1 = (infCategory1: any) => {
 
     watch(getCategories.error, (value) => {
       console.log(value);
+    });
+
+    watch(getCategories.isLoading, (value) => {
+      listCategory2.value.isLoading = value;
     });
   } else {
     listCategory2.value.lst = [];
@@ -286,6 +296,10 @@ watch(getCompany.response, (value) => {
   }
 });
 
+watch(getCompany.isLoading, (value) => {
+  listCompany.value.isLoading = value;
+});
+
 //Hàm nhận data từ get full cate1 Axios
 watch(getCategoryFull1.response, (value) => {
   if (value?.data) {
@@ -330,6 +344,7 @@ watch(getCategoryFull2.response, (value) => {
               :data="listCompany.lst"
               :is-empty-items="listCompany.lstEmpty"
               :handle-selected="handleSelectCompany"
+              :is-loading="listCompany.isLoading"
             />
           </div>
         </div>
@@ -343,6 +358,7 @@ watch(getCategoryFull2.response, (value) => {
               :handle-selected="handleSelectCategory1"
               :open-edit="handleOpenEditCategory1"
               :reset-selected="resetSelectedCate1"
+              :is-loading="listCategory1.isLoading"
             />
           </div>
         </div>
@@ -354,6 +370,7 @@ watch(getCategoryFull2.response, (value) => {
               :data="listCategory2.lst"
               :is-empty-items="listCategory2.lstEmpty"
               :open-edit="handleOpenEditCategory2"
+              :is-loading="listCategory2.isLoading"
             />
           </div>
         </div>

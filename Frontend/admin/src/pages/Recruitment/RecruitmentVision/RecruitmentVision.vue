@@ -33,8 +33,8 @@ const props = defineProps({
 });
 
 // const selectedImageVision = ref();
-const selectedImage1 = ref();
-const selectedImage2 = ref();
+const selectedImage1 = ref(props.imageVisionItems[0].image);
+const selectedImage2 = ref(props.imageVisionItems[1].image);
 const visionItems = ref();
 const showBtnUpdateImg = ref(false);
 const paramAxios = ref();
@@ -93,15 +93,16 @@ const handleUpdateImageVision = () => {
   const imageBlodArr = [
     checkImage[0]
       ? (new File([base64ToBlob(selectedImage1.value)], 'image.png', {
-          type: 'image/png'
+          type: 'image/*'
         }) as Blob)
       : selectedImage1.value,
     checkImage[1]
       ? (new File([base64ToBlob(selectedImage2.value)], 'image.png', {
-          type: 'image/png'
+          type: 'image/*'
         }) as Blob)
       : selectedImage2.value
   ];
+
   const objData = {
     subItem1: {
       id: props.contentVisionItems[0].id,
@@ -208,14 +209,6 @@ watch(
   (value) => {
     visionItems.value = value;
     console.log(value);
-  }
-);
-
-watch(
-  () => props.imageVisionItems[0],
-  () => {
-    selectedImage1.value = props.imageVisionItems[0].image;
-    selectedImage2.value = props.imageVisionItems[1].image;
   }
 );
 

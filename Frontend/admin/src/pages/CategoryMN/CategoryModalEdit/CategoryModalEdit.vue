@@ -44,6 +44,7 @@ const listChange: Ref<{ add: Cate1Object[]; delete: Cate1Object[] }> = ref({ add
 const paramAxios = ref();
 const searchText = ref('');
 const itemCateEdit = ref();
+const cntIsLoading: Ref<number> = ref(0);
 
 //Hàm xóa một phần tử của mảng
 const removeElementFromArray = (arr: any, elementId: string) => {
@@ -221,6 +222,10 @@ const handleModalUpdate = () => {
             if (value?.status === 'ok')
               listPushCate.push(props.numCate === 1 ? value?.data.cate1Id : value?.data.cate2Id);
           });
+
+          watch(postPushCate.isLoading, (value) => {
+            if (!value) cntIsLoading.value = cntIsLoading.value + 1;
+          });
         });
       }
 
@@ -245,13 +250,18 @@ const handleModalUpdate = () => {
             if (value?.status === 'ok') listPopCate.push(item);
             // console.log(postPushCate);
           });
+
+          watch(postPushCate.isLoading, (value) => {
+            if (!value) cntIsLoading.value = cntIsLoading.value + 1;
+          });
+
+          watch(postPushCate.error, (value) => {
+            console.log(value);
+          });
         });
       }
-
       Swal.fire({
         title: 'Đang cập nhật dữ liệu...',
-        // timerProgressBar: true,
-        timer: 2000,
         customClass: {
           popup: styles['container-popup'],
           loader: styles['container-loader']
@@ -259,22 +269,27 @@ const handleModalUpdate = () => {
         didOpen: () => {
           Swal.showLoading();
         }
-      }).then((result) => {
-        if (result.dismiss === Swal.DismissReason.timer) {
-          if (props.handleUpdate) props.handleUpdate(listPushCate, listPopCate, props.numCate);
-
-          emit('close');
-          Swal.fire({
-            title: 'Cập nhật dữ liệu thành công!',
-            icon: 'success',
-            customClass: {
-              popup: styles['container-popup'],
-              confirmButton: styles['confirm-button'],
-              denyButton: styles['deny-button']
-            }
-          });
-        }
       });
+
+      watch(
+        () => cntIsLoading.value,
+        (value) => {
+          if (listChange.value.add.length + listChange.value.delete.length === value) {
+            if (props.handleUpdate) props.handleUpdate(listPushCate, listPopCate, props.numCate);
+
+            emit('close');
+            Swal.fire({
+              title: 'Cập nhật dữ liệu thành công!',
+              icon: 'success',
+              customClass: {
+                popup: styles['container-popup'],
+                confirmButton: styles['confirm-button'],
+                denyButton: styles['deny-button']
+              }
+            });
+          }
+        }
+      );
     } else if (result.isDenied) {
       Swal.fire({
         title: 'Nội dung không được cập nhật',
