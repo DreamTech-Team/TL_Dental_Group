@@ -129,8 +129,6 @@ const deleteCompany = (id: string) => {
 
   products.value.forEach((item) => {
     if (item.fkCategory.companyId.id === id) {
-      console.log('hihi');
-
       isExistProduct.value = true;
     }
     console.log(1);
