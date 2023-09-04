@@ -3,6 +3,8 @@ import { ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import { useRoute } from 'vue-router';
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 interface Policy {
   title: string;
@@ -44,9 +46,36 @@ watch(getPolicies.response, () => {
 const selectedItem = ref(0);
 const showNav = ref(false);
 
+const handleResizeData = () => {
+  const parent = document.getElementById('content_body');
+  if (parent) {
+    console.log(parent.getElementsByTagName('p'));
+    const content = ref<HTMLElement[] | null>(null);
+    const tagli = ref<HTMLElement[] | null>(null);
+    const contents = parent.getElementsByTagName('p');
+    const listli = parent.getElementsByTagName('li');
+    const contentArray = Array.from(contents);
+    const liArray = Array.from(listli);
+    content.value = contentArray;
+    tagli.value = liArray;
+
+    content.value.forEach((item) => {
+      item.style.lineHeight = '1.8';
+    });
+
+    tagli.value.forEach((item) => {
+      item.style.lineHeight = '1.8';
+      item.style.marginLeft = '15px';
+      item.style.paddingLeft = '5px';
+    });
+  }
+};
+
+watch(getPolicies.isLoading, handleResizeData);
+
 const handleSelected = (index: number) => {
   selectedItem.value = Number(index);
-  console.log(index);
+  setTimeout(handleResizeData, 1000);
 };
 
 const handleActiveNav = () => {
@@ -68,17 +97,7 @@ const handleActiveNav = () => {
           ]"
           @click="handleActiveNav"
         >
-          <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none">
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-            <g id="SVGRepo_iconCarrier">
-              <path
-                fill="#000000"
-                fill-rule="evenodd"
-                d="M19 4a1 1 0 01-1 1H2a1 1 0 010-2h16a1 1 0 011 1zm0 6a1 1 0 01-1 1H2a1 1 0 110-2h16a1 1 0 011 1zm-1 7a1 1 0 100-2H2a1 1 0 100 2h16z"
-              ></path>
-            </g>
-          </svg>
+          <font-awesome-icon :icon="faBars" :class="$style['container__content-nav-title-icon']" />
           <h3>Chính sách</h3>
         </div>
         <ul>
@@ -104,6 +123,7 @@ const handleActiveNav = () => {
           {{ listPolicy[selectedItem]?.title }}
         </div>
         <div
+          id="content_body"
           :class="$style['container__content-section-details']"
           v-html="listPolicy[selectedItem]?.content"
         ></div>

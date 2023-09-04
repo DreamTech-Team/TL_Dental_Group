@@ -87,14 +87,26 @@ const handleClickRight = () => {
   }
 };
 
-// Xử lí resize lại tấm ảnh để phù hợp với mobile
+// Xử lí resize lại tấm ảnh, linehight để phù hợp với mobile
 onMounted(() => {
   const parent = document.getElementById('content_body');
   if (parent) {
     const image = ref<HTMLImageElement[] | null>(null);
+    const content = ref<HTMLElement[] | null>(null);
+    const contentdiv = ref<HTMLElement[] | null>(null);
+    const tagli = ref<HTMLElement[] | null>(null);
     const images = parent.getElementsByTagName('img');
+    const contents = parent.getElementsByTagName('p');
+    const contentsdiv = parent.getElementsByTagName('div');
+    const listli = parent.getElementsByTagName('li');
     const imageArray = Array.from(images);
+    const contentArray = Array.from(contents);
+    const contentdivArray = Array.from(contentsdiv);
+    const liArray = Array.from(listli);
     image.value = imageArray;
+    content.value = contentArray;
+    contentdiv.value = contentdivArray;
+    tagli.value = liArray;
 
     image.value.forEach((item) => {
       if (window.innerWidth < 736) {
@@ -106,6 +118,20 @@ onMounted(() => {
         item.width = window.innerWidth - 400;
         item.height = item.width * aspectRatio;
       }
+    });
+
+    content.value.forEach((item) => {
+      item.style.lineHeight = '1.8';
+    });
+
+    contentdiv.value.forEach((item) => {
+      item.style.lineHeight = '1.8';
+    });
+
+    tagli.value.forEach((item) => {
+      item.style.lineHeight = '1.8';
+      item.style.marginLeft = '15px';
+      item.style.paddingLeft = '5px';
     });
   }
 });
