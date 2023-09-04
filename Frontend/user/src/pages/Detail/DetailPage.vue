@@ -116,6 +116,22 @@ watch(response, () => {
   }
 
   currentImage.value = images.value[0];
+
+  const titleMeta = document.querySelector('meta[property="og:title"]');
+  const descriptionMeta = document.querySelector('meta[property="og:description"]');
+
+  const imageMeta = document.querySelector('meta[property="og:image"]');
+
+  if (titleMeta) {
+    titleMeta.setAttribute('content', inforProduct?.value?.name || 'TL Dental Group');
+  }
+  if (descriptionMeta) {
+    descriptionMeta.setAttribute('content', inforProduct?.value?.description || 'TL Dental Group');
+  }
+  if (imageMeta) {
+    imageMeta.setAttribute('content', inforProduct?.value?.mainImg || logo);
+    console.log(imageMeta);
+  }
 });
 
 const setCurrentImage = (index: number) => {
@@ -150,20 +166,6 @@ watch(currentIndex, () => {
 
 onMounted(() => {
   const container = document.getElementById('trend-wrapper');
-  const titleMeta = document.querySelector('meta[property="og:title"]');
-  const descriptionMeta = document.querySelector('meta[property="og:description"]');
-
-  const imageMeta = document.querySelector('meta[property="og:image"]');
-
-  if (titleMeta) {
-    titleMeta.setAttribute('content', inforProduct?.value?.name || 'TL Dental Group');
-  }
-  if (descriptionMeta) {
-    descriptionMeta.setAttribute('content', inforProduct?.value?.description || 'TL Dental Group');
-  }
-  if (imageMeta) {
-    imageMeta.setAttribute('content', inforProduct?.value?.mainImg || logo);
-  }
 
   if (container) {
     if (window.innerWidth < 739) {
