@@ -212,7 +212,7 @@ watch([selectedCategory1, selectedCategory2], () => {
         <p>{{ item.title }}</p>
         <font-awesome-icon :class="$style['category__firstX--choose-icon']" :icon="faCaretDown" />
       </div>
-      <!-- category 3 -->
+      <!-- category 2 -->
       <div
         :id="idDefine(index)"
         :class="[
@@ -234,9 +234,34 @@ watch([selectedCategory1, selectedCategory2], () => {
           :key="idx"
         >
           {{ item1.name }}
+          <!-- category 3 -->
+          <div
+            :id="idDefine(index, idx)"
+            :class="[
+              $style['category__firstX--animation'],
+              {
+                [$style['category__firstX--show-animation']]:
+                  isAnimationVisible && selectedItem === index
+              }
+            ]"
+            ref="animationContainer"
+          >
+            <div
+              @click="logAndSelectCategory(index, idx, idx2)"
+              :class="[
+                $style['category__third'],
+                { [$style['category__third--selected']]: isSelectedCategory(index, idx, idx2) }
+              ]"
+              v-for="(item2, idx2) in item1.data"
+              :key="idx2"
+            >
+              {{ item2.name }}
+            </div>
+          </div>
+          <!-- end category 3 -->
         </div>
       </div>
-      <!-- end category 3 -->
+      <!-- end category 2 -->
     </div>
   </div>
   <loading-component v-else />
