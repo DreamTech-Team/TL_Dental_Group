@@ -17,6 +17,7 @@ import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue
 import { ref, watch, onMounted, onUnmounted, computed, toRefs } from 'vue';
 import { useRoute } from 'vue-router';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import logo from '../../assets/imgs/logo.png';
 
 export interface Product {
   id: string;
@@ -115,6 +116,22 @@ watch(response, () => {
   }
 
   currentImage.value = images.value[0];
+
+  const titleMeta = document.querySelector('meta[property="og:title"]');
+  const descriptionMeta = document.querySelector('meta[property="og:description"]');
+
+  const imageMeta = document.querySelector('meta[property="og:image"]');
+
+  if (titleMeta) {
+    titleMeta.setAttribute('content', inforProduct?.value?.name || 'TL Dental Group');
+  }
+  if (descriptionMeta) {
+    descriptionMeta.setAttribute('content', inforProduct?.value?.description || 'TL Dental Group');
+  }
+  if (imageMeta) {
+    imageMeta.setAttribute('content', inforProduct?.value?.mainImg || logo);
+    console.log(imageMeta);
+  }
 });
 
 const setCurrentImage = (index: number) => {

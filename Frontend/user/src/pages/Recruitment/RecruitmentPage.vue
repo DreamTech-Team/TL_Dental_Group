@@ -343,10 +343,10 @@ onMounted(() => {
     <div :class="$style.container__vision">
       <div :class="$style['container__vision-block']">
         <div :class="$style['container__vision-block-img1']">
-          <img :src="imgHand" alt="none" />
+          <img :src="imageVisionItems[0].image" alt="none" />
         </div>
         <div :class="$style['container__vision-block-img2']">
-          <img :src="ceo" alt="none" />
+          <img :src="imageVisionItems[1].image" alt="none" />
         </div>
       </div>
       <div :class="$style['container__vision-content']">
