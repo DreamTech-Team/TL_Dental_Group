@@ -227,7 +227,6 @@
     }
 
     &--object {
-      font-weight: 600;
       font-size: 2.2rem;
       margin-bottom: 1.5rem;
     }
@@ -364,8 +363,8 @@
 .list {
   font-size: $text-xl;
   color: $text_900;
-  font-size: 2.2rem;
-  font-weight: 600;
+  line-height: 1.7;
+  font-size: 2rem;
   margin-top: 1rem;
   margin-left: 1rem;
 
@@ -611,7 +610,6 @@
       }
 
       &--object {
-        font-weight: 600;
         font-size: 1.6rem;
         margin-bottom: 1.5rem;
       }
