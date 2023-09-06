@@ -44,7 +44,7 @@ const subActive = ref('none');
             $style[subActive === item.slug ? 'hder-category--show' : 'hder-category--hidden']
           ]"
         >
-          <li
+          <!-- <li
             v-for="subItem in item.data.slice(0, 4)"
             :key="subItem.slug"
             :class="$style['hder-category__item']"
@@ -56,7 +56,7 @@ const subActive = ref('none');
             >
               <p>{{ subItem.name }}</p>
             </router-link>
-          </li>
+          </li> -->
 
           <li :class="$style['hder-category__more']" key="xemtatca">
             <router-link
