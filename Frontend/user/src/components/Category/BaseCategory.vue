@@ -69,7 +69,7 @@ if (dataCate.dataRender.length === 0) {
         listCategory2.value.push(item.cate2Id);
       });
 
-      dataRender.value = convertDataCate.covertBase64ToBlob(
+      dataRender.value = convertDataCate.handleDataCate(
         listCategory1.value,
         listCategory2.value,
         dataRender.value
