@@ -18,7 +18,6 @@ interface ListCategory1 {
 }
 
 interface ListCategory2 {
-  id: string;
   title: string;
   slug: string;
 }
@@ -38,7 +37,7 @@ interface ListCategories {
 interface DataRender {
   title: string;
   slug: string;
-  data: { name: string; slug: string }[];
+  company: { name: string; slug: string; cate2: ListCategory2[] }[];
 }
 
 const dataCate = useDataRenderStore();
@@ -72,19 +71,14 @@ if (dataCate.dataRender.length === 0) {
     isLoadingCategory.value = isLoading.value;
 
     if (response.value?.data) {
-      response.value?.data.forEach((item: ListCategories) => {
-        listCategory1.value.push(item.cate1Id);
-        listCategory2.value.push(item.cate2Id);
-        listCategory3.value.push(item.cate2Id);
-      });
+      // response.value?.data.forEach((item: ListCategories) => {
+      //   listCategory1.value.push(item.cate1Id);
+      //   listCategory2.value.push(item.cate2Id);
+      //   listCategory3.value.push(item.cate2Id);
+      // });
       // console.log(listCategory2.value);
 
-      dataRender.value = convertDataCate.covertBase64ToBlob(
-        listCategory1.value,
-        listCategory2.value,
-        dataRender.value
-      );
-      console.log(dataRender.value);
+      dataRender.value = convertDataCate.handleDataRender(response.value?.data, dataRender.value);
 
       dataCate.setDataRender(dataRender.value);
     }
@@ -163,10 +157,10 @@ const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
   // Lưu index của category cấp 2 được chọn
   selectedCategory2Index.value = itemIndex;
 
-  const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
-  const selectedCategory = dataRender.value[categoryIndex]; // Giá trị của category cấp 1
-  emit('slug-category2', selectedSubCategory.slug);
-  selectedCategory2.value = selectedSubCategory.slug; // Update selectedCategory2
+  // const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
+  // const selectedCategory = dataRender.value[categoryIndex]; // Giá trị của category cấp 1
+  // emit('slug-category2', selectedSubCategory.slug);
+  // selectedCategory2.value = selectedSubCategory.slug; // Update selectedCategory2
 
   if (router.currentRoute.value.name !== 'sanpham') {
     // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
@@ -230,7 +224,7 @@ watch([selectedCategory1, selectedCategory2], () => {
             $style['category__second'],
             { [$style['category__second--selected']]: isSelectedCategory(index, idx) }
           ]"
-          v-for="(item1, idx) in item.data"
+          v-for="(item1, idx) in item.company"
           :key="idx"
         >
           {{ item1.name }}
@@ -252,10 +246,10 @@ watch([selectedCategory1, selectedCategory2], () => {
                 $style['category__third'],
                 { [$style['category__third--selected']]: isSelectedCategory(index, idx) }
               ]"
-              v-for="(item2, idx2) in item1.data"
+              v-for="(item2, idx2) in item1.cate2"
               :key="idx2"
             >
-              {{ item2.name }}
+              {{ item2.title }}
             </div>
           </div>
           <!-- end category 3 -->
