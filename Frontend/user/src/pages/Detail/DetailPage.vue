@@ -254,7 +254,7 @@ onUnmounted(() => {
 });
 </script>
 <template>
-  <div v-if="!isLoadingDetail && displayedImages">
+  <div v-if="!isLoadingDetail && displayedImages" style="margin: auto; max-width: 1480px">
     <bread-crumb :tags="pathBC" />
     <div :class="$style.detail">
       <div :class="$style.detail__image">
