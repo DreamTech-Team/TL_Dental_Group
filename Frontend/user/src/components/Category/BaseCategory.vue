@@ -157,10 +157,10 @@ const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
   // Lưu index của category cấp 2 được chọn
   selectedCategory2Index.value = itemIndex;
 
-  const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
-  const selectedCategory = dataRender.value[categoryIndex]; // Giá trị của category cấp 1
-  emit('slug-category2', selectedSubCategory.slug);
-  selectedCategory2.value = selectedSubCategory.slug; // Update selectedCategory2
+  // const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
+  // const selectedCategory = dataRender.value[categoryIndex]; // Giá trị của category cấp 1
+  // emit('slug-category2', selectedSubCategory.slug);
+  // selectedCategory2.value = selectedSubCategory.slug; // Update selectedCategory2
 
   if (router.currentRoute.value.name !== 'sanpham') {
     // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
@@ -230,7 +230,7 @@ watch([selectedCategory1, selectedCategory2], () => {
           {{ item1.name }}
           <!-- category 3 -->
           <div
-            :id="idDefine(index, idx)"
+            :id="idDefine(index)"
             :class="[
               $style['category__firstX--animation'],
               {
@@ -241,10 +241,10 @@ watch([selectedCategory1, selectedCategory2], () => {
             ref="animationContainer"
           >
             <div
-              @click="logAndSelectCategory(index, idx, idx2)"
+              @click="logAndSelectCategory(index, idx)"
               :class="[
                 $style['category__third'],
-                { [$style['category__third--selected']]: isSelectedCategory(index, idx, idx2) }
+                { [$style['category__third--selected']]: isSelectedCategory(index, idx) }
               ]"
               v-for="(item2, idx2) in item1.cate2"
               :key="idx2"
