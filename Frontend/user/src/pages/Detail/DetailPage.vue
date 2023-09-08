@@ -122,6 +122,7 @@ watch(response, () => {
   const descriptionMeta = document.querySelector('meta[property="og:description"]');
 
   const imageMeta = document.querySelector('meta[property="og:image"]');
+  console.log(title);
 
   if (title) {
     title.innerText =
