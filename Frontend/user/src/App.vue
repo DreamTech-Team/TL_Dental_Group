@@ -17,7 +17,6 @@ interface ListCategory1 {
 }
 
 interface ListCategory2 {
-  id: string;
   title: string;
   slug: string;
 }
@@ -26,12 +25,17 @@ interface ListCategories {
   id: string;
   cate1Id: ListCategory1;
   cate2Id: ListCategory2;
+  companyId: {
+    id: string;
+    name: string;
+    slug: string;
+  };
 }
 
 interface DataRender {
   title: string;
   slug: string;
-  data: { name: string; slug: string }[];
+  company: { name: string; slug: string; cate2: ListCategory2[] }[];
 }
 
 const dataRenderStore = useDataRenderStore();
@@ -50,16 +54,20 @@ const fetchData = async () => {
     isLoadingCategory.value = isLoading.value;
 
     if (response.value?.data) {
+      console.log(response.value?.data);
+
       response.value?.data.forEach((item: ListCategories) => {
         listCategory1.value.push(item.cate1Id);
         listCategory2.value.push(item.cate2Id);
       });
 
-      dataRender.value = convertDataCate.covertBase64ToBlob(
-        listCategory1.value,
-        listCategory2.value,
-        dataRender.value
-      );
+      dataRender.value = convertDataCate.handleDataRender(response.value?.data, dataRender.value);
+
+      // dataRender.value = convertDataCate.handleDataCate(
+      //   listCategory1.value,
+      //   listCategory2.value,
+      //   dataRender.value
+      // );
 
       dataRenderStore.setDataRender(dataRender.value);
     }

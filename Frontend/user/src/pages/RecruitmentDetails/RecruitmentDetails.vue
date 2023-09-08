@@ -57,15 +57,23 @@ const handleResizeData = () => {
 
   if (parent) {
     const content = ref<HTMLElement[] | null>(null);
+    const contentdiv = ref<HTMLElement[] | null>(null);
     const tagli = ref<HTMLElement[] | null>(null);
     const contents = parent.getElementsByTagName('p');
+    const contentsdiv = parent.getElementsByTagName('div');
     const listli = parent.getElementsByTagName('li');
     const contentArray = Array.from(contents);
+    const contentdivArray = Array.from(contentsdiv);
     const liArray = Array.from(listli);
     content.value = contentArray;
+    contentdiv.value = contentdivArray;
     tagli.value = liArray;
 
     content.value.forEach((item) => {
+      item.style.lineHeight = '1.8';
+    });
+
+    contentdiv.value.forEach((item) => {
       item.style.lineHeight = '1.8';
     });
 

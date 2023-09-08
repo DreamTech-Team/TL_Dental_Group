@@ -31,7 +31,6 @@ watch(isLoading, () => {
 
 watch(response, () => {
   listPolicy.value = response?.value?.data;
-  console.log(listPolicy.value);
 });
 </script>
 <template>
@@ -50,7 +49,6 @@ watch(response, () => {
           </div>
 
           <p :class="$style['about__policy-items-links-title']">{{ itemPolicy.name }}</p>
-          <!-- <p :class="$style['about__policy-items-links-content']" v-html="itemPolicy.detail"></p> -->
 
           <div>
             <p :class="$style['about__policy-items-links-more']">

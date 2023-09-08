@@ -1,11 +1,17 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
 
+interface ListCategory2 {
+  title: string;
+  slug: string;
+}
+
 interface DataRender {
   title: string;
   slug: string;
-  data: { name: string; slug: string }[];
+  company: { name: string; slug: string; cate2: ListCategory2[] }[];
 }
+
 interface Active {
   categoryIndex: number;
   itemIndex: number;

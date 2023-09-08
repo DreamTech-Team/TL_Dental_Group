@@ -24,17 +24,17 @@ const heightCate2 = (slug: string) => {
 
 const handleGetIndexCate1 = (categoryIndex: number) => {
   saveIndexState.setTypeCategory('cate1Header' + categoryIndex);
-  saveIndexState.setActiveCategory({ categoryIndex, itemIndex: -1 });
+  // saveIndexState.setActiveCategory({ categoryIndex, itemIndex: -1 });
 };
 
 const handleGetIndexCate2 = (categoryIndex: number, itemIndex: number) => {
   saveIndexState.setTypeCategory('cate2Header' + categoryIndex + '' + itemIndex);
-  saveIndexState.setActiveCategory({ categoryIndex: categoryIndex, itemIndex: itemIndex });
+  // saveIndexState.setActiveCategory({ categoryIndex: categoryIndex, itemIndex: itemIndex });
 };
 
 const handleResetCate = () => {
   saveIndexState.setTypeCategory('reset');
-  saveIndexState.setActiveCategory({ categoryIndex: -1, itemIndex: -1 });
+  // saveIndexState.setActiveCategory({ categoryIndex: -1, itemIndex: -1 });
 };
 </script>
 <template>
@@ -72,20 +72,20 @@ const handleResetCate = () => {
           :style="{ maxHeight: heightCate2(item1?.slug) + 'vh' }"
         >
           <li :class="$style['header-category__line']"></li>
-          <li
+          <!-- <li
             v-for="(item2, index) in item1.data.slice(0, 8)"
             :key="item2.slug"
             :class="$style['header-category__item']"
             @click.prevent.stop="handleGetIndexCate2(idx, index)"
           >
-            <!-- ?slug1=vat-lieu-chinh-nha11&slug2=kem-chinh-nha-23 -->
+            ?slug1=vat-lieu-chinh-nha11&slug2=kem-chinh-nha-23
             <router-link
               :to="`/sanpham?slug1=${item1.slug}&slug2=${item2.slug}`"
               :class="$style['header-category__item-link']"
             >
               <p>{{ item2.name }}</p>
             </router-link>
-          </li>
+          </li> -->
 
           <li :class="$style['header-category__more']" key="xemtatca">
             <router-link to="/sanpham" :class="$style['header-category__more-link']">
