@@ -236,7 +236,7 @@ watch([selectedCategory1, selectedCategory2], () => {
           {{ item1.name }}
           <!-- category 3 -->
           <div
-            :id="idDefine(index, idx)"
+            :id="idDefine(index)"
             :class="[
               $style['category__firstX--animation'],
               {
@@ -247,10 +247,10 @@ watch([selectedCategory1, selectedCategory2], () => {
             ref="animationContainer"
           >
             <div
-              @click="logAndSelectCategory(index, idx, idx2)"
+              @click="logAndSelectCategory(index, idx)"
               :class="[
                 $style['category__third'],
-                { [$style['category__third--selected']]: isSelectedCategory(index, idx, idx2) }
+                { [$style['category__third--selected']]: isSelectedCategory(index, idx) }
               ]"
               v-for="(item2, idx2) in item1.data"
               :key="idx2"
