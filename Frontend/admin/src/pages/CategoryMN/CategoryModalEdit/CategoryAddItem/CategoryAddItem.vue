@@ -20,6 +20,8 @@ const emit = defineEmits(['close', 'add-cate']);
 const paramAxios = ref([]);
 const checkError = ref(false);
 
+const isLoading = ref(false);
+
 const base64ToBlob = (base64Data: string) => {
   const byteString = atob(base64Data.split(',')[1]);
   const ab = new ArrayBuffer(byteString.length);
@@ -64,11 +66,26 @@ const handleFileInputChange = (event: Event) => {
 };
 
 const handleAddCategory = () => {
+  if (nameCategory.value === ' ' || selectedImage.value === '/src/assets/imgs/logo_nobg.png') {
+    Swal.fire({
+      title: 'Thông tin cung cấp không hợp lệ!',
+      icon: 'error',
+      customClass: {
+        popup: styles['container-popup'],
+        confirmButton: styles['confirm-button'],
+        denyButton: styles['deny-button']
+      }
+    });
+    return;
+  }
+
   if (props.numCate === 1) {
     const dataCate = {
       title: nameCategory.value,
       highlight: 0
     };
+    console.log(dataCate, selectedImage.value);
+
     const imgCate = new File([base64ToBlob(selectedImage.value)], 'image.png', {
       type: 'image/png'
     });
@@ -89,12 +106,16 @@ const handleAddCategory = () => {
       paramAxios.value
     );
 
+    watch(postNewCate.isLoading, (value) => {
+      isLoading.value = value;
+    });
+
     watch(postNewCate.response, (getValue) => {
       // console.log(postNewCate.response.value?.data);
       if (props.handleAddCate) props.handleAddCate(getValue?.data);
     });
 
-    watch(postNewCate.error, (getValue) => {
+    watch(postNewCate.error, () => {
       checkError.value = true;
     });
   } else {
@@ -110,12 +131,20 @@ const handleAddCategory = () => {
       // console.log(postNewCate.response.value?.data);
       if (props.handleAddCate) props.handleAddCate(getValue?.data);
     });
+
+    watch(postNewCate.isLoading, (value) => {
+      isLoading.value = value;
+    });
+
+    watch(postNewCate.error, () => {
+      checkError.value = true;
+    });
   }
 
   Swal.fire({
     title: 'Đang cập nhật dữ liệu...',
     // timerProgressBar: true,
-    timer: 2000,
+    // timer: 2000,
     customClass: {
       popup: styles['container-popup'],
       loader: styles['container-loader']
@@ -123,40 +152,60 @@ const handleAddCategory = () => {
     didOpen: () => {
       Swal.showLoading();
     }
-  }).then((result) => {
-    if (!checkError.value)
-      if (result.dismiss === Swal.DismissReason.timer) {
-        emit('close');
-        Swal.fire({
-          title: 'Thêm danh mục thành công!',
-          icon: 'success',
-          customClass: {
-            popup: styles['container-popup'],
-            confirmButton: styles['confirm-button'],
-            denyButton: styles['deny-button']
-          }
-        });
-      } else {
-        Swal.fire({
-          title: 'Danh mục đã tồn tại!',
-          icon: 'error',
-          customClass: {
-            popup: styles['container-popup'],
-            confirmButton: styles['confirm-button'],
-            denyButton: styles['deny-button']
-          }
-        });
-      }
   });
+
+  watch(
+    () => isLoading.value,
+    (value) => {
+      if (!isLoading.value) {
+        if (!checkError.value) {
+          emit('close');
+          Swal.fire({
+            title: 'Thêm danh mục thành công!',
+            icon: 'success',
+            customClass: {
+              popup: styles['container-popup'],
+              confirmButton: styles['confirm-button'],
+              denyButton: styles['deny-button']
+            }
+          });
+        } else {
+          Swal.fire({
+            title: 'Danh mục đã tồn tại!',
+            icon: 'error',
+            customClass: {
+              popup: styles['container-popup'],
+              confirmButton: styles['confirm-button'],
+              denyButton: styles['deny-button']
+            }
+          });
+        }
+      }
+    }
+  );
 };
 
 const handleUpdateCategory = () => {
+  if (nameCategory.value === ' ' || selectedImage.value === '/src/assets/imgs/logo_nobg.png') {
+    Swal.fire({
+      title: 'Thông tin cung cấp không hợp lệ!',
+      icon: 'error',
+      customClass: {
+        popup: styles['container-popup'],
+        confirmButton: styles['confirm-button'],
+        denyButton: styles['deny-button']
+      }
+    });
+    return;
+  }
+
   if (props.numCate === 1) {
     const dataCate = {
       id: props.data?.id,
       title: nameCategory.value,
       highlight: props.data?.highlight
     };
+
     const imgCate =
       selectedImage.value !== props.data?.img
         ? new File([base64ToBlob(selectedImage.value)], 'image.png', {
@@ -180,12 +229,17 @@ const handleUpdateCategory = () => {
       paramAxios.value
     );
 
+    watch(updateCate1.isLoading, (value) => {
+      isLoading.value = value;
+    });
+
     watch(updateCate1.response, (value) => {
       console.log(value?.data);
       if (props.handleAddCate) props.handleAddCate(value?.data, 'edit');
     });
 
     watch(updateCate1.error, (value) => {
+      checkError.value = false;
       console.log(value);
     });
   } else {
@@ -198,6 +252,10 @@ const handleUpdateCategory = () => {
       paramAxios.value
     );
 
+    watch(updateCate2.isLoading, (value) => {
+      isLoading.value = value;
+    });
+
     watch(updateCate2.response, (value) => {
       console.log(value?.data);
       if (props.handleAddCate) props.handleAddCate(value?.data, 'edit');
@@ -205,6 +263,7 @@ const handleUpdateCategory = () => {
 
     watch(updateCate2.error, (value) => {
       console.log(value);
+      checkError.value = false;
     });
   }
 
@@ -219,30 +278,37 @@ const handleUpdateCategory = () => {
     didOpen: () => {
       Swal.showLoading();
     }
-  }).then((result) => {
-    if (result.dismiss === Swal.DismissReason.timer) {
-      emit('close');
-      Swal.fire({
-        title: 'Cập nhật danh mục thành công!',
-        icon: 'success',
-        customClass: {
-          popup: styles['container-popup'],
-          confirmButton: styles['confirm-button'],
-          denyButton: styles['deny-button']
-        }
-      });
-    } else {
-      Swal.fire({
-        title: 'Danh mục đã tồn tại!',
-        icon: 'error',
-        customClass: {
-          popup: styles['container-popup'],
-          confirmButton: styles['confirm-button'],
-          denyButton: styles['deny-button']
-        }
-      });
-    }
   });
+
+  watch(
+    () => isLoading.value,
+    (value) => {
+      if (!isLoading.value) {
+        if (!checkError.value) {
+          emit('close');
+          Swal.fire({
+            title: 'Chỉnh sửa danh mục thành công!',
+            icon: 'success',
+            customClass: {
+              popup: styles['container-popup'],
+              confirmButton: styles['confirm-button'],
+              denyButton: styles['deny-button']
+            }
+          });
+        } else {
+          Swal.fire({
+            title: 'Tên danh mục đã tồn tại!',
+            icon: 'error',
+            customClass: {
+              popup: styles['container-popup'],
+              confirmButton: styles['confirm-button'],
+              denyButton: styles['deny-button']
+            }
+          });
+        }
+      }
+    }
+  );
 };
 
 const handleModalCancel = () => {

@@ -203,6 +203,7 @@ const handleModalUpdate = () => {
     if (result.isConfirmed) {
       const listPushCate: unknown[] = [];
       const listPopCate: unknown[] = [];
+      const listFailed = ref<string[]>([]);
 
       // Thêm dữ liệu
       if (listChange.value.add.length > 0) {
@@ -225,6 +226,10 @@ const handleModalUpdate = () => {
 
           watch(postPushCate.isLoading, (value) => {
             if (!value) cntIsLoading.value = cntIsLoading.value + 1;
+          });
+
+          watch(postPushCate.error, (value) => {
+            console.log(value);
           });
         });
       }
@@ -257,36 +262,65 @@ const handleModalUpdate = () => {
 
           watch(postPushCate.error, (value) => {
             console.log(value);
+            listFailed.value = [...listFailed.value, item.title];
           });
         });
       }
-      Swal.fire({
-        title: 'Đang cập nhật dữ liệu...',
-        customClass: {
-          popup: styles['container-popup'],
-          loader: styles['container-loader']
-        },
-        didOpen: () => {
-          Swal.showLoading();
-        }
-      });
+
+      if (listChange.value.add.length + listChange.value.delete.length === 0) {
+        emit('close');
+        Swal.fire({
+          title: 'Dữ liệu không có gì để cập nhật!',
+          icon: 'info',
+          customClass: {
+            popup: styles['container-popup'],
+            confirmButton: styles['confirm-button'],
+            denyButton: styles['deny-button']
+          }
+        });
+      } else {
+        Swal.fire({
+          title: 'Đang cập nhật dữ liệu...',
+          customClass: {
+            popup: styles['container-popup'],
+            loader: styles['container-loader']
+          },
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+      }
 
       watch(
         () => cntIsLoading.value,
         (value) => {
           if (listChange.value.add.length + listChange.value.delete.length === value) {
-            if (props.handleUpdate) props.handleUpdate(listPushCate, listPopCate, props.numCate);
+            console.log(listFailed.value.length);
+
+            if (listFailed.value.length > 0) {
+              Swal.fire({
+                title: `Lỗi xóa các danh mục: ${listFailed.value.join(', ')}`,
+                icon: 'error',
+                customClass: {
+                  popup: styles['container-popup'],
+                  confirmButton: styles['confirm-button'],
+                  denyButton: styles['deny-button']
+                }
+              });
+            } else if (props.handleUpdate) {
+              props.handleUpdate(listPushCate, listPopCate, props.numCate);
+              Swal.fire({
+                title: 'Cập nhật dữ liệu thành công!',
+                icon: 'success',
+                customClass: {
+                  popup: styles['container-popup'],
+                  confirmButton: styles['confirm-button'],
+                  denyButton: styles['deny-button']
+                }
+              });
+            }
 
             emit('close');
-            Swal.fire({
-              title: 'Cập nhật dữ liệu thành công!',
-              icon: 'success',
-              customClass: {
-                popup: styles['container-popup'],
-                confirmButton: styles['confirm-button'],
-                denyButton: styles['deny-button']
-              }
-            });
           }
         }
       );
