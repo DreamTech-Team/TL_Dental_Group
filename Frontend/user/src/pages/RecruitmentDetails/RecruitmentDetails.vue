@@ -87,7 +87,7 @@ const handleResizeData = () => {
 
 watch(getRecruitmentDetails.isLoading, (value) => {
   isLoading.value = value;
-  setTimeout(handleResizeData, 1000);
+  setTimeout(handleResizeData, 0);
 });
 
 watch(getRecruitmentDetails.error, (value) => {
