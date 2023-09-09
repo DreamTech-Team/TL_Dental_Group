@@ -277,7 +277,9 @@ const handleResizeData = () => {
   }
 };
 
-setTimeout(handleResizeData, 1);
+watch(isLoading, () => {
+  setTimeout(handleResizeData, 0);
+});
 
 onUnmounted(() => {
   window.removeEventListener('resize', resizeListener);
