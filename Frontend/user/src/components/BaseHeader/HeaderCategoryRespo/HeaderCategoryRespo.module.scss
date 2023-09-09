@@ -6,7 +6,7 @@
     max-height: 0;
     overflow-y: scroll;
     list-style: none;
-    background-color: $primary_500;
+    background-color: $primary_600;
     
     &--show {
         border-bottom: 1px solid #ccc;
@@ -32,13 +32,23 @@
     }
 
     &__sub {
-        overflow: hidden;
-        background-color: $primary_400;
+        // overflow: hidden;
+        background-color: $primary_500;
     }
 
     &__sub li a {
         padding-left: 60px;
     }
+
+    &__sub2 {
+        overflow: hidden;
+        background-color: $primary_400;
+    }
+
+    &__sub2 li a {
+        padding-left: 90px;
+    }
+
     &__more {
         padding: 14px 0;
         &-link {

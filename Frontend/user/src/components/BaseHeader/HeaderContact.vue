@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faPhone, faEnvelope, faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import { saveDataContact } from '@/stores/counter';
+import { RouterLink } from 'vue-router';
 
 interface Info {
   address: string;
@@ -79,17 +80,17 @@ setTimeout(fetchData, 3000);
   <div :class="$style.header__contact">
     <div :class="$style['header__contact-item']">
       <font-awesome-icon :icon="faPhone" :class="$style['header__contact-icon']" />
-      <p>{{ dataFacility.phoneNumber }}</p>
+      <a :href="'tel:' + dataFacility.phoneNumber">{{ dataFacility.phoneNumber }}</a>
     </div>
     |
     <div :class="$style['header__contact-item']">
       <font-awesome-icon :icon="faEnvelope" :class="$style['header__contact-icon']" />
-      <p>{{ dataContact.email.content }}</p>
+      <a :href="'mailto:' + dataContact.email.content">{{ dataContact.email.content }}</a>
     </div>
     |
     <div :class="$style['header__contact-item']">
       <font-awesome-icon :icon="faLocationDot" :class="$style['header__contact-icon']" />
-      <p>{{ dataFacility.address }}</p>
+      <router-link to="/lienhe">{{ dataFacility.address }}</router-link>
     </div>
   </div>
 </template>
