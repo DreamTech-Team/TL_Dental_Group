@@ -68,7 +68,10 @@
     padding: 1.5rem 3rem;
     margin-bottom: 2.5rem;
     height: auto;
-    width: 35rem;
+    width: 100%;
+    min-width: 0;
+    max-width: 35rem;
+    flex-wrap: wrap;
 
     &-bg1 {
       top: 0;
