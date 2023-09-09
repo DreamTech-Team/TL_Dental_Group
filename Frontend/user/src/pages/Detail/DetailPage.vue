@@ -90,8 +90,6 @@ const { response, isLoading } = useAxios<DataResponse>(
 
 const images = ref<string[]>([]);
 
-document.title = 'Hello';
-
 watch(response, () => {
   inforProduct.value = response.value?.data;
   isLoadingDetail.value = isLoading.value;
