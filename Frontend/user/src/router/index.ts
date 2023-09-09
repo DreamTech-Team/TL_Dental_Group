@@ -4,7 +4,7 @@ import HomePage from '@/pages/Home/HomePage.vue';
 import AboutPage from '@/pages/About/AboutPage.vue';
 import NewsPage from '@/pages/News/NewsPage.vue';
 const ProductPage = () => import('@/pages/Product/ProductPage.vue');
-import DetailPage from '@/pages/Detail/DetailPage.vue';
+const DetailPage = () => import('@/pages/Detail/DetailPage.vue');
 const NotFound = () => import('@/pages/NotFound/NotFound.vue');
 const RecruimentPage = () => import('@/pages/Recruitment/RecruitmentPage.vue');
 const RecruitmentDetailsPage = () => import('@/pages/RecruitmentDetails/RecruitmentDetails.vue');
