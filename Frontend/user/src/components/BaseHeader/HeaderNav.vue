@@ -23,7 +23,7 @@ const hiddenNav = () => {
 };
 </script>
 <template>
-  <div :class="$style.header__nav">
+  <div :class="$style.header__nav" style="margin: 0 auto; max-width: 1440px">
     <div :class="$style['header__nav-logo']" @click="() => router.push('/trangchu')">
       <img :src="logo" alt="logo" width="50" height="50" />
       <div>
