@@ -122,7 +122,6 @@ watch(response, () => {
   const descriptionMeta = document.querySelector('meta[property="og:description"]');
 
   const imageMeta = document.querySelector('meta[property="og:image"]');
-  console.log(title);
 
   if (title) {
     title.innerText =
@@ -200,6 +199,31 @@ onMounted(() => {
   };
 
   window.addEventListener('resize', resizeListener);
+});
+
+onUnmounted(() => {
+  const title = document.querySelector('title');
+  const titleMeta = document.querySelector('meta[property="og:title"]');
+  const descriptionMeta = document.querySelector('meta[property="og:description"]');
+
+  const imageMeta = document.querySelector('meta[property="og:image"]');
+
+  if (title) {
+    title.innerText = 'TL Dental Group - Thiết Bị và Vật Liệu Nha Khoa';
+  }
+  if (titleMeta) {
+    titleMeta.setAttribute('content', 'TL Dental Group');
+  }
+  if (descriptionMeta) {
+    descriptionMeta.setAttribute(
+      'content',
+      'Chuyên cung cấp thiết bị và vật liệu nha khoa chất lượng cao cho các phòng khám và chuyên gia nha khoa. Khám phá sản phẩm của TL Dental Group ngay hôm nay!'
+    );
+  }
+  if (imageMeta) {
+    imageMeta.setAttribute('content', logo);
+    console.log(imageMeta);
+  }
 });
 
 //Function 1000 to 1.000
