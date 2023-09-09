@@ -17,6 +17,7 @@ import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue
 import { ref, watch, onMounted, onUnmounted, computed, toRefs } from 'vue';
 import { useRoute } from 'vue-router';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import logo from '../../assets/imgs/logo.png';
 
 export interface Product {
   id: string;
@@ -115,6 +116,27 @@ watch(response, () => {
   }
 
   currentImage.value = images.value[0];
+
+  const title = document.querySelector('title');
+  const titleMeta = document.querySelector('meta[property="og:title"]');
+  const descriptionMeta = document.querySelector('meta[property="og:description"]');
+
+  const imageMeta = document.querySelector('meta[property="og:image"]');
+
+  if (title) {
+    title.innerText =
+      inforProduct?.value?.name || 'TL Dental Group - Thiết Bị và Vật Liệu Nha Khoa';
+  }
+  if (titleMeta) {
+    titleMeta.setAttribute('content', inforProduct?.value?.name || 'TL Dental Group');
+  }
+  if (descriptionMeta) {
+    descriptionMeta.setAttribute('content', inforProduct?.value?.summary || 'TL Dental Group');
+  }
+  if (imageMeta) {
+    imageMeta.setAttribute('content', inforProduct?.value?.mainImg || logo);
+    console.log(imageMeta);
+  }
 });
 
 const setCurrentImage = (index: number) => {
@@ -179,6 +201,31 @@ onMounted(() => {
   window.addEventListener('resize', resizeListener);
 });
 
+onUnmounted(() => {
+  const title = document.querySelector('title');
+  const titleMeta = document.querySelector('meta[property="og:title"]');
+  const descriptionMeta = document.querySelector('meta[property="og:description"]');
+
+  const imageMeta = document.querySelector('meta[property="og:image"]');
+
+  if (title) {
+    title.innerText = 'TL Dental Group - Thiết Bị và Vật Liệu Nha Khoa';
+  }
+  if (titleMeta) {
+    titleMeta.setAttribute('content', 'TL Dental Group');
+  }
+  if (descriptionMeta) {
+    descriptionMeta.setAttribute(
+      'content',
+      'Chuyên cung cấp thiết bị và vật liệu nha khoa chất lượng cao cho các phòng khám và chuyên gia nha khoa. Khám phá sản phẩm của TL Dental Group ngay hôm nay!'
+    );
+  }
+  if (imageMeta) {
+    imageMeta.setAttribute('content', logo);
+    console.log(imageMeta);
+  }
+});
+
 //Function 1000 to 1.000
 const formatNumberWithCommas = (num: number) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -230,14 +277,16 @@ const handleResizeData = () => {
   }
 };
 
-setTimeout(handleResizeData, 1000);
+watch(isLoading, () => {
+  setTimeout(handleResizeData, 0);
+});
 
 onUnmounted(() => {
   window.removeEventListener('resize', resizeListener);
 });
 </script>
 <template>
-  <div v-if="!isLoadingDetail && displayedImages">
+  <div v-if="!isLoadingDetail && displayedImages" style="margin: auto; max-width: 1480px">
     <bread-crumb :tags="pathBC" />
     <div :class="$style.detail">
       <div :class="$style.detail__image">

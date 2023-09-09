@@ -18,8 +18,30 @@ const { response, isLoading } = useAxios<DataResponse>(
   variableChange.value
 );
 
+// Hàm lấy thẻ p ra để chỉnh lại fontSize cho mobile
+const fetchData = async () => {
+  if (!isLoadingLetter.value) {
+    const parent = document.getElementById('content_letter');
+
+    if (parent) {
+      const content = ref<HTMLElement[] | null>(null);
+      const contents = parent.getElementsByTagName('p');
+      const contentArray = Array.from(contents);
+
+      content.value = contentArray;
+
+      content.value.forEach((item) => {
+        if (window.innerWidth < 736) {
+          item.style.fontSize = '14px';
+        }
+      });
+    }
+  }
+};
+
 watch(isLoading, () => {
   isLoadingLetter.value = isLoading.value;
+  setTimeout(fetchData, 100);
 });
 
 watch(response, () => {
@@ -33,7 +55,6 @@ const handleOpen = () => {
 
     const letter = document.getElementById('letter');
     if (letter) {
-      console.log(letter.offsetHeight);
       heightLetter.value = letter.offsetHeight;
     }
 
@@ -72,32 +93,6 @@ const handleLeave = () => {
     }
   }
 };
-
-// Hàm lấy thẻ p ra để chỉnh lại fontSize cho mobile
-const fetchData = async () => {
-  if (!isLoadingLetter.value) {
-    const parent = document.getElementById('content_letter');
-
-    if (parent) {
-      const content = ref<HTMLElement[] | null>(null);
-      const contents = parent.getElementsByTagName('p');
-      const contentArray = Array.from(contents);
-
-      content.value = contentArray;
-
-      content.value.forEach((item) => {
-        if (window.innerWidth < 736) {
-          item.style.fontSize = '14px';
-        }
-      });
-    }
-  }
-};
-
-// Sau 1s mới bắt đầu lấy dữ liệu
-onMounted(() => {
-  setTimeout(fetchData, 1000);
-});
 </script>
 <template>
   <div :class="$style.about__thanks" :style="{ pointerEvents: canHover ? 'auto' : 'none' }">

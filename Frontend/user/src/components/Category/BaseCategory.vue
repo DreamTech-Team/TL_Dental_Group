@@ -18,6 +18,10 @@ interface ListCategory1 {
 }
 
 interface ListCategory2 {
+  title: string;
+  slug: string;
+}
+interface ListCategory3 {
   id: string;
   title: string;
   slug: string;
@@ -27,12 +31,13 @@ interface ListCategories {
   id: string;
   cate1Id: ListCategory1;
   cate2Id: ListCategory2;
+  cate3Id: ListCategory3;
 }
 
 interface DataRender {
   title: string;
   slug: string;
-  data: { name: string; slug: string }[];
+  company: { name: string; slug: string; cate2: ListCategory2[] }[];
 }
 
 const dataCate = useDataRenderStore();
@@ -44,7 +49,8 @@ const setAnni = setAnnimation();
 const selectedItem = ref(-1);
 const selectedCategory1 = ref();
 const selectedCategory2 = ref('');
-const emit = defineEmits(['slug-category1', 'slug-category2']);
+const selectedCategory3 = ref('');
+const emit = defineEmits(['slug-category1', 'slug-category2', 'slug-category3']);
 // Tạo biến lưu index của category cấp 1 được chọn và category cấp 2 được chọn
 const selectedCategory1Index = ref(-1);
 const selectedCategory2Index = ref(-1);
@@ -54,6 +60,7 @@ const router = useRouter();
 const valueChange = ref([]);
 const listCategory1 = ref<ListCategory1[]>([]);
 const listCategory2 = ref<ListCategory2[]>([]);
+const listCategory3 = ref<ListCategory2[]>([]);
 const dataRender = ref<DataRender[]>([]);
 const isLoadingCategory = ref(false);
 
@@ -64,16 +71,14 @@ if (dataCate.dataRender.length === 0) {
     isLoadingCategory.value = isLoading.value;
 
     if (response.value?.data) {
-      response.value?.data.forEach((item: ListCategories) => {
-        listCategory1.value.push(item.cate1Id);
-        listCategory2.value.push(item.cate2Id);
-      });
+      // response.value?.data.forEach((item: ListCategories) => {
+      //   listCategory1.value.push(item.cate1Id);
+      //   listCategory2.value.push(item.cate2Id);
+      //   listCategory3.value.push(item.cate2Id);
+      // });
+      // console.log(listCategory2.value);
 
-      dataRender.value = convertDataCate.covertBase64ToBlob(
-        listCategory1.value,
-        listCategory2.value,
-        dataRender.value
-      );
+      dataRender.value = convertDataCate.handleDataRender(response.value?.data, dataRender.value);
 
       dataCate.setDataRender(dataRender.value);
     }
@@ -120,25 +125,9 @@ watch(typeCate, () => {
 
     if (typeCate.value.includes('cate2Header')) {
       console.log(typeCate.value[typeCate.value.length - 1]);
-
-      // toggleAnimation(selectedCategoryItem.value.categoryIndex);
-      // toggleAnimation(selectedCategoryItem.value.categoryIndex);
     }
   }
 });
-
-// watch(typeCate, () => {
-//   // if (newValue.categoryIndex !== oldValue.categoryIndex) {
-//   //   // Chỉ thực hiện toggleAnimation khi chọn category cấp 1
-//   //   toggleAnimation(newValue.categoryIndex);
-//   //   // toggleAnimation(newValue.categoryIndex);
-//   // } else if (newValue.itemIndex !== oldValue.itemIndex && newValue.categoryIndex !== -1) {
-//   //   toggleAnimation(newValue.categoryIndex);
-//   // } else if (newValue.categoryIndex === -1) {
-//   //   toggleAnimation(newValue.categoryIndex);
-//   // }
-//   toggleAnimation(selectedCategoryItem.value.categoryIndex);
-// });
 
 const idDefine = (index: number) => {
   return `id-${index}`;
@@ -153,6 +142,7 @@ const logAndSelectCategory1 = (categoryIndex: number) => {
     selectedCategory2.value = ''; // Reset selectedCategory2
     emit('slug-category1', selectedCategory1.value);
     emit('slug-category2', selectedCategory2.value);
+    emit('slug-category3', selectedCategory3.value);
 
     // Đặt lại giá trị selectedItem để xóa màu category cấp 2 trước đó
     selectedItem.value = categoryIndex;
@@ -167,10 +157,10 @@ const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
   // Lưu index của category cấp 2 được chọn
   selectedCategory2Index.value = itemIndex;
 
-  const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
-  const selectedCategory = dataRender.value[categoryIndex]; // Giá trị của category cấp 1
-  emit('slug-category2', selectedSubCategory.slug);
-  selectedCategory2.value = selectedSubCategory.slug; // Update selectedCategory2
+  // const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
+  // const selectedCategory = dataRender.value[categoryIndex]; // Giá trị của category cấp 1
+  // emit('slug-category2', selectedSubCategory.slug);
+  // selectedCategory2.value = selectedSubCategory.slug; // Update selectedCategory2
 
   if (router.currentRoute.value.name !== 'sanpham') {
     // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
@@ -179,23 +169,13 @@ const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
 };
 
 const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
-  const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
+  // const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
 
   return (
-    selectedItem.value === categoryIndex && // Kiểm tra category cấp 1 đã chọn
     selectedCategoryItem.value.categoryIndex === categoryIndex &&
-    selectedCategoryItem.value.itemIndex === itemIndex &&
-    selectedSubCategory.slug === selectedCategory2.value // Kiểm tra category cấp 2 đã chọn
+    selectedCategoryItem.value.itemIndex === itemIndex
   );
 };
-// const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
-//   // const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
-
-//   return (
-//     selectedCategoryItem.value.categoryIndex === categoryIndex &&
-//     selectedCategoryItem.value.itemIndex === itemIndex
-//   );
-// };
 
 watch([selectedCategory1, selectedCategory2], () => {
   const matchedIndex = dataRender.value.findIndex((item) => item.slug === selectedCategory1.value);
@@ -207,7 +187,6 @@ watch([selectedCategory1, selectedCategory2], () => {
   }
 });
 </script>
-
 <template>
   <div id="dropdown-container" :class="$style.category" v-if="!isLoadingCategory">
     <div :class="$style['category__title']">Danh mục</div>
@@ -227,6 +206,7 @@ watch([selectedCategory1, selectedCategory2], () => {
         <p>{{ item.title }}</p>
         <font-awesome-icon :class="$style['category__firstX--choose-icon']" :icon="faCaretDown" />
       </div>
+      <!-- category 2 -->
       <div
         :id="idDefine(index)"
         :class="[
@@ -244,17 +224,42 @@ watch([selectedCategory1, selectedCategory2], () => {
             $style['category__second'],
             { [$style['category__second--selected']]: isSelectedCategory(index, idx) }
           ]"
-          v-for="(item1, idx) in item.data"
+          v-for="(item1, idx) in item.company"
           :key="idx"
         >
           {{ item1.name }}
+          <!-- category 3 -->
+          <div
+            :id="idDefine(index)"
+            :class="[
+              $style['category__firstX--animation'],
+              {
+                [$style['category__firstX--show-animation']]:
+                  isAnimationVisible && selectedItem === index
+              }
+            ]"
+            ref="animationContainer"
+          >
+            <div
+              @click="logAndSelectCategory(index, idx)"
+              :class="[
+                $style['category__third'],
+                { [$style['category__third--selected']]: isSelectedCategory(index, idx) }
+              ]"
+              v-for="(item2, idx2) in item1.cate2"
+              :key="idx2"
+            >
+              {{ item2.title }}
+            </div>
+          </div>
+          <!-- end category 3 -->
         </div>
       </div>
+      <!-- end category 2 -->
     </div>
   </div>
   <loading-component v-else />
 </template>
-
 <style module scoped lang="scss">
 @import './Category.module.scss';
 </style>

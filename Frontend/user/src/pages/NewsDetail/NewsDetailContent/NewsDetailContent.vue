@@ -93,15 +93,19 @@ onMounted(() => {
   if (parent) {
     const image = ref<HTMLImageElement[] | null>(null);
     const content = ref<HTMLElement[] | null>(null);
+    const contentdiv = ref<HTMLElement[] | null>(null);
     const tagli = ref<HTMLElement[] | null>(null);
     const images = parent.getElementsByTagName('img');
     const contents = parent.getElementsByTagName('p');
+    const contentsdiv = parent.getElementsByTagName('div');
     const listli = parent.getElementsByTagName('li');
     const imageArray = Array.from(images);
     const contentArray = Array.from(contents);
+    const contentdivArray = Array.from(contentsdiv);
     const liArray = Array.from(listli);
     image.value = imageArray;
     content.value = contentArray;
+    contentdiv.value = contentdivArray;
     tagli.value = liArray;
 
     image.value.forEach((item) => {
@@ -117,6 +121,10 @@ onMounted(() => {
     });
 
     content.value.forEach((item) => {
+      item.style.lineHeight = '1.8';
+    });
+
+    contentdiv.value.forEach((item) => {
       item.style.lineHeight = '1.8';
     });
 
