@@ -129,7 +129,10 @@ watch(typeCate, () => {
   }
 });
 
-const idDefine = (index: number) => {
+const idDefine = (index: number, idx: number | undefined = undefined) => {
+  if (idx !== undefined) {
+    return `id-${index}-${idx}`;
+  }
   return `id-${index}`;
 };
 
@@ -186,21 +189,29 @@ watch([selectedCategory1, selectedCategory2], () => {
     console.log(`Category "${selectedCategory1.value}" not found in dataRender`);
   }
 });
+
+const toggleCategory = (index: number) => {
+  if (selectedItem.value === index) {
+    selectedItem.value = -1;
+  } else {
+    selectedItem.value = index;
+    selectedCategory2.value = ''; // Đóng category cấp 2 khi chọn category cấp 1
+  }
+};
 </script>
 <template>
   <div id="dropdown-container" :class="$style.category" v-if="!isLoadingCategory">
     <div :class="$style['category__title']">Danh mục</div>
     <div
-      @click="logAndSelectCategory1(index)"
+      @click="toggleCategory(index)"
       :class="[$style['category__firstX']]"
       v-for="(item, index) in dataRender"
       :key="index"
     >
       <div
-        @click="toggleAnimation(index)"
         :class="[
           $style['category__firstX--choose'],
-          { [$style['category__firstX--active']]: isAnimationVisible && selectedItem === index }
+          { [$style['category__firstX--active']]: selectedItem === index }
         ]"
       >
         <p>{{ item.title }}</p>
@@ -208,12 +219,11 @@ watch([selectedCategory1, selectedCategory2], () => {
       </div>
       <!-- category 2 -->
       <div
-        :id="idDefine(index)"
         :class="[
           $style['category__firstX--animation'],
           {
             [$style['category__firstX--show-animation']]:
-              isAnimationVisible && selectedItem === index
+              selectedItem === index && selectedCategory2 !== null
           }
         ]"
         ref="animationContainer"
@@ -230,21 +240,20 @@ watch([selectedCategory1, selectedCategory2], () => {
           {{ item1.name }}
           <!-- category 3 -->
           <div
-            :id="idDefine(index)"
+            :id="idDefine(index, idx)"
             :class="[
               $style['category__firstX--animation'],
               {
-                [$style['category__firstX--show-animation']]:
-                  isAnimationVisible && selectedItem === index
+                [$style['category__firstX--show-animation']]: selectedCategory2 !== null
               }
             ]"
             ref="animationContainer"
           >
             <div
-              @click="logAndSelectCategory(index, idx)"
+              @click="logAndSelectCategory(index, idx2)"
               :class="[
                 $style['category__third'],
-                { [$style['category__third--selected']]: isSelectedCategory(index, idx) }
+                { [$style['category__third--selected']]: isSelectedCategory(index, idx2) }
               ]"
               v-for="(item2, idx2) in item1.cate2"
               :key="idx2"

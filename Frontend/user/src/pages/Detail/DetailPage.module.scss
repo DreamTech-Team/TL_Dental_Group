@@ -227,7 +227,7 @@
     }
 
     &--object {
-      font-size: 2.2rem;
+      font-size: 1.8rem;
       margin-bottom: 1.5rem;
     }
 
@@ -270,6 +270,8 @@
       width: 100%;
       margin-top: 40px;
       justify-content: center;
+      flex-wrap: wrap;
+      gap: 2rem;
       align-items: center;
 
       &-btn1 {
@@ -280,7 +282,6 @@
         background: #4267b2;
         border-radius: 1rem;
         padding: 2rem;
-        margin-right: 20px;
 
         &-text {
           color: $primary_50;
@@ -311,7 +312,6 @@
         background: #3c7cff;
         border-radius: 1rem;
         padding: 2rem;
-        margin-left: 20px;
 
         &-text {
           color: $primary_50;
@@ -364,7 +364,7 @@
   font-size: $text-xl;
   color: $text_900;
   line-height: 1.7;
-  font-size: 2rem;
+  font-size: 1.8rem;
   margin-top: 1rem;
   margin-left: 1rem;
 

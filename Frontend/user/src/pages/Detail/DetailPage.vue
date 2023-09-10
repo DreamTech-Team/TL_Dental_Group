@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
 import ServiceQuality from '@/components/ServiceQuality/ServiceQuality.vue';
-import HomeTrend from '../Home/HomeTrend/HomeTrend.vue';
+import SimilarProduct from '@/components/SimilarProduct/SimilarProduct.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faRegistered } from '@fortawesome/free-solid-svg-icons';
 import { saveDataContact } from '@/stores/counter';
@@ -78,6 +78,7 @@ const startIndex = ref(0);
 const displayedImagesCount = ref();
 const currentImage = ref();
 const isLoadingDetail = ref(false);
+const similarSlug = ref('');
 
 const deps = ref([]);
 const { response, isLoading } = useAxios<DataResponse>(
@@ -95,6 +96,8 @@ watch(response, () => {
   isLoadingDetail.value = isLoading.value;
   if (inforProduct.value) {
     const apiResponseImg = inforProduct.value.imgs;
+    similarSlug.value = response.value?.data.fkCategory.cate1Id.slug;
+
     if (apiResponseImg) {
       const cleanedResponse = apiResponseImg.substring(1, apiResponseImg.length - 1);
       const imageUrls = cleanedResponse.split(',').map((url: string) => url.trim());
@@ -130,7 +133,7 @@ watch(response, () => {
   }
   if (imageMeta) {
     imageMeta.setAttribute('content', inforProduct?.value?.mainImg || logo);
-    console.log(imageMeta);
+    // console.log(imageMeta);
   }
 });
 
@@ -392,7 +395,8 @@ onUnmounted(() => {
         <div id="content_body1" v-html="inforProduct?.description"></div>
       </div>
     </div>
-    <home-trend />
+    <!-- <home-trend /> -->
+    <similar-product :similarSlug="similarSlug" />
     <service-quality />
   </div>
   <div v-else>
