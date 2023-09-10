@@ -13,10 +13,12 @@ const props = defineProps({
 
 const { dataRender } = toRefs(useDataRenderStore());
 
-const subActive = ref('none');
+const cate1Active = ref('none');
+const companyActive = ref('none');
 </script>
 <template>
   <div>
+    <!-- Category 1 -->
     <ul
       :class="[
         $style['hder-category'],
@@ -27,36 +29,73 @@ const subActive = ref('none');
         ]
       ]"
     >
-      <li v-for="item in dataRender" :key="item.slug" :class="$style['hder-category__item']">
+      <li v-for="cate1 in dataRender" :key="cate1.slug" :class="$style['hder-category__item']">
         <router-link
           to=""
           :class="$style['hder-category__item-link']"
-          v-on:click="subActive = subActive === item.slug ? 'none' : item.slug"
+          v-on:click="
+            (cate1Active = cate1Active === cate1.slug ? 'none' : cate1.slug),
+              (companyActive = 'none')
+          "
         >
-          <p>{{ item.title }}</p>
+          <p>{{ cate1.title }}</p>
           <font-awesome-icon :icon="faChevronDown" size="xs" />
         </router-link>
 
+        <!-- Company -->
         <ul
           :class="[
             $style['hder-category'],
             $style['hder-category__sub'],
-            $style[subActive === item.slug ? 'hder-category--show' : 'hder-category--hidden']
+            $style[cate1Active === cate1.slug ? 'hder-category--show' : 'hder-category--hidden']
           ]"
         >
-          <!-- <li
-            v-for="subItem in item.data.slice(0, 4)"
-            :key="subItem.slug"
+          <li
+            v-for="company in cate1.company.slice(0, 4)"
+            :key="company.slug"
             :class="$style['hder-category__item']"
+            v-on:click="companyActive = companyActive === company.slug ? 'none' : company.slug"
           >
-            <router-link
-              :to="`/sanpham?slug1=${item.slug}&slug2=${subItem.slug}`"
-              :class="$style['hder-category__item-link']"
-              @click="hiddenNav"
-            >
-              <p>{{ subItem.name }}</p>
+            <router-link to="" :class="$style['hder-category__item-link']">
+              <p>{{ company.name }}</p>
+              <font-awesome-icon :icon="faChevronDown" size="xs" />
             </router-link>
-          </li> -->
+
+            <!-- Category 2 -->
+            <ul
+              :class="[
+                $style['hder-category'],
+                $style['hder-category__sub2'],
+                $style[
+                  companyActive === company.slug ? 'hder-category--show' : 'hder-category--hidden'
+                ]
+              ]"
+            >
+              <li
+                v-for="cate2 in company.cate2.slice(0, 4).filter((e) => e.title !== '')"
+                :key="cate2.slug"
+                :class="$style['hder-category__item']"
+              >
+                <router-link
+                  :to="`/sanpham?slug1=${cate1.slug}&slug2=${cate2.slug}`"
+                  :class="$style['hder-category__item-link']"
+                  @click="hiddenNav"
+                >
+                  <p>{{ cate2.title }}</p>
+                </router-link>
+              </li>
+
+              <li :class="$style['hder-category__more']" key="xemtatca">
+                <router-link
+                  to="/sanpham"
+                  :class="$style['hder-category__more-link']"
+                  @click="hiddenNav"
+                >
+                  Xem tất cả ...
+                </router-link>
+              </li>
+            </ul>
+          </li>
 
           <li :class="$style['hder-category__more']" key="xemtatca">
             <router-link

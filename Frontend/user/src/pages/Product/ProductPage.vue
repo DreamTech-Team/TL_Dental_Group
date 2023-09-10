@@ -316,12 +316,12 @@ window.addEventListener('resize', checkScreenSize);
 </script>
 
 <template>
-  <div>
+  <div style="margin: auto; max-width: 1480px">
     <div :class="$style['product__header']">
       <product-banner :class="$style['product__header-banner']" />
     </div>
     <div :class="$style['product__wrapper']">
-      <div style="margin: auto; max-width: 1480px">
+      <div>
         <bread-crumb :tags="pathBC" />
         <div :class="$style['product__content']">
           <div :class="$style['product__cate']">

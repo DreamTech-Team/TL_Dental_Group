@@ -29,6 +29,7 @@ const listPolicy = ref<AboutPolicy[]>([]);
 
 const level = ref<Level>('M');
 const renderAs = ref<RenderAs>('svg');
+const currentYear = new Date().getFullYear()
 
 const { response } = useAxios<DataResponse>('get', '/policy', {}, {}, variableChange.value);
 
@@ -106,7 +107,7 @@ watch(response, () => {
         </div>
       </div>
     </div>
-    <div :class="$style.footer__license">© 2023 All Rights Reserved</div>
+    <div :class="$style.footer__license">{{'Copyright © ' + currentYear + ' | Powered by TL Dental Group'}}</div>
   </div>
 </template>
 

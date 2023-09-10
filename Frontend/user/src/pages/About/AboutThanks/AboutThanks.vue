@@ -41,7 +41,7 @@ const fetchData = async () => {
 
 watch(isLoading, () => {
   isLoadingLetter.value = isLoading.value;
-  setTimeout(fetchData, 1000);
+  setTimeout(fetchData, 100);
 });
 
 watch(response, () => {

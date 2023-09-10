@@ -134,6 +134,7 @@ const callApiContentVision = () => {
       image: dataArr.image2.image,
       type: dataArr.image2.type
     };
+    console.log(imageVisionItems.value);
 
     contentVisionItems.value.push({
       id: dataArr.subItem1.id,
@@ -341,7 +342,7 @@ onMounted(() => {
       </div>
     </div>
     <div :class="$style.container__vision">
-      <div :class="$style['container__vision-block']">
+      <div v-if="imageVisionItems.length > 0" :class="$style['container__vision-block']">
         <div :class="$style['container__vision-block-img1']">
           <img :src="imageVisionItems[0].image" alt="none" />
         </div>
