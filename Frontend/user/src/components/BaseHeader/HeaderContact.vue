@@ -78,19 +78,30 @@ setTimeout(fetchData, 3000);
 </script>
 <template>
   <div :class="$style.header__contact">
-    <div :class="$style['header__contact-item']">
-      <font-awesome-icon :icon="faPhone" :class="$style['header__contact-icon']" />
-      <a :href="'tel:' + dataFacility.phoneNumber">{{ dataFacility.phoneNumber }}</a>
-    </div>
-    |
-    <div :class="$style['header__contact-item']">
-      <font-awesome-icon :icon="faEnvelope" :class="$style['header__contact-icon']" />
-      <a :href="'mailto:' + dataContact.email.content">{{ dataContact.email.content }}</a>
-    </div>
-    |
-    <div :class="$style['header__contact-item']">
-      <font-awesome-icon :icon="faLocationDot" :class="$style['header__contact-icon']" />
-      <router-link to="/lienhe">{{ dataFacility.address }}</router-link>
+    <div
+      :style="{
+        maxWidth: '1560px',
+        margin: '0 auto',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+      }"
+    >
+      <div :class="$style['header__contact-item']">
+        <font-awesome-icon :icon="faPhone" :class="$style['header__contact-icon']" />
+        <a :href="'tel:' + dataFacility.phoneNumber">{{ dataFacility.phoneNumber }}</a>
+      </div>
+      |
+      <div :class="$style['header__contact-item']">
+        <font-awesome-icon :icon="faEnvelope" :class="$style['header__contact-icon']" />
+        <a :href="'mailto:' + dataContact.email.content">{{ dataContact.email.content }}</a>
+      </div>
+      |
+      <div :class="$style['header__contact-item']">
+        <font-awesome-icon :icon="faLocationDot" :class="$style['header__contact-icon']" />
+        <router-link to="/lienhe">{{ dataFacility.address }}</router-link>
+      </div>
     </div>
   </div>
 </template>

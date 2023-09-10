@@ -4,6 +4,8 @@
 .container {
   width: 100vw;
   position: relative;
+  max-width: 1560px;
+  margin: 0 auto;
 
   &__heading {
     display: flex;

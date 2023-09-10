@@ -4,15 +4,12 @@
 .footer {
   color: $color_highlight;
   background-color: #fff;
-  max-width: 1440px;
-  margin: 0 auto;
   margin-top: 140px;
+  
 
   &__info {
     position: relative;
     background-color: $color_background_footer;
-    display: flex;
-    justify-content: space-around;
     padding: 140px 60px 30px;
 
     &-contact {
@@ -27,6 +24,8 @@
       justify-content: space-between;
       border-radius: 20px;
       background: linear-gradient(90deg, $primary_700 0%, $primary_200 100%);
+      max-width: 1560px;
+      margin: 0 auto;
 
       &--item {
         color: white;

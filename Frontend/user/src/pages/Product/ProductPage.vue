@@ -316,7 +316,7 @@ window.addEventListener('resize', checkScreenSize);
 </script>
 
 <template>
-  <div style="margin: auto; max-width: 1480px">
+  <div style="margin: auto; max-width: 1600px">
     <div :class="$style['product__header']">
       <product-banner :class="$style['product__header-banner']" />
     </div>
