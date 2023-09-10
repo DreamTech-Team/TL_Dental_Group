@@ -378,9 +378,12 @@ const submitForm = () => {
       const errorValue: MyErrorResponse | null = createProduct.error
         .value as MyErrorResponse | null;
       if (errorValue !== null) {
+        isLoading.value = false;
         if (errorValue?.response?.data?.message === 'Product name already taken') {
-          isLoading.value = false;
           alertDialog('Tên sản phẩm đã tồn tại', 1);
+          return;
+        } else if (errorValue?.response?.data?.message === 'Product name should not have /') {
+          alertDialog('Tên sản phẩm không nên chứa kí tự /', 1);
           return;
         }
       }
