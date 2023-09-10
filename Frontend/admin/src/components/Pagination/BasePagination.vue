@@ -18,8 +18,6 @@ const totals = ref(props.total);
 watch(props, () => {
   currentPageRef.value = props.currentPage;
   totals.value = props.total;
-  console.log(currentPageRef.value);
-  console.log(totals.value);
 });
 
 const handleSizeChange = (val: number) => {
@@ -30,9 +28,6 @@ const handleSizeChange = (val: number) => {
 const handleCurrentChange = (val: number) => {
   // Emit the current-change event to notify the parent component
   emit('current-change', val);
-  // console.log(props.total);
-  // console.log(props.currentPage);
-  // console.log(props.pageSize);
 };
 </script>
 
