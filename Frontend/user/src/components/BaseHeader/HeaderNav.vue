@@ -23,55 +23,64 @@ const hiddenNav = () => {
 };
 </script>
 <template>
-  <div :class="$style.header__nav" style="margin: 0 auto; max-width: 1440px">
-    <div :class="$style['header__nav-logo']" @click="() => router.push('/trangchu')">
-      <img :src="logo" alt="logo" width="50" height="50" />
-      <div>
-        <h4>TL Dental Group</h4>
-        <p>Dental distributors</p>
+  <div :class="$style.header__nav">
+    <div
+      :style="{
+        maxWidth: '1560px',
+        margin: '0 auto',
+        display: 'flex',
+        alignItems: 'center'
+      }"
+    >
+      <div :class="$style['header__nav-logo']" @click="() => router.push('/trangchu')">
+        <img :src="logo" alt="logo" width="50" height="50" />
+        <div>
+          <h4>TL Dental Group</h4>
+          <p>Dental distributors</p>
+        </div>
       </div>
-    </div>
-    <div :class="$style['header__nav-shield']" @click="() => router.push('/chinhsach')">
-      <div :class="$style['header__nav-shield-content']">
-        <h4>12</h4>
-        <h5>MONTHS</h5>
-        <span></span>
-        <p>TRADITION</p>
+      <div :class="$style['header__nav-shield']" @click="() => router.push('/chinhsach')">
+        <div :class="$style['header__nav-shield-content']">
+          <h4>12</h4>
+          <h5>MONTHS</h5>
+          <span></span>
+          <p>TRADITION</p>
+        </div>
+        <img :src="shield" alt="shield" width="50" />
       </div>
-      <img :src="shield" alt="shield" width="50" />
-    </div>
-    <div :class="$style['header__nav-list']">
-      <div
-        :class="$style['header__nav-item']"
-        v-for="item in pages"
-        :key="item.slug"
-        v-on:mouseenter="pageHover = item.slug"
-        v-on:mouseleave="pageHover = 'none'"
-      >
-        <router-link
-          :to="'/' + item.slug"
-          :class="$style['header__nav-item-link']"
-          :active-class="$style['nav-active']"
-          >{{ item.name }}
-          <font-awesome-icon v-if="item.slug === 'sanpham'" :icon="faChevronDown" size="xs" />
-        </router-link>
-        <span
-          :class="[
-            $style[pageHover === item.slug && item.slug !== 'sanpham' ? 'nav-hover' : ''],
-            $style[
-              (path.fullPath === '/' && item.slug === '') ||
-              (path.fullPath.includes(item.slug) &&
-                item.slug !== '' &&
-                !path.fullPath.includes('sanpham'))
-                ? 'nav-hover'
-                : ''
-            ]
-          ]"
-        ></span>
-        <header-category v-if="item.slug === 'sanpham'" :page-hover="pageHover" />
+      <div :class="$style['header__nav-list']">
+        <div
+          :class="$style['header__nav-item']"
+          v-for="item in pages"
+          :key="item.slug"
+          v-on:mouseenter="pageHover = item.slug"
+          v-on:mouseleave="pageHover = 'none'"
+        >
+          <router-link
+            :to="'/' + item.slug"
+            :class="$style['header__nav-item-link']"
+            :active-class="$style['nav-active']"
+            >{{ item.name }}
+            <font-awesome-icon v-if="item.slug === 'sanpham'" :icon="faChevronDown" size="xs" />
+          </router-link>
+          <span
+            :class="[
+              $style[pageHover === item.slug && item.slug !== 'sanpham' ? 'nav-hover' : ''],
+              $style[
+                (path.fullPath === '/' && item.slug === '') ||
+                (path.fullPath.includes(item.slug) &&
+                  item.slug !== '' &&
+                  !path.fullPath.includes('sanpham'))
+                  ? 'nav-hover'
+                  : ''
+              ]
+            ]"
+          ></span>
+          <header-category v-if="item.slug === 'sanpham'" :page-hover="pageHover" />
+        </div>
       </div>
+      <header-search />
     </div>
-    <header-search />
 
     <!-- MOBILE + TABLET -->
     <div :class="$style['header__nav-mobile']">

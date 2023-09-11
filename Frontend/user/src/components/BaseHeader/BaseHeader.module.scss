@@ -4,17 +4,15 @@
 .header {
   box-shadow: 0 0 2px rgb(0, 0, 0, 0.05);
   position: relative;
-  max-width: 1440px;
-  margin: 0 auto;
 
   &__contact {
     height: 42px;
     background-color: $color_primary;
     font-size: $text-sm;
     color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+    // display: flex;
+    // align-items: center;
+    // justify-content: flex-end;
     padding: 0 20px;
 
     &-item {
@@ -35,8 +33,6 @@
   &__nav {
     height: 70px;
     padding: 0 50px;
-    display: flex;
-    align-items: center;
     position: -webkit-sticky;
     position: sticky;
     top: -1px;
