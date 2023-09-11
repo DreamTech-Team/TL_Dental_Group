@@ -7,6 +7,8 @@ import styles from './CategoryAddItem.module.scss';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import { faCameraRotate } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import CropImage from '@/components/CropImage/CropImage.vue';
+import base64ToBlob from '@/utils/base64ToBlob';
 
 const props = defineProps({
   numCate: { type: Number, required: false },
@@ -22,46 +24,12 @@ const checkError = ref(false);
 
 const isLoading = ref(false);
 
-const base64ToBlob = (base64Data: string) => {
-  const byteString = atob(base64Data.split(',')[1]);
-  const ab = new ArrayBuffer(byteString.length);
-  const ia = new Uint8Array(ab);
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i);
-  }
-  return new Blob([ab], { type: 'image/png' });
-};
+const isCrop = ref(false);
+const isOpenInput = ref(false);
 
-// Hàm chuyển đổi từ ArrayBuffer sang string
-const arrayBufferToString = (buffer: ArrayBuffer) => {
-  const uintArray = new Uint16Array(buffer);
-  const charArray: string[] = [];
-  for (let i = 0; i < uintArray.length; i++) {
-    charArray.push(String.fromCharCode(uintArray[i]));
-  }
-  return charArray.join('');
-};
-
-// Hàm xử lí lấy ảnh từ máy lên
-const handleFileInputChange = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-
-  if (target.files) {
-    const file = target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = (e: ProgressEvent<FileReader>) => {
-      const result = e.target?.result;
-      if (result instanceof ArrayBuffer) {
-        selectedImage.value = arrayBufferToString(result);
-      } else if (typeof result === 'string') {
-        selectedImage.value = result;
-      }
-    };
-
-    reader.readAsDataURL(file);
-
-    target.value = '';
+const handleCroppedImage = (result: string) => {
+  if (result) {
+    selectedImage.value = result;
   }
 };
 
@@ -86,7 +54,7 @@ const handleAddCategory = () => {
     };
     console.log(dataCate, selectedImage.value);
 
-    const imgCate = new File([base64ToBlob(selectedImage.value)], 'image.png', {
+    const imgCate = new File([base64ToBlob.covertBase64ToBlob(selectedImage.value)], 'image.png', {
       type: 'image/png'
     });
 
@@ -157,7 +125,7 @@ const handleAddCategory = () => {
   watch(
     () => isLoading.value,
     (value) => {
-      if (!isLoading.value) {
+      if (!value) {
         if (!checkError.value) {
           emit('close');
           Swal.fire({
@@ -208,7 +176,7 @@ const handleUpdateCategory = () => {
 
     const imgCate =
       selectedImage.value !== props.data?.img
-        ? new File([base64ToBlob(selectedImage.value)], 'image.png', {
+        ? new File([base64ToBlob.covertBase64ToBlob(selectedImage.value)], 'image.png', {
             type: 'image/png'
           })
         : props.data?.img;
@@ -283,7 +251,7 @@ const handleUpdateCategory = () => {
   watch(
     () => isLoading.value,
     (value) => {
-      if (!isLoading.value) {
+      if (!value) {
         if (!checkError.value) {
           emit('close');
           Swal.fire({
@@ -347,8 +315,15 @@ const handleModalCancel = () => {
       <div :class="$style['container__content-right-image-block']">
         <img :src="selectedImage" />
         <div :class="$style['block__img-edit']">
-          <input type="file" @change="(e) => handleFileInputChange(e)" />
-          <FontAwesomeIcon :icon="faCameraRotate" />
+          <button
+            @click="
+              () => {
+                isOpenInput = true;
+              }
+            "
+          >
+            <FontAwesomeIcon :icon="faCameraRotate" />
+          </button>
         </div>
       </div>
     </div>
@@ -359,6 +334,17 @@ const handleModalCancel = () => {
         <button v-else type="button" @click="handleUpdateCategory">Cập nhật</button>
       </div>
     </div>
+    <crop-image
+      :heightCrop="500"
+      :widthCrop="500"
+      :heightWrap="600"
+      :widthWrap="600"
+      :check="isOpenInput"
+      v-show="isCrop"
+      @close="isCrop = false"
+      @open="isCrop = true"
+      @crop="handleCroppedImage"
+    />
   </div>
 </template>
 
