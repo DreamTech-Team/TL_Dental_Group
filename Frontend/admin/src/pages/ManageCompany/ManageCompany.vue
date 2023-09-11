@@ -260,8 +260,6 @@ const handleChangeUpdate = (dataUpdated: ManageCompany, isLoading: boolean) => {
   isLoadingCompany.value = isLoading;
   isOpenUpdate.value = false;
 
-  console.log(dataUpdated);
-
   if (!isLoading) {
     Swal.fire({
       title: 'Cập nhật thành công',
@@ -293,8 +291,6 @@ const handleChangeUpdate = (dataUpdated: ManageCompany, isLoading: boolean) => {
 // Hàm lấy dữ liệu trả về khi ModalUpdate trả dữ liệu đã update sản phẩm nổi bât về
 const handleChangeUpdateOutstanding = (outstanding: ManageCompany) => {
   if (outstanding.outstandingProductId !== null) {
-    console.log(outstanding);
-
     companyRender.value[indexRow.value].outstandingProductId = outstanding.outstandingProductId;
   }
 };
@@ -359,17 +355,17 @@ const handleUpdateHighLight = (index: number) => {
 
 // Hàm kiểm tra xem công ty có sản phẩm nổi bật hay không
 const handleRenderOutstanding = (index: number) => {
-  if (companyRender.value[index].outstandingProductId !== null) {
-    products.value.forEach((item) => {
-      if (item.id === companyRender.value[index].outstandingProductId) {
-        outstandingRender.value = {
-          image: item.mainImg,
-          name: item.name
-        };
-      }
-    });
+  const { outstandingProductId } = companyRender.value[index];
 
-    return true;
+  if (outstandingProductId !== null) {
+    const outstandingProduct = products.value.find((item) => item.id === outstandingProductId);
+    if (outstandingProduct) {
+      outstandingRender.value = {
+        image: outstandingProduct.mainImg,
+        name: outstandingProduct.name
+      };
+      return true;
+    }
   }
   return false;
 };
