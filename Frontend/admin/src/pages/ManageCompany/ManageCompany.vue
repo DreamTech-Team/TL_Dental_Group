@@ -81,6 +81,7 @@ watch(getCompany.response, () => {
 
 watch(getProducts.response, () => {
   products.value = getProducts.response.value?.data?.data;
+  console.log(products.value);
 });
 
 watch(getCate.response, () => {

@@ -51,7 +51,7 @@ const formatDescription = (str: string): string | null => {
   }
 };
 
-const contentInput = ref(formatDescription(context.product.description));
+// const contentInput = ref(formatDescription(context.product.description));
 const selectedImage: Ref<string | null> = ref(context.product.mainImg);
 const dataSearchTerm = ref(context.product.name !== undefined ? context.product.name : '');
 const listData = ref<Products[]>(context.products as Products[]);
@@ -74,54 +74,46 @@ const updateTitle = (e: Event) => {
   const target = e.target as HTMLInputElement;
   dataSearchTerm.value = target.value;
 };
-const updateContent = (e: Event) => {
-  const target = e.target as HTMLInputElement;
-  contentInput.value = target.value;
-};
+// const updateContent = (e: Event) => {
+//   const target = e.target as HTMLInputElement;
+//   contentInput.value = target.value;
+// };
 
 // Hàm submit dữ liệu, đẩy dữ liệu lên database
 const submitForm = () => {
-  if (contentInput.value !== null) {
-    if (dataSearchTerm.value.length < 4 || contentInput.value.length < 4 || !selectedImage.value) {
-      Swal.fire({
-        title: 'Vui lòng điền đủ thông tin',
-        icon: 'error',
-        confirmButtonText: 'Đóng',
-        width: '50rem',
-        padding: '0 2rem 2rem 2rem',
-        customClass: {
-          confirmButton: styles['confirm-button'],
-          cancelButton: styles['cancel-button'],
-          title: styles['title']
-        }
-      });
-    } else {
-      emit(
-        'results',
-        idProduct.value,
-        dataSearchTerm.value,
-        contentInput.value,
-        selectedImage.value
-      );
+  if (dataSearchTerm.value.length < 4 || !selectedImage.value) {
+    Swal.fire({
+      title: 'Vui lòng điền đủ thông tin',
+      icon: 'error',
+      confirmButtonText: 'Đóng',
+      width: '50rem',
+      padding: '0 2rem 2rem 2rem',
+      customClass: {
+        confirmButton: styles['confirm-button'],
+        cancelButton: styles['cancel-button'],
+        title: styles['title']
+      }
+    });
+  } else {
+    emit('results', idProduct.value, dataSearchTerm.value, selectedImage.value);
 
-      Swal.fire({
-        title: 'Cập nhật sản phẩm nổi bật thành công',
-        icon: 'success',
-        confirmButtonText: 'Hoàn tất',
-        width: '50rem',
-        padding: '0 2rem 2rem 2rem',
-        customClass: {
-          confirmButton: styles['confirm-button'],
-          cancelButton: styles['cancel-button'],
-          title: styles['title']
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.close();
-          emit('close');
-        }
-      });
-    }
+    Swal.fire({
+      title: 'Cập nhật sản phẩm nổi bật thành công',
+      icon: 'success',
+      confirmButtonText: 'Hoàn tất',
+      width: '50rem',
+      padding: '0 2rem 2rem 2rem',
+      customClass: {
+        confirmButton: styles['confirm-button'],
+        cancelButton: styles['cancel-button'],
+        title: styles['title']
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.close();
+        emit('close');
+      }
+    });
   }
 };
 
@@ -154,7 +146,6 @@ const handleOption = (item: Products, id: string) => {
   listData.value.forEach((value) => {
     if (value.id === id) {
       idProduct.value = id;
-      contentInput.value = formatDescription(value.description);
       selectedImage.value = value.mainImg;
     }
   });
@@ -184,7 +175,7 @@ const handleOption = (item: Products, id: string) => {
             @blur="isOpen = false"
           />
 
-          <ul v-if="isOpen">
+          <ul v-if="isOpen" style="z-index: 10">
             <li
               v-for="item in filteredItems"
               :key="item.id"
@@ -194,16 +185,6 @@ const handleOption = (item: Products, id: string) => {
             </li>
           </ul>
         </div>
-
-        <h4>Mô tả</h4>
-        <input
-          type="text"
-          placeholder="Mô tả được hiển thị khi chọn sản phẩm"
-          :value="contentInput"
-          @change="updateContent"
-          readonly
-          :style="{ cursor: 'auto', border: 'none' }"
-        />
 
         <h4>Ảnh sản phẩm</h4>
         <div

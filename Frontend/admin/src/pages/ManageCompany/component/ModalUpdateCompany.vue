@@ -256,16 +256,10 @@ const handleChangelogo = () => {
 };
 
 // Hàm lấy dữ liệu về từ modalAddProduct
-const handleDataProduct = (
-  _idProduct: string,
-  nameProduct: string,
-  descriptionProduct: string,
-  image: string
-) => {
+const handleDataProduct = (_idProduct: string, nameProduct: string, image: string) => {
   isPatchProduct.value = true;
 
   productOutstand.value.name = nameProduct;
-  productOutstand.value.description = descriptionProduct;
   productOutstand.value.mainImg = image;
 
   idProduct.value = _idProduct;
@@ -277,7 +271,6 @@ const handleCancleProductOutstanding = () => {
   isPatchProduct.value = true;
 
   productOutstand.value.name = '';
-  productOutstand.value.description = '';
   productOutstand.value.mainImg = '';
 
   idProduct.value = '';
