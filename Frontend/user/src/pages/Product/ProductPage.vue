@@ -443,9 +443,21 @@ window.addEventListener('resize', checkScreenSize);
               </div>
 
               <div v-if="products.length > 0" :class="$style['product__pagination']"></div>
-              <div v-else :class="$style.product__notFound">Không có sản phẩm</div>
+              <div
+                v-else
+                :class="$style.product__notFound"
+                :style="{ height: '60vh', width: '100%' }"
+              >
+                Không có sản phẩm
+              </div>
             </div>
-            <loading-component v-else />
+            <div
+              v-else
+              :class="$style['product__content-wrap']"
+              :style="{ height: 'calc(60vh + 90px)' }"
+            >
+              <loading-component />
+            </div>
           </div>
           <div v-if="products.length > 0" :class="$style['product__pagination']">
             <base-pagination

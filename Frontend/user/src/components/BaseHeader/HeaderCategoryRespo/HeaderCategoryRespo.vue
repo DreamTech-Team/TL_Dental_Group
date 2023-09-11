@@ -77,7 +77,7 @@ const companyActive = ref('none');
                 :class="$style['hder-category__item']"
               >
                 <router-link
-                  :to="`/sanpham?slug1=${cate1.slug}&slug2=${cate2.slug}`"
+                  :to="`/sanpham?slug1=${cate1.slug}&slug2=${company.slug}&slug3=${cate2.slug}`"
                   :class="$style['hder-category__item-link']"
                   @click="hiddenNav"
                 >

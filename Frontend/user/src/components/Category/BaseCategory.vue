@@ -137,7 +137,6 @@ const toggleAnimation2 = (index: number, idx: number) => {
     selectedItem2.value = idx;
     isAnimationVisible2.value = true;
     // setAnni.setAnnimationCategory(isAnimationVisible2.value);
-    selectedItem2.value = idx;
   }
   if (isAnimationVisible2.value) {
     nextTick(() => {
