@@ -41,14 +41,14 @@ interface DataRender {
 }
 
 const dataCate = useDataRenderStore();
-const { selectedCategoryItem, typeCate } = toRefs(saveActive());
+const { selectedItem, selectedItem2, selectedItem3, typeCate } = toRefs(saveActive());
 const { isAnimationVisible } = toRefs(setAnnimation());
 const saveState = saveActive();
 
 const setAnni = setAnnimation();
-const selectedItem = ref(-1);
-const selectedItem2 = ref(-1);
-const selectedItem3 = ref(-1);
+// const selectedItem = ref(-1);
+// const selectedItem2 = ref(-1);
+// const selectedItem3 = ref(-1);
 const selectedCategory1 = ref('');
 const selectedCategory2 = ref('');
 const selectedCategory3 = ref('');
@@ -95,12 +95,16 @@ const toggleAnimation = (index: number) => {
   if (isAnimationVisible.value && selectedItem.value == index) {
     isAnimationVisible.value = false;
     setAnni.setAnnimationCategory(isAnimationVisible.value);
-    selectedItem.value = -1;
+    // saveState.setActiveCategory(-1);
+    saveState.setTypeCategory('notHeader');
+    // selectedItem.value = -1;
     console.log('vào if 1');
   } else {
     isAnimationVisible.value = true;
     setAnni.setAnnimationCategory(isAnimationVisible.value);
-    selectedItem.value = index;
+    // saveState.setActiveCategory(index);
+    saveState.setTypeCategory('notHeader');
+    // selectedItem.value = index;
     console.log('vào else 1');
   }
   if (isAnimationVisible.value) {
@@ -128,16 +132,16 @@ const toggleAnimation2 = (index: number, idx: number) => {
     isAnimationVisible2.value = false;
     // isAnimationVisible2.value = false;
     // setAnni.setAnnimationCategory(isAnimationVisible2.value);
-    selectedItem2.value = -1;
-    selectedItem3.value = -1;
+    // selectedItem2.value = -1;
+    // selectedItem3.value = -1;
     console.log('vào if 2');
   } else {
-    selectedItem3.value = -1;
+    // selectedItem3.value = -1;
     console.log('vào else 2');
-    selectedItem2.value = idx;
+    // selectedItem2.value = idx;
     isAnimationVisible2.value = true;
     // setAnni.setAnnimationCategory(isAnimationVisible2.value);
-    selectedItem2.value = idx;
+    // selectedItem2.value = idx;
   }
   if (isAnimationVisible2.value) {
     nextTick(() => {
@@ -159,12 +163,12 @@ const toggleAnimation2 = (index: number, idx: number) => {
   }
 };
 
-toggleAnimation(selectedCategoryItem.value.categoryIndex);
-// toggleAnimation2(selectedCategoryItem.value.categoryIndex, selectedCategoryItem.value.itemIndex);
+toggleAnimation(selectedItem.value);
+toggleAnimation2(selectedItem.value, selectedItem2.value);
 
 watch(typeCate, () => {
   if (typeCate.value !== 'notHeader') {
-    toggleAnimation(selectedCategoryItem.value.categoryIndex);
+    // toggleAnimation(selectedItem.value);
 
     if (typeCate.value.includes('cate2Header')) {
       console.log(typeCate.value[typeCate.value.length - 1]);
@@ -214,25 +218,31 @@ const logAndSelectCategory1 = (categoryIndex: number) => {
 
 // Hàm chọn category cấp 2
 const logAndSelectCategory2 = (categoryIndex: number, itemIndex: number) => {
-  // saveState.setActiveCategory({ categoryIndex, itemIndex });
-  saveState.setTypeCategory('notHeader');
-
   // Lưu index của category cấp 2 được chọn
+  saveState.setActiveCategory2(itemIndex);
+  saveState.setTypeCategory('notHeader');
   selectedItem2.value = itemIndex;
 
   const selectedCategory = dataRender.value[categoryIndex].slug;
   const selectedSubCategory = dataRender.value[categoryIndex].company[itemIndex].slug;
-  // console.log(selectedCategory);
-  // console.log(selectedSubCategory);
-  selectedCategory1.value = selectedCategory;
-  selectedCategory3.value = '';
 
-  emit('slug-category1', selectedCategory1.value);
-  emit('slug-category2', selectedCategory2.value);
-  emit('slug-category3', selectedCategory3.value);
+  if (selectedCategory3.value !== '' || selectedCategory3.value !== null) {
+    selectedCategory1.value = selectedCategory;
+    selectedCategory3.value = '';
+    console.log('Log2');
+    console.log(selectedCategory1.value);
+    console.log(selectedSubCategory);
+    console.log(selectedCategory3.value);
+
+    emit('slug-category1', selectedCategory1.value);
+    emit('slug-category2', selectedSubCategory);
+    emit('slug-category3', '');
+  }
 };
 
 const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemIndex3: number) => {
+  saveState.setActiveCategory3(itemIndex3);
+  saveState.setTypeCategory('notHeader');
   selectedItem3.value = itemIndex3;
   const selectedCategory = dataRender.value[categoryIndex].slug; // Giá trị của category cấp 1
   const selectedSubCategory = dataRender.value[categoryIndex].company[itemIndex].slug;
@@ -241,6 +251,10 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
   selectedCategory1.value = selectedCategory;
   selectedCategory2.value = selectedSubCategory;
   selectedCategory3.value = selectedSubCategory3;
+  console.log('Log3');
+  console.log(selectedCategory1.value);
+  console.log(selectedCategory2.value);
+  console.log(selectedCategory3.value);
   emit('slug-category1', selectedCategory1.value);
   emit('slug-category2', selectedCategory2.value);
   emit('slug-category3', selectedCategory3.value);
@@ -250,15 +264,11 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
       `/sanpham?slug1=${selectedCategory1.value}&slug2=${selectedCategory2.value}&slug3=${selectedCategory3.value}`
     );
   }
-
-  // console.log(selectedCategory1.value);
-  // console.log(selectedCategory2.value);
-  // console.log(selectedCategory3.value);
 };
 
 watch([selectedCategory1, selectedCategory2], () => {
   selectedItem2.value = -1;
-  selectedCategoryItem.value.itemIndex = -1;
+  // selectedCategoryItem.value.itemIndex = -1;
   console.log('watch');
 
   const matchedIndex = dataRender.value.findIndex((item) => item.slug === selectedCategory1.value);
