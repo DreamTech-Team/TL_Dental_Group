@@ -63,12 +63,6 @@ const fetchData = async () => {
 
       dataRender.value = convertDataCate.handleDataRender(response.value?.data, dataRender.value);
 
-      // dataRender.value = convertDataCate.handleDataCate(
-      //   listCategory1.value,
-      //   listCategory2.value,
-      //   dataRender.value
-      // );
-
       dataRenderStore.setDataRender(dataRender.value);
     }
   });

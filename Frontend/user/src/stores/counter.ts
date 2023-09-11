@@ -58,17 +58,14 @@ export const saveActive = defineStore('saveActiveCategory', () => {
 
   const setActiveCategory = (cate: number) => {
     selectedItem.value = cate;
-    console.log('cate1 nè: ' + selectedItem.value);
   };
 
   const setActiveCategory2 = (cate2: number) => {
     selectedItem2.value = cate2;
-    console.log('cate2 nè: ' + selectedItem2.value);
   };
 
   const setActiveCategory3 = (cate3: number) => {
     selectedItem3.value = cate3;
-    console.log('cate3 nè: ' + selectedItem3.value);
   };
 
   const setTypeCategory = (type: string) => {
@@ -90,12 +87,17 @@ export const saveActive = defineStore('saveActiveCategory', () => {
 //Hàm lưu annimation của category
 export const setAnnimation = defineStore('setAnnimation', () => {
   const isAnimationVisible = ref(false);
+  const isAnimationVisible2 = ref(false);
 
   const setAnnimationCategory = (newActive: boolean) => {
     isAnimationVisible.value = newActive;
   };
 
-  return { isAnimationVisible, setAnnimationCategory };
+  const setAnnimationCategory2 = (newActive: boolean) => {
+    isAnimationVisible2.value = newActive;
+  };
+
+  return { isAnimationVisible, isAnimationVisible2, setAnnimationCategory, setAnnimationCategory2 };
 });
 
 // Hàm lưu data contact
