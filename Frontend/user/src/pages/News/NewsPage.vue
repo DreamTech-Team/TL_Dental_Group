@@ -93,7 +93,7 @@ watch([currentPage, popular], () => {
 });
 </script>
 <template>
-  <div :class="$style.news" style="margin: auto; max-width: 1480px">
+  <div :class="$style.news">
     <banner />
     <control @update-slug="onUpdateSlug" @update-sort="onUpdateSort" />
     <context

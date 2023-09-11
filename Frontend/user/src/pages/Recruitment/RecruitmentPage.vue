@@ -59,7 +59,7 @@ interface WorkItem {
 const itemSeleted = ref(0);
 const hiddenElement = ref(false);
 const showMore = ref(false);
-const hiddenShowMore = ref(false);
+// const hiddenShowMore = ref(false);
 const paramAxios = ref();
 
 const iconCard = [ic_clock, ic_DaiNgo, ic_light];
@@ -70,7 +70,13 @@ const contentValueItems: Ref<CardElementItem[]> = ref([]);
 const contentValueMainItem = ref();
 const recruitWorkItems: Ref<WorkItem[]> = ref([]);
 const screenWidth = ref(true);
-const isLoading = ref([false, false, false, false]);
+const isLoading = ref([false, false, false]);
+
+const pageItem = ref(0);
+const pageSize = ref(12);
+const totalItems = ref(0);
+
+const searchWork = ref('');
 
 const callApiContentPoster = () => {
   //Lấy nội dung của poster
@@ -134,7 +140,7 @@ const callApiContentVision = () => {
       image: dataArr.image2.image,
       type: dataArr.image2.type
     };
-    console.log(imageVisionItems.value);
+    // console.log(imageVisionItems.value);
 
     contentVisionItems.value.push({
       id: dataArr.subItem1.id,
@@ -199,17 +205,19 @@ const callApiContentValue = () => {
   });
 };
 
-const callApiPositionRecruitment = () => {
+const callApiPositionRecruitment = (isShowMore: boolean) => {
   const getPositionRecruitment = useAxios<DataResponse>(
     'get',
-    '/recruitment/',
+    `/recruitment/?pageSize=${pageSize.value}&page=${pageItem.value}`,
+    // { params: { page: 1, pageSize: 1 } },
     {},
     {},
     paramAxios.value
   );
 
   watch(getPositionRecruitment.isLoading, (value) => {
-    isLoading.value[3] = value;
+    // isLoading.value[3] = value;
+    showMore.value = value;
   });
 
   watch(getPositionRecruitment.error, (value) => {
@@ -219,7 +227,11 @@ const callApiPositionRecruitment = () => {
   watch(getPositionRecruitment.response, (value) => {
     // console.log(value?.data);
     const tmp = value?.data.data;
-    recruitWorkItems.value = [];
+    if (!isShowMore) recruitWorkItems.value = [];
+    // console.log(value?.data.total);
+    totalItems.value = value?.data.total;
+
+    pageItem.value++;
 
     tmp.forEach(
       (value: { id: any; title: any; position: any; working_form: any; location: any }) => {
@@ -233,16 +245,62 @@ const callApiPositionRecruitment = () => {
       }
     );
 
-    if (tmp.length > 6) {
-      hiddenShowMore.value = true;
-    }
+    // hiddenShowMore.value = true;
+
+    // if (recruitWorkItems.value.length < totalItems.value) hiddenShowMore.value = true;
+  });
+};
+
+const callApiSearchWork = (isShowMore: boolean) => {
+  const getPositionRecruitment = useAxios<DataResponse>(
+    'get',
+    `/recruitment/?q=${searchWork.value}&pageSize=${pageSize.value}&page=${pageItem.value}`,
+    // { params: { page: 1, pageSize: 1 } },
+    {},
+    {},
+    paramAxios.value
+  );
+
+  watch(getPositionRecruitment.isLoading, (value) => {
+    // isLoading.value[3] = value;
+    showMore.value = value;
+  });
+
+  watch(getPositionRecruitment.error, (value) => {
+    console.log(value);
+  });
+
+  watch(getPositionRecruitment.response, (value) => {
+    // console.log(value?.data);
+    const tmp = value?.data.data;
+    if (!isShowMore) recruitWorkItems.value = [];
+    // console.log(value?.data.total);
+    totalItems.value = value?.data.total;
+
+    pageItem.value++;
+
+    tmp.forEach(
+      (value: { id: any; title: any; position: any; working_form: any; location: any }) => {
+        recruitWorkItems.value.push({
+          id: value.id,
+          title: value.title,
+          typeWork: value.position,
+          time: value.working_form,
+          location: value.location
+        });
+      }
+    );
+
+    // hiddenShowMore.value = true;
+
+    // if (recruitWorkItems.value.length < totalItems.value) hiddenShowMore.value = true;
   });
 };
 
 callApiContentPoster();
 callApiContentVision();
 callApiContentValue();
-callApiPositionRecruitment();
+callApiPositionRecruitment(false);
 
 //Hàm set animation của element tuyển dụng
 const handleScroll = () => {
@@ -265,24 +323,17 @@ const handleScroll = () => {
   }
 };
 
-const hanldeScrollToVacancies = () => {
+const hanldeScrollToVacancies = (behavior: any) => {
   const element = document.getElementById('position-rec');
-  element?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-};
-
-//Hàm cập nhật item sau khi loading
-const showPageCompleted = () => {
-  showMore.value = false;
-  // if (!recruitWorkItems.value) {
-  //   recruitWorkItems.value = [...recruitWorkItems];
-  // } else recruitWorkItems.value.forEach((item) => recruitWorkItems.value.push(item));
-  // console.log(recruitWorkItems.value, recruitWorkItems);
+  element?.scrollIntoView({ behavior: behavior, block: 'nearest', inline: 'nearest' });
 };
 
 //Hàm loading
 const openLoading = () => {
-  showMore.value = true;
-  setTimeout(showPageCompleted, 3000);
+  if (searchWork.value === '') callApiPositionRecruitment(true);
+  else callApiSearchWork(true);
+
+  hanldeScrollToVacancies('instant');
 };
 
 const checkScreenWidth = () => {
@@ -295,13 +346,25 @@ const handleScrollToTopOfStepRec = () => {
   element?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
 };
 
+watch(
+  () => searchWork.value,
+  (value) => {
+    pageItem.value = 0;
+    recruitWorkItems.value = [];
+
+    if (value === '') {
+      callApiPositionRecruitment(false);
+    } else callApiSearchWork(false);
+  }
+);
+
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
   window.addEventListener('resize', checkScreenWidth);
 });
 </script>
 <template>
-  <LoadingComponent v-if="isLoading[0] || isLoading[1] || isLoading[2] || isLoading[3]" />
+  <LoadingComponent v-if="isLoading[0] || isLoading[1] || isLoading[2]" />
   <div v-else :class="$style.container">
     <div :class="$style.container__poster">
       <div :class="$style['container__poster-img']">
@@ -331,7 +394,10 @@ onMounted(() => {
         </div>
       </div>
       <div :class="$style['container__poster-btn']">
-        <div :class="$style['container__poster-btn-item']" @click="hanldeScrollToVacancies">
+        <div
+          :class="$style['container__poster-btn-item']"
+          @click="hanldeScrollToVacancies('smooth')"
+        >
           <p>Xem vị trí tuyển dụng</p>
         </div>
       </div>
@@ -459,7 +525,7 @@ onMounted(() => {
       <div :class="$style['container__work-heading']">
         <div :class="$style['container__work-heading-title']">Các Vị Trí Tuyển Dụng</div>
         <div :class="$style['container__work-heading-filter']">
-          <input type="text" name="filter" id="" placeholder="Tìm kiếm" />
+          <input v-model="searchWork" type="text" name="filter" id="" placeholder="Tìm kiếm" />
         </div>
       </div>
       <div :class="$style['container__work-staff']">
@@ -471,7 +537,8 @@ onMounted(() => {
           <recruitment-card-work :infor="item" />
         </div>
       </div>
-      <div v-if="hiddenShowMore">
+      <!-- <div v-if="hiddenShowMore"> -->
+      <div>
         <div :id="$style.loader" v-if="showMore"></div>
         <div :class="$style['container__work-btn']" v-else @click="openLoading">
           <p>Xem thêm</p>

@@ -10,10 +10,11 @@ import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
 import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { computed, onMounted, ref, watch, onBeforeUnmount } from 'vue';
+import { computed, onMounted, ref, watch, onBeforeUnmount, onUnmounted } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import { useRouter, useRoute } from 'vue-router';
 import { faArrowDownShortWide } from '@fortawesome/free-solid-svg-icons';
+import { saveActive } from '@/stores/counter';
 
 interface Product {
   id: string;
@@ -66,6 +67,9 @@ interface Item {
   brand: string;
   slug: string;
 }
+
+// Biến lưu trạng thái category
+const saveState = saveActive();
 
 //Khởi tạo danh sách sản phẩm để hiển thị ra màn hình
 const products = ref<Item[]>([]);
@@ -171,15 +175,12 @@ const handlePageChange = (page: number) => {
 
 const handleCategory1Selected = (selectedCategory1: string) => {
   slugCategory1.value = selectedCategory1;
-  console.log(slugCategory1.value);
 };
 const handleCategory2Selected = (selectedCategory2: string) => {
   slugCategory2.value = selectedCategory2;
-  console.log(slugCategory2.value);
 };
 const handleCategory3Selected = (selectedCategory3: string) => {
   slugCategory3.value = selectedCategory3;
-  console.log(slugCategory3.value);
 };
 
 //Cập nhật lại nội dung cần để show sản phẩm ra màn hình
@@ -203,7 +204,6 @@ const updateShowResults = () => {
 // Truy xuất giá trị response.value và gán vào responseData
 watch([productRes, isLoading], () => {
   isLoadingProduct.value = isLoading.value;
-  console.log(isLoadingProduct.value);
 
   dataRes.value = productRes?.value?.data;
   filterAllProduct.value = productRes?.value?.data?.data;
@@ -232,14 +232,12 @@ watch(
       {},
       deps1.value
     );
-    // console.log(currentPage.value);
 
     // Truy xuất giá trị response.value và gán vào responseData
     watch(
       [responseChanged, isLoadingChange],
       () => {
         isLoadingProduct.value = isLoadingChange.value;
-        // console.log(isLoadingProduct.value);
 
         dataRes.value = responseChanged?.value?.data;
         filterAllProduct.value = responseChanged?.value?.data?.data;
@@ -293,7 +291,6 @@ watch(route, () => {
     [responseChanged, isLoadingRoute],
     () => {
       isLoadingProduct.value = isLoadingRoute.value;
-      console.log(isLoadingProduct.value);
       dataRes.value = responseChanged?.value?.data;
       filterAllProduct.value = responseChanged?.value?.data?.data;
       updateShowResults();
@@ -333,6 +330,14 @@ onMounted(() => {
     slugCategory1.value = query.slug1.toString();
     // // Xóa toàn bộ query string và cập nhật URL
     // router.replace({ query: {} });
+  }
+});
+
+onUnmounted(() => {
+  if (router.currentRoute.value.name !== 'sanpham') {
+    saveState.setActiveCategory(-1);
+    saveState.setActiveCategory2(-1);
+    saveState.setActiveCategory3(-1);
   }
 });
 

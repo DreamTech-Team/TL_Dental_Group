@@ -15,6 +15,7 @@ interface DataRender {
 interface Active {
   categoryIndex: number;
   itemIndex: number;
+  cate3Index: number;
 }
 interface Info {
   address: string;
@@ -50,33 +51,53 @@ export const useDataRenderStore = defineStore('dataRender', () => {
 
 //Hàm lưu trạng thái của category(cate1 và 2 đang có active hay không)
 export const saveActive = defineStore('saveActiveCategory', () => {
-  const selectedCategoryItem = ref<Active>({
-    categoryIndex: -1,
-    itemIndex: -1
-  });
-
+  const selectedItem = ref(-1);
+  const selectedItem2 = ref(-1);
+  const selectedItem3 = ref(-1);
   const typeCate = ref('');
 
-  const setActiveCategory = (newActive: Active) => {
-    selectedCategoryItem.value = { ...newActive };
+  const setActiveCategory = (cate: number) => {
+    selectedItem.value = cate;
+  };
+
+  const setActiveCategory2 = (cate2: number) => {
+    selectedItem2.value = cate2;
+  };
+
+  const setActiveCategory3 = (cate3: number) => {
+    selectedItem3.value = cate3;
   };
 
   const setTypeCategory = (type: string) => {
     typeCate.value = type;
   };
 
-  return { selectedCategoryItem, setActiveCategory, typeCate, setTypeCategory };
+  return {
+    selectedItem,
+    selectedItem2,
+    selectedItem3,
+    typeCate,
+    setActiveCategory,
+    setActiveCategory2,
+    setActiveCategory3,
+    setTypeCategory
+  };
 });
 
 //Hàm lưu annimation của category
 export const setAnnimation = defineStore('setAnnimation', () => {
   const isAnimationVisible = ref(false);
+  const isAnimationVisible2 = ref(false);
 
   const setAnnimationCategory = (newActive: boolean) => {
     isAnimationVisible.value = newActive;
   };
 
-  return { isAnimationVisible, setAnnimationCategory };
+  const setAnnimationCategory2 = (newActive: boolean) => {
+    isAnimationVisible2.value = newActive;
+  };
+
+  return { isAnimationVisible, isAnimationVisible2, setAnnimationCategory, setAnnimationCategory2 };
 });
 
 // Hàm lưu data contact
