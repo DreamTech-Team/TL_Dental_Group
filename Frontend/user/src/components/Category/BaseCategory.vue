@@ -204,6 +204,8 @@ const logAndSelectCategory1 = (categoryIndex: number) => {
     selectedCategory1.value = newCategory1;
     selectedCategory2.value = ''; // Reset selectedCategory2
     selectedCategory3.value = ''; // Reset selectedCategory3
+    console.log('Log1');
+
     emit('slug-category1', selectedCategory1.value);
     emit('slug-category2', selectedCategory2.value);
     emit('slug-category3', selectedCategory3.value);
@@ -222,14 +224,19 @@ const logAndSelectCategory2 = (categoryIndex: number, itemIndex: number) => {
 
   const selectedCategory = dataRender.value[categoryIndex].slug;
   const selectedSubCategory = dataRender.value[categoryIndex].company[itemIndex].slug;
-  // console.log(selectedCategory);
-  // console.log(selectedSubCategory);
-  selectedCategory1.value = selectedCategory;
-  selectedCategory3.value = '';
 
-  emit('slug-category1', selectedCategory1.value);
-  emit('slug-category2', selectedCategory2.value);
-  emit('slug-category3', selectedCategory3.value);
+  if (selectedCategory3.value === '' || selectedCategory3.value === null) {
+    selectedCategory1.value = selectedCategory;
+    selectedCategory3.value = '';
+    console.log('Log2');
+    console.log(selectedCategory1.value);
+    console.log(selectedSubCategory);
+    console.log(selectedCategory3.value);
+
+    emit('slug-category1', selectedCategory1.value);
+    emit('slug-category2', selectedSubCategory);
+    emit('slug-category3', '');
+  }
 };
 
 const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemIndex3: number) => {
@@ -241,19 +248,20 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
   selectedCategory1.value = selectedCategory;
   selectedCategory2.value = selectedSubCategory;
   selectedCategory3.value = selectedSubCategory3;
+  console.log('Log3');
+  console.log(selectedCategory1.value);
+  console.log(selectedCategory2.value);
+  console.log(selectedCategory3.value);
   emit('slug-category1', selectedCategory1.value);
   emit('slug-category2', selectedCategory2.value);
   emit('slug-category3', selectedCategory3.value);
+
   if (router.currentRoute.value.name !== 'sanpham') {
     // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
     router.push(
       `/sanpham?slug1=${selectedCategory1.value}&slug2=${selectedCategory2.value}&slug3=${selectedCategory3.value}`
     );
   }
-
-  // console.log(selectedCategory1.value);
-  // console.log(selectedCategory2.value);
-  // console.log(selectedCategory3.value);
 };
 
 watch([selectedCategory1, selectedCategory2], () => {

@@ -85,6 +85,7 @@ const router = useRouter();
 const route = useRoute();
 const slugCategory1 = ref(route.query.slug1);
 const slugCategory2 = ref(route.query.slug2);
+const slugCategory3 = ref(route.query.slug3);
 const sortPriceType = ref('asc');
 const isLoadingProduct = ref(false);
 
@@ -93,19 +94,26 @@ const isDropdownOpen = ref(false);
 const selectedOption = ref('Giá tăng dần');
 const options = ['Giá tăng dần', 'Giá giảm dần'];
 
-//Đặt biến API ban đầu: gọi tổng sản phẩm hiện có
+//Tổng sản phẩm
 const apiTotalProduct = `/products/total${
   slugCategory1.value
-    ? `?cate1=${slugCategory1.value}` + (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+    ? `?cate1=${slugCategory1.value}` +
+      (slugCategory2.value ? `&company=${slugCategory2.value}` : '') +
+      (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
     : ''
 }`;
 
-//Đặt biến API ban đầu: gọi danh sách sản phẩm theo category
+//Danh sách sản phẩm
 const apiProduct = `/products?page=${currentPage.value}&pageSize=${pageSize.value}${
   slugCategory1.value
-    ? `&cate1=${slugCategory1.value}` + (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+    ? `&cate1=${slugCategory1.value}` +
+      (slugCategory2.value
+        ? `&company=${slugCategory2.value}` +
+          (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
+        : '')
     : ''
 }&sortPrice=${sortPriceType.value}`;
+
 const { response: productRes, isLoading } = useAxios<DataResponse>(
   'get',
   apiProduct,
@@ -163,9 +171,15 @@ const handlePageChange = (page: number) => {
 
 const handleCategory1Selected = (selectedCategory1: string) => {
   slugCategory1.value = selectedCategory1;
+  console.log(slugCategory1.value);
 };
 const handleCategory2Selected = (selectedCategory2: string) => {
   slugCategory2.value = selectedCategory2;
+  console.log(slugCategory2.value);
+};
+const handleCategory3Selected = (selectedCategory3: string) => {
+  slugCategory3.value = selectedCategory3;
+  console.log(slugCategory3.value);
 };
 
 //Cập nhật lại nội dung cần để show sản phẩm ra màn hình
@@ -201,14 +215,17 @@ watch(totalRes, () => {
 });
 
 watch(
-  [currentPage, slugCategory1, slugCategory2, apiProduct, sortPriceType],
+  [currentPage, slugCategory1, slugCategory2, slugCategory3, apiProduct, sortPriceType],
   () => {
     const { response: responseChanged, isLoading: isLoadingChange } = useAxios<DataResponse>(
       'get',
       `/products?page=${currentPage.value}&pageSize=${pageSize.value}${
         slugCategory1.value
           ? `&cate1=${slugCategory1.value}` +
-            (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+            (slugCategory2.value
+              ? `&company=${slugCategory2.value}` +
+                (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
+              : '')
           : ''
       }&sortPrice=${sortPriceType.value}`,
       {},
@@ -232,7 +249,8 @@ watch(
           `/products/total${
             slugCategory1.value
               ? `?cate1=${slugCategory1.value}` +
-                (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+                (slugCategory2.value ? `&company=${slugCategory2.value}` : '') +
+                (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
               : ''
           }`,
           {},
@@ -253,13 +271,17 @@ watch(
 watch(route, () => {
   slugCategory1.value = route.query.slug1;
   slugCategory2.value = route.query.slug2;
+  slugCategory3.value = route.query.slug3;
 
   const { response: responseChanged, isLoading: isLoadingRoute } = useAxios<DataResponse>(
     'get',
     `/products?page=${currentPage.value}&pageSize=${pageSize.value}${
       slugCategory1.value
         ? `&cate1=${slugCategory1.value}` +
-          (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+          (slugCategory2.value
+            ? `&company=${slugCategory2.value}` +
+              (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
+            : '')
         : ''
     }&sortPrice=${sortPriceType.value}`,
     {},
@@ -281,7 +303,8 @@ watch(route, () => {
         `/products/total${
           slugCategory1.value
             ? `?cate1=${slugCategory1.value}` +
-              (slugCategory2.value ? `&cate2=${slugCategory2.value}` : '')
+              (slugCategory2.value ? `&company=${slugCategory2.value}` : '') +
+              (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
             : ''
         }`,
         {},
@@ -297,6 +320,7 @@ watch(route, () => {
   ),
     { immediate: false };
 });
+
 onMounted(() => {
   checkScreenSize();
   // updateSelectedOption('Giá tăng dần');
@@ -329,6 +353,7 @@ window.addEventListener('resize', checkScreenSize);
               v-if="isDesktop"
               @slug-category1="handleCategory1Selected"
               @slug-category2="handleCategory2Selected"
+              @slug-category3="handleCategory3Selected"
             />
             <div v-if="!isLoadingProduct" :class="$style['product__content-wrap']">
               <div :class="$style['product__content-sort']">
