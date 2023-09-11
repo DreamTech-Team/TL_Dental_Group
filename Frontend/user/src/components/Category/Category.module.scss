@@ -45,12 +45,20 @@
     border-bottom: 1px solid $text_100;
     // padding: 1rem 2rem 1.5rem 3rem;
 
+    &:hover {
+      color: #02689b;
+    }
     &--choose {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       cursor: pointer;
-      padding: 1.5rem 2rem 1.5rem 3rem;
+      padding: 1.5rem 2rem 1rem 3rem;
+      box-shadow: 0px 0px 2px 0px rgba(233, 233, 233, 0.593);
+
+      // &-icon {
+      //   color: #ffffff;
+      // }
 
       p {
         &:hover {
@@ -85,14 +93,18 @@
     }
   }
 
+  .category__item {
+    display: flex;
+    justify-content: space-between;
+  }
+
   &__second {
     font-style: normal;
     font-weight: 400;
     font-size: 14px;
     line-height: 17px;
-    margin-right: 2rem;
     padding-top: 1rem;
-    padding-left: 5rem;
+    padding-left: 4.5rem;
     padding-right: 2rem;
     padding-bottom: 1rem;
     color: #000000;
@@ -104,6 +116,26 @@
 
     &:hover {
       color: #404dc2;
+    }
+  }
+
+  &__third {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    padding-top: 1rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    color: #000000;
+    cursor: pointer;
+
+    &--selected {
+      color: #bb7f06;
+    }
+
+    &:hover {
+      color: #d8a600;
     }
   }
 }

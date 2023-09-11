@@ -3,7 +3,7 @@ import { ref, nextTick, toRefs, watch } from 'vue';
 // import { RouteRecordName, useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown, faCircleArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { useDataRenderStore, saveActive, setAnnimation } from '@/stores/counter';
 import convertDataCate from '@/utils/covertDataCate';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
@@ -41,15 +41,19 @@ interface DataRender {
 }
 
 const dataCate = useDataRenderStore();
-const { selectedCategoryItem, typeCate } = toRefs(saveActive());
+const { selectedItem, selectedItem2, selectedItem3, typeCate } = toRefs(saveActive());
 const { isAnimationVisible } = toRefs(setAnnimation());
 const saveState = saveActive();
 
 const setAnni = setAnnimation();
-const selectedItem = ref(-1);
-const selectedCategory1 = ref();
+// const selectedItem = ref(-1);
+// const selectedItem2 = ref(-1);
+// const selectedItem3 = ref(-1);
+const selectedCategory1 = ref('');
 const selectedCategory2 = ref('');
 const selectedCategory3 = ref('');
+const isAnimationVisible1 = ref(false);
+const isAnimationVisible2 = ref(false);
 const emit = defineEmits(['slug-category1', 'slug-category2', 'slug-category3']);
 // Tạo biến lưu index của category cấp 1 được chọn và category cấp 2 được chọn
 const selectedCategory1Index = ref(-1);
@@ -91,11 +95,17 @@ const toggleAnimation = (index: number) => {
   if (isAnimationVisible.value && selectedItem.value == index) {
     isAnimationVisible.value = false;
     setAnni.setAnnimationCategory(isAnimationVisible.value);
-    selectedItem.value = -1;
+    // saveState.setActiveCategory(-1);
+    saveState.setTypeCategory('notHeader');
+    // selectedItem.value = -1;
+    console.log('vào if 1');
   } else {
     isAnimationVisible.value = true;
     setAnni.setAnnimationCategory(isAnimationVisible.value);
-    selectedItem.value = index;
+    // saveState.setActiveCategory(index);
+    saveState.setTypeCategory('notHeader');
+    // selectedItem.value = index;
+    console.log('vào else 1');
   }
   if (isAnimationVisible.value) {
     nextTick(() => {
@@ -117,11 +127,48 @@ const toggleAnimation = (index: number) => {
   }
 };
 
-toggleAnimation(selectedCategoryItem.value.categoryIndex);
+const toggleAnimation2 = (index: number, idx: number) => {
+  if (isAnimationVisible2.value && selectedItem2.value === idx) {
+    isAnimationVisible2.value = false;
+    // isAnimationVisible2.value = false;
+    // setAnni.setAnnimationCategory(isAnimationVisible2.value);
+    // selectedItem2.value = -1;
+    // selectedItem3.value = -1;
+    console.log('vào if 2');
+  } else {
+    // selectedItem3.value = -1;
+    console.log('vào else 2');
+    // selectedItem2.value = idx;
+    isAnimationVisible2.value = true;
+    // setAnni.setAnnimationCategory(isAnimationVisible2.value);
+    // selectedItem2.value = idx;
+  }
+  if (isAnimationVisible2.value) {
+    nextTick(() => {
+      const animationContainer = document.getElementById(`id-${index}-${idx}`);
+      const dropdownContainer = document.getElementById('dropdown-container2');
+      if (animationContainer && dropdownContainer) {
+        const dropdownContainerRect = dropdownContainer.getBoundingClientRect();
+        const animationContainerRect = animationContainer.getBoundingClientRect();
+
+        if (
+          animationContainerRect.top < dropdownContainerRect.top ||
+          animationContainerRect.bottom > dropdownContainerRect.bottom
+        ) {
+          const scrollPosition = animationContainer.offsetTop - dropdownContainer.offsetTop;
+          dropdownContainer.scrollTop = scrollPosition;
+        }
+      }
+    });
+  }
+};
+
+toggleAnimation(selectedItem.value);
+toggleAnimation2(selectedItem.value, selectedItem2.value);
 
 watch(typeCate, () => {
   if (typeCate.value !== 'notHeader') {
-    toggleAnimation(selectedCategoryItem.value.categoryIndex);
+    // toggleAnimation(selectedItem.value);
 
     if (typeCate.value.includes('cate2Header')) {
       console.log(typeCate.value[typeCate.value.length - 1]);
@@ -129,9 +176,29 @@ watch(typeCate, () => {
   }
 });
 
-const idDefine = (index: number) => {
+const idDefine = (index: number, idx: number | undefined = undefined) => {
+  if (idx !== undefined) {
+    return `id-${index}-${idx}`;
+  }
   return `id-${index}`;
 };
+
+// const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
+//   console.log(selectedItem.value);
+//   console.log(categoryIndex);
+//   console.log(selectedItem2.value);
+//   console.log(itemIndex);
+
+//   return selectedItem.value === categoryIndex && selectedItem2.value === itemIndex;
+// };
+
+// const isSelectedCategory3 = (categoryIndex: number, itemIndex: number, itemIndex3: number) => {
+//   return (
+//     selectedItem.value === categoryIndex &&
+//     selectedItem2.value === itemIndex &&
+//     selectedItem3.value === itemIndex3
+//   );
+// };
 
 const logAndSelectCategory1 = (categoryIndex: number) => {
   // Kiểm tra trang hiện tại
@@ -140,44 +207,73 @@ const logAndSelectCategory1 = (categoryIndex: number) => {
   if (newCategory1 !== selectedCategory1.value) {
     selectedCategory1.value = newCategory1;
     selectedCategory2.value = ''; // Reset selectedCategory2
+    selectedCategory3.value = ''; // Reset selectedCategory3
+    // console.log('Log1');
+
     emit('slug-category1', selectedCategory1.value);
     emit('slug-category2', selectedCategory2.value);
     emit('slug-category3', selectedCategory3.value);
-
     // Đặt lại giá trị selectedItem để xóa màu category cấp 2 trước đó
     selectedItem.value = categoryIndex;
   }
 };
 
 // Hàm chọn category cấp 2
-const logAndSelectCategory = (categoryIndex: number, itemIndex: number) => {
-  saveState.setActiveCategory({ categoryIndex, itemIndex });
-  saveState.setTypeCategory('notHeader');
-
+const logAndSelectCategory2 = (categoryIndex: number, itemIndex: number) => {
   // Lưu index của category cấp 2 được chọn
-  selectedCategory2Index.value = itemIndex;
+  saveState.setActiveCategory2(itemIndex);
+  saveState.setTypeCategory('notHeader');
+  selectedItem2.value = itemIndex;
 
-  // const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
-  // const selectedCategory = dataRender.value[categoryIndex]; // Giá trị của category cấp 1
-  // emit('slug-category2', selectedSubCategory.slug);
-  // selectedCategory2.value = selectedSubCategory.slug; // Update selectedCategory2
+  const selectedCategory = dataRender.value[categoryIndex].slug;
+  const selectedSubCategory = dataRender.value[categoryIndex].company[itemIndex].slug;
 
-  if (router.currentRoute.value.name !== 'sanpham') {
-    // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
-    router.push(`/sanpham?slug1=${selectedCategory1.value}&slug2=${selectedCategory2.value}`);
+  if (selectedCategory3.value !== '' || selectedCategory3.value !== null) {
+    selectedCategory1.value = selectedCategory;
+    selectedCategory3.value = '';
+    console.log('Log2');
+    console.log(selectedCategory1.value);
+    console.log(selectedSubCategory);
+    console.log(selectedCategory3.value);
+
+    emit('slug-category1', selectedCategory1.value);
+    emit('slug-category2', selectedSubCategory);
+    emit('slug-category3', '');
   }
 };
 
-const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
-  // const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
+const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemIndex3: number) => {
+  saveState.setActiveCategory3(itemIndex3);
+  saveState.setTypeCategory('notHeader');
+  selectedItem3.value = itemIndex3;
+  const selectedCategory = dataRender.value[categoryIndex].slug; // Giá trị của category cấp 1
+  const selectedSubCategory = dataRender.value[categoryIndex].company[itemIndex].slug;
+  const selectedSubCategory3 =
+    dataRender.value[categoryIndex].company[itemIndex].cate2[itemIndex3].slug;
+  selectedCategory1.value = selectedCategory;
+  selectedCategory2.value = selectedSubCategory;
+  selectedCategory3.value = selectedSubCategory3;
+  console.log('Log3');
+  console.log(selectedCategory1.value);
+  console.log(selectedCategory2.value);
+  console.log(selectedCategory3.value);
+  emit('slug-category1', selectedCategory1.value);
+  emit('slug-category2', selectedCategory2.value);
+  emit('slug-category3', selectedCategory3.value);
 
-  return (
-    selectedCategoryItem.value.categoryIndex === categoryIndex &&
-    selectedCategoryItem.value.itemIndex === itemIndex
-  );
+  if (router.currentRoute.value.name !== 'sanpham') {
+    // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
+    router.push(
+      `/sanpham?slug1=${selectedCategory1.value}&slug2=${selectedCategory2.value}&slug3=${selectedCategory3.value}`
+    );
+  }
 };
 
 watch([selectedCategory1, selectedCategory2], () => {
+  selectedItem2.value = -1;
+  // selectedCategoryItem.value.itemIndex = -1;
+  console.log('watch');
+
   const matchedIndex = dataRender.value.findIndex((item) => item.slug === selectedCategory1.value);
   if (matchedIndex !== -1) {
     selectedItem.value = matchedIndex;
@@ -208,7 +304,7 @@ watch([selectedCategory1, selectedCategory2], () => {
       </div>
       <!-- category 2 -->
       <div
-        :id="idDefine(index)"
+        id="dropdown-container2"
         :class="[
           $style['category__firstX--animation'],
           {
@@ -219,32 +315,50 @@ watch([selectedCategory1, selectedCategory2], () => {
         ref="animationContainer"
       >
         <div
-          @click="logAndSelectCategory(index, idx)"
+          @click="logAndSelectCategory2(index, idx)"
           :class="[
             $style['category__second'],
-            { [$style['category__second--selected']]: isSelectedCategory(index, idx) }
+            {
+              [$style['category__second--selected']]:
+                isAnimationVisible && selectedItem === index && selectedItem2 === idx
+            }
           ]"
           v-for="(item1, idx) in item.company"
           :key="idx"
         >
-          {{ item1.name }}
+          <div
+            :id="idDefine(index, idx)"
+            @click="toggleAnimation2(index, idx)"
+            :class="[$style.category__item]"
+          >
+            {{ item1.name }}
+            <font-awesome-icon
+              :class="$style['category__firstX--choose-icon']"
+              :icon="faCaretDown"
+            />
+          </div>
           <!-- category 3 -->
           <div
-            :id="idDefine(index)"
             :class="[
               $style['category__firstX--animation'],
               {
                 [$style['category__firstX--show-animation']]:
-                  isAnimationVisible && selectedItem === index
+                  isAnimationVisible2 && selectedItem2 === idx
               }
             ]"
-            ref="animationContainer"
+            ref="animationContainer2"
           >
             <div
-              @click="logAndSelectCategory(index, idx)"
+              @click="logAndSelectCategory3(index, idx, idx2)"
               :class="[
                 $style['category__third'],
-                { [$style['category__third--selected']]: isSelectedCategory(index, idx) }
+                {
+                  [$style['category__third--selected']]:
+                    isAnimationVisible &&
+                    selectedItem === index &&
+                    selectedItem2 === idx &&
+                    selectedItem3 === idx2
+                }
               ]"
               v-for="(item2, idx2) in item1.cate2"
               :key="idx2"

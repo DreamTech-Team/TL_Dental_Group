@@ -82,7 +82,7 @@ watch(getPolicies.isLoading, handleResizeData);
 
 const handleSelected = (index: number) => {
   selectedItem.value = Number(index);
-  setTimeout(handleResizeData, 0);
+  setTimeout(handleResizeData, 1);
 };
 
 const handleActiveNav = () => {

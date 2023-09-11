@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { RouterLink } from 'vue-router';
-import { computed, ref, toRefs } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { useDataRenderStore, saveActive } from '@/stores/counter';
 
@@ -13,13 +13,22 @@ const props = defineProps({
 });
 
 const cate1Hover = ref('');
+const companyHover = ref('');
 
 const heightCate1 = computed(() => {
   return props.pageHover === 'sanpham' ? 100 : 0;
 });
 
-const heightCate2 = (slug: string) => {
+watch(dataRender, () => {
+  console.log(dataRender.value);
+});
+
+const heightCompany = (slug: string) => {
   return cate1Hover.value === slug ? 100 : 0;
+};
+
+const heightCate2 = (slug: string) => {
+  return companyHover.value === slug ? 100 : 0;
 };
 
 const handleGetIndexCate1 = (categoryIndex: number) => {
@@ -39,6 +48,7 @@ const handleResetCate = () => {
 </script>
 <template>
   <div>
+    <!-- Category 1 -->
     <ul
       :class="[
         $style['header-category'],
@@ -48,44 +58,81 @@ const handleResetCate = () => {
     >
       <li :class="$style['header-category__line']"></li>
       <li
-        v-for="(item1, idx) in dataRender.slice(0, 6)"
-        v-on:mouseenter="cate1Hover = item1.slug"
+        v-for="(cate1, idx) in dataRender.slice(0, 6)"
+        v-on:mouseenter="cate1Hover = cate1.slug"
         v-on:mouseleave="cate1Hover = ''"
-        :key="item1.slug"
+        :key="cate1.slug"
         :class="$style['header-category__item']"
         @click.stop="handleGetIndexCate1(idx)"
       >
         <router-link
-          :to="`/sanpham?slug1=${item1.slug}`"
+          :to="`/sanpham?slug1=${cate1.slug}`"
           :class="$style['header-category__item-link']"
         >
-          <p>{{ item1.title }}</p>
+          <p>{{ cate1.title }}</p>
           <font-awesome-icon :icon="faChevronRight" size="xs" />
         </router-link>
 
+        <!-- Company -->
         <ul
           :class="[
             $style['header-category'],
             $style['header-category-sub'],
-            $style[cate1Hover === item1.slug ? 'header-category-show' : 'header-category--hidden']
+            $style[cate1Hover === cate1.slug ? 'header-category-show' : 'header-category--hidden']
           ]"
-          :style="{ maxHeight: heightCate2(item1?.slug) + 'vh' }"
+          :style="{ maxHeight: heightCompany(cate1?.slug) + 'vh' }"
         >
           <li :class="$style['header-category__line']"></li>
-          <!-- <li
-            v-for="(item2, index) in item1.data.slice(0, 8)"
-            :key="item2.slug"
+          <li
+            v-for="(company, index) in cate1.company.slice(0, 8)"
+            v-on:mouseenter="companyHover = company.slug"
+            v-on:mouseleave="companyHover = ''"
+            :key="company.slug"
             :class="$style['header-category__item']"
             @click.prevent.stop="handleGetIndexCate2(idx, index)"
           >
-            ?slug1=vat-lieu-chinh-nha11&slug2=kem-chinh-nha-23
             <router-link
-              :to="`/sanpham?slug1=${item1.slug}&slug2=${item2.slug}`"
+              :to="`/sanpham?slug1=${cate1.slug}&slug2=${company.slug}`"
               :class="$style['header-category__item-link']"
             >
-              <p>{{ item2.name }}</p>
+              <p>{{ company.name }}</p>
+              <font-awesome-icon :icon="faChevronRight" size="xs" />
             </router-link>
-          </li> -->
+
+            <!-- Category 2 -->
+            <ul
+              :if="company.cate2.length"
+              :class="[
+                $style['header-category'],
+                $style['header-category-sub'],
+                $style[
+                  companyHover === company.slug ? 'header-category-show' : 'header-category--hidden'
+                ]
+              ]"
+              :style="{ maxHeight: heightCate2(company?.slug) + 'vh' }"
+            >
+              <li :class="$style['header-category__line']"></li>
+              <li
+                v-for="(cate2, index) in company.cate2.slice(0, 4).filter((e) => e.title !== '')"
+                :key="cate2.slug"
+                :class="$style['header-category__item']"
+                @click.prevent.stop="handleGetIndexCate2(idx, index)"
+              >
+                <router-link
+                  :to="`/sanpham?slug1=${cate1.slug}&slug2=${cate2.slug}`"
+                  :class="$style['header-category__item-link']"
+                >
+                  <p>{{ cate2.title }}</p>
+                </router-link>
+              </li>
+
+              <li :class="$style['header-category__more']" key="xemtatca">
+                <router-link to="/sanpham" :class="$style['header-category__more-link']">
+                  Xem tất cả
+                </router-link>
+              </li>
+            </ul>
+          </li>
 
           <li :class="$style['header-category__more']" key="xemtatca">
             <router-link to="/sanpham" :class="$style['header-category__more-link']">
