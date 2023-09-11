@@ -15,6 +15,7 @@ interface DataRender {
 interface Active {
   categoryIndex: number;
   itemIndex: number;
+  cate3Index: number;
 }
 interface Info {
   address: string;
@@ -52,7 +53,8 @@ export const useDataRenderStore = defineStore('dataRender', () => {
 export const saveActive = defineStore('saveActiveCategory', () => {
   const selectedCategoryItem = ref<Active>({
     categoryIndex: -1,
-    itemIndex: -1
+    itemIndex: -1,
+    cate3Index: -1
   });
 
   const typeCate = ref('');

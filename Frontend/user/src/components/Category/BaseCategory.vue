@@ -202,7 +202,7 @@ const logAndSelectCategory1 = (categoryIndex: number) => {
 
 // Hàm chọn category cấp 2
 const logAndSelectCategory2 = (categoryIndex: number, itemIndex: number) => {
-  saveState.setActiveCategory({ categoryIndex, itemIndex });
+  // saveState.setActiveCategory({ categoryIndex, itemIndex });
   saveState.setTypeCategory('notHeader');
   console.log('categoryIndex: ' + categoryIndex);
   console.log('itemIndex' + itemIndex);
