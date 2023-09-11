@@ -55,12 +55,15 @@ if (dataCate.dataRender.length === 0) {
 }
 
 const toggleAnimation = (index: number) => {
-  if (isAnimationVisible.value && selectedItem.value == index) {
+  if (isAnimationVisible.value && selectedItem.value === index) {
+    console.log('cc');
+
     isAnimationVisible.value = false;
     setAnni.setAnnimationCategory(isAnimationVisible.value);
     saveState.setTypeCategory('notHeader');
     // selectedItem.value = -1;
   } else {
+    console.log('cc1');
     isAnimationVisible.value = true;
     setAnni.setAnnimationCategory(isAnimationVisible.value);
     saveState.setTypeCategory('notHeader');
@@ -91,14 +94,11 @@ const toggleAnimation2 = (index: number, idx: number) => {
     isAnimationVisible2.value = false;
     setAnni.setAnnimationCategory2(isAnimationVisible2.value);
     // saveState.setActiveCategory3(-1);
-    console.log('vào if 2');
   } else {
     // saveState.setActiveCategory3(-1);
-    console.log('vào else 2');
     // selectedItem2.value = idx;
     selectedItem3.value = -1;
     isAnimationVisible2.value = true;
-    // setAnni.setAnnimationCategory(isAnimationVisible2.value);
     setAnni.setAnnimationCategory2(isAnimationVisible2.value);
   }
   if (isAnimationVisible2.value) {
@@ -121,12 +121,10 @@ const toggleAnimation2 = (index: number, idx: number) => {
   }
 };
 
-// toggleAnimation(selectedItem.value);
-// toggleAnimation2(selectedItem.value, selectedItem2.value);
-
 watch(typeCate, () => {
   if (typeCate.value !== 'notHeader') {
-    // toggleAnimation(selectedItem.value);
+    isAnimationVisible.value = true;
+    isAnimationVisible2.value = true;
 
     if (typeCate.value.includes('cate2Header')) {
       console.log(typeCate.value[typeCate.value.length - 1]);
@@ -219,16 +217,6 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
     );
   }
 };
-
-watch(router.currentRoute.value, () => {
-  if (router.currentRoute.value.name !== 'sanpham') {
-    console.log('cc');
-
-    saveState.setActiveCategory(-1);
-    saveState.setActiveCategory2(-1);
-    saveState.setActiveCategory3(-1);
-  }
-});
 
 watch([selectedCategory1, selectedCategory2], () => {
   selectedItem2.value = -1;

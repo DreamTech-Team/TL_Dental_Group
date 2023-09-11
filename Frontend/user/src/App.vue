@@ -54,8 +54,6 @@ const fetchData = async () => {
     isLoadingCategory.value = isLoading.value;
 
     if (response.value?.data) {
-      console.log(response.value?.data);
-
       response.value?.data.forEach((item: ListCategories) => {
         listCategory1.value.push(item.cate1Id);
         listCategory2.value.push(item.cate2Id);

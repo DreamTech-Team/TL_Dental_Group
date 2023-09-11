@@ -19,10 +19,6 @@ const heightCate1 = computed(() => {
   return props.pageHover === 'sanpham' ? 100 : 0;
 });
 
-watch(dataRender, () => {
-  console.log(dataRender.value);
-});
-
 const heightCompany = (slug: string) => {
   return cate1Hover.value === slug ? 100 : 0;
 };
@@ -33,17 +29,26 @@ const heightCate2 = (slug: string) => {
 
 const handleGetIndexCate1 = (categoryIndex: number) => {
   saveIndexState.setTypeCategory('cate1Header' + categoryIndex);
-  // saveIndexState.setActiveCategory({ categoryIndex, itemIndex: -1 });
+  saveIndexState.setActiveCategory(categoryIndex);
 };
 
-const handleGetIndexCate2 = (categoryIndex: number, itemIndex: number) => {
-  saveIndexState.setTypeCategory('cate2Header' + categoryIndex + '' + itemIndex);
-  // saveIndexState.setActiveCategory({ categoryIndex: categoryIndex, itemIndex: itemIndex });
+const handleGetIndexCate2 = (categoryIndex: number, companyIndex: number) => {
+  saveIndexState.setTypeCategory('cate2Header' + categoryIndex + '' + companyIndex);
+  saveIndexState.setActiveCategory2(companyIndex);
+};
+
+const handleGetIndexCate3 = (categoryIndex: number, companyIndex: number, indexCate2: number) => {
+  saveIndexState.setTypeCategory(
+    'cate3Header' + categoryIndex + '' + companyIndex + '' + indexCate2
+  );
+  saveIndexState.setActiveCategory3(indexCate2);
 };
 
 const handleResetCate = () => {
   saveIndexState.setTypeCategory('reset');
-  // saveIndexState.setActiveCategory({ categoryIndex: -1, itemIndex: -1 });
+  saveIndexState.setActiveCategory(-1);
+  saveIndexState.setActiveCategory2(-1);
+  saveIndexState.setActiveCategory3(-1);
 };
 </script>
 <template>
@@ -113,10 +118,10 @@ const handleResetCate = () => {
             >
               <li :class="$style['header-category__line']"></li>
               <li
-                v-for="(cate2, index) in company.cate2.slice(0, 4).filter((e) => e.title !== '')"
+                v-for="(cate2, index1) in company.cate2.slice(0, 4).filter((e) => e.title !== '')"
                 :key="cate2.slug"
                 :class="$style['header-category__item']"
-                @click.prevent.stop="handleGetIndexCate2(idx, index)"
+                @click.prevent.stop="handleGetIndexCate3(idx, index, index1)"
               >
                 <router-link
                   :to="`/sanpham?slug1=${cate1.slug}&slug2=${company.slug}&slug3=${cate2.slug}`"
@@ -146,7 +151,7 @@ const handleResetCate = () => {
         <router-link
           to="/sanpham"
           :class="$style['header-category__more-link']"
-          @click="handleResetCate"
+          @click.stop="handleResetCate"
         >
           Xem tất cả
         </router-link>
