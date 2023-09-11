@@ -208,6 +208,8 @@ const logAndSelectCategory1 = (categoryIndex: number) => {
     selectedCategory1.value = newCategory1;
     selectedCategory2.value = ''; // Reset selectedCategory2
     selectedCategory3.value = ''; // Reset selectedCategory3
+    // console.log('Log1');
+
     emit('slug-category1', selectedCategory1.value);
     emit('slug-category2', selectedCategory2.value);
     emit('slug-category3', selectedCategory3.value);
@@ -258,6 +260,7 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
   emit('slug-category1', selectedCategory1.value);
   emit('slug-category2', selectedCategory2.value);
   emit('slug-category3', selectedCategory3.value);
+
   if (router.currentRoute.value.name !== 'sanpham') {
     // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
     router.push(
