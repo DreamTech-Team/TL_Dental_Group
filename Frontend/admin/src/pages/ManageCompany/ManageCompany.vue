@@ -81,7 +81,6 @@ watch(getCompany.response, () => {
 
 watch(getProducts.response, () => {
   products.value = getProducts.response.value?.data?.data;
-  console.log(products.value);
 });
 
 watch(getCate.response, () => {
@@ -261,6 +260,8 @@ const handleChangeUpdate = (dataUpdated: ManageCompany, isLoading: boolean) => {
   isLoadingCompany.value = isLoading;
   isOpenUpdate.value = false;
 
+  console.log(dataUpdated);
+
   if (!isLoading) {
     Swal.fire({
       title: 'Cập nhật thành công',
@@ -291,9 +292,11 @@ const handleChangeUpdate = (dataUpdated: ManageCompany, isLoading: boolean) => {
 
 // Hàm lấy dữ liệu trả về khi ModalUpdate trả dữ liệu đã update sản phẩm nổi bât về
 const handleChangeUpdateOutstanding = (outstanding: ManageCompany) => {
-  // if (outstanding.outstandingProductId !== null) {
-  companyRender.value[indexRow.value].outstandingProductId = outstanding.outstandingProductId;
-  // }
+  if (outstanding.outstandingProductId !== null) {
+    console.log(outstanding);
+
+    companyRender.value[indexRow.value].outstandingProductId = outstanding.outstandingProductId;
+  }
 };
 
 // Hàm lấy dữ liệu trả về khi update Highlight công ty
