@@ -49,7 +49,7 @@ const setAnni = setAnnimation();
 const selectedItem = ref(-1);
 const selectedItem2 = ref(-1);
 const selectedItem3 = ref(-1);
-const selectedCategory1 = ref();
+const selectedCategory1 = ref('');
 const selectedCategory2 = ref('');
 const selectedCategory3 = ref('');
 const isAnimationVisible1 = ref(false);
@@ -96,10 +96,12 @@ const toggleAnimation = (index: number) => {
     isAnimationVisible.value = false;
     setAnni.setAnnimationCategory(isAnimationVisible.value);
     selectedItem.value = -1;
+    console.log('vào if 1');
   } else {
     isAnimationVisible.value = true;
     setAnni.setAnnimationCategory(isAnimationVisible.value);
     selectedItem.value = index;
+    console.log('vào else 1');
   }
   if (isAnimationVisible.value) {
     nextTick(() => {
@@ -124,23 +126,20 @@ const toggleAnimation = (index: number) => {
 const toggleAnimation2 = (index: number, idx: number) => {
   if (isAnimationVisible2.value && selectedItem2.value === idx) {
     isAnimationVisible2.value = false;
-    console.log('Vinh 2: ' + selectedItem2.value);
     // isAnimationVisible2.value = false;
     // setAnni.setAnnimationCategory(isAnimationVisible2.value);
     selectedItem2.value = -1;
     selectedItem3.value = -1;
+    console.log('vào if 2');
   } else {
-    console.log('Vinh 22: ' + selectedItem2.value);
     selectedItem3.value = -1;
-
+    console.log('vào else 2');
+    selectedItem2.value = idx;
     isAnimationVisible2.value = true;
     // setAnni.setAnnimationCategory(isAnimationVisible2.value);
     selectedItem2.value = idx;
-    console.log(selectedItem2.value);
   }
   if (isAnimationVisible2.value) {
-    console.log('Next: ' + isAnimationVisible2.value);
-
     nextTick(() => {
       const animationContainer = document.getElementById(`id-${index}-${idx}`);
       const dropdownContainer = document.getElementById('dropdown-container2');
@@ -175,26 +174,39 @@ watch(typeCate, () => {
 
 const idDefine = (index: number, idx: number | undefined = undefined) => {
   if (idx !== undefined) {
-    // console.log(`id-${index}-${idx}`);
     return `id-${index}-${idx}`;
   }
-  // console.log(`id-${index}`);
   return `id-${index}`;
 };
 
-const logAndSelectCategory1 = (categoryIndex: number) => {
-  console.log('selectedCategory1');
+// const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
+//   console.log(selectedItem.value);
+//   console.log(categoryIndex);
+//   console.log(selectedItem2.value);
+//   console.log(itemIndex);
 
+//   return selectedItem.value === categoryIndex && selectedItem2.value === itemIndex;
+// };
+
+// const isSelectedCategory3 = (categoryIndex: number, itemIndex: number, itemIndex3: number) => {
+//   return (
+//     selectedItem.value === categoryIndex &&
+//     selectedItem2.value === itemIndex &&
+//     selectedItem3.value === itemIndex3
+//   );
+// };
+
+const logAndSelectCategory1 = (categoryIndex: number) => {
   // Kiểm tra trang hiện tại
   const newCategory1 = dataRender.value[categoryIndex].slug;
   // Reset selectedCategory2 only if a new category 1 is selected
   if (newCategory1 !== selectedCategory1.value) {
     selectedCategory1.value = newCategory1;
     selectedCategory2.value = ''; // Reset selectedCategory2
+    selectedCategory3.value = ''; // Reset selectedCategory3
     emit('slug-category1', selectedCategory1.value);
     emit('slug-category2', selectedCategory2.value);
     emit('slug-category3', selectedCategory3.value);
-
     // Đặt lại giá trị selectedItem để xóa màu category cấp 2 trước đó
     selectedItem.value = categoryIndex;
   }
@@ -204,51 +216,50 @@ const logAndSelectCategory1 = (categoryIndex: number) => {
 const logAndSelectCategory2 = (categoryIndex: number, itemIndex: number) => {
   saveState.setActiveCategory({ categoryIndex, itemIndex });
   saveState.setTypeCategory('notHeader');
-  console.log('categoryIndex: ' + categoryIndex);
-  console.log('itemIndex' + itemIndex);
 
   // Lưu index của category cấp 2 được chọn
   selectedItem2.value = itemIndex;
 
-  // const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
-  // const selectedCategory = dataRender.value[categoryIndex]; // Giá trị của category cấp 1
-  // emit('slug-category2', selectedSubCategory.slug);
-  // selectedCategory2.value = selectedSubCategory.slug; // Update selectedCategory2
+  const selectedCategory = dataRender.value[categoryIndex].slug;
+  const selectedSubCategory = dataRender.value[categoryIndex].company[itemIndex].slug;
+  // console.log(selectedCategory);
+  // console.log(selectedSubCategory);
+  selectedCategory1.value = selectedCategory;
+  selectedCategory3.value = '';
 
-  if (router.currentRoute.value.name !== 'sanpham') {
-    // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
-    router.push(`/sanpham?slug1=${selectedCategory1.value}&slug2=${selectedCategory2.value}`);
-  }
+  emit('slug-category1', selectedCategory1.value);
+  emit('slug-category2', selectedCategory2.value);
+  emit('slug-category3', selectedCategory3.value);
 };
 
 const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemIndex3: number) => {
   selectedItem3.value = itemIndex3;
-  console.log('itemIndex1: ' + categoryIndex);
-  console.log('itemIndex2' + itemIndex);
-  console.log('itemIndex3' + itemIndex3);
-};
+  const selectedCategory = dataRender.value[categoryIndex].slug; // Giá trị của category cấp 1
+  const selectedSubCategory = dataRender.value[categoryIndex].company[itemIndex].slug;
+  const selectedSubCategory3 =
+    dataRender.value[categoryIndex].company[itemIndex].cate2[itemIndex3].slug;
+  selectedCategory1.value = selectedCategory;
+  selectedCategory2.value = selectedSubCategory;
+  selectedCategory3.value = selectedSubCategory3;
+  emit('slug-category1', selectedCategory1.value);
+  emit('slug-category2', selectedCategory2.value);
+  emit('slug-category3', selectedCategory3.value);
+  if (router.currentRoute.value.name !== 'sanpham') {
+    // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
+    router.push(
+      `/sanpham?slug1=${selectedCategory1.value}&slug2=${selectedCategory2.value}&slug3=${selectedCategory3.value}`
+    );
+  }
 
-const isSelectedCategory = (categoryIndex: number, itemIndex: number) => {
-  // const selectedSubCategory = dataRender.value[categoryIndex]?.data[itemIndex]; //category cấp 2
-
-  return (
-    selectedCategoryItem.value.categoryIndex === categoryIndex &&
-    selectedCategoryItem.value.itemIndex === itemIndex
-  );
-};
-
-const isSelectedCategory3 = (categoryIndex: number, itemIndex: number, itemIndex3: number) => {
-  return (
-    selectedCategoryItem.value.categoryIndex === categoryIndex &&
-    selectedCategoryItem.value.itemIndex === itemIndex &&
-    selectedItem3.value === itemIndex3
-  );
+  // console.log(selectedCategory1.value);
+  // console.log(selectedCategory2.value);
+  // console.log(selectedCategory3.value);
 };
 
 watch([selectedCategory1, selectedCategory2], () => {
-  console.log('watch selectedCategory1');
   selectedItem2.value = -1;
   selectedCategoryItem.value.itemIndex = -1;
+  console.log('watch');
 
   const matchedIndex = dataRender.value.findIndex((item) => item.slug === selectedCategory1.value);
   if (matchedIndex !== -1) {
@@ -257,10 +268,6 @@ watch([selectedCategory1, selectedCategory2], () => {
   } else {
     console.log(`Category "${selectedCategory1.value}" not found in dataRender`);
   }
-});
-
-watch(isAnimationVisible2, () => {
-  console.log('ccccc' + isAnimationVisible2.value);
 });
 </script>
 <template>
@@ -298,7 +305,10 @@ watch(isAnimationVisible2, () => {
           @click="logAndSelectCategory2(index, idx)"
           :class="[
             $style['category__second'],
-            { [$style['category__second--selected']]: isSelectedCategory(index, idx) }
+            {
+              [$style['category__second--selected']]:
+                isAnimationVisible && selectedItem === index && selectedItem2 === idx
+            }
           ]"
           v-for="(item1, idx) in item.company"
           :key="idx"
@@ -329,7 +339,13 @@ watch(isAnimationVisible2, () => {
               @click="logAndSelectCategory3(index, idx, idx2)"
               :class="[
                 $style['category__third'],
-                { [$style['category__third--selected']]: isSelectedCategory3(index, idx, idx2) }
+                {
+                  [$style['category__third--selected']]:
+                    isAnimationVisible &&
+                    selectedItem === index &&
+                    selectedItem2 === idx &&
+                    selectedItem3 === idx2
+                }
               ]"
               v-for="(item2, idx2) in item1.cate2"
               :key="idx2"
