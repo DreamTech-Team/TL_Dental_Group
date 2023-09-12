@@ -56,18 +56,13 @@ if (dataCate.dataRender.length === 0) {
 
 const toggleAnimation = (index: number) => {
   if (isAnimationVisible.value && selectedItem.value === index) {
-    console.log('cc');
-
     isAnimationVisible.value = false;
     setAnni.setAnnimationCategory(isAnimationVisible.value);
     saveState.setTypeCategory('notHeader');
-    // selectedItem.value = -1;
   } else {
-    console.log('cc1');
     isAnimationVisible.value = true;
     setAnni.setAnnimationCategory(isAnimationVisible.value);
     saveState.setTypeCategory('notHeader');
-    // selectedItem.value = index;
   }
   if (isAnimationVisible.value) {
     nextTick(() => {
@@ -93,10 +88,7 @@ const toggleAnimation2 = (index: number, idx: number) => {
   if (isAnimationVisible2.value && selectedItem.value === index && selectedItem2.value === idx) {
     isAnimationVisible2.value = false;
     setAnni.setAnnimationCategory2(isAnimationVisible2.value);
-    // saveState.setActiveCategory3(-1);
   } else {
-    // saveState.setActiveCategory3(-1);
-    // selectedItem2.value = idx;
     selectedItem3.value = -1;
     isAnimationVisible2.value = true;
     setAnni.setAnnimationCategory2(isAnimationVisible2.value);
@@ -182,15 +174,14 @@ const logAndSelectCategory2 = (categoryIndex: number, itemIndex: number) => {
   saveState.setActiveCategory(categoryIndex);
   saveState.setActiveCategory2(itemIndex);
   saveState.setTypeCategory('notHeader');
-
   const selectedCategory = dataRender.value[categoryIndex].slug;
   const selectedSubCategory = dataRender.value[categoryIndex].company[itemIndex].slug;
 
-  if (selectedCategory3.value !== '' || selectedCategory3.value !== null) {
-    selectedCategory1.value = selectedCategory;
-    selectedCategory3.value = '';
-
-    emit('slug-category1', selectedCategory1.value);
+  if (
+    selectedCategory === selectedCategory1.value &&
+    selectedSubCategory !== selectedCategory2.value
+  ) {
+    emit('slug-category1', selectedCategory);
     emit('slug-category2', selectedSubCategory);
     emit('slug-category3', '');
   }
@@ -203,18 +194,20 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
   const selectedSubCategory = dataRender.value[categoryIndex].company[itemIndex].slug;
   const selectedSubCategory3 =
     dataRender.value[categoryIndex].company[itemIndex].cate2[itemIndex3].slug;
-  selectedCategory1.value = selectedCategory;
-  selectedCategory2.value = selectedSubCategory;
-  selectedCategory3.value = selectedSubCategory3;
-  emit('slug-category1', selectedCategory1.value);
-  emit('slug-category2', selectedCategory2.value);
-  emit('slug-category3', selectedCategory3.value);
+  if (selectedCategory === selectedCategory1.value) {
+    selectedCategory1.value = selectedCategory;
+    selectedCategory2.value = selectedSubCategory;
+    selectedCategory3.value = selectedSubCategory3;
+    emit('slug-category1', selectedCategory);
+    emit('slug-category2', selectedSubCategory);
+    emit('slug-category3', selectedSubCategory3);
 
-  if (router.currentRoute.value.name !== 'sanpham') {
-    // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
-    router.push(
-      `/sanpham?slug1=${selectedCategory1.value}&slug2=${selectedCategory2.value}&slug3=${selectedCategory3.value}`
-    );
+    if (router.currentRoute.value.name !== 'sanpham') {
+      // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
+      router.push(
+        `/sanpham?slug1=${selectedCategory}&slug2=${selectedSubCategory}&slug3=${selectedSubCategory3}`
+      );
+    }
   }
 };
 
