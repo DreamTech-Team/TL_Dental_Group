@@ -31,6 +31,9 @@ const selectedCategory2 = ref('');
 const selectedCategory3 = ref('');
 const checkColor = ref(false);
 const emit = defineEmits(['slug-category1', 'slug-category2', 'slug-category3']);
+const animationContainer = ref<HTMLElement | null>(null);
+const dropdownContainer = ref<HTMLElement | null>(null);
+
 // Lấy thông tin đang định tuyến từ Vue Router
 const router = useRouter();
 
@@ -66,18 +69,17 @@ const toggleAnimation = (index: number) => {
   }
   if (isAnimationVisible.value) {
     nextTick(() => {
-      const animationContainer = document.getElementById(`id-${index}`);
-      const dropdownContainer = document.getElementById('dropdown-container');
-      if (animationContainer && dropdownContainer) {
-        const dropdownContainerRect = dropdownContainer.getBoundingClientRect();
-        const animationContainerRect = animationContainer.getBoundingClientRect();
+      if (animationContainer.value && dropdownContainer.value) {
+        const dropdownContainerRect = dropdownContainer.value.getBoundingClientRect();
+        const animationContainerRect = animationContainer.value.getBoundingClientRect();
 
         if (
           animationContainerRect.top < dropdownContainerRect.top ||
           animationContainerRect.bottom > dropdownContainerRect.bottom
         ) {
-          const scrollPosition = animationContainer.offsetTop - dropdownContainer.offsetTop;
-          dropdownContainer.scrollTop = scrollPosition;
+          const scrollPosition =
+            animationContainer.value.offsetTop - dropdownContainer.value.offsetTop;
+          dropdownContainer.value.scrollTop = scrollPosition;
         }
       }
     });
@@ -95,18 +97,24 @@ const toggleAnimation2 = (index: number, idx: number) => {
   }
   if (isAnimationVisible2.value) {
     nextTick(() => {
-      const animationContainer = document.getElementById(`id-${index}-${idx}`);
-      const dropdownContainer = document.getElementById('dropdown-container2');
-      if (animationContainer && dropdownContainer) {
-        const dropdownContainerRect = dropdownContainer.getBoundingClientRect();
-        const animationContainerRect = animationContainer.getBoundingClientRect();
+      const animationContainer = ref<HTMLElement | null>(
+        document.getElementById(`id-${index}-${idx}`)
+      );
+      const dropdownContainer = ref<HTMLElement | null>(
+        document.getElementById('dropdown-container2')
+      );
+
+      if (animationContainer.value && dropdownContainer.value) {
+        const dropdownContainerRect = dropdownContainer.value.getBoundingClientRect();
+        const animationContainerRect = animationContainer.value.getBoundingClientRect();
 
         if (
           animationContainerRect.top < dropdownContainerRect.top ||
           animationContainerRect.bottom > dropdownContainerRect.bottom
         ) {
-          const scrollPosition = animationContainer.offsetTop - dropdownContainer.offsetTop;
-          dropdownContainer.scrollTop = scrollPosition;
+          const scrollPosition =
+            animationContainer.value.offsetTop - dropdownContainer.value.offsetTop;
+          dropdownContainer.value.scrollTop = scrollPosition;
         }
       }
     });
