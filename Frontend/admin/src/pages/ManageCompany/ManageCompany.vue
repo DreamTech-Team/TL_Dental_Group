@@ -467,7 +467,11 @@ const handleRenderOutstanding = (index: number) => {
       />
     </div>
   </div>
-  <modal-add-company v-if="isOpenAdd" :changeAddedCompany="handleAddedChange" />
+  <modal-add-company
+    v-if="isOpenAdd"
+    :changeAddedCompany="handleAddedChange"
+    @close="isOpenAdd = false"
+  />
   <modal-update-company
     v-if="isOpenUpdate"
     @close="isOpenUpdate = false"
