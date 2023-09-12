@@ -273,40 +273,33 @@ watch(
           deps.value
         );
 
-        console.log(
-          `/products/total${
-            slugCategory1.value
-              ? `?cate1=${slugCategory1.value}` +
-                (slugCategory2.value
-                  ? `&company=${slugCategory2.value}` +
-                    (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
-                  : '')
-              : ''
-          }`
-        );
-
         watch(totalResponse, () => {
-          console.log(slugCategory2.value);
-          console.log(
-            `/products/total${
-              slugCategory1.value
-                ? `?cate1=${slugCategory1.value}` +
-                  (slugCategory2.value
-                    ? `&company=${slugCategory2.value}` +
-                      (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
-                    : '')
-                : ''
-            }`
-          );
-
-          totalProduct.value = totalResponse?.value?.data;
-          console.log(totalResponse?.value?.data);
+          if (
+            slugCategory1.value !== undefined ||
+            slugCategory2.value !== undefined ||
+            slugCategory3.value !== undefined
+          ) {
+            console.log(slugCategory1.value);
+            console.log(
+              `/products/total${
+                slugCategory1.value
+                  ? `?cate1=${slugCategory1.value}` +
+                    (slugCategory2.value
+                      ? `&company=${slugCategory2.value}` +
+                        (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
+                      : '')
+                  : ''
+              }`
+            );
+            totalProduct.value = totalResponse?.value?.data;
+            console.log(totalResponse?.value?.data);
+          }
         });
       },
       { immediate: true }
     );
   },
-  { immediate: false }
+  { immediate: true }
 );
 
 watch(route, () => {
@@ -343,8 +336,10 @@ watch(route, () => {
         `/products/total${
           slugCategory1.value
             ? `?cate1=${slugCategory1.value}` +
-              (slugCategory2.value ? `&company=${slugCategory2.value}` : '') +
-              (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
+              (slugCategory2.value
+                ? `&company=${slugCategory2.value}` +
+                  (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
+                : '')
             : ''
         }`,
         {},
@@ -358,7 +353,7 @@ watch(route, () => {
     },
     { immediate: true }
   ),
-    { immediate: false };
+    { immediate: true };
 });
 
 onMounted(() => {
