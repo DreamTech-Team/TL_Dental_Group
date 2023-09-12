@@ -179,10 +179,10 @@ const logAndSelectCategory2 = (categoryIndex: number, itemIndex: number) => {
   const selectedCategory = dataRender.value[categoryIndex].slug;
   const selectedSubCategory = dataRender.value[categoryIndex].company[itemIndex].slug;
 
-  if (
-    selectedCategory === selectedCategory1.value &&
-    selectedSubCategory !== selectedCategory2.value
-  ) {
+  if (selectedCategory === selectedCategory1.value) {
+    selectedCategory1.value = selectedCategory;
+    selectedCategory2.value = selectedSubCategory;
+
     emit('slug-category1', selectedCategory);
     emit('slug-category2', selectedSubCategory);
     emit('slug-category3', '');
@@ -199,7 +199,10 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
 
   console.log(selectedSubCategory === selectedCategory2.value);
 
-  if (selectedCategory === selectedCategory1.value) {
+  if (
+    selectedCategory === selectedCategory1.value &&
+    selectedSubCategory === selectedCategory2.value
+  ) {
     emit('slug-category1', selectedCategory);
     emit('slug-category2', selectedSubCategory);
     emit('slug-category3', selectedSubCategory3);
@@ -214,8 +217,6 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
 };
 
 watch([selectedCategory1, selectedCategory2, selectedCategory3], () => {
-  selectedItem2.value = -1;
-  selectedItem3.value = -1;
   console.log('Watch: ' + selectedCategory1.value);
 
   const matchedIndex = dataRender.value.findIndex((item) => item.slug === selectedCategory1.value);
