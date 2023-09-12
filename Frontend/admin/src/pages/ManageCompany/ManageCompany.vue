@@ -370,9 +370,6 @@ const handleRenderOutstanding = (index: number) => {
   }
   return false;
 };
-watch(isOpenAdd, () => {
-  console.log('hihi');
-});
 </script>
 <template>
   <div :class="$style.mn_company">
@@ -470,11 +467,7 @@ watch(isOpenAdd, () => {
       />
     </div>
   </div>
-  <modal-add-company
-    v-if="isOpenAdd"
-    :changeAddedCompany="handleAddedChange"
-    @close="isOpenAdd = false"
-  />
+  <modal-add-company v-if="isOpenAdd" :changeAddedCompany="handleAddedChange" />
   <modal-update-company
     v-if="isOpenUpdate"
     @close="isOpenUpdate = false"

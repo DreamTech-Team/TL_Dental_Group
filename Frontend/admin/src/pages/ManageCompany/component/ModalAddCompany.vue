@@ -25,8 +25,6 @@ const props = defineProps({
   }
 });
 
-console.log('cc');
-
 const emits = defineEmits<{
   // eslint-disable-next-line no-unused-vars
   (e: 'close'): void;
