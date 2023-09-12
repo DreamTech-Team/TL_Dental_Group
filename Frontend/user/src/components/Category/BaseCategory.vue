@@ -69,17 +69,18 @@ const toggleAnimation = (index: number) => {
   }
   if (isAnimationVisible.value) {
     nextTick(() => {
-      if (animationContainer.value && dropdownContainer.value) {
-        const dropdownContainerRect = dropdownContainer.value.getBoundingClientRect();
-        const animationContainerRect = animationContainer.value.getBoundingClientRect();
+      const animationContainer = document.getElementById(`id-${index}`);
+      const dropdownContainer = document.getElementById('dropdown-container');
+      if (animationContainer && dropdownContainer) {
+        const dropdownContainerRect = dropdownContainer.getBoundingClientRect();
+        const animationContainerRect = animationContainer.getBoundingClientRect();
 
         if (
           animationContainerRect.top < dropdownContainerRect.top ||
           animationContainerRect.bottom > dropdownContainerRect.bottom
         ) {
-          const scrollPosition =
-            animationContainer.value.offsetTop - dropdownContainer.value.offsetTop;
-          dropdownContainer.value.scrollTop = scrollPosition;
+          const scrollPosition = animationContainer.offsetTop - dropdownContainer.offsetTop;
+          dropdownContainer.scrollTop = scrollPosition;
         }
       }
     });
@@ -94,6 +95,30 @@ const toggleAnimation2 = (index: number, idx: number) => {
     selectedItem3.value = -1;
     isAnimationVisible2.value = true;
     setAnni.setAnnimationCategory2(isAnimationVisible2.value);
+  }
+  if (isAnimationVisible2.value) {
+    nextTick(() => {
+      const animationContainer = ref<HTMLElement | null>(
+        document.getElementById(`id-${index}-${idx}`)
+      );
+      const dropdownContainer = ref<HTMLElement | null>(
+        document.getElementById('dropdown-container2')
+      );
+
+      if (animationContainer.value && dropdownContainer.value) {
+        const dropdownContainerRect = dropdownContainer.value.getBoundingClientRect();
+        const animationContainerRect = animationContainer.value.getBoundingClientRect();
+
+        if (
+          animationContainerRect.top < dropdownContainerRect.top ||
+          animationContainerRect.bottom > dropdownContainerRect.bottom
+        ) {
+          const scrollPosition =
+            animationContainer.value.offsetTop - dropdownContainer.value.offsetTop;
+          dropdownContainer.value.scrollTop = scrollPosition;
+        }
+      }
+    });
   }
 };
 
