@@ -102,8 +102,11 @@ const options = ['Giá tăng dần', 'Giá giảm dần'];
 const apiTotalProduct = `/products/total${
   slugCategory1.value
     ? `?cate1=${slugCategory1.value}` +
-      (slugCategory2.value ? `&company=${slugCategory2.value}` : '') +
-      (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
+      (slugCategory2.value
+        ? `&company=${slugCategory2.value}` + slugCategory3.value
+          ? `&cate2=${slugCategory3.value}`
+          : ''
+        : '')
     : ''
 }`;
 
@@ -217,6 +220,18 @@ watch(totalRes, () => {
 watch(
   [currentPage, slugCategory1, slugCategory2, slugCategory3, apiProduct, sortPriceType],
   () => {
+    console.log(
+      `/products?page=${currentPage.value}&pageSize=${pageSize.value}${
+        slugCategory1.value
+          ? `&cate1=${slugCategory1.value}` +
+            (slugCategory2.value
+              ? `&company=${slugCategory2.value}` +
+                (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
+              : '')
+          : ''
+      }&sortPrice=${sortPriceType.value}`
+    );
+
     const { response: responseChanged, isLoading: isLoadingChange } = useAxios<DataResponse>(
       'get',
       `/products?page=${currentPage.value}&pageSize=${pageSize.value}${
@@ -247,8 +262,11 @@ watch(
           `/products/total${
             slugCategory1.value
               ? `?cate1=${slugCategory1.value}` +
-                (slugCategory2.value ? `&company=${slugCategory2.value}` : '') +
-                (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
+                (slugCategory2.value
+                  ? `&company=${slugCategory2.value}` + slugCategory3.value
+                    ? `&cate2=${slugCategory3.value}`
+                    : ''
+                  : '')
               : ''
           }`,
           {},
@@ -333,13 +351,13 @@ onMounted(() => {
   }
 });
 
-// onUnmounted(() => {
-//   if (router.currentRoute.value.name !== 'sanpham') {
-//     saveState.setActiveCategory(-1);
-//     saveState.setActiveCategory2(-1);
-//     saveState.setActiveCategory3(-1);
-//   }
-// });
+onUnmounted(() => {
+  if (router.currentRoute.value.name !== 'sanpham') {
+    saveState.setActiveCategory(-1);
+    saveState.setActiveCategory2(-1);
+    saveState.setActiveCategory3(-1);
+  }
+});
 
 window.addEventListener('resize', checkScreenSize);
 </script>
