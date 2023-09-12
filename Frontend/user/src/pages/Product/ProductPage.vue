@@ -256,49 +256,6 @@ watch(
         dataRes.value = responseChanged?.value?.data;
         filterAllProduct.value = responseChanged?.value?.data?.data;
         updateShowResults();
-
-        const { response: totalResponse } = useAxios<DataResponse>(
-          'get',
-          `/products/total${
-            slugCategory1.value
-              ? `?cate1=${slugCategory1.value}` +
-                (slugCategory2.value
-                  ? `&company=${slugCategory2.value}` +
-                    (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
-                  : '')
-              : ''
-          }`,
-          {},
-          {},
-          deps.value
-        );
-
-        watch(
-          totalResponse,
-          () => {
-            if (
-              slugCategory1.value !== undefined ||
-              slugCategory2.value !== undefined ||
-              slugCategory3.value !== undefined
-            ) {
-              console.log(slugCategory1.value);
-              console.log(
-                `/products/total${
-                  slugCategory1.value
-                    ? `?cate1=${slugCategory1.value}` +
-                      (slugCategory2.value
-                        ? `&company=${slugCategory2.value}` +
-                          (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
-                        : '')
-                    : ''
-                }`
-              );
-              totalProduct.value = totalResponse?.value?.data;
-              console.log(totalResponse?.value?.data);
-            }
-          },
-          { immediate: false }
-        );
       },
       { immediate: false }
     );
