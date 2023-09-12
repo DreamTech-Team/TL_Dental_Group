@@ -34,11 +34,18 @@ interface Products {
   };
 }
 
+interface Cate {
+  companyId: {
+    id: string;
+  };
+}
+
 const variableChange = ref([]);
 const variableChangeCompany = ref([]);
 const variableChangeProduct = ref([]);
 const companyRender = ref<ManageCompany[]>([]);
 const products = ref<Products[]>([]);
+const cate = ref<Cate[]>([]);
 const isOpenAdd = ref(false);
 const isOpenUpdate = ref(false);
 const searchText = ref('');
@@ -52,11 +59,13 @@ const outstandingRender = ref({
   name: ''
 });
 const isLoadingCompany = ref(false);
-const isExistProduct = ref(true);
+const isExistProduct = ref(false);
 
 const getCompany = useAxios<DataResponse>('get', '/company', {}, {}, variableChangeCompany.value);
 
 const getProducts = useAxios<DataResponse>('get', '/products', {}, {}, variableChangeProduct.value);
+
+const getCate = useAxios<DataResponse>('get', '/cate', {}, {}, variableChangeProduct.value);
 
 watch(getCompany.isLoading, () => {
   isLoadingCompany.value = getCompany.isLoading.value;
@@ -68,10 +77,15 @@ watch(getCompany.response, () => {
     .sort((a: ManageCompany, b: ManageCompany) => {
       return new Date(b.createAt).getTime() - new Date(a.createAt).getTime();
     });
+  console.log(companyRender.value);
 });
 
 watch(getProducts.response, () => {
   products.value = getProducts.response.value?.data?.data;
+});
+
+watch(getCate.response, () => {
+  cate.value = getCate.response.value?.data;
 });
 
 // Hàm xử lí search
@@ -125,6 +139,11 @@ const handleUpdateModal = (idx: number, idOut: string, idCom: string) => {
 
 // Xử lí xóa một công ty
 const deleteCompany = (id: string) => {
+  cate.value.forEach((item) => {
+    if (item.companyId.id === id) {
+      isExistProduct.value = true;
+    }
+  });
   Swal.fire({
     title: 'Bạn có chắc muốn xóa công ty này không?',
     text: 'Dữ liệu sẽ không thể khôi phục sau khi xóa!',
@@ -143,14 +162,9 @@ const deleteCompany = (id: string) => {
     }
   }).then((result) => {
     if (result.isConfirmed) {
-      products.value.forEach((item) => {
-        if (item.fkCategory.companyId.id === id) {
-          isExistProduct.value = true;
-        }
-      });
-
       if (!isExistProduct.value) {
         const deps = ref([]);
+
         const { response, isLoading } = useAxios<DataResponse>(
           'delete',
           '/company/' + id,
@@ -209,6 +223,7 @@ const deleteCompany = (id: string) => {
             title: styles['title']
           }
         });
+        isExistProduct.value = false;
       }
     }
   });
@@ -220,7 +235,7 @@ const handleAddedChange = (dataAdded: ManageCompany, isLoading: boolean) => {
   isOpenAdd.value = false;
 
   if (!isLoading) {
-    companyRender.value.unshift(dataAdded);
+    if (Object.keys(dataAdded).length !== 0) companyRender.value.unshift(dataAdded);
     Swal.fire({
       title: 'Thêm thành công',
       icon: 'success',
@@ -276,9 +291,9 @@ const handleChangeUpdate = (dataUpdated: ManageCompany, isLoading: boolean) => {
 
 // Hàm lấy dữ liệu trả về khi ModalUpdate trả dữ liệu đã update sản phẩm nổi bât về
 const handleChangeUpdateOutstanding = (outstanding: ManageCompany) => {
-  // if (outstanding.outstandingProductId !== null) {
-  companyRender.value[indexRow.value].outstandingProductId = outstanding.outstandingProductId;
-  // }
+  if (outstanding.outstandingProductId !== null) {
+    companyRender.value[indexRow.value].outstandingProductId = outstanding.outstandingProductId;
+  }
 };
 
 // Hàm lấy dữ liệu trả về khi update Highlight công ty
@@ -341,17 +356,17 @@ const handleUpdateHighLight = (index: number) => {
 
 // Hàm kiểm tra xem công ty có sản phẩm nổi bật hay không
 const handleRenderOutstanding = (index: number) => {
-  if (companyRender.value[index].outstandingProductId !== null) {
-    products.value.forEach((item) => {
-      if (item.id === companyRender.value[index].outstandingProductId) {
-        outstandingRender.value = {
-          image: item.mainImg,
-          name: item.name
-        };
-      }
-    });
+  const { outstandingProductId } = companyRender.value[index];
 
-    return true;
+  if (outstandingProductId !== null) {
+    const outstandingProduct = products.value.find((item) => item.id === outstandingProductId);
+    if (outstandingProduct) {
+      outstandingRender.value = {
+        image: outstandingProduct.mainImg,
+        name: outstandingProduct.name
+      };
+      return true;
+    }
   }
   return false;
 };
@@ -451,23 +466,26 @@ const handleRenderOutstanding = (index: number) => {
         @current-change="handlePageChange"
       />
     </div>
+    <div v-if="isOpenAdd">
+      <modal-add-company
+        v-if="isOpenAdd"
+        :changeAddedCompany="handleAddedChange"
+        @close="isOpenAdd = false"
+      />
+    </div>
+    <div v-if="isOpenUpdate">
+      <modal-update-company
+        v-if="isOpenUpdate"
+        @close="isOpenUpdate = false"
+        :item="companyRender[indexRow]"
+        :productOutstanding="indexProduct !== -1 ? products[indexProduct] : {}"
+        :products="products"
+        :idCompany="idCompany"
+        :change="handleChangeUpdate"
+        :changeOutstanding="handleChangeUpdateOutstanding"
+      />
+    </div>
   </div>
-
-  <modal-add-company
-    v-if="isOpenAdd"
-    :changeAddedCompany="handleAddedChange"
-    @close="isOpenAdd = false"
-  />
-  <modal-update-company
-    v-if="isOpenUpdate"
-    @close="isOpenUpdate = false"
-    :item="companyRender[indexRow]"
-    :productOutstanding="indexProduct !== -1 ? products[indexProduct] : {}"
-    :products="products"
-    :idCompany="idCompany"
-    :change="handleChangeUpdate"
-    :changeOutstanding="handleChangeUpdateOutstanding"
-  />
 </template>
 
 <style module scoped lang="scss">

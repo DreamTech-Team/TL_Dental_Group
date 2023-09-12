@@ -7,6 +7,8 @@ import styles from './CategoryAddItem.module.scss';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import { faCameraRotate } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import CropImage from '@/components/CropImage/CropImage.vue';
+import base64ToBlob from '@/utils/base64ToBlob';
 
 const props = defineProps({
   numCate: { type: Number, required: false },
@@ -20,56 +22,39 @@ const emit = defineEmits(['close', 'add-cate']);
 const paramAxios = ref([]);
 const checkError = ref(false);
 
-const base64ToBlob = (base64Data: string) => {
-  const byteString = atob(base64Data.split(',')[1]);
-  const ab = new ArrayBuffer(byteString.length);
-  const ia = new Uint8Array(ab);
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i);
-  }
-  return new Blob([ab], { type: 'image/png' });
-};
+const isLoading = ref(false);
 
-// Hàm chuyển đổi từ ArrayBuffer sang string
-const arrayBufferToString = (buffer: ArrayBuffer) => {
-  const uintArray = new Uint16Array(buffer);
-  const charArray: string[] = [];
-  for (let i = 0; i < uintArray.length; i++) {
-    charArray.push(String.fromCharCode(uintArray[i]));
-  }
-  return charArray.join('');
-};
+const isCrop = ref(false);
+const isOpenInput = ref(false);
 
-// Hàm xử lí lấy ảnh từ máy lên
-const handleFileInputChange = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-
-  if (target.files) {
-    const file = target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = (e: ProgressEvent<FileReader>) => {
-      const result = e.target?.result;
-      if (result instanceof ArrayBuffer) {
-        selectedImage.value = arrayBufferToString(result);
-      } else if (typeof result === 'string') {
-        selectedImage.value = result;
-      }
-    };
-
-    reader.readAsDataURL(file);
-
-    target.value = '';
+const handleCroppedImage = (result: string) => {
+  if (result) {
+    selectedImage.value = result;
   }
 };
 
 const handleAddCategory = () => {
+  if (nameCategory.value === ' ' || selectedImage.value === '/src/assets/imgs/logo_nobg.png') {
+    Swal.fire({
+      title: 'Thông tin cung cấp không hợp lệ!',
+      icon: 'error',
+      customClass: {
+        popup: styles['container-popup'],
+        confirmButton: styles['confirm-button'],
+        denyButton: styles['deny-button']
+      }
+    });
+    return;
+  }
+
   if (props.numCate === 1) {
     const dataCate = {
       title: nameCategory.value,
       highlight: 0
     };
-    const imgCate = new File([base64ToBlob(selectedImage.value)], 'image.png', {
+    console.log(dataCate, selectedImage.value);
+
+    const imgCate = new File([base64ToBlob.covertBase64ToBlob(selectedImage.value)], 'image.png', {
       type: 'image/png'
     });
 
@@ -89,12 +74,16 @@ const handleAddCategory = () => {
       paramAxios.value
     );
 
+    watch(postNewCate.isLoading, (value) => {
+      isLoading.value = value;
+    });
+
     watch(postNewCate.response, (getValue) => {
       // console.log(postNewCate.response.value?.data);
       if (props.handleAddCate) props.handleAddCate(getValue?.data);
     });
 
-    watch(postNewCate.error, (getValue) => {
+    watch(postNewCate.error, () => {
       checkError.value = true;
     });
   } else {
@@ -110,12 +99,20 @@ const handleAddCategory = () => {
       // console.log(postNewCate.response.value?.data);
       if (props.handleAddCate) props.handleAddCate(getValue?.data);
     });
+
+    watch(postNewCate.isLoading, (value) => {
+      isLoading.value = value;
+    });
+
+    watch(postNewCate.error, () => {
+      checkError.value = true;
+    });
   }
 
   Swal.fire({
     title: 'Đang cập nhật dữ liệu...',
     // timerProgressBar: true,
-    timer: 2000,
+    // timer: 2000,
     customClass: {
       popup: styles['container-popup'],
       loader: styles['container-loader']
@@ -123,43 +120,63 @@ const handleAddCategory = () => {
     didOpen: () => {
       Swal.showLoading();
     }
-  }).then((result) => {
-    if (!checkError.value)
-      if (result.dismiss === Swal.DismissReason.timer) {
-        emit('close');
-        Swal.fire({
-          title: 'Thêm danh mục thành công!',
-          icon: 'success',
-          customClass: {
-            popup: styles['container-popup'],
-            confirmButton: styles['confirm-button'],
-            denyButton: styles['deny-button']
-          }
-        });
-      } else {
-        Swal.fire({
-          title: 'Danh mục đã tồn tại!',
-          icon: 'error',
-          customClass: {
-            popup: styles['container-popup'],
-            confirmButton: styles['confirm-button'],
-            denyButton: styles['deny-button']
-          }
-        });
-      }
   });
+
+  watch(
+    () => isLoading.value,
+    (value) => {
+      if (!value) {
+        if (!checkError.value) {
+          emit('close');
+          Swal.fire({
+            title: 'Thêm danh mục thành công!',
+            icon: 'success',
+            customClass: {
+              popup: styles['container-popup'],
+              confirmButton: styles['confirm-button'],
+              denyButton: styles['deny-button']
+            }
+          });
+        } else {
+          Swal.fire({
+            title: 'Danh mục đã tồn tại!',
+            icon: 'error',
+            customClass: {
+              popup: styles['container-popup'],
+              confirmButton: styles['confirm-button'],
+              denyButton: styles['deny-button']
+            }
+          });
+        }
+      }
+    }
+  );
 };
 
 const handleUpdateCategory = () => {
+  if (nameCategory.value === ' ' || selectedImage.value === '/src/assets/imgs/logo_nobg.png') {
+    Swal.fire({
+      title: 'Thông tin cung cấp không hợp lệ!',
+      icon: 'error',
+      customClass: {
+        popup: styles['container-popup'],
+        confirmButton: styles['confirm-button'],
+        denyButton: styles['deny-button']
+      }
+    });
+    return;
+  }
+
   if (props.numCate === 1) {
     const dataCate = {
       id: props.data?.id,
       title: nameCategory.value,
       highlight: props.data?.highlight
     };
+
     const imgCate =
       selectedImage.value !== props.data?.img
-        ? new File([base64ToBlob(selectedImage.value)], 'image.png', {
+        ? new File([base64ToBlob.covertBase64ToBlob(selectedImage.value)], 'image.png', {
             type: 'image/png'
           })
         : props.data?.img;
@@ -180,12 +197,17 @@ const handleUpdateCategory = () => {
       paramAxios.value
     );
 
+    watch(updateCate1.isLoading, (value) => {
+      isLoading.value = value;
+    });
+
     watch(updateCate1.response, (value) => {
       console.log(value?.data);
       if (props.handleAddCate) props.handleAddCate(value?.data, 'edit');
     });
 
     watch(updateCate1.error, (value) => {
+      checkError.value = false;
       console.log(value);
     });
   } else {
@@ -198,6 +220,10 @@ const handleUpdateCategory = () => {
       paramAxios.value
     );
 
+    watch(updateCate2.isLoading, (value) => {
+      isLoading.value = value;
+    });
+
     watch(updateCate2.response, (value) => {
       console.log(value?.data);
       if (props.handleAddCate) props.handleAddCate(value?.data, 'edit');
@@ -205,6 +231,7 @@ const handleUpdateCategory = () => {
 
     watch(updateCate2.error, (value) => {
       console.log(value);
+      checkError.value = false;
     });
   }
 
@@ -219,30 +246,37 @@ const handleUpdateCategory = () => {
     didOpen: () => {
       Swal.showLoading();
     }
-  }).then((result) => {
-    if (result.dismiss === Swal.DismissReason.timer) {
-      emit('close');
-      Swal.fire({
-        title: 'Cập nhật danh mục thành công!',
-        icon: 'success',
-        customClass: {
-          popup: styles['container-popup'],
-          confirmButton: styles['confirm-button'],
-          denyButton: styles['deny-button']
-        }
-      });
-    } else {
-      Swal.fire({
-        title: 'Danh mục đã tồn tại!',
-        icon: 'error',
-        customClass: {
-          popup: styles['container-popup'],
-          confirmButton: styles['confirm-button'],
-          denyButton: styles['deny-button']
-        }
-      });
-    }
   });
+
+  watch(
+    () => isLoading.value,
+    (value) => {
+      if (!value) {
+        if (!checkError.value) {
+          emit('close');
+          Swal.fire({
+            title: 'Chỉnh sửa danh mục thành công!',
+            icon: 'success',
+            customClass: {
+              popup: styles['container-popup'],
+              confirmButton: styles['confirm-button'],
+              denyButton: styles['deny-button']
+            }
+          });
+        } else {
+          Swal.fire({
+            title: 'Tên danh mục đã tồn tại!',
+            icon: 'error',
+            customClass: {
+              popup: styles['container-popup'],
+              confirmButton: styles['confirm-button'],
+              denyButton: styles['deny-button']
+            }
+          });
+        }
+      }
+    }
+  );
 };
 
 const handleModalCancel = () => {
@@ -281,8 +315,15 @@ const handleModalCancel = () => {
       <div :class="$style['container__content-right-image-block']">
         <img :src="selectedImage" />
         <div :class="$style['block__img-edit']">
-          <input type="file" @change="(e) => handleFileInputChange(e)" />
-          <FontAwesomeIcon :icon="faCameraRotate" />
+          <button
+            @click="
+              () => {
+                isOpenInput = true;
+              }
+            "
+          >
+            <FontAwesomeIcon :icon="faCameraRotate" />
+          </button>
         </div>
       </div>
     </div>
@@ -293,6 +334,17 @@ const handleModalCancel = () => {
         <button v-else type="button" @click="handleUpdateCategory">Cập nhật</button>
       </div>
     </div>
+    <crop-image
+      :heightCrop="500"
+      :widthCrop="500"
+      :heightWrap="600"
+      :widthWrap="600"
+      :check="isOpenInput"
+      v-show="isCrop"
+      @close="isCrop = false"
+      @open="isCrop = true"
+      @crop="handleCroppedImage"
+    />
   </div>
 </template>
 

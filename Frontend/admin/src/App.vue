@@ -6,23 +6,14 @@ import { ref, watch } from 'vue';
 import LoadingComponent from './components/LoadingComponent/LoadingComponent.vue';
 
 const checkLoginPage = ref(false);
-const isLoading = ref(false);
+const isLoading = ref(true);
 const router = useRouter();
 
 watch(useRoute(), (value) => {
   const getInforAdmin = localStorage.getItem('infor_admin');
   const inforAdmin = getInforAdmin ? JSON.parse(getInforAdmin) : null;
-  isLoading.value = false;
 
-  if (!getInforAdmin && !value.path.includes('/login')) {
-    isLoading.value = true;
-    router.push('/login');
-  }
-
-  if (getInforAdmin && value.path.includes('/login')) {
-    isLoading.value = true;
-    router.push('/');
-  }
+  isLoading.value = true;
 
   if (value.path.includes('/login')) checkLoginPage.value = true;
   else checkLoginPage.value = false;
@@ -35,6 +26,8 @@ watch(useRoute(), (value) => {
   ) {
     router.push('/mnui');
   }
+
+  isLoading.value = false;
 });
 </script>
 

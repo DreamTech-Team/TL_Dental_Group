@@ -166,7 +166,7 @@ onUnmounted(() => {
         >
           <div :class="$style['home__activities-text']">
             <h4>{{ activity.title }}</h4>
-            <span v-html="truncateText(activity.summary, 195)"></span>
+            <span v-html="truncateText(activity.summary, 150)"></span>
           </div>
         </div>
       </div>

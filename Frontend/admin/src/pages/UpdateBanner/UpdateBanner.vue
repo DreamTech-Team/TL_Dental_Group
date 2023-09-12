@@ -360,7 +360,10 @@ const handleUpload = () => {
         }"
         >Products</span
       >
-      <div :class="$style['banner__item--policy']" v-if="!isLoadingNews && !isLoadingPolicy">
+      <div
+        :class="$style['banner__item--policy']"
+        v-if="!isLoadingNews && !isLoadingPolicy && !isLoadingProducts"
+      >
         <div
           :class="$style['banner__item--policy-img']"
           @click="isOpenInput = !isOpenInput"

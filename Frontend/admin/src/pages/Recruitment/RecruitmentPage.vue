@@ -13,6 +13,7 @@ import RecruitmentNavScroll from './RecruitmentNavScroll/RecruitmentNavScroll.vu
 // import RecruitmentWork from './RecruitmentWork/RecruitmentWork.vue';
 import type { DataResponse } from '@/hooks/useAxios';
 import useAxios from '@/hooks/useAxios';
+import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface CardElementItem {
   id: string;
@@ -52,6 +53,7 @@ const contentValueMainItem = ref();
 const limitContent = ref(-1);
 const hiddenCustomizeModal = ref(false);
 const paramAxios = ref();
+const cntIsLoading = ref(0);
 
 const callApiContentPoster = () => {
   //Lấy nội dung của poster
@@ -82,6 +84,10 @@ const callApiContentPoster = () => {
 
     // console.log('poster: ', contentPosterItems.value);
   });
+
+  watch(getContentPoster.isLoading, (value) => {
+    if (!value) cntIsLoading.value++;
+  });
 };
 
 const callApiContentVision = () => {
@@ -95,6 +101,9 @@ const callApiContentVision = () => {
   );
 
   watch(getContentVision.error, (value) => console.log(value));
+  watch(getContentVision.isLoading, (value) => {
+    if (!value) cntIsLoading.value++;
+  });
 
   watch(getContentVision.response, (value) => {
     const dataArr = value?.data;
@@ -146,6 +155,10 @@ const callApiContentValue = () => {
   );
 
   watch(getContentValue.error, (value) => console.log(value));
+
+  watch(getContentValue.isLoading, (value) => {
+    if (!value) cntIsLoading.value++;
+  });
 
   watch(getContentValue.response, (value) => {
     const tmp = value?.data;
@@ -357,6 +370,7 @@ const handleUpdateValue = (newContent: any) => {
 
   watch(patchContentValue.response, () => {
     callApiContentValue();
+    cntIsLoading.value = 3;
     // console.log(value);
   });
 };
@@ -413,7 +427,8 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div :class="$style.container">
+  <loading-component v-if="cntIsLoading < 3" />
+  <div v-else :class="$style.container">
     <modal-update-content
       v-if="isOpen"
       @close="handleModalClose"

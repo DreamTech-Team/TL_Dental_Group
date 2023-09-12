@@ -265,7 +265,11 @@ const handleFileInputChange1 = (event: Event) => {
 
     <div :class="$style['about__infocompany-content']" v-if="!isLoadingInfo">
       <div :class="$style['about__infocompany-content-item']">
-        <p v-html="content1" v-if="!isEdit"></p>
+        <div
+          v-html="content1"
+          v-if="!isEdit"
+          :class="$style['about__infocompany-content-item-content']"
+        ></div>
         <div v-else>
           <editor
             allowedEvents="onChange"
@@ -335,7 +339,11 @@ const handleFileInputChange1 = (event: Event) => {
             />
           </div>
         </div>
-        <p v-html="content2" v-if="!isEdit"></p>
+        <div
+          v-html="content2"
+          v-if="!isEdit"
+          :class="$style['about__infocompany-content-item-content']"
+        ></div>
         <div v-else>
           <editor
             id="uuid2"
