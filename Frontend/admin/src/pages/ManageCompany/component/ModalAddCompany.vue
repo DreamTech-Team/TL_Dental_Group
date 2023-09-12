@@ -55,123 +55,123 @@ const updateContent = (e: Event) => {
   contentInput.value = target.value;
 };
 
-// Hàm submit dữ liệu, đẩy dữ liệu lên database
-const submitForm = () => {
-  if (titleInput.value.length < 4 || contentInput.value.length < 4 || !selectedImage.value) {
-    Swal.fire({
-      title: 'Vui lòng điền đủ thông tin',
-      icon: 'error',
-      confirmButtonText: 'Đóng',
-      width: '50rem',
-      padding: '0 2rem 2rem 2rem',
-      customClass: {
-        confirmButton: styles['confirm-button'],
-        cancelButton: styles['cancel-button'],
-        title: styles['title']
-      }
-    });
-  } else {
-    if (selectedImage.value) {
-      // Tạo một đối tượng File từ dữ liệu base64
-      const fileData = base64ToBlob.covertBase64ToBlob(selectedImage.value);
-      const image = new File([fileData], 'image.png', { type: 'image/png' });
+// // Hàm submit dữ liệu, đẩy dữ liệu lên database
+// const submitForm = () => {
+//   if (titleInput.value.length < 4 || contentInput.value.length < 4 || !selectedImage.value) {
+//     Swal.fire({
+//       title: 'Vui lòng điền đủ thông tin',
+//       icon: 'error',
+//       confirmButtonText: 'Đóng',
+//       width: '50rem',
+//       padding: '0 2rem 2rem 2rem',
+//       customClass: {
+//         confirmButton: styles['confirm-button'],
+//         cancelButton: styles['cancel-button'],
+//         title: styles['title']
+//       }
+//     });
+//   } else {
+//     if (selectedImage.value) {
+//       // Tạo một đối tượng File từ dữ liệu base64
+//       const fileData = base64ToBlob.covertBase64ToBlob(selectedImage.value);
+//       const image = new File([fileData], 'image.png', { type: 'image/png' });
 
-      const deps = ref([]);
+//       const deps = ref([]);
 
-      const object = {
-        name: titleInput.value,
-        description: contentInput.value,
-        highlight: 0
-      };
+//       const object = {
+//         name: titleInput.value,
+//         description: contentInput.value,
+//         highlight: 0
+//       };
 
-      const formData = new FormData();
-      formData.append('logo', image as Blob);
-      formData.append('data', JSON.stringify(object));
-      const { response, isLoading } = useAxios<DataResponse>(
-        'post',
-        '/company',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        },
-        deps.value
-      );
-      watch(isLoading, () => {
-        props.changeAddedCompany({} as ManageCompany, isLoading.value);
-      });
+//       const formData = new FormData();
+//       formData.append('logo', image as Blob);
+//       formData.append('data', JSON.stringify(object));
+//       const { response, isLoading } = useAxios<DataResponse>(
+//         'post',
+//         '/company',
+//         formData,
+//         {
+//           headers: {
+//             'Content-Type': 'multipart/form-data'
+//           }
+//         },
+//         deps.value
+//       );
+//       watch(isLoading, () => {
+//         props.changeAddedCompany({} as ManageCompany, isLoading.value);
+//       });
 
-      watch(response, () => {
-        if (response.value) {
-          dataAdded.value = {
-            id: response.value?.data?.id,
-            name: response.value?.data?.name,
-            logo: response.value?.data?.logo,
-            description: response.value?.data?.description,
-            highlight: response.value?.data?.highlight,
-            slug: response.value?.data?.slug,
-            createAt: response.value?.data?.createAt,
-            outstandingProductId: response.value?.data?.outstandingProductId
-          };
-          props.changeAddedCompany(dataAdded.value, isLoading.value);
-        }
-      });
-    }
-  }
-};
+//       watch(response, () => {
+//         if (response.value) {
+//           dataAdded.value = {
+//             id: response.value?.data?.id,
+//             name: response.value?.data?.name,
+//             logo: response.value?.data?.logo,
+//             description: response.value?.data?.description,
+//             highlight: response.value?.data?.highlight,
+//             slug: response.value?.data?.slug,
+//             createAt: response.value?.data?.createAt,
+//             outstandingProductId: response.value?.data?.outstandingProductId
+//           };
+//           props.changeAddedCompany(dataAdded.value, isLoading.value);
+//         }
+//       });
+//     }
+//   }
+// };
 
-// Hàm chuyển đổi từ ArrayBuffer sang string
-const arrayBufferToString = (buffer: ArrayBuffer) => {
-  const uintArray = new Uint16Array(buffer);
-  const charArray: string[] = [];
-  for (let i = 0; i < uintArray.length; i++) {
-    charArray.push(String.fromCharCode(uintArray[i]));
-  }
-  return charArray.join('');
-};
+// // Hàm chuyển đổi từ ArrayBuffer sang string
+// const arrayBufferToString = (buffer: ArrayBuffer) => {
+//   const uintArray = new Uint16Array(buffer);
+//   const charArray: string[] = [];
+//   for (let i = 0; i < uintArray.length; i++) {
+//     charArray.push(String.fromCharCode(uintArray[i]));
+//   }
+//   return charArray.join('');
+// };
 
-// Hàm lấy ảnh từ máy và lưu vào biến selectedImage
-const handleFileInputChange = (event: Event) => {
-  const target = event.target as HTMLInputElement;
+// // Hàm lấy ảnh từ máy và lưu vào biến selectedImage
+// const handleFileInputChange = (event: Event) => {
+//   const target = event.target as HTMLInputElement;
 
-  if (target.files) {
-    const file = target.files[0];
-    const reader = new FileReader();
+//   if (target.files) {
+//     const file = target.files[0];
+//     const reader = new FileReader();
 
-    reader.onload = (e: ProgressEvent<FileReader>) => {
-      const result = e.target?.result;
-      if (result instanceof ArrayBuffer) {
-        selectedImage.value = arrayBufferToString(result);
-      } else if (typeof result === 'string') {
-        selectedImage.value = result;
-      }
-    };
+//     reader.onload = (e: ProgressEvent<FileReader>) => {
+//       const result = e.target?.result;
+//       if (result instanceof ArrayBuffer) {
+//         selectedImage.value = arrayBufferToString(result);
+//       } else if (typeof result === 'string') {
+//         selectedImage.value = result;
+//       }
+//     };
 
-    reader.readAsDataURL(file);
-  }
-};
+//     reader.readAsDataURL(file);
+//   }
+// };
 
-// Hàm kích hoạt thẻ input type file với id là input_file_modal
-const handleChangeImage = () => {
-  const inputElement = document.getElementById('input_file_modal');
-  if (inputElement) {
-    inputElement.click();
-  }
-};
+// // Hàm kích hoạt thẻ input type file với id là input_file_modal
+// const handleChangeImage = () => {
+//   const inputElement = document.getElementById('input_file_modal');
+//   if (inputElement) {
+//     inputElement.click();
+//   }
+// };
 
-// Hàm kéo thả ảnh vào vùng làm việc(drag and drop)
-const addFile = (e: DragEvent) => {
-  e.preventDefault();
+// // Hàm kéo thả ảnh vào vùng làm việc(drag and drop)
+// const addFile = (e: DragEvent) => {
+//   e.preventDefault();
 
-  if (e.dataTransfer) {
-    const { files } = e.dataTransfer;
-    if (files.length > 0) {
-      const imageFile = files[0];
-      selectedImage.value = URL.createObjectURL(imageFile);
-    }
-  }
-};
+//   if (e.dataTransfer) {
+//     const { files } = e.dataTransfer;
+//     if (files.length > 0) {
+//       const imageFile = files[0];
+//       selectedImage.value = URL.createObjectURL(imageFile);
+//     }
+//   }
+// };
 </script>
 
 <template>
@@ -203,7 +203,7 @@ const addFile = (e: DragEvent) => {
         />
 
         <h4>Logo</h4>
-        <div
+        <!-- <div
           :class="$style['wrapper']"
           v-if="!selectedImage"
           @click="handleChangeImage"
@@ -222,8 +222,8 @@ const addFile = (e: DragEvent) => {
             accept="image/*"
             @change="handleFileInputChange"
           />
-        </div>
-        <div :class="$style['wrapper1']" v-else>
+        </div> -->
+        <!-- <div :class="$style['wrapper1']" v-else>
           <div>
             <img :src="selectedImage" />
           </div>
@@ -242,11 +242,11 @@ const addFile = (e: DragEvent) => {
               @change="handleFileInputChange"
             />
           </div>
-        </div>
+        </div> -->
 
         <div :class="$style['modal__buttons']">
           <button @click="emits('close')">Hủy</button>
-          <button @click="submitForm">Thêm công ty</button>
+          <!-- <button @click="submitForm">Thêm công ty</button> -->
         </div>
       </div>
     </div>
