@@ -370,13 +370,19 @@ const handleRenderOutstanding = (index: number) => {
   }
   return false;
 };
+
+const handleOpenModalAdd = () => {
+  console.log('hihi');
+
+  isOpenAdd.value = true;
+};
 </script>
 <template>
   <div :class="$style.mn_company">
     <div :class="$style['mn_company--header']">
       <div :class="$style['mn_company--header-left']">
         <h1>CÔNG TY HỢP TÁC</h1>
-        <span @click="isOpenAdd = true">Thêm công ty</span>
+        <span @click="handleOpenModalAdd">Thêm công ty</span>
       </div>
 
       <div :class="$style['mn_company--header-right']">
