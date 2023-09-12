@@ -72,9 +72,11 @@ watch(getCompany.isLoading, () => {
 });
 
 watch(getCompany.response, () => {
-  companyRender.value = getCompany.response.value?.data;
-
-  console.log(companyRender.value);
+  companyRender.value = getCompany.response.value?.data
+    .slice()
+    .sort((a: ManageCompany, b: ManageCompany) => {
+      return new Date(b.createAt).getTime() - new Date(a.createAt).getTime();
+    });
 });
 
 watch(getProducts.response, () => {
