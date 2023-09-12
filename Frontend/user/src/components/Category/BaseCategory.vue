@@ -194,9 +194,6 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
   const selectedSubCategory = dataRender.value[categoryIndex]?.company[itemIndex]?.slug;
   const selectedSubCategory3 =
     dataRender.value[categoryIndex]?.company[itemIndex]?.cate2[itemIndex3]?.slug;
-  console.log(selectedCategory);
-  console.log(selectedSubCategory);
-  console.log(selectedSubCategory3);
 
   if (selectedCategory === selectedCategory1.value) {
     selectedCategory1.value = selectedCategory;

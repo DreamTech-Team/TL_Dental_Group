@@ -101,11 +101,10 @@ const options = ['Giá tăng dần', 'Giá giảm dần'];
 //Tổng sản phẩm
 const apiTotalProduct = `/products/total${
   slugCategory1.value
-    ? `?cate1=${slugCategory1.value}` +
+    ? `&cate1=${slugCategory1.value}` +
       (slugCategory2.value
-        ? `&company=${slugCategory2.value}` + slugCategory3.value
-          ? `&cate2=${slugCategory3.value}`
-          : ''
+        ? `&company=${slugCategory2.value}` +
+          (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
         : '')
     : ''
 }`;
@@ -257,6 +256,18 @@ watch(
         dataRes.value = responseChanged?.value?.data;
         filterAllProduct.value = responseChanged?.value?.data?.data;
         updateShowResults();
+        console.log(
+          `/products/total${
+            slugCategory1.value
+              ? `&cate1=${slugCategory1.value}` +
+                (slugCategory2.value
+                  ? `&company=${slugCategory2.value}` +
+                    (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
+                  : '')
+              : ''
+          }`
+        );
+
         const { response: totalRes } = useAxios<DataResponse>(
           'get',
           `/products/total${
