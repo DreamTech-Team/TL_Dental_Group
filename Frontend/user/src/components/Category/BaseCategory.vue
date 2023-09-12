@@ -197,6 +197,8 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
   const selectedSubCategory3 =
     dataRender.value[categoryIndex]?.company[itemIndex]?.cate2[itemIndex3]?.slug;
 
+  console.log(selectedSubCategory === selectedCategory2.value);
+
   if (selectedCategory === selectedCategory1.value) {
     emit('slug-category1', selectedCategory);
     emit('slug-category2', selectedSubCategory);
@@ -211,8 +213,10 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
   }
 };
 
-watch([selectedCategory1, selectedCategory2], () => {
-  // selectedItem2.value = -1;
+watch([selectedCategory1, selectedCategory2, selectedCategory3], () => {
+  selectedItem2.value = -1;
+  selectedItem3.value = -1;
+  console.log('Watch: ' + selectedCategory1.value);
 
   const matchedIndex = dataRender.value.findIndex((item) => item.slug === selectedCategory1.value);
   if (matchedIndex !== -1) {

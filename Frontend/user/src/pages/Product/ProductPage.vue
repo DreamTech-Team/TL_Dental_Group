@@ -219,18 +219,6 @@ watch(totalRes, () => {
 watch(
   [currentPage, slugCategory1, slugCategory2, slugCategory3, sortPriceType],
   () => {
-    console.log(
-      `/products?page=${currentPage.value}&pageSize=${pageSize.value}${
-        slugCategory1.value
-          ? `&cate1=${slugCategory1.value}` +
-            (slugCategory2.value
-              ? `&company=${slugCategory2.value}` +
-                (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
-              : '')
-          : ''
-      }&sortPrice=${sortPriceType.value}`
-    );
-
     const { response: responseChanged, isLoading: isLoadingChange } = useAxios<DataResponse>(
       'get',
       `/products?page=${currentPage.value}&pageSize=${pageSize.value}${
@@ -281,20 +269,7 @@ watch(
               slugCategory2.value !== undefined ||
               slugCategory3.value !== undefined
             ) {
-              console.log(slugCategory1.value);
-              console.log(
-                `/products/total${
-                  slugCategory1.value
-                    ? `?cate1=${slugCategory1.value}` +
-                      (slugCategory2.value
-                        ? `&company=${slugCategory2.value}` +
-                          (slugCategory3.value ? `&cate2=${slugCategory3.value}` : '')
-                        : '')
-                    : ''
-                }`
-              );
               totalProduct.value = totalResponse?.value?.data;
-              console.log(totalResponse?.value?.data);
             }
           },
           { immediate: false }
