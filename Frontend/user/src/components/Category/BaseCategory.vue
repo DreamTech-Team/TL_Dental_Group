@@ -95,30 +95,6 @@ const toggleAnimation2 = (index: number, idx: number) => {
     isAnimationVisible2.value = true;
     setAnni.setAnnimationCategory2(isAnimationVisible2.value);
   }
-  if (isAnimationVisible2.value) {
-    nextTick(() => {
-      const animationContainer = ref<HTMLElement | null>(
-        document.getElementById(`id-${index}-${idx}`)
-      );
-      const dropdownContainer = ref<HTMLElement | null>(
-        document.getElementById('dropdown-container2')
-      );
-
-      if (animationContainer.value && dropdownContainer.value) {
-        const dropdownContainerRect = dropdownContainer.value.getBoundingClientRect();
-        const animationContainerRect = animationContainer.value.getBoundingClientRect();
-
-        if (
-          animationContainerRect.top < dropdownContainerRect.top ||
-          animationContainerRect.bottom > dropdownContainerRect.bottom
-        ) {
-          const scrollPosition =
-            animationContainer.value.offsetTop - dropdownContainer.value.offsetTop;
-          dropdownContainer.value.scrollTop = scrollPosition;
-        }
-      }
-    });
-  }
 };
 
 watch(typeCate, () => {
