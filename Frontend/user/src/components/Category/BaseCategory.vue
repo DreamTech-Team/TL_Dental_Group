@@ -157,12 +157,9 @@ const logAndSelectCategory1 = (categoryIndex: number) => {
   // Reset selectedCategory2 only if a new category 1 is selected
   if (newCategory1 !== selectedCategory1.value) {
     selectedCategory1.value = newCategory1;
-    selectedCategory2.value = ''; // Reset selectedCategory2
-    selectedCategory3.value = ''; // Reset selectedCategory3
-
     emit('slug-category1', selectedCategory1.value);
-    emit('slug-category2', selectedCategory2.value);
-    emit('slug-category3', selectedCategory3.value);
+    emit('slug-category2', '');
+    emit('slug-category3', '');
     // Đặt lại giá trị selectedItem để xóa màu category cấp 2 trước đó
     saveState.setActiveCategory(categoryIndex);
   }
@@ -213,7 +210,7 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
 };
 
 watch([selectedCategory1, selectedCategory2], () => {
-  selectedItem2.value = -1;
+  // selectedItem2.value = -1;
 
   const matchedIndex = dataRender.value.findIndex((item) => item.slug === selectedCategory1.value);
   if (matchedIndex !== -1) {
