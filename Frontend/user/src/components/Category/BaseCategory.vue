@@ -198,9 +198,6 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
     dataRender.value[categoryIndex]?.company[itemIndex]?.cate2[itemIndex3]?.slug;
 
   if (selectedCategory === selectedCategory1.value) {
-    selectedCategory1.value = selectedCategory;
-    selectedCategory2.value = selectedSubCategory;
-    selectedCategory3.value = selectedSubCategory3;
     emit('slug-category1', selectedCategory);
     emit('slug-category2', selectedSubCategory);
     emit('slug-category3', selectedSubCategory3);
