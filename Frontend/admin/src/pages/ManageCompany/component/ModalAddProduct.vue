@@ -33,24 +33,6 @@ const context = defineProps({
 
 const emit = defineEmits(['close', 'results']);
 
-// Lấy dữ liệu từ description ra và dưới dạng <p>haha</p> thì sẽ lấy được haha
-const formatDescription = (str: string): string | null => {
-  try {
-    // Parse the HTML string using DOMParser
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(str, 'text/html');
-
-    // Get the text content from the parsed document
-    const pElement = doc.querySelector('p');
-    const textContent = pElement ? pElement.textContent : null;
-
-    return textContent;
-  } catch (error) {
-    console.error('Error parsing HTML:', error);
-    return null;
-  }
-};
-
 // const contentInput = ref(formatDescription(context.product.description));
 const selectedImage: Ref<string | null> = ref(context.product.mainImg);
 const dataSearchTerm = ref(context.product.name !== undefined ? context.product.name : '');
@@ -74,10 +56,6 @@ const updateTitle = (e: Event) => {
   const target = e.target as HTMLInputElement;
   dataSearchTerm.value = target.value;
 };
-// const updateContent = (e: Event) => {
-//   const target = e.target as HTMLInputElement;
-//   contentInput.value = target.value;
-// };
 
 // Hàm submit dữ liệu, đẩy dữ liệu lên database
 const submitForm = () => {

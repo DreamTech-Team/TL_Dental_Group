@@ -370,6 +370,9 @@ const handleRenderOutstanding = (index: number) => {
   }
   return false;
 };
+watch(isOpenAdd, () => {
+  console.log('hihi');
+});
 </script>
 <template>
   <div :class="$style.mn_company">
