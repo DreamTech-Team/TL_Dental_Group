@@ -54,10 +54,10 @@ const pageSize = ref(10);
 const indexRow = ref(0);
 const indexProduct = ref(-1);
 const idCompany = ref('');
-const outstandingRender = ref({
+let outstandingRender = {
   image: '',
   name: ''
-});
+};
 const isLoadingCompany = ref(false);
 const isExistProduct = ref(false);
 
@@ -360,7 +360,7 @@ const handleRenderOutstanding = (index: number) => {
   if (outstandingProductId !== null) {
     const outstandingProduct = products.value.find((item) => item.id === outstandingProductId);
     if (outstandingProduct) {
-      outstandingRender.value = {
+      outstandingRender = {
         image: outstandingProduct.mainImg,
         name: outstandingProduct.name
       };
