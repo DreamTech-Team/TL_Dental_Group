@@ -274,7 +274,7 @@ watch(
         );
 
         watch(
-          totalProduct,
+          totalResponse,
           () => {
             if (
               slugCategory1.value !== undefined ||

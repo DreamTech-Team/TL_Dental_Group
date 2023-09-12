@@ -91,13 +91,16 @@ const toggleAnimation2 = (index: number, idx: number) => {
   if (isAnimationVisible2.value && selectedItem.value === index && selectedItem2.value === idx) {
     isAnimationVisible2.value = false;
     setAnni.setAnnimationCategory2(isAnimationVisible2.value);
+    saveState.setTypeCategory('notHeader');
   } else {
     selectedItem3.value = -1;
     isAnimationVisible2.value = true;
     setAnni.setAnnimationCategory2(isAnimationVisible2.value);
+    saveState.setTypeCategory('notHeader');
   }
   if (isAnimationVisible2.value) {
     nextTick(() => {
+      // console.log(index + '----' + idx);
       const animationContainer = document.getElementById(`id-${index}-${idx}`);
       const dropdownContainer = document.getElementById('dropdown-container2');
       if (animationContainer && dropdownContainer) {
