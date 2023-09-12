@@ -32,7 +32,6 @@ const selectedCategory3 = ref('');
 const checkColor = ref(false);
 const emit = defineEmits(['slug-category1', 'slug-category2', 'slug-category3']);
 const animationContainer = ref<HTMLElement | null>(null);
-const dropdownContainer = ref<HTMLElement | null>(null);
 
 // Lấy thông tin đang định tuyến từ Vue Router
 const router = useRouter();
@@ -166,6 +165,9 @@ const logAndSelectCategory1 = (categoryIndex: number) => {
     emit('slug-category1', selectedCategory1.value);
     emit('slug-category2', '');
     emit('slug-category3', '');
+    selectedItem.value = categoryIndex;
+    selectedItem2.value = -1;
+    selectedItem3.value = -1;
     // Đặt lại giá trị selectedItem để xóa màu category cấp 2 trước đó
     saveState.setActiveCategory(categoryIndex);
   }
@@ -187,6 +189,9 @@ const logAndSelectCategory2 = (categoryIndex: number, itemIndex: number) => {
     emit('slug-category1', selectedCategory);
     emit('slug-category2', selectedSubCategory);
     emit('slug-category3', '');
+    selectedItem.value = categoryIndex;
+    selectedItem2.value = itemIndex;
+    selectedItem3.value = -1;
   }
 };
 
@@ -205,6 +210,9 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
     emit('slug-category1', selectedCategory);
     emit('slug-category2', selectedSubCategory);
     emit('slug-category3', selectedSubCategory3);
+    selectedItem.value = categoryIndex;
+    selectedItem2.value = itemIndex;
+    selectedItem3.value = itemIndex3;
 
     if (router.currentRoute.value.name !== 'sanpham') {
       // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
