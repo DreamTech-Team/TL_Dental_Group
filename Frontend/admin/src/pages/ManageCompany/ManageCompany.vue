@@ -465,23 +465,22 @@ const handleRenderOutstanding = (index: number) => {
         @current-change="handlePageChange"
       />
     </div>
+    <modal-add-company
+      v-if="isOpenAdd"
+      :changeAddedCompany="handleAddedChange"
+      @close="isOpenAdd = false"
+    />
+    <modal-update-company
+      v-if="isOpenUpdate"
+      @close="isOpenUpdate = false"
+      :item="companyRender[indexRow]"
+      :productOutstanding="indexProduct !== -1 ? products[indexProduct] : {}"
+      :products="products"
+      :idCompany="idCompany"
+      :change="handleChangeUpdate"
+      :changeOutstanding="handleChangeUpdateOutstanding"
+    />
   </div>
-
-  <modal-add-company
-    v-if="isOpenAdd"
-    :changeAddedCompany="handleAddedChange"
-    @close="isOpenAdd = false"
-  />
-  <modal-update-company
-    v-if="isOpenUpdate"
-    @close="isOpenUpdate = false"
-    :item="companyRender[indexRow]"
-    :productOutstanding="indexProduct !== -1 ? products[indexProduct] : {}"
-    :products="products"
-    :idCompany="idCompany"
-    :change="handleChangeUpdate"
-    :changeOutstanding="handleChangeUpdateOutstanding"
-  />
 </template>
 
 <style module scoped lang="scss">
