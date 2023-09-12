@@ -161,6 +161,8 @@ const logAndSelectCategory1 = (categoryIndex: number) => {
   const newCategory1 = dataRender.value[categoryIndex].slug;
   // Reset selectedCategory2 only if a new category 1 is selected
   if (newCategory1 !== selectedCategory1.value) {
+    console.log('Vào 1');
+
     selectedCategory1.value = newCategory1;
     emit('slug-category1', selectedCategory1.value);
     emit('slug-category2', '');
@@ -179,9 +181,13 @@ const logAndSelectCategory2 = (categoryIndex: number, itemIndex: number) => {
   const selectedCategory = dataRender.value[categoryIndex].slug;
   const selectedSubCategory = dataRender.value[categoryIndex].company[itemIndex].slug;
 
-  if (selectedCategory === selectedCategory1.value) {
+  if (
+    selectedCategory === selectedCategory1.value &&
+    selectedSubCategory !== selectedCategory2.value
+  ) {
     selectedCategory1.value = selectedCategory;
     selectedCategory2.value = selectedSubCategory;
+    console.log('Vào 2');
 
     emit('slug-category1', selectedCategory);
     emit('slug-category2', selectedSubCategory);
@@ -197,12 +203,17 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
   const selectedSubCategory3 =
     dataRender.value[categoryIndex]?.company[itemIndex]?.cate2[itemIndex3]?.slug;
 
-  console.log(selectedSubCategory === selectedCategory2.value);
-
   if (
     selectedCategory === selectedCategory1.value &&
-    selectedSubCategory === selectedCategory2.value
+    selectedSubCategory === selectedCategory2.value &&
+    selectedSubCategory3 !== selectedCategory3.value
   ) {
+    console.log('Vào 3');
+
+    selectedCategory1.value = selectedCategory;
+    selectedCategory2.value = selectedSubCategory;
+    selectedCategory3.value = selectedSubCategory3;
+
     emit('slug-category1', selectedCategory);
     emit('slug-category2', selectedSubCategory);
     emit('slug-category3', selectedSubCategory3);
