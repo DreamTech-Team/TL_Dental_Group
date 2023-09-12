@@ -25,6 +25,11 @@ const props = defineProps({
   }
 });
 
+const emits = defineEmits<{
+  // eslint-disable-next-line no-unused-vars
+  (e: 'close'): void;
+}>();
+
 const titleInput = ref('');
 const contentInput = ref('');
 const selectedImage: Ref<string | null> = ref(null);
@@ -177,7 +182,7 @@ const addFile = (e: DragEvent) => {
         <font-awesome-icon
           :icon="faXmark"
           :class="$style['mncompany__modal-ic']"
-          @click="$emit('close')"
+          @click="emits('close')"
         />
       </div>
       <div :class="$style.mncompany__modal__body">
@@ -240,7 +245,7 @@ const addFile = (e: DragEvent) => {
         </div>
 
         <div :class="$style['modal__buttons']">
-          <button @click="$emit('close')">Hủy</button>
+          <button @click="emits('close')">Hủy</button>
           <button @click="submitForm">Thêm công ty</button>
         </div>
       </div>

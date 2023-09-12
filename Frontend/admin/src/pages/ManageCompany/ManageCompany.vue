@@ -370,19 +370,13 @@ const handleRenderOutstanding = (index: number) => {
   }
   return false;
 };
-
-const handleOpenModalAdd = () => {
-  console.log('hihi');
-
-  isOpenAdd.value = true;
-};
 </script>
 <template>
   <div :class="$style.mn_company">
     <div :class="$style['mn_company--header']">
       <div :class="$style['mn_company--header-left']">
         <h1>CÔNG TY HỢP TÁC</h1>
-        <span @click="handleOpenModalAdd">Thêm công ty</span>
+        <span @click="isOpenAdd = true">Thêm công ty</span>
       </div>
 
       <div :class="$style['mn_company--header-right']">
@@ -472,26 +466,22 @@ const handleOpenModalAdd = () => {
         @current-change="handlePageChange"
       />
     </div>
-    <div v-if="isOpenAdd">
-      <modal-add-company
-        v-if="isOpenAdd"
-        :changeAddedCompany="handleAddedChange"
-        @close="isOpenAdd = false"
-      />
-    </div>
-    <div v-if="isOpenUpdate">
-      <modal-update-company
-        v-if="isOpenUpdate"
-        @close="isOpenUpdate = false"
-        :item="companyRender[indexRow]"
-        :productOutstanding="indexProduct !== -1 ? products[indexProduct] : {}"
-        :products="products"
-        :idCompany="idCompany"
-        :change="handleChangeUpdate"
-        :changeOutstanding="handleChangeUpdateOutstanding"
-      />
-    </div>
   </div>
+  <modal-add-company
+    v-if="isOpenAdd"
+    :changeAddedCompany="handleAddedChange"
+    @close="isOpenAdd = false"
+  />
+  <modal-update-company
+    v-if="isOpenUpdate"
+    @close="isOpenUpdate = false"
+    :item="companyRender[indexRow]"
+    :productOutstanding="indexProduct !== -1 ? products[indexProduct] : {}"
+    :products="products"
+    :idCompany="idCompany"
+    :change="handleChangeUpdate"
+    :changeOutstanding="handleChangeUpdateOutstanding"
+  />
 </template>
 
 <style module scoped lang="scss">

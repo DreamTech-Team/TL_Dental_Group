@@ -58,7 +58,11 @@ const context = defineProps({
   }
 });
 
-const $emit = defineEmits(['close']);
+// const $emit = defineEmits(['close']);
+const emits = defineEmits<{
+  // eslint-disable-next-line no-unused-vars
+  (e: 'close'): void;
+}>();
 
 const variableChange = ref([]);
 const nameCompanyInput = ref(context.item.name);
@@ -286,7 +290,7 @@ const handleCancleProductOutstanding = () => {
         <font-awesome-icon
           :icon="faXmark"
           :class="$style['mncompany__modal-ic']"
-          @click="$emit('close')"
+          @click="emits('close')"
         />
       </div>
       <div :class="$style.mncompany__modal__body">
@@ -353,7 +357,7 @@ const handleCancleProductOutstanding = () => {
         </div>
 
         <div :class="$style['modal__buttons']">
-          <button @click="$emit('close')">Hủy</button>
+          <button @click="emits('close')">Hủy</button>
           <button @click="submitForm">Cập nhật</button>
         </div>
       </div>
