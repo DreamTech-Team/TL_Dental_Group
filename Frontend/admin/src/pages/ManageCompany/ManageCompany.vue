@@ -77,6 +77,7 @@ watch(getCompany.response, () => {
     .sort((a: ManageCompany, b: ManageCompany) => {
       return new Date(b.createAt).getTime() - new Date(a.createAt).getTime();
     });
+  console.log(companyRender.value);
 });
 
 watch(getProducts.response, () => {
