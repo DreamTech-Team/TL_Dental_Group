@@ -196,7 +196,7 @@ const logAndSelectCategory2 = (categoryIndex: number, itemIndex: number) => {
 };
 
 const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemIndex3: number) => {
-  saveState.setActiveCategory3(itemIndex3);
+  // saveState.setActiveCategory3(itemIndex3); // Comment dòng này test lỗi đệ quy
   saveState.setTypeCategory('notHeader');
   const selectedCategory = dataRender.value[categoryIndex].slug; // Giá trị của category cấp 1
   const selectedSubCategory = dataRender.value[categoryIndex]?.company[itemIndex]?.slug;
@@ -233,11 +233,7 @@ watch([selectedCategory1, selectedCategory2, selectedCategory3], () => {
   const matchedIndex = dataRender.value.findIndex((item) => item.slug === selectedCategory1.value);
   if (matchedIndex !== -1) {
     selectedItem.value = matchedIndex;
-    selectedItem2.value = 1;
-    selectedItem2.value = 1;
     logAndSelectCategory1(selectedItem.value);
-    logAndSelectCategory2(selectedItem.value, selectedItem2.value);
-    logAndSelectCategory3(selectedItem.value, selectedItem2.value, selectedItem3.value);
   } else {
     console.log(`Category "${selectedCategory1.value}" not found in dataRender`);
   }
