@@ -191,9 +191,13 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
   saveState.setActiveCategory3(itemIndex3);
   saveState.setTypeCategory('notHeader');
   const selectedCategory = dataRender.value[categoryIndex].slug; // Giá trị của category cấp 1
-  const selectedSubCategory = dataRender.value[categoryIndex].company[itemIndex].slug;
+  const selectedSubCategory = dataRender.value[categoryIndex]?.company[itemIndex]?.slug;
   const selectedSubCategory3 =
-    dataRender.value[categoryIndex].company[itemIndex].cate2[itemIndex3].slug;
+    dataRender.value[categoryIndex]?.company[itemIndex]?.cate2[itemIndex3]?.slug;
+  console.log(selectedCategory);
+  console.log(selectedSubCategory);
+  console.log(selectedSubCategory3);
+
   if (selectedCategory === selectedCategory1.value) {
     selectedCategory1.value = selectedCategory;
     selectedCategory2.value = selectedSubCategory;

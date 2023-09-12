@@ -333,13 +333,13 @@ onMounted(() => {
   }
 });
 
-onUnmounted(() => {
-  if (router.currentRoute.value.name !== 'sanpham') {
-    saveState.setActiveCategory(-1);
-    saveState.setActiveCategory2(-1);
-    saveState.setActiveCategory3(-1);
-  }
-});
+// onUnmounted(() => {
+//   if (router.currentRoute.value.name !== 'sanpham') {
+//     saveState.setActiveCategory(-1);
+//     saveState.setActiveCategory2(-1);
+//     saveState.setActiveCategory3(-1);
+//   }
+// });
 
 window.addEventListener('resize', checkScreenSize);
 </script>
