@@ -233,7 +233,11 @@ watch([selectedCategory1, selectedCategory2, selectedCategory3], () => {
   const matchedIndex = dataRender.value.findIndex((item) => item.slug === selectedCategory1.value);
   if (matchedIndex !== -1) {
     selectedItem.value = matchedIndex;
+    selectedItem2.value = 1;
+    selectedItem2.value = 1;
     logAndSelectCategory1(selectedItem.value);
+    logAndSelectCategory2(selectedItem.value, selectedItem2.value);
+    logAndSelectCategory3(selectedItem.value, selectedItem2.value, selectedItem3.value);
   } else {
     console.log(`Category "${selectedCategory1.value}" not found in dataRender`);
   }
