@@ -154,10 +154,10 @@
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    width: 50%;
+                    width: 100%;
     
                     img{
-                        width: calc(100%);
+                        width: calc(100vw*0.333);
                         height: calc(100vh*0.333 - 140px);
                         object-fit: cover;
                         border-radius: 6px;
