@@ -161,10 +161,18 @@
           }
         }
 
-        p {
+        .home__banner-name {
           margin-top: 30px;
           font-size: $text-2xl;
           color: $primary_900;
+          font-weight: 500;
+          letter-spacing: 0.1em;
+        }
+
+        .home__banner-name--hidden{
+          margin-top: 30px;
+          font-size: $text-2xl;
+          color: transparent;
           font-weight: 500;
           letter-spacing: 0.1em;
         }
