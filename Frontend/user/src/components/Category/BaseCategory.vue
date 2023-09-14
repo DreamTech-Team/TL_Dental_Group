@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick, toRefs, watch, watchEffect } from 'vue';
+import { ref, nextTick, toRefs, watch, watchEffect, onMounted } from 'vue';
 // import { RouteRecordName, useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -121,10 +121,13 @@ watch(typeCate, () => {
   if (typeCate.value !== 'notHeader') {
     isAnimationVisible.value = true;
     isAnimationVisible2.value = true;
+  }
+});
 
-    if (typeCate.value.includes('cate2Header')) {
-      console.log(typeCate.value[typeCate.value.length - 1]);
-    }
+onMounted(() => {
+  if (typeCate.value !== 'notHeader') {
+    isAnimationVisible.value = true;
+    isAnimationVisible2.value = true;
   }
 });
 

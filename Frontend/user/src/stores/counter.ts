@@ -69,6 +69,8 @@ export const saveActive = defineStore('saveActiveCategory', () => {
   };
 
   const setTypeCategory = (type: string) => {
+    console.log(type);
+
     typeCate.value = type;
   };
 
