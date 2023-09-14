@@ -40,15 +40,8 @@ watch(response, () => {
 <template>
   <div :class="$style.footer">
     <div :class="$style.footer__info">
-      <div
-        :style="{
-          maxWidth: '1560px',
-          margin: '0 auto',
-          display: 'flex',
-          justifyContent: 'space-between'
-        }"
-      >
-        <div :class="$style['footer__info-item']">
+      <div :class="$style['footer__info-maxwidth']">
+        <div :class="$style['footer__info-maxwidth-item']">
           <p>TL DENTAL GROUP</p>
           <div style="padding: 10px; background-color: white; display: inline-block">
             <qrcode-vue
@@ -58,10 +51,10 @@ watch(response, () => {
             />
           </div>
         </div>
-        <div :class="$style['footer__info-item']">
-          <h4 :class="$style['footer__info-item--title']">Sản phẩm</h4>
+        <div :class="$style['footer__info-maxwidth-item']">
+          <h4 :class="$style['footer__info-maxwidth-item--title']">Sản phẩm</h4>
           <ul
-            :class="$style['footer__info-item--list']"
+            :class="$style['footer__info-maxwidth-item--list']"
             v-for="(item, idx) in dataRender"
             :key="idx"
           >
@@ -70,17 +63,17 @@ watch(response, () => {
             </li>
           </ul>
         </div>
-        <div :class="$style['footer__info-item']">
-          <h4 :class="$style['footer__info-item--title']">Công ty</h4>
-          <ul :class="$style['footer__info-item--list']">
+        <div :class="$style['footer__info-maxwidth-item']">
+          <h4 :class="$style['footer__info-maxwidth-item--title']">Công ty</h4>
+          <ul :class="$style['footer__info-maxwidth-item--list']">
             <li><router-link to="/gioithieu">Giới thiệu công ty</router-link></li>
             <li><router-link to="/tuyendung">Tuyển dụng</router-link></li>
           </ul>
         </div>
-        <div :class="$style['footer__info-item']">
-          <h4 :class="$style['footer__info-item--title']">Chính sách</h4>
+        <div :class="$style['footer__info-maxwidth-item']">
+          <h4 :class="$style['footer__info-maxwidth-item--title']">Chính sách</h4>
           <ul
-            :class="$style['footer__info-item--list']"
+            :class="$style['footer__info-maxwidth-item--list']"
             v-for="(item, idx) in listPolicy"
             :key="idx"
           >
@@ -89,9 +82,9 @@ watch(response, () => {
             </li>
           </ul>
         </div>
-        <div :class="$style['footer__info-item']">
-          <h4 :class="$style['footer__info-item--title']">Liên hệ</h4>
-          <ul :class="$style['footer__info-item--list']">
+        <div :class="$style['footer__info-maxwidth-item']">
+          <h4 :class="$style['footer__info-maxwidth-item--title']">Liên hệ</h4>
+          <ul :class="$style['footer__info-maxwidth-item--list']">
             <li>
               <font-awesome-icon :icon="faLocationDot" />
               <p>
@@ -113,8 +106,8 @@ watch(response, () => {
           </ul>
         </div>
 
-        <div :class="$style['footer__info-contact']">
-          <div :class="$style['footer__info-contact--item']">
+        <div :class="$style['footer__info-maxwidth-contact']">
+          <div :class="$style['footer__info-maxwidth-contact--item']">
             <p>Nhà cung cấp thiết bị y tế</p>
             <ul>
               <li><font-awesome-icon :icon="faCircleCheck" /> Uy tín</li>
@@ -122,7 +115,7 @@ watch(response, () => {
               <li><font-awesome-icon :icon="faCircleCheck" /> Chất lượng</li>
             </ul>
           </div>
-          <div :class="$style['footer__info-contact--item']">
+          <div :class="$style['footer__info-maxwidth-contact--item']">
             <router-link to="/gioithieu">Giới thiệu chi tiết</router-link>
           </div>
         </div>
