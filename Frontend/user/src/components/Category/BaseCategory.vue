@@ -29,7 +29,6 @@ const setAnni = setAnnimation();
 const selectedCategory1 = ref('');
 const selectedCategory2 = ref('');
 const selectedCategory3 = ref('');
-const checkColor = ref(false);
 const emit = defineEmits(['slug-category1', 'slug-category2', 'slug-category3']);
 const animationContainer = ref<HTMLElement | null>(null);
 
@@ -146,14 +145,13 @@ const isSelectedCategory2 = (categoryIndex: number, itemIndex: number) => {
 };
 
 const isSelectedCategory3 = (categoryIndex: number, itemIndex: number, itemIndex3: number) => {
-  checkColor.value =
+  return (
     isAnimationVisible.value &&
     isAnimationVisible2.value &&
     selectedItem.value === categoryIndex &&
     selectedItem2.value === itemIndex &&
-    selectedItem3.value === itemIndex3;
-
-  return checkColor.value;
+    selectedItem3.value === itemIndex3
+  );
 };
 
 const logAndSelectCategory1 = (categoryIndex: number) => {
@@ -196,7 +194,7 @@ const logAndSelectCategory2 = (categoryIndex: number, itemIndex: number) => {
 };
 
 const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemIndex3: number) => {
-  // saveState.setActiveCategory3(itemIndex3); // Comment dòng này test lỗi đệ quy
+  saveState.setActiveCategory3(itemIndex3); // Comment dòng này test lỗi đệ quy
   saveState.setTypeCategory('notHeader');
   const selectedCategory = dataRender.value[categoryIndex].slug; // Giá trị của category cấp 1
   const selectedSubCategory = dataRender.value[categoryIndex]?.company[itemIndex]?.slug;
@@ -288,10 +286,16 @@ watch([selectedCategory1, selectedCategory2, selectedCategory3], () => {
             :class="[$style.category__item]"
           >
             {{ item1.name }}
-            <font-awesome-icon
-              :class="$style['category__firstX--choose-icon']"
-              :icon="faCaretDown"
-            />
+            <div
+              :style="{
+                paddingLeft: '10px !important'
+              }"
+            >
+              <font-awesome-icon
+                :class="$style['category__firstX--choose-icon']"
+                :icon="faCaretDown"
+              />
+            </div>
           </div>
           <!-- category 3 -->
           <div
