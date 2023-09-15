@@ -161,75 +161,63 @@ const logAndSelectCategory1 = (categoryIndex: number) => {
   // Kiểm tra trang hiện tại
   const newCategory1 = dataRender.value[categoryIndex].slug;
   // Reset selectedCategory2 only if a new category 1 is selected
-  if (newCategory1 !== selectedCategory1.value) {
-    console.log('Vào 1');
+  console.log('Vào 1');
 
-    selectedCategory1.value = newCategory1;
-    emit('slug-category1', selectedCategory1.value);
-    emit('slug-category2', '');
-    emit('slug-category3', '');
-    // Đặt lại giá trị selectedItem để xóa màu category cấp 2 trước đó
-    saveState.setActiveCategory(categoryIndex);
-  }
+  selectedCategory1.value = newCategory1;
+  emit('slug-category1', selectedCategory1.value);
+  emit('slug-category2', '');
+  emit('slug-category3', '');
+  // Đặt lại giá trị selectedItem để xóa màu category cấp 2 trước đó
+  saveState.setActiveCategory(categoryIndex);
 };
 
 // Hàm chọn category cấp 2
 const logAndSelectCategory2 = (categoryIndex: number, itemIndex: number) => {
   // Lưu index của category cấp 2 được chọn
   saveState.setActiveCategory(categoryIndex);
-  saveState.setActiveCategory2(itemIndex);
   saveState.setTypeCategory('notHeader');
   const selectedCategory = dataRender.value[categoryIndex].slug;
   const selectedSubCategory = dataRender.value[categoryIndex].company[itemIndex].slug;
 
-  if (
-    selectedCategory === selectedCategory1.value &&
-    selectedSubCategory !== selectedCategory2.value
-  ) {
-    selectedCategory1.value = selectedCategory;
-    selectedCategory2.value = selectedSubCategory;
-    console.log('Vào 2');
+  console.log('Vào 2');
+  saveState.setActiveCategory2(itemIndex);
 
-    emit('slug-category1', selectedCategory);
-    emit('slug-category2', selectedSubCategory);
-    emit('slug-category3', '');
-  }
+  emit('slug-category1', selectedCategory);
+  emit('slug-category2', selectedSubCategory);
+  emit('slug-category3', '');
 };
 
 const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemIndex3: number) => {
-  saveState.setActiveCategory3(itemIndex3); // Comment dòng này test lỗi đệ quy
+  // saveState.setActiveCategory3(itemIndex3); // Comment dòng này test lỗi đệ quy
   saveState.setTypeCategory('notHeader');
   const selectedCategory = dataRender.value[categoryIndex].slug; // Giá trị của category cấp 1
   const selectedSubCategory = dataRender.value[categoryIndex]?.company[itemIndex]?.slug;
   const selectedSubCategory3 =
     dataRender.value[categoryIndex]?.company[itemIndex]?.cate2[itemIndex3]?.slug;
 
-  if (
-    selectedCategory === selectedCategory1.value &&
-    selectedSubCategory === selectedCategory2.value &&
-    selectedSubCategory3 !== selectedCategory3.value
-  ) {
-    console.log('Vào 3');
+  console.log('Vào 3');
+  saveState.setActiveCategory3(itemIndex3);
 
-    selectedCategory1.value = selectedCategory;
-    selectedCategory2.value = selectedSubCategory;
-    selectedCategory3.value = selectedSubCategory3;
+  selectedCategory1.value = selectedCategory;
+  selectedCategory2.value = selectedSubCategory;
+  selectedCategory3.value = selectedSubCategory3;
 
-    emit('slug-category1', selectedCategory);
-    emit('slug-category2', selectedSubCategory);
-    emit('slug-category3', selectedSubCategory3);
+  emit('slug-category1', selectedCategory);
+  emit('slug-category2', selectedSubCategory);
+  emit('slug-category3', selectedSubCategory3);
 
-    if (router.currentRoute.value.name !== 'sanpham') {
-      // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
-      router.push(
-        `/sanpham?slug1=${selectedCategory}&slug2=${selectedSubCategory}&slug3=${selectedSubCategory3}`
-      );
-    }
+  if (router.currentRoute.value.name !== 'sanpham') {
+    // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
+    router.push(
+      `/sanpham?slug1=${selectedCategory}&slug2=${selectedSubCategory}&slug3=${selectedSubCategory3}`
+    );
   }
 };
+// saveState.setActiveCategory3(itemIndex3); // Comment dòng này test lỗi đệ quy nhưng nó không được
 
 watch([selectedCategory1, selectedCategory2, selectedCategory3], () => {
   console.log('Watch: ' + selectedCategory1.value);
+  selectedItem2.value = -1;
 
   const matchedIndex = dataRender.value.findIndex((item) => item.slug === selectedCategory1.value);
   if (matchedIndex !== -1) {

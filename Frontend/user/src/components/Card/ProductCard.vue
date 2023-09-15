@@ -2,7 +2,7 @@
 import OkSticker from '@/assets/imgs/Product/GroupOk.svg';
 import Insurance from '@/assets/imgs/Product/GroupInsurance.svg';
 import SPSticker from '@/assets/imgs/Product/GroupSupport.svg';
-import { type PropType, ref, watch } from 'vue';
+import { type PropType, ref, watch, onMounted } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import router from '@/router/index';
 
@@ -25,6 +25,7 @@ defineProps({
 });
 
 //Get Logo Company
+const isPhone = ref(false);
 const logoValue = ref('');
 const deps = ref([]);
 const { response } = useAxios<DataResponse>('get', '/information?type=LOGO', {}, {}, deps.value);
@@ -42,6 +43,14 @@ const formatNumberWithCommas = (num: number) => {
 const linkDetail = (slug: string) => {
   router.push(`/chitiet/${slug}`);
 };
+
+onMounted(() => {
+  if (window.innerWidth < 739) {
+    isPhone.value = true;
+  } else {
+    isPhone.value = false;
+  }
+});
 </script>
 <template>
   <div :class="$style.card" @click="linkDetail(product.slug)">
@@ -86,8 +95,11 @@ const linkDetail = (slug: string) => {
 
         <div :class="$style['card__header--title']">
           <img :class="$style['card__header--title-logo']" :src="logoValue" alt="logononbg" />
-          <div :class="$style['card__header--title-content']">
+          <div v-if="!isPhone" :class="$style['card__header--title-content']">
             {{ product.tag }} {{ product.company }}
+          </div>
+          <div v-if="isPhone" :class="$style['card__header--title-content']">
+            {{ product.company }}
           </div>
         </div>
         <div :class="$style['card__header--image']">
