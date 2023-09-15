@@ -29,7 +29,8 @@ const hiddenNav = () => {
         maxWidth: '1560px',
         margin: '0 auto',
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        height: '68px'
       }"
     >
       <div :class="$style['header__nav-logo']" @click="() => router.push('/trangchu')">
@@ -80,61 +81,61 @@ const hiddenNav = () => {
         </div>
       </div>
       <header-search />
-    </div>
 
-    <!-- MOBILE + TABLET -->
-    <div :class="$style['header__nav-mobile']">
-      <div :class="$style['header__nav-mobile--btn']" @click="flagMobile = !flagMobile">
-        <font-awesome-icon :icon="faBars" size="xl" />
-      </div>
-      <div
-        @click="flagMobile = !flagMobile"
-        :class="$style[flagMobile ? 'header__nav-mobile--blur' : '']"
-      ></div>
-      <div
-        :class="[
-          $style['header__nav-mobile--list'],
-          $style[flagMobile ? 'header__nav-mobile--show' : '']
-        ]"
-      >
-        <form :class="$style['header__nav-mobile--search']" action="/timkiem">
-          <input type="text" name="search" placeholder="Tìm kiếm" />
-        </form>
-        <!-- List page -->
-        <div :class="$style['header__nav-mobile--item']" v-for="item in pages" :key="item.slug">
-          <router-link
-            v-if="item.slug !== 'sanpham'"
-            :to="'/' + item.slug"
-            :class="$style['header__nav-mobile-item-link']"
-            @click="
-              () => {
-                if (item.slug !== 'sanpham') flagMobile = !flagMobile;
-                pageMobile = pageMobile === 'sanpham' ? 'none' : item.slug;
-              }
-            "
-            >{{ item.name }}
-            <font-awesome-icon v-if="item.slug === 'sanpham'" :icon="faChevronDown" size="sm" />
-          </router-link>
+      <!-- MOBILE + TABLET -->
+      <div :class="$style['header__nav-mobile']">
+        <div :class="$style['header__nav-mobile--btn']" @click="flagMobile = !flagMobile">
+          <font-awesome-icon :icon="faBars" size="xl" />
+        </div>
+        <div
+          @click="flagMobile = !flagMobile"
+          :class="$style[flagMobile ? 'header__nav-mobile--blur' : '']"
+        ></div>
+        <div
+          :class="[
+            $style['header__nav-mobile--list'],
+            $style[flagMobile ? 'header__nav-mobile--show' : '']
+          ]"
+        >
+          <form :class="$style['header__nav-mobile--search']" action="/timkiem">
+            <input type="text" name="search" placeholder="Tìm kiếm" />
+          </form>
+          <!-- List page -->
+          <div :class="$style['header__nav-mobile--item']" v-for="item in pages" :key="item.slug">
+            <router-link
+              v-if="item.slug !== 'sanpham'"
+              :to="'/' + item.slug"
+              :class="$style['header__nav-mobile-item-link']"
+              @click="
+                () => {
+                  if (item.slug !== 'sanpham') flagMobile = !flagMobile;
+                  pageMobile = pageMobile === 'sanpham' ? 'none' : item.slug;
+                }
+              "
+              >{{ item.name }}
+              <font-awesome-icon v-if="item.slug === 'sanpham'" :icon="faChevronDown" size="sm" />
+            </router-link>
 
-          <a
-            v-else
-            :class="$style['header__nav-mobile-item-link']"
-            @click="
-              () => {
-                if (item.slug !== 'sanpham') flagMobile = !flagMobile;
-                pageMobile = pageMobile === 'sanpham' ? 'none' : item.slug;
-              }
-            "
-            >{{ item.name }}
-            <font-awesome-icon v-if="item.slug === 'sanpham'" :icon="faChevronDown" size="sm" />
-          </a>
+            <a
+              v-else
+              :class="$style['header__nav-mobile-item-link']"
+              @click="
+                () => {
+                  if (item.slug !== 'sanpham') flagMobile = !flagMobile;
+                  pageMobile = pageMobile === 'sanpham' ? 'none' : item.slug;
+                }
+              "
+              >{{ item.name }}
+              <font-awesome-icon v-if="item.slug === 'sanpham'" :icon="faChevronDown" size="sm" />
+            </a>
 
-          <!-- Category -->
-          <header-category-respo
-            :page-mobile="pageMobile"
-            :current-item="item.slug"
-            :hiddenNav="hiddenNav"
-          />
+            <!-- Category -->
+            <header-category-respo
+              :page-mobile="pageMobile"
+              :current-item="item.slug"
+              :hiddenNav="hiddenNav"
+            />
+          </div>
         </div>
       </div>
     </div>

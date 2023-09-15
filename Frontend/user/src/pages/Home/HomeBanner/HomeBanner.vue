@@ -513,7 +513,13 @@ onUnmounted(() => {
               :style="{ backgroundImage: `url(${selectedItem.product})` }"
             ></div>
           </div>
-          <p>{{ selectedItem.name }}</p>
+          <p
+            :class="
+              $style[idx === selectedItem.idx ? 'home__banner-name' : 'home__banner-name--hidden']
+            "
+          >
+            {{ selectedItem.name }}
+          </p>
         </div>
       </div>
 
