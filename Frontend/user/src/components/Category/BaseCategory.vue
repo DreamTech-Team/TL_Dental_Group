@@ -146,14 +146,13 @@ const isSelectedCategory2 = (categoryIndex: number, itemIndex: number) => {
 };
 
 const isSelectedCategory3 = (categoryIndex: number, itemIndex: number, itemIndex3: number) => {
-  checkColor.value =
+  return (
     isAnimationVisible.value &&
     isAnimationVisible2.value &&
     selectedItem.value === categoryIndex &&
     selectedItem2.value === itemIndex &&
-    selectedItem3.value === itemIndex3;
-
-  return checkColor.value;
+    selectedItem3.value === itemIndex3
+  );
 };
 
 const logAndSelectCategory1 = (categoryIndex: number) => {
@@ -176,7 +175,6 @@ const logAndSelectCategory1 = (categoryIndex: number) => {
 const logAndSelectCategory2 = (categoryIndex: number, itemIndex: number) => {
   // Lưu index của category cấp 2 được chọn
   saveState.setActiveCategory(categoryIndex);
-  saveState.setActiveCategory2(itemIndex);
   saveState.setTypeCategory('notHeader');
   const selectedCategory = dataRender.value[categoryIndex].slug;
   const selectedSubCategory = dataRender.value[categoryIndex].company[itemIndex].slug;
@@ -188,6 +186,7 @@ const logAndSelectCategory2 = (categoryIndex: number, itemIndex: number) => {
     selectedCategory1.value = selectedCategory;
     selectedCategory2.value = selectedSubCategory;
     console.log('Vào 2');
+    saveState.setActiveCategory2(itemIndex);
 
     emit('slug-category1', selectedCategory);
     emit('slug-category2', selectedSubCategory);
@@ -196,7 +195,6 @@ const logAndSelectCategory2 = (categoryIndex: number, itemIndex: number) => {
 };
 
 const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemIndex3: number) => {
-  // saveState.setActiveCategory3(itemIndex3); // Comment dòng này test lỗi đệ quy
   saveState.setTypeCategory('notHeader');
   const selectedCategory = dataRender.value[categoryIndex].slug; // Giá trị của category cấp 1
   const selectedSubCategory = dataRender.value[categoryIndex]?.company[itemIndex]?.slug;
@@ -209,6 +207,7 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
     selectedSubCategory3 !== selectedCategory3.value
   ) {
     console.log('Vào 3');
+    saveState.setActiveCategory3(itemIndex3);
 
     selectedCategory1.value = selectedCategory;
     selectedCategory2.value = selectedSubCategory;
@@ -226,6 +225,7 @@ const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemInd
     }
   }
 };
+// saveState.setActiveCategory3(itemIndex3); // Comment dòng này test lỗi đệ quy nhưng nó không được
 
 watch([selectedCategory1, selectedCategory2, selectedCategory3], () => {
   console.log('Watch: ' + selectedCategory1.value);
