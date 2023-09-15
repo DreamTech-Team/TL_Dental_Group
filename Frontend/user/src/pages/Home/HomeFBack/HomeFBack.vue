@@ -41,10 +41,18 @@ const scrollLeft = () => {
 };
 
 const scrollRight = () => {
-  if (-tranfX.value + wItem.value * 3 < wItem.value * feedbacks.value.length) {
-    tranfX.value -= wItem.value;
+  if (window.innerWidth < 739) {
+    if (-tranfX.value + wItem.value * 2 < wItem.value * feedbacks.value.length) {
+      tranfX.value -= wItem.value;
+    } else {
+      tranfX.value = 0;
+    }
   } else {
-    tranfX.value = 0;
+    if (-tranfX.value + wItem.value * 3 < wItem.value * feedbacks.value.length) {
+      tranfX.value -= wItem.value;
+    } else {
+      tranfX.value = 0;
+    }
   }
 };
 
