@@ -150,7 +150,10 @@ const handleResetCate = () => {
                 key="xemtatca"
                 @click="handleGetIndexCate2(idx, index)"
               >
-                <router-link to="/sanpham" :class="$style['header-category__more-link']">
+                <router-link
+                  :to="`/sanpham?slug1=${cate1.slug}&slug2=${company.slug}`"
+                  :class="$style['header-category__more-link']"
+                >
                   Xem tất cả
                 </router-link>
               </li>
@@ -159,7 +162,7 @@ const handleResetCate = () => {
 
           <li :class="$style['header-category__more']" key="xemtatca">
             <router-link
-              to="/sanpham"
+              :to="`/sanpham?slug1=${cate1.slug}`"
               :class="$style['header-category__more-link']"
               @click="handleGetIndexCate1(idx)"
             >
