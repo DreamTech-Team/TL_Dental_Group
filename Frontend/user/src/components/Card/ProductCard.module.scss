@@ -282,6 +282,7 @@
       height: 70%;
       &--factors {
         width: 16%;
+        display: none;
       }
 
       &--title {
@@ -296,6 +297,7 @@
 
       &--wgenuine {
         height: 30px;
+        
         &-confirm {
           font-size: 1rem;
         }
@@ -309,8 +311,12 @@
     &__body {
       &--info {
         margin: 0;
+        margin-top: 5px;
+        &-company {
+          height: 2.5rem;
+        }
         &-price {
-          font-size: 18px;
+          font-size: 16px;
         }
       }
 
