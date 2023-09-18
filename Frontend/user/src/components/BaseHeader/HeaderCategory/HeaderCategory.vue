@@ -28,23 +28,37 @@ const heightCate2 = (slug: string) => {
 };
 
 const handleGetIndexCate1 = (categoryIndex: number) => {
+  console.log('1');
+
   saveIndexState.setTypeCategory('cate1Header' + categoryIndex);
   saveIndexState.setActiveCategory(categoryIndex);
+  saveIndexState.setActiveCategory2(-1);
+  saveIndexState.setActiveCategory3(-1);
 };
 
 const handleGetIndexCate2 = (categoryIndex: number, companyIndex: number) => {
+  console.log('2');
+
   saveIndexState.setTypeCategory('cate2Header' + categoryIndex + '' + companyIndex);
+  saveIndexState.setActiveCategory(categoryIndex);
   saveIndexState.setActiveCategory2(companyIndex);
+  saveIndexState.setActiveCategory3(-1);
 };
 
 const handleGetIndexCate3 = (categoryIndex: number, companyIndex: number, indexCate2: number) => {
+  console.log('3');
+
   saveIndexState.setTypeCategory(
     'cate3Header' + categoryIndex + '' + companyIndex + '' + indexCate2
   );
+  saveIndexState.setActiveCategory(categoryIndex);
+  saveIndexState.setActiveCategory2(companyIndex);
   saveIndexState.setActiveCategory3(indexCate2);
 };
 
 const handleResetCate = () => {
+  console.log('reset');
+
   saveIndexState.setTypeCategory('reset');
   saveIndexState.setActiveCategory(-1);
   saveIndexState.setActiveCategory2(-1);
@@ -131,8 +145,15 @@ const handleResetCate = () => {
                 </router-link>
               </li>
 
-              <li :class="$style['header-category__more']" key="xemtatca">
-                <router-link to="/sanpham" :class="$style['header-category__more-link']">
+              <li
+                :class="$style['header-category__more']"
+                key="xemtatca"
+                @click="handleGetIndexCate2(idx, index)"
+              >
+                <router-link
+                  :to="`/sanpham?slug1=${cate1.slug}&slug2=${company.slug}`"
+                  :class="$style['header-category__more-link']"
+                >
                   Xem tất cả
                 </router-link>
               </li>
@@ -140,7 +161,11 @@ const handleResetCate = () => {
           </li>
 
           <li :class="$style['header-category__more']" key="xemtatca">
-            <router-link to="/sanpham" :class="$style['header-category__more-link']">
+            <router-link
+              :to="`/sanpham?slug1=${cate1.slug}`"
+              :class="$style['header-category__more-link']"
+              @click="handleGetIndexCate1(idx)"
+            >
               Xem tất cả
             </router-link>
           </li>

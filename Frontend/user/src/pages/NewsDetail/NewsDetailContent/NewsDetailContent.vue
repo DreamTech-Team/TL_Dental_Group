@@ -37,6 +37,7 @@ const showButtonLeft = ref(true);
 const showButtonRight = ref(true);
 const contentButtonLeft = ref('');
 const contentButtonRight = ref('');
+const widthMobile = ref(window.innerWidth);
 
 const getNews = useAxios<DataResponse>('get', '/news', {}, {}, variableChangeNews.value);
 
@@ -108,15 +109,21 @@ onMounted(() => {
     contentdiv.value = contentdivArray;
     tagli.value = liArray;
 
+    // alert(window.innerWidth + 'px');
+
     image.value.forEach((item) => {
       if (window.innerWidth < 736) {
-        const aspectRatio = item.height / item.width;
-        item.width = window.innerWidth - 30;
-        item.height = item.width * aspectRatio;
+        if (item.height > 20) {
+          const aspectRatio = item.height / item.width;
+          item.style.width = widthMobile.value - 30 + 'px';
+          item.style.height = item.width * aspectRatio + 'px';
+        }
       } else if (window.innerWidth < 1100) {
-        const aspectRatio = item.height / item.width;
-        item.width = window.innerWidth - 400;
-        item.height = item.width * aspectRatio;
+        if (item.height > 20) {
+          const aspectRatio = item.height / item.width;
+          item.width = widthMobile.value - 400;
+          item.height = item.width * aspectRatio;
+        }
       }
     });
 
