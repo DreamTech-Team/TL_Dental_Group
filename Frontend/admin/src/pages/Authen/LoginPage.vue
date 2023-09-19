@@ -29,12 +29,10 @@ const handleLogin = (e: Event) => {
   );
 
   watch(postAccount.error, (value) => {
-    console.log(value);
     checkAccount.value = true;
   });
 
   watch(postAccount.isLoading, (value) => {
-    console.log(value);
     isLoading.value = value;
   });
 
@@ -52,7 +50,6 @@ const handleLogin = (e: Event) => {
 
     localStorage.setItem('infor_admin', JSON.stringify(newInfor));
     infoAdminStore.setInforAdmin(newInfor);
-    console.log(localStorage.getItem('infor_admin'));
 
     router.push('/');
   });
