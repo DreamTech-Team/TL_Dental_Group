@@ -142,6 +142,67 @@ watch(response, () => {
   }
 });
 
+watch(route, () => {
+  const { response, isLoading } = useAxios<DataResponse>(
+    'get',
+    `/products/${route.params.catchAll[0]}`, //Params slug product
+    {},
+    {},
+    deps.value
+  );
+
+  watch(response, () => {
+    inforProduct.value = response.value?.data;
+    isLoadingDetail.value = isLoading.value;
+    if (inforProduct.value) {
+      const apiResponseImg = inforProduct.value.imgs;
+      similarSlug.value = response.value?.data.fkCategory.cate1Id.slug;
+
+      if (apiResponseImg) {
+        const cleanedResponse = apiResponseImg.substring(1, apiResponseImg.length - 1);
+        const imageUrls = cleanedResponse.split(',').map((url: string) => url.trim());
+
+        // Tạo một mảng mới chứa inforProduct.value?.mainImg và imageUrls
+        images.value.splice(0, images.value.length, ...imageUrls);
+        displayedImagesCount.value = 3;
+      }
+
+      // eslint-disable-next-line max-len
+      pathBC.value =
+        'sanpham' +
+        '/' +
+        inforProduct.value.fkCategory.cate1Id.slug +
+        '/' +
+        inforProduct.value.fkCategory.cate2Id.slug +
+        '/' +
+        inforProduct.value.slug;
+    }
+
+    currentImage.value = images.value[0];
+
+    const title = document.querySelector('title');
+    const titleMeta = document.querySelector('meta[property="og:title"]');
+    const descriptionMeta = document.querySelector('meta[property="og:description"]');
+
+    const imageMeta = document.querySelector('meta[property="og:image"]');
+
+    if (title) {
+      title.innerText =
+        inforProduct?.value?.name || 'TL Dental Group - Thiết Bị và Vật Liệu Nha Khoa';
+    }
+    if (titleMeta) {
+      titleMeta.setAttribute('content', inforProduct?.value?.name || 'TL Dental Group');
+    }
+    if (descriptionMeta) {
+      descriptionMeta.setAttribute('content', inforProduct?.value?.summary || 'TL Dental Group');
+    }
+    if (imageMeta) {
+      imageMeta.setAttribute('content', inforProduct?.value?.mainImg || logo);
+      // console.log(imageMeta);
+    }
+  });
+});
+
 const setCurrentImage = (index: number) => {
   currentIndex.value = index;
 };
