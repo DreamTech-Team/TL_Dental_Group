@@ -2,7 +2,6 @@
 @import '@/styles/responsive';
 
 .container {
-  
   &__loading {
     position: absolute;
     background-color: rgba(#000, 0.2);
@@ -399,7 +398,7 @@
       grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
 
       &-item {
-        width: 100%;
+        max-width: 100%;
         border: 0.2rem solid $text_100;
         padding: 2rem;
       }
@@ -741,6 +740,7 @@
 
     &__work {
       margin: 3rem 2rem;
+      margin: 0;
 
       &-heading {
         display: block;
@@ -750,8 +750,7 @@
         }
 
         &-filter {
-          margin-top: 2rem;
-          margin-left: 0.5rem;
+          margin: 3rem 2rem;
 
           input {
             background-size: 2.5rem;
@@ -767,8 +766,7 @@
         margin-top: 2rem;
 
         &-item {
-          width: 100%;
-          margin: 0.5rem;
+          margin: 0.5rem 2rem;
           border: 0.2rem solid $text_100;
           padding: 2rem;
         }

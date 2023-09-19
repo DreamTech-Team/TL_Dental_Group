@@ -43,6 +43,7 @@
 @include responsive_mobile() {
   .container__card {
     &-left {
+      width: 60%;
       &-title {
         font-size: $text-lg-mobile;
         margin-bottom: 1rem;
@@ -54,7 +55,7 @@
         text-align: center;
         margin-left: 1rem;
         font-size: $text-base-mobile;
-        padding: 0.7rem 0.2rem;
+        // padding: 0.7rem 0.2rem;
         border: 0.1rem solid $primary_700;
       }
     }
