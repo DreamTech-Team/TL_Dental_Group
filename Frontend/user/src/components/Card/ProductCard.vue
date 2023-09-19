@@ -17,7 +17,7 @@ export interface Product {
   slug: string;
 }
 
-const props = defineProps({
+defineProps({
   product: {
     type: Object as PropType<Product>,
     required: true
