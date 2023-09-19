@@ -17,7 +17,7 @@ export interface Product {
   slug: string;
 }
 
-defineProps({
+const props = defineProps({
   product: {
     type: Object as PropType<Product>,
     required: true
@@ -27,6 +27,7 @@ defineProps({
 //Get Logo Company
 const isPhone = ref(false);
 const logoValue = ref('');
+const refInfo = ref<HTMLElement | null>(null);
 const deps = ref([]);
 const { response } = useAxios<DataResponse>('get', '/information?type=LOGO', {}, {}, deps.value);
 
@@ -51,11 +52,38 @@ onMounted(() => {
     isPhone.value = false;
   }
 });
+
+onMounted(() => {
+  const infoElement = refInfo.value;
+  if (infoElement) {
+    const maxLines = 5;
+    const lineHeight = 18;
+    const maxHeight = maxLines * lineHeight;
+
+    if (infoElement.scrollHeight > maxHeight) {
+      const words = props.product.summary.split(' ');
+      let currentHeight = 0;
+      let truncatedText = '';
+
+      for (const word of words) {
+        truncatedText += word + ' ';
+        currentHeight = infoElement.scrollHeight;
+
+        if (currentHeight > maxHeight) {
+          break;
+        }
+      }
+
+      truncatedText = truncatedText.trim() + '...';
+      infoElement.innerHTML = truncatedText;
+    }
+  }
+});
 </script>
 <template>
   <div :class="$style.card" @click="linkDetail(product.slug)">
     <div :class="$style.card__show">
-      <p :class="$style['card__show--info']" v-html="product.summary"></p>
+      <p :class="$style['card__show--info']" ref="info" v-html="product.summary"></p>
       <div :class="$style['card__show--button']" @click="linkDetail(product.slug)">
         Xem chi tiết
       </div>
