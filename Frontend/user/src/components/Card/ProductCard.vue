@@ -27,10 +27,8 @@ const props = defineProps({
 //Get Logo Company
 const isPhone = ref(false);
 const logoValue = ref('');
-const refInfo = ref<HTMLElement | null>(null);
 const deps = ref([]);
 const { response } = useAxios<DataResponse>('get', '/information?type=LOGO', {}, {}, deps.value);
-
 watch(response, () => {
   logoValue.value = response.value?.data?.logo.content;
 });
@@ -50,33 +48,6 @@ onMounted(() => {
     isPhone.value = true;
   } else {
     isPhone.value = false;
-  }
-});
-
-onMounted(() => {
-  const infoElement = refInfo.value;
-  if (infoElement) {
-    const maxLines = 5;
-    const lineHeight = 18;
-    const maxHeight = maxLines * lineHeight;
-
-    if (infoElement.scrollHeight > maxHeight) {
-      const words = props.product.summary.split(' ');
-      let currentHeight = 0;
-      let truncatedText = '';
-
-      for (const word of words) {
-        truncatedText += word + ' ';
-        currentHeight = infoElement.scrollHeight;
-
-        if (currentHeight > maxHeight) {
-          break;
-        }
-      }
-
-      truncatedText = truncatedText.trim() + '...';
-      infoElement.innerHTML = truncatedText;
-    }
   }
 });
 </script>

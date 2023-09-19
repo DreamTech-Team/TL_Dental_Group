@@ -224,10 +224,10 @@
       font-size: 1.6rem;
       line-height: 18px;
       overflow: hidden;
-      position: relative;
       display: -webkit-box;
       -webkit-line-clamp: 5; /* Giới hạn số dòng */
       -webkit-box-orient: vertical;
+      max-height: calc(5 * 18px);
     }
 
     &--button {
