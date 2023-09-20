@@ -18,7 +18,6 @@ const app = createApp(App)
   })
   .use(router);
 
-await router.isReady();
 app.mount('#app');
 
 // https://blog.stackademic.com/how-to-use-google-analytics-in-your-vue-3-options-api-with-vue-gtag-f7e217a8fa56
