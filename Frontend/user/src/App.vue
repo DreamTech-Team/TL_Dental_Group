@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { RouterView } from 'vue-router';
+import { useMeta } from 'vue-meta';
 import BaseHeader from './components/BaseHeader/BaseHeader.vue';
 import BaseFooter from './components/BaseFooter/BaseFooter.vue';
 import ContactMessage from './components/ContactMessage/ContactMessage.vue';
@@ -66,11 +67,24 @@ const fetchData = async () => {
   });
 };
 
+useMeta({
+  title: 'TL Dental Group - Thiết Bị và Vật Liệu Nha Khoa',
+  htmlAttrs: { lang: 'en', amp: true }
+});
+
 // Gọi fetchData sau 3 giây
 setTimeout(fetchData, 3000);
 </script>
 
 <template>
+  <metainfo>
+    <template v-slot:title="{ content }">{{
+      content
+        ? `${content} | TL Dental Group - Thiết Bị và Vật Liệu Nha Khoa`
+        : `TL Dental Group - Thiết Bị và Vật Liệu Nha Khoa`
+    }}</template>
+  </metainfo>
+
   <BaseHeader />
 
   <RouterView />

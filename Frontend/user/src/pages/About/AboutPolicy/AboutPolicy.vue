@@ -51,9 +51,7 @@ watch(response, () => {
           <p :class="$style['about__policy-items-links-title']">{{ itemPolicy.name }}</p>
 
           <div>
-            <p :class="$style['about__policy-items-links-more']">
-              Xem thêm về {{ itemPolicy.name }}
-            </p>
+            <p :class="$style['about__policy-items-links-more']">Xem chi tiết</p>
             <font-awesome-icon :icon="faChevronRight" :class="$style['about__policy-ic-right']" />
           </div>
         </router-link>

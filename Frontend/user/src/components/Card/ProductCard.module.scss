@@ -221,14 +221,15 @@
       margin: 7rem 4rem;
       font-style: normal;
       font-weight: 300;
-      font-size: $text-base;
+      font-size: 1.6rem;
       line-height: 18px;
       overflow: hidden;
-      text-overflow: ellipsis;
       display: -webkit-box;
-      -webkit-line-clamp: 5;
+      -webkit-line-clamp: 5; /* Giới hạn số dòng */
       -webkit-box-orient: vertical;
+      max-height: calc(5 * 18px);
     }
+
     &--button {
       width: 17rem;
       height: 4.1rem;
@@ -297,7 +298,7 @@
 
       &--wgenuine {
         height: 30px;
-        
+
         &-confirm {
           font-size: 1rem;
         }

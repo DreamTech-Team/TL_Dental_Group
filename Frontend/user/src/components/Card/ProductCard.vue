@@ -29,7 +29,6 @@ const isPhone = ref(false);
 const logoValue = ref('');
 const deps = ref([]);
 const { response } = useAxios<DataResponse>('get', '/information?type=LOGO', {}, {}, deps.value);
-
 watch(response, () => {
   logoValue.value = response.value?.data?.logo.content;
 });
@@ -55,7 +54,7 @@ onMounted(() => {
 <template>
   <div :class="$style.card" @click="linkDetail(product.slug)">
     <div :class="$style.card__show">
-      <p :class="$style['card__show--info']" v-html="product.summary"></p>
+      <p :class="$style['card__show--info']" ref="info" v-html="product.summary"></p>
       <div :class="$style['card__show--button']" @click="linkDetail(product.slug)">
         Xem chi tiết
       </div>
