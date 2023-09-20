@@ -52,6 +52,7 @@ const uniqueTags = ref([
 const route = useRoute();
 let resizeListener: () => void;
 const isPhone = ref(false);
+const isTab = ref(false);
 const selectedItem = ref(-1);
 const sourceElement = ref<HTMLElement | null>(null);
 const itemWidth = ref(0);
@@ -140,10 +141,11 @@ onMounted(() => {
   const width = sourceElement.value?.clientWidth;
 
   if (width !== undefined) {
-    if (window.innerWidth >= 1024) {
+    if (window.innerWidth > 1024) {
       itemWidth.value = (width - 200) / 4;
-    } else if (window.innerWidth > 740 && window.innerWidth < 1024) {
-      itemWidth.value = (width - 145) / 3;
+    } else if (window.innerWidth > 740 && window.innerWidth <= 1024) {
+      isTab.value = true;
+      itemWidth.value = (width - 120) / 3;
     } else {
       isPhone.value = true;
       itemWidth.value = (width - 35) / 2;
@@ -155,6 +157,7 @@ onMounted(() => {
       if (window.innerWidth >= 1024) {
         itemWidth.value = (width - 200) / 4;
       } else if (window.innerWidth > 740 && window.innerWidth < 1024) {
+        isTab.value = true;
         itemWidth.value = (width - 145) / 3;
       } else {
         isPhone.value = true;
@@ -204,8 +207,8 @@ onUnmounted(() => {
         :key="index"
         :class="$style['home__activities-item']"
         :style="{ width: itemWidth + 'px' }"
-        @touchstart="isPhone ? startHold(index) : ''"
-        @touchend="isPhone ? endHold() : ''"
+        @touchstart="isPhone || isTab ? startHold(index) : ''"
+        @touchend="isPhone || isTab ? endHold() : ''"
         :to="'/tintuc/' + activity.slug"
       >
         <img :src="activity.img" alt="activity" />

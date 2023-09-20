@@ -127,13 +127,9 @@
   .home {
     &__intro {
       margin-top: 40px;
-      display: flex;
       flex-direction: column;
-      width: 100%;
       height: auto;
       padding: 50px;
-      justify-content: center;
-      align-items: center;
   
       &-left {
         display: flex;
@@ -152,11 +148,6 @@
         }
   
         .home__intro-btn {
-          outline: none;
-          border: none;
-          color: white;
-          padding: 10px 25px;
-          font-weight: 500;
           font-size: $text-base;
           line-height: 19px;
           background-color: #0cbbc7;
@@ -215,8 +206,6 @@
           }
   
           .home__intro-signature {
-            margin-top: 0;
-            width: max-content;
             font-family: 'Plus Jakarta Sans', sans-serif;
             display: block;
             margin-left: auto;
@@ -235,10 +224,6 @@
           }
         }
       }
-  
-      &-right {
-        flex: 1;
-      }
     }
   }
 }
@@ -247,13 +232,10 @@
   .home {
     &__intro {
       margin-top: 40px;
-      display: flex;
       flex-direction: column;
       width: 100%;
       height: auto;
       padding: 0 50px;
-      justify-content: center;
-      align-items: center;
   
       &-left {
         display: flex;
@@ -272,11 +254,6 @@
         }
   
         .home__intro-btn {
-          outline: none;
-          border: none;
-          color: white;
-          padding: 10px 25px;
-          font-weight: 500;
           font-size: $text-base;
           line-height: 19px;
           background-color: #0cbbc7;
@@ -329,7 +306,6 @@
               font-size: $text-sm-mobile;
               line-height: 22px;
               color: $text_600;
-              font-family: 'Plus Jakarta Sans', sans-serif;
               font-weight: 400;
             }
           }
@@ -337,12 +313,10 @@
           .home__intro-signature {
             margin-top: 0;
             width: max-content;
-            font-family: 'Plus Jakarta Sans', sans-serif;
             display: block;
             margin-left: auto;
   
             strong {
-              display: block;
               font-weight: 700;
               font-size: $text-sm-mobile;
               line-height: 20px;
@@ -354,10 +328,6 @@
             }
           }
         }
-      }
-  
-      &-right {
-        flex: 1;
       }
     }
   }
