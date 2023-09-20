@@ -5,6 +5,7 @@ import SPSticker from '@/assets/imgs/Product/GroupSupport.svg';
 import { type PropType, ref, watch, onMounted } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import router from '@/router/index';
+import { event } from 'vue-gtag';
 
 export interface Product {
   nameProduct: string;
@@ -39,7 +40,12 @@ const formatNumberWithCommas = (num: number) => {
 };
 
 //Go to detail Page
-const linkDetail = (slug: string) => {
+const linkDetail = (slug: string, productName: string) => {
+  event('view_item', {
+    event_label: 'Xem sản phẩm',
+    value: productName
+  });
+
   router.push(`/chitiet/${slug}`);
 };
 
@@ -52,10 +58,13 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div :class="$style.card" @click="linkDetail(product.slug)">
+  <div :class="$style.card" @click="linkDetail(product.slug, product.nameProduct)">
     <div :class="$style.card__show">
       <p :class="$style['card__show--info']" ref="info" v-html="product.summary"></p>
-      <div :class="$style['card__show--button']" @click="linkDetail(product.slug)">
+      <div
+        :class="$style['card__show--button']"
+        @click="linkDetail(product.slug, product.nameProduct)"
+      >
         Xem chi tiết
       </div>
     </div>

@@ -5,6 +5,7 @@ import Insurance from '@/assets/imgs/Product/GroupInsurance.svg';
 import SupportSticker from '@/assets/imgs/Product/GroupSupport.svg';
 import { useRouter } from 'vue-router';
 import { type PropType } from 'vue';
+import { event } from 'vue-gtag';
 
 interface Product {
   id: string;
@@ -59,7 +60,11 @@ interface Item {
 }
 const router = useRouter();
 
-const goToDetailPage = (slug: string) => {
+const goToDetailPage = (slug: string, productName: string) => {
+  event('view_item', {
+    event_label: 'Xem sản phẩm',
+    value: productName
+  });
   router.push(`/chitiet/${slug}`);
 };
 
@@ -76,7 +81,7 @@ defineProps({
 });
 </script>
 <template>
-  <div :class="$style.mbcard" @click="goToDetailPage(product.slug)">
+  <div :class="$style.mbcard" @click="goToDetailPage(product.slug, product.nameProduct)">
     <div :class="$style['mbcard__left']">
       <div :class="$style['mbcard__left-header']">
         <img :src="product.brand" alt="logo" />

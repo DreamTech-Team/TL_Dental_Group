@@ -11,12 +11,16 @@ import router from './router';
 const app = createApp(App)
   .use(createMetaManager())
   .use(createPinia())
-  .use(VueGtag, {
-    appName: 'TLDentalCustomer',
-    pageTrackerScreenviewEnabled: true,
-    config: { id: import.meta.env.VITE_MEASUREMENT_ID }
-  })
-  .use(router);
+  .use(router)
+  .use(
+    VueGtag,
+    {
+      appName: 'TLDentalCustomer',
+      pageTrackerScreenviewEnabled: true,
+      config: { id: import.meta.env.VITE_MEASUREMENT_ID }
+    },
+    router
+  );
 
 app.mount('#app');
 
