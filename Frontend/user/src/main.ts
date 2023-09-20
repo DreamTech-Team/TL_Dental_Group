@@ -14,7 +14,7 @@ const app = createApp(App)
   .use(VueGtag, {
     appName: 'TLDentalCustomer',
     pageTrackerScreenviewEnabled: true,
-    config: { id: import.meta.env.MEASUREMENT_ID }
+    config: { id: import.meta.env.VITE_MEASUREMENT_ID }
   })
   .use(router);
 
