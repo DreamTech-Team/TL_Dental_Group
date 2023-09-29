@@ -9,7 +9,7 @@ import {
   faCircleCheck
 } from '@fortawesome/free-solid-svg-icons';
 import QrcodeVue, { type Level, type RenderAs } from 'qrcode.vue';
-import { useDataRenderStore, saveDataContact } from '@/stores/counter';
+import { useDataRenderStore, saveDataContact, saveActive } from '@/stores/counter';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 interface AboutPolicy {
@@ -23,6 +23,7 @@ interface AboutPolicy {
 const { dataRender } = toRefs(useDataRenderStore());
 // Lấy dữ liệu facility và contact từ store
 const { dataFacility, dataContact } = toRefs(saveDataContact());
+const saveIndexState = saveActive();
 
 const variableChange = ref([]);
 const listPolicy = ref<AboutPolicy[]>([]);
@@ -36,6 +37,13 @@ const { response } = useAxios<DataResponse>('get', '/policy', {}, {}, variableCh
 watch(response, () => {
   listPolicy.value = response?.value?.data;
 });
+
+const handleGetIndexCate1 = (categoryIndex: number) => {
+  saveIndexState.setTypeCategory('cate1Footer' + categoryIndex);
+  saveIndexState.setActiveCategory(categoryIndex);
+  saveIndexState.setActiveCategory2(-1);
+  saveIndexState.setActiveCategory3(-1);
+};
 </script>
 <template>
   <div :class="$style.footer">
@@ -58,8 +66,8 @@ watch(response, () => {
             v-for="(item, idx) in dataRender"
             :key="idx"
           >
-            <li>
-              <router-link to="">{{ item.title }}</router-link>
+            <li @click="handleGetIndexCate1(idx)">
+              <router-link :to="`/sanpham?slug1=${item.slug}`">{{ item.title }}</router-link>
             </li>
           </ul>
         </div>

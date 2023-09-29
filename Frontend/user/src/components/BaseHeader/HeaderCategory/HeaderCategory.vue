@@ -28,8 +28,6 @@ const heightCate2 = (slug: string) => {
 };
 
 const handleGetIndexCate1 = (categoryIndex: number) => {
-  console.log('1');
-
   saveIndexState.setTypeCategory('cate1Header' + categoryIndex);
   saveIndexState.setActiveCategory(categoryIndex);
   saveIndexState.setActiveCategory2(-1);
@@ -37,8 +35,6 @@ const handleGetIndexCate1 = (categoryIndex: number) => {
 };
 
 const handleGetIndexCate2 = (categoryIndex: number, companyIndex: number) => {
-  console.log('2');
-
   saveIndexState.setTypeCategory('cate2Header' + categoryIndex + '' + companyIndex);
   saveIndexState.setActiveCategory(categoryIndex);
   saveIndexState.setActiveCategory2(companyIndex);
@@ -46,8 +42,6 @@ const handleGetIndexCate2 = (categoryIndex: number, companyIndex: number) => {
 };
 
 const handleGetIndexCate3 = (categoryIndex: number, companyIndex: number, indexCate2: number) => {
-  console.log('3');
-
   saveIndexState.setTypeCategory(
     'cate3Header' + categoryIndex + '' + companyIndex + '' + indexCate2
   );
@@ -57,8 +51,6 @@ const handleGetIndexCate3 = (categoryIndex: number, companyIndex: number, indexC
 };
 
 const handleResetCate = () => {
-  console.log('reset');
-
   saveIndexState.setTypeCategory('reset');
   saveIndexState.setActiveCategory(-1);
   saveIndexState.setActiveCategory2(-1);
