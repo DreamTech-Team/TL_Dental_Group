@@ -1,0 +1,44 @@
+@import '@/styles/base';
+
+.container__recruit {
+  position: relative;
+  // display: flex;
+
+  &-left {
+    width: 90%;
+    &-title {
+      position: absolute;
+      top: 8rem;
+
+      h2 {
+        padding-top: 0.5rem;
+        font-size: $text-3xl;
+        color: $primary_900;
+      }
+
+      span {
+        // position: absolute;
+        // top: -2.5rem;
+        font-size: $text-lg;
+        color: $primary_500;
+      }
+    }
+
+    &-nav {
+      position: absolute;
+      top: 18rem;
+    }
+  }
+
+  .sticky-container {
+    top: 7rem;
+    left: 15rem;
+    position: sticky;
+  }
+}
+
+.display-none {
+  transition: all 0.2s ease;
+  opacity: 0;
+  display: none;
+}

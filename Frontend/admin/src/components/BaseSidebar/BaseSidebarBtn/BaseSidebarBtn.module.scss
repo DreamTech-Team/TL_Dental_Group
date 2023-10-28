@@ -1,0 +1,111 @@
+@import '@/styles/base.scss';
+
+.container__btn {
+  display: flex;
+  // justify-content: center;
+  // margin: auto;
+  margin-top: 0.5rem;
+  margin-left: 1.5rem;
+  padding: 1rem 1rem;
+  width: fit-content;
+  transition: all 0.2s ease-in-out;
+
+  &-left {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &-block {
+      width: 3rem;
+      display: flex;
+      justify-content: center;
+      &-icon {
+        height: 2.5rem;
+        width: auto;
+        color: $text_700;
+      }
+    }
+
+    p {
+      // display: none;
+      min-width: 200px;
+      margin-left: 2.6rem;
+    }
+  }
+
+  &-right-icon {
+    display: none;
+  }
+
+  &:hover {
+    background-color: $primary_900;
+    border-radius: 1rem;
+    cursor: pointer;
+
+    .container__btn {
+      &-left {
+        p {
+          color: white;
+        }
+        &-block {
+          &-icon {
+            color: white;
+          }
+        }
+      }
+
+      &-right-icon {
+        color: white;
+      }
+    }
+  }
+}
+
+.show {
+  width: 21rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .container__btn {
+    &-left {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      p {
+        display: block;
+        width: fit-content;
+        margin-left: 2.6rem;
+        font-size: $text-base;
+        color: $text_700;
+      }
+    }
+
+    &-right-icon {
+      display: block;
+      // margin-left: 2.6rem;
+      color: $text_700;
+    }
+  }
+}
+
+.active {
+  background-color: $primary_900;
+  border-radius: 1rem;
+  .container__btn {
+    &-left {
+      p {
+        color: white;
+      }
+      &-block {
+        &-icon {
+          color: white;
+        }
+      }
+    }
+
+    &-right-icon {
+      color: white;
+    }
+  }
+}

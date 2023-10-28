@@ -1,0 +1,185 @@
+@import "@/styles/base";
+@import "@/styles/responsive";
+
+.about__policy{
+    margin-top: 6rem;
+
+    h3{
+        font-weight: 500;
+        font-size: $text-3xl;
+        line-height: 35px;
+        color: $primary_900;
+        text-align: center;
+    }
+
+    &-list{
+        margin-top: 6rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: stretch;
+
+        .about__policy-items{
+            width: 20%;
+
+            &-links{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 2rem 4rem;
+                border: 1px solid #ccc;
+                cursor: pointer;
+                height: 100%;
+
+                p{
+                    max-width: 22rem;
+                    text-align: center;
+                }
+    
+                .about__policy-ic{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.25);
+                    border-radius: 50%;
+                    width: 6rem;
+                    height: 6rem;
+    
+                    img{
+                        width: 3rem;
+                        height: 3rem;
+                        object-fit: contain;
+                    }
+                }
+    
+                &-title{
+                    font-weight: 700;
+                    font-size: 1.3rem;
+                    line-height: 1.5rem;
+                    margin: 2rem 0 1.4rem;
+                }
+    
+                &-content{
+                    font-weight: 500;
+                    font-size: 1rem;
+                    line-height: 2rem;
+                    text-align: center;
+                    margin-bottom: 2rem;
+                }
+    
+                div{
+                    display: flex;
+                    align-items: center;
+    
+                    .about__policy-items-links-more{
+                        font-weight: 900;
+                        font-size: 1rem;
+                        line-height: 2rem;
+                        color: $primary_700;
+                    }
+    
+                    .about__policy-ic-right{
+                        font-size: 1rem;
+                        line-height: 2rem;
+                        margin-left: 0.8rem;
+                        color: $primary_700;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@include responsive_mobile() {
+    .about__policy{
+        margin-top: 2rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        width: 100%;
+    
+        h3{
+            font-weight: 500;
+            font-size: $text-lg-mobile;
+            color: $primary_900;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+    
+        &-list{
+            margin: 0;
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+    
+            .about__policy-items{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+                border: none;
+                width: 50%;
+                cursor: pointer;
+
+                &-links{
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 2rem;
+                    border: none;
+                    width: 50%;
+
+                    p{
+                        min-width: 18rem;
+                        text-align: center;
+                    }
+        
+                    .about__policy-ic{
+                        padding: 1.8rem 2.2rem;
+                        border-radius: 50%;
+                        box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.25);
+                    }
+        
+                    &-title{
+                        font-weight: 700;
+                        font-size: $text-base-mobile;
+                        line-height: 1.5rem;
+                        margin: 2rem 0 1.4rem;
+                        text-align: center;
+                    }
+        
+                    &-content{
+                        font-weight: 500;
+                        font-size: $text-sm-mobile;
+                        line-height: 2rem;
+                        text-align: center;
+                        margin-bottom: 0;
+                    }
+        
+                    div{
+                        display: none;
+                        align-items: center;
+        
+                        .about__policy-items-links-more{
+                            font-weight: 900;
+                            font-size: 1rem;
+                            line-height: 2rem;
+                            color: $primary_700;
+                        }
+        
+                        .about__policy-ic-right{
+                            font-size: 1rem;
+                            line-height: 2rem;
+                            margin-left: 0.8rem;
+                            color: $primary_700;
+                        }
+                    }
+                }              
+            }
+        }
+        &-list::-webkit-scrollbar{
+            height: 0.4rem;
+        }
+    }
+}
