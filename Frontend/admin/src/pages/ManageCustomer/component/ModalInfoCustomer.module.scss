@@ -1,0 +1,68 @@
+@import '@/styles/base';
+
+.mncompany__overlay {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 20;
+
+  .mncompany__modal {
+    display: block;
+    width: 412px;
+    border-radius: 10px;
+    background-color: white;
+    padding-bottom: 1rem;
+
+    &__heading {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 60px;
+      font-size: $text-xl;
+      font-weight: 700;
+      background: #1892d7;
+      border-radius: 10px 10px 0px 0px;
+      color: white;
+
+      .mncompany__modal-ic {
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 25px;
+        cursor: pointer;
+
+        &:hover {
+          opacity: 0.9;
+        }
+      }
+    }
+
+    &__body {
+      width: 100%;
+      height: max-content;
+      padding: 0 3rem;
+
+        h4 {
+            font-size: $text-base;
+            font-weight: 700;
+            margin-top: 20px;
+            margin-bottom: 10px;
+
+            span{
+              font-size: $text-base;
+              font-weight: 400;
+            }
+        }
+    }
+  }
+}

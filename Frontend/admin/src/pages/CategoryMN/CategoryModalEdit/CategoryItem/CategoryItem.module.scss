@@ -1,0 +1,95 @@
+@import '@/styles/base';
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+  height: 5rem;
+  padding: 0 0.5rem;
+
+  &__left {
+    display: flex;
+    align-items: center;
+
+    img {
+      height: 4rem;
+      width: 4rem;
+    }
+
+    p {
+      font-size: $text-base;
+      margin-left: 1rem;
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+
+    &-btn {
+      margin-left: 0.5rem;
+    }
+  }
+}
+
+.btn-room-minus {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 1rem;
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+
+  background-color: #ff4e4e;
+  border: 0.5px solid #ff4e4e;
+
+  &:hover {
+    background-color: #ff4e4e;
+    color: white;
+    filter: brightness(85%);
+  }
+}
+
+.btn-room-minus-enable {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 1rem;
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+  background-color: #818181;
+  border: 0.5px solid #818181;
+
+  &:hover {
+    background-color: #818181;
+    color: white;
+  }
+}
+
+.btn-room-edit,
+.btn-room-trash {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 1rem;
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-room-edit {
+  background-color: #08c;
+  border: 0.5px solid #08c;
+
+  &:hover {
+    background-color: white;
+    color: #08c;
+  }
+}
+
+.btn-room-trash {
+  background-color: #ff4e4e;
+
+  &:hover {
+    filter: brightness(85%);
+  }
+}
