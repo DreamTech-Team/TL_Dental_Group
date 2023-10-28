@@ -1,23 +1,25 @@
-@import "@/styles/base";
+@import '@/styles/base';
+@import '@/styles/responsive';
 
 .header {
   box-shadow: 0 0 2px rgb(0, 0, 0, 0.05);
-  position: relative;
+  position: 'relative';
 
   &__contact {
     height: 42px;
     background-color: $color_primary;
     font-size: $text-sm;
     color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+    // display: flex;
+    // align-items: center;
+    // justify-content: flex-end;
     padding: 0 20px;
 
     &-item {
       display: flex;
 
-      p {
+      a {
+        color: #fff;
         padding-left: 8px;
         padding-right: 10px;
       }
@@ -30,16 +32,18 @@
 
   &__nav {
     height: 70px;
-    padding: 0 20px;
-    display: flex;
-    align-items: center;
+    padding: 0 50px;
     position: -webkit-sticky;
     position: sticky;
-    top: 0;
+    top: -1px;
+    z-index: 1000000;
+    background-color: white;
+    box-shadow: 0 0 10px rgb(0, 0, 0, 0.05);
 
     &-logo {
       display: flex;
       align-items: center;
+      cursor: pointer;
 
       div {
         margin-left: 10px;
@@ -60,6 +64,7 @@
     &-shield {
       margin: 0 12px;
       position: relative;
+      cursor: pointer;
 
       &-content {
         position: absolute;
@@ -69,8 +74,6 @@
         text-align: center;
         width: 50px;
         color: #fff;
-
-        h4 {}
 
         h5 {
           font-size: 0.8rem;
@@ -87,15 +90,19 @@
     &-list {
       height: 100%;
       display: flex;
+      flex: 1;
+    }
+    &-mobile {
+      display: none;
     }
 
     &-item {
-      margin: 0 10px;
+      margin: 0 14px;
       display: inline;
       position: relative;
+      cursor: pointer;
 
       &-link {
-        height: 100%;
         line-height: 70px;
         align-items: center;
         display: block;
@@ -111,7 +118,7 @@
         transform: translateX(-50%);
         bottom: 20px;
         width: 0;
-        content: "";
+        content: '';
         height: 2px;
         border-radius: 16px;
         background-color: $primary_900;
@@ -129,80 +136,230 @@
   }
 }
 
-.header-category {
-  position: absolute;
-  left: 0;
-  top: 100%;
-  width: auto;
-
-  background-color: #fff;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-  box-shadow: 0px 0px 8px -3px rgba(0, 0, 0, 0.2);
-
-  &:hover {
-    overflow: visible;
-  }
-
-  /* width */
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  /* Track */
-  &::-webkit-scrollbar-track {
-    background: #F5F5F5;
-  }
-
-  /* Handle */
-  &::-webkit-scrollbar-thumb {
-    background: #dfe0e0;
-    border-radius: 4px;
-  }
-
-  /* Handle on hover */
-  &::-webkit-scrollbar-thumb:hover {
-    background: #ccc;
-    cursor: pointer;
-  }
-
-  &-show {
-    border-top: 2px solid $primary_900;
-  }
-
-  &__item {
-    border-bottom: 1px solid #ddd;
-    position: relative;
-    list-style: none;
-
-    &-link {
-      padding: 10px;
-      font-size: $text-sm;
-      line-height: 1.8rem;
-      font-weight: 400;
-      min-width: 200px;
-      margin-right: 3px;
-      color: $text_600;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      p {
-        padding-right: 6px;
+@include responsize_resolution() {
+  .header {
+    &__nav {
+      &-list {
+        display: none;
       }
+      &-mobile {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        // position: relative;
 
-      &:hover {
-        transform: translateX(3px);
-        margin: 0;
-        transition: all linear 0.2s;
+        &--btn {
+          padding: 10px;
+          margin-left: 10px;
+          cursor: pointer;
+          color: $color_primary;
+          border-radius: 4px;
+        }
+
+        &--blur {
+          width: 100vw;
+          height: 100vh;
+          background-color: rgba($color: #000000, $alpha: 0.4);
+          position: absolute;
+          right: 0;
+          top: 70px;
+        }
+
+        &--list {
+          position: absolute;
+          min-width: 0;
+          width: 0;
+          height: 100vh;
+          top: 70px;
+          overflow: hidden;
+          right: -50px;
+          background-color: $color_primary;
+          transition: all .3s ease-in-out;
+        }
+
+        &--show {
+          min-width: 40vw;
+        }
+
+        &--item {
+          cursor: pointer;
+          
+          a {
+            padding: 16px 12px;
+            border-bottom: 1px solid white;
+            color: white;
+            font-size: $text-base-mobile;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          }
+        }
+
+        &--search {
+          display: none;
+        }
       }
     }
   }
+}
 
-  &-sub {
-    left: 100%;
-    top: -2px;
-    overflow-y: scroll;
+@include responsive_tablet() {
+  .header {
+    &__nav {
+      &-list {
+        display: none;
+      }
+      &-mobile {
+        height: 100%;
+        display: flex;
+        align-items: center;
+
+        &--blur {
+          width: 100vw;
+          height: 100vh;
+          background-color: rgba($color: #000000, $alpha: 0.4);
+          position: absolute;
+          right: 0;
+          top: 70px;
+        }
+
+        &--btn {
+          padding: 10px;
+          margin-left: 10px;
+          cursor: pointer;
+          color: $color_primary;
+          border-radius: 4px;
+        }
+
+        &--list {
+          position: absolute;
+          min-width: 0;
+          width: 0;
+          height: 100vh;
+          overflow: hidden;
+          right: 0;
+          top: 70px;
+          background-color: $color_primary;
+          transition: all .3s ease-in-out;
+        }
+        
+        &--show {
+          min-width: 40vw;
+        }
+
+        &--item {
+          
+          a {
+            cursor: pointer;
+            padding: 16px 12px;
+            border-bottom: 1px solid white;
+            color: white;
+            font-size: $text-base-mobile;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          }
+        }
+
+        &--search {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+@include responsive_mobile() {
+  .header {
+    &__contact {
+      display: none;
+    }
+    
+    &__nav {
+      padding: 0 10px;
+
+      &-logo {
+        h4 {
+          font-size: $text-xl-mobile;
+        }
+
+        p {
+          font-size: $text-sm-mobile;
+        }
+      }
+
+      &-list {
+        display: none;
+      }
+      &-mobile {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex: 1;
+
+        &--btn {
+          padding: 10px;
+          margin-left: 10px;
+          cursor: pointer;
+          color: $color_primary;
+          border-radius: 4px;
+        }
+
+        &--list {
+          position: absolute;
+          height: 0;
+          overflow: hidden;
+          left: 0;
+          right: 0;
+          top: 70px;
+          background-color: $color_primary;
+          transition: all .3s ease-in-out;
+        }
+
+        &--show {
+          height: 100vh;
+        }
+
+        &--item {
+          
+          a {
+            cursor: pointer;
+            padding: 16px 12px;
+            border-bottom: 1px solid white;
+            color: white;
+            font-size: $text-base-mobile;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          }
+        }
+
+        &--search {
+          width: calc(100% - 20px);
+          display: flex;
+          align-items: center;
+          padding: 8px;
+          margin: 10px auto;
+          border-radius: 50px;
+          background-color: white;
+          box-shadow: inset -3px -2px 9px $text_200;
+
+          input {
+            border: none;
+            padding: 4px 6px;
+            font-size: $text-sm;
+            width: 100%;
+            background-color: transparent;
+          }
+      
+          &-icon {
+            color: $text_600;
+            cursor: pointer;
+            padding: 0 8px;
+          }
+        }
+      }
+    }
   }
 }

@@ -1,0 +1,279 @@
+@import "@/styles/base";
+@import "@/styles/responsive";
+
+.about__motto{
+    overflow: hidden;
+
+    &-title{
+        font-size: $text-3xl;
+        font-weight: 500;
+        line-height: 3.5rem;
+        color: $primary_900;
+        text-align: center;
+        margin-bottom: 6rem;
+        margin-top: 6rem;
+    }
+
+    div{
+        position: relative;
+
+        .about__motto-slider{
+            display: flex;
+            gap: 15rem;
+            transition: transform 150ms ease-out;
+            
+            &-item{
+                width: calc(33.33% - 100px);
+                background-color: #D7FFFA;
+                padding: 3rem;
+                border-radius: 2rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                img{
+                    width: 100%;
+                    height: calc(100vh*0.333);
+                    object-fit: cover;
+                    border-radius: 6px;
+                }
+    
+                p{
+                    width: 100%;
+                    text-align: center;
+                }
+
+                &-title{
+                    font-weight: 700;
+                    font-size: $text-2xl;
+                    line-height: 3rem;
+                    letter-spacing: 0.02em;
+                    margin: 1.4rem 0;
+                }
+
+                &-content{
+                    font-weight: 700;
+                    font-size: $text-xs;
+                    line-height: 2.5rem;
+                    letter-spacing: 0.02em;
+                    color: #76768F;
+                }
+            }
+        }
+
+        .about__motto-curtain{
+            display: flex;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+
+            &-left{
+                width: 30%;
+                height: 100%;
+                border-radius: 2rem;
+                background-color: rgba($color: #fff, $alpha: 0.5);
+            }
+
+            &-button{
+                width: 40%;
+                display: flex;
+                justify-content: center;
+                z-index: 1;
+                gap: 51rem;
+
+                &-left{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 2rem 2.2rem;
+                    border-radius: 50%;
+                    border: none;
+                    box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.25);
+                    transition: all 0.3s ease;
+    
+                    &:hover{
+                        transform: translateY(-0.3em);
+                    }
+                }
+
+                &-right{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 2rem 2.2rem;
+                    border-radius: 50%;
+                    box-shadow: -1px 2px 20px -1px rgba(0, 0, 0, 0.25);
+                    transition: all 0.3s ease;
+                    border: none;
+
+                    &:hover{
+                        transform: translateY(-0.3em);
+                    }   
+                }
+            }
+
+            &-right{
+                width: 30%;
+                height: 100%;
+                border-radius: 20px;
+                background-color: rgba($color: #fff, $alpha: 0.5);
+            }
+        }
+    }
+}
+
+@include responsive_mobile() {
+    .about__motto{
+
+        &-title{
+            font-size: $text-lg-mobile;
+            font-weight: 500;
+            color: $primary_900;
+            text-align: center;
+            margin-bottom: 2rem;
+            margin-top: 2rem;
+        }
+    
+        div{
+            position: relative;
+    
+            .about__motto-slider{
+                display: flex;
+                gap: 2rem;
+                transition: transform 150ms ease-out;
+                width: 100%;
+                overflow-x: scroll;
+                align-items: stretch;
+                
+                &-item{
+                    background-color: #D7FFFA;
+                    padding: 2rem;
+                    border-radius: 2rem;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    width: 100%;
+    
+                    img{
+                        width: calc(100vw*0.333);
+                        height: calc(100vh*0.333 - 140px);
+                        object-fit: cover;
+                        border-radius: 6px;
+                    }
+        
+                    p{
+                        width: 100%;
+                        text-align: center;
+                    }
+    
+                    &-title{
+                        font-weight: 700;
+                        font-size: $text-base-mobile;
+                        max-width: calc(100vw*0.3333);
+
+                    }
+    
+                    &-content{
+                        min-height: 0;
+                        font-weight: 700;
+                        font-size: $text-sm-mobile;
+                        line-height: 2.4rem;
+                        color: #76768F;
+                        max-width: calc(100vw*0.3333);
+
+                    }
+                }
+    
+                &-item:first-child{
+                    margin: 0;
+                }
+            }
+            .about__motto-slider::-webkit-scrollbar{
+                height: 0.4rem;
+            }
+    
+            .about__motto-curtain{
+                display: none;
+            }
+        }
+    }
+}
+
+@include responsive_tablet() {
+    .about__motto{
+
+        &-title{
+            font-size: $text-lg-mobile;
+            font-weight: 500;
+            color: $primary_900;
+            text-align: center;
+            margin-bottom: 2rem;
+            margin-top: 2rem;
+        }
+    
+        div{
+            position: relative;
+    
+            .about__motto-slider{
+                display: flex;
+                gap: 5rem;
+                transition: transform 150ms ease-out;
+                width: 100%;
+                overflow-x: scroll;
+                align-items: stretch;
+                
+                &-item{
+                    width: 50%;
+                    background-color: #D7FFFA;
+                    padding: 2rem;
+                    border-radius: 2rem;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+    
+                    img{
+                        width: calc(100%);
+                        height: calc(100vh*0.2);
+                        object-fit: cover;
+                        border-radius: 6px;
+                    }
+        
+                    p{
+                        width: 100%;
+                        text-align: center;
+                        max-width: calc(100vw*0.333);
+
+                    }
+    
+                    &-title{
+                        font-weight: 700;
+                        font-size: $text-base;
+                        max-width: calc(100vw*0.333);
+
+                    }
+    
+                    &-content{
+                        min-height: 0;
+                        font-weight: 700;
+                        font-size: $text-sm;
+                        line-height: 2.4rem;
+                        color: #76768F;
+                    }
+                }
+    
+                &-item:first-child{
+                    margin: 0;
+                }
+            }
+            .about__motto-slider::-webkit-scrollbar{
+                height: 0.4rem;
+            }
+    
+            .about__motto-curtain{
+                display: none;
+            }
+        }
+    }
+}
