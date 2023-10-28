@@ -1,0 +1,116 @@
+@import '@/styles/base';
+
+.about__thanks {
+  margin: 4rem 16rem;
+
+  &-letter {
+    background-color: #dedede;
+    background-image: url('@/assets/imgs/About/Letter.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 10rem 12rem;
+    position: relative;
+
+    h1 {
+      text-align: center;
+      color: #0029bb;
+      font-weight: 700;
+      font-size: $text-3xl;
+      line-height: 5.8rem;
+      margin-top: 6rem;
+    }
+    h2 {
+      text-align: center;
+      font-size: $text-2xl;
+      color: #0029bb;
+      font-weight: 600;
+      line-height: 5.8rem;
+      margin-bottom: 2rem;
+    }
+    p {
+      font-size: $text-xl;
+      color: #000;
+      line-height: 4rem;
+    }
+
+    &-bg {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.3s ease-in-out;
+
+      &-ic {
+        font-size: 4rem;
+        margin-right: 1.4rem;
+        color: #fff;
+        display: none;
+      }
+
+      span {
+        font-size: $text-2xl;
+        font-weight: 500;
+        line-height: 5rem;
+        color: #fff;
+        display: none;
+      }
+    }
+    &-bg:hover {
+      background-color: rgba($color: #000000, $alpha: 0.8);
+      cursor: pointer;
+
+      .about__thanks-letter-bg-ic {
+        display: block;
+      }
+
+      span {
+        display: inline-block;
+      }
+    }
+
+    &-editor {
+      button {
+        float: right;
+        padding: 0.4rem 2.4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background-color: $primary_600;
+        border: 1px solid $primary_600;
+        border-radius: 1rem;
+        margin-top: 1.4rem;
+        transition: all 0.3s ease-in-out;
+
+        .about__infocompany-button-ic {
+          font-size: $text-2xl;
+          margin-right: 1.4rem;
+          color: #fff;
+        }
+
+        span {
+          font-size: $text-base;
+          font-weight: 500;
+          line-height: 3.5rem;
+          color: #fff;
+        }
+      }
+
+      button:hover {
+        background-color: #fff;
+
+        .about__infocompany-button-ic {
+          color: $primary_600;
+        }
+
+        span {
+          color: $primary_600;
+        }
+      }
+    }
+  }
+}
