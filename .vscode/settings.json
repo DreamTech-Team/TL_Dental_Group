@@ -1,3 +1,5 @@
 {
-  "vue.codeActions.enabled": false
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "interactive"
+    "vue.codeActions.enabled": false
 }
