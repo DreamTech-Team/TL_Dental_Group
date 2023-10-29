@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, onUnmounted, watch } from 'vue';
+import { categoryBackgroundColors } from './HomeCategoryConst';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
@@ -16,18 +17,6 @@ interface Category {
 
 //Init data structure
 const categories = ref<Category[]>([]);
-
-//Data colors
-const colors = [
-  // eslint-disable-next-line max-len
-  `linear-gradient(143.33deg, #A300F0 24.48%, rgba(246, 76, 218, 0.547363) 78.16%, rgba(173, 0, 255, 0.74) 103.49%)`,
-  // eslint-disable-next-line max-len
-  `linear-gradient(119.43deg, #0168C8 28.13%, rgba(69, 108, 245, 0.547363) 80.05%, rgba(0, 194, 255, 0.74) 104.55%)`,
-  // eslint-disable-next-line max-len
-  `linear-gradient(148.87deg, #0085FF 26.28%, rgba(0, 200, 188, 0.547363) 78.26%, rgba(5, 223, 92, 0.74) 126.07%)`,
-  // eslint-disable-next-line max-len
-  `linear-gradient(143.33deg, #0168C8 24.48%, rgba(246, 76, 218, 0.547363) 78.16%, rgba(173, 0, 255, 0.74) 103.49%)`
-];
 
 //Properties
 const isPhone = ref(false);
@@ -76,7 +65,7 @@ const scrollRight = () => {
 };
 
 const getCategoryColor = (index: number) => {
-  return colors[index % colors.length];
+  return categoryBackgroundColors[index % categoryBackgroundColors.length];
 };
 
 //Handle scroll list
@@ -109,10 +98,10 @@ const lenght = ref(0);
 const { response } = useAxios<DataResponse>('get', '/cate1?highlight=true', {}, {}, deps.value);
 
 watch(response, () => {
-  categories.value = response.value?.data.sort(
+  categories.value = response?.value?.data.sort(
     (a: Category, b: Category) => a.highlight - b.highlight
   );
-  lenght.value = categories.value.length;
+  lenght.value = categories?.value?.length;
 });
 
 onMounted(() => {
