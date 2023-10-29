@@ -4,8 +4,17 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faStar, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
+interface Feedback {
+  title: string;
+  image: string;
+  content: string;
+  fullname: string;
+  position: string;
+  rating: number;
+}
+
 //Init data structure
-const feedbacks = ref([
+const feedbacks = ref<Feedback[]>([
   {
     title: 'DỤNG CỤ CHỈNH NHA ABC',
     image: '',
@@ -29,7 +38,7 @@ const tranfX = ref(0);
 let resizeListener: () => void;
 
 const widthComputed = computed(() => {
-  return wItem.value * feedbacks.value.length + 'px';
+  return wItem.value * feedbacks.value?.length + 'px';
 });
 
 const widthItemComputed = computed(() => {
@@ -86,8 +95,8 @@ const lenght = ref(0);
 const { response } = useAxios<DataResponse>('get', '/home/reviews', {}, {}, deps.value);
 
 watch(response, () => {
-  feedbacks.value = response.value?.data;
-  lenght.value = feedbacks.value.length;
+  feedbacks.value = response?.value?.data;
+  lenght.value = feedbacks?.value?.length;
 });
 
 //Function 4.2 to 4.0
@@ -157,14 +166,14 @@ onUnmounted(() => {
             :style="{ width: widthItemComputed }"
           >
             <div :class="$style['home__feedback-img']">
-              <img :src="feedback.image" alt="doctor" />
+              <img :src="feedback?.image" alt="doctor" />
             </div>
             <div :class="$style['home__feedback-speech']">
-              {{ feedback.content }}
+              {{ feedback?.content }}
             </div>
             <div :class="$style['home__feedback-infor']">
-              <strong>{{ feedback.fullname }}</strong>
-              <span>{{ feedback.position }}</span>
+              <strong>{{ feedback?.fullname }}</strong>
+              <span>{{ feedback?.position }}</span>
               <div :class="$style['home__feedback-rate']">
                 <font-awesome-icon
                   v-for="i in 5"
@@ -172,7 +181,7 @@ onUnmounted(() => {
                   :icon="faStar"
                   :class="[
                     $style['home__feedback-star'],
-                    i <= roundNumber(feedback.rating, 0) ? $style['star-active'] : ''
+                    i <= roundNumber(feedback?.rating, 0) ? $style['star-active'] : ''
                   ]"
                 />
               </div>
