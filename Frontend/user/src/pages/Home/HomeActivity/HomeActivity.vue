@@ -25,8 +25,27 @@ interface Item {
   ];
 }
 
+interface Activity {
+  id: string;
+  title: string;
+  img: string;
+  slug: string;
+  summary: string;
+  detail: string;
+  detailMobile: string;
+  highlight: number;
+  createAt: string;
+}
+
+interface Tag {
+  id: string;
+  name: string;
+  slug: string;
+  createAt: string;
+}
+
 //Init data structure
-const activities = ref([
+const activities = ref<Activity[]>([
   {
     id: '',
     title: '',
@@ -39,7 +58,7 @@ const activities = ref([
     createAt: ''
   }
 ]);
-const uniqueTags = ref([
+const uniqueTags = ref<Tag[]>([
   {
     id: '',
     name: '',
@@ -73,7 +92,7 @@ const deps = ref([]);
 const { response } = useAxios<DataResponse>('get', '/news/highlight', {}, {}, deps.value);
 
 watch(response, () => {
-  feedbacks.value = response.value?.data;
+  feedbacks.value = response?.value?.data;
   if (window.innerWidth < 739) {
     activities.value = feedbacks.value.map((item) => item).slice(0, 4);
   } else if (window.innerWidth > 740 && window.innerWidth < 1024) {
