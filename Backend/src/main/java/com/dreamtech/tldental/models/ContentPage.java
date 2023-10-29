@@ -21,7 +21,7 @@ public class ContentPage {
     @Column(unique = true)
     private String slug;
 
-    @Column(length = 200, unique = false)
+    @Column(length = 200, unique = true)
     private String type;
 
     public ContentPage() {
