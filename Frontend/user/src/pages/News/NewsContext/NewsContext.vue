@@ -121,7 +121,7 @@ const readMore = () => {
     deps.value
   );
   watch(readMore.response, () => {
-    addData.value = readMore.response.value?.data?.data;
+    addData.value = readMore.response?.value?.data?.data;
     addData.value?.forEach((item) => {
       displayNews.value?.push(item);
     });
