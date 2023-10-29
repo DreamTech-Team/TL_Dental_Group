@@ -132,12 +132,7 @@ onMounted(() => {
 });
 
 const idDefine = (index: number, idx: number | undefined = undefined) => {
-  let ans = `id-${index}-${idx}`;
-  if (!idx) ans = `id-${index}`;
-
-  console.log(ans);
-
-  return ans;
+  return !idx ? `id-${index}-${idx}` : `id-${index}`;
 };
 
 const isSelectedCategory2 = (categoryIndex: number, itemIndex: number) => {
