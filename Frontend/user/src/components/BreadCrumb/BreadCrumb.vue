@@ -104,7 +104,7 @@ const pathAD = defineProps({
   }
 });
 
-const defaultDictionaries = ref([
+const defaultDictionaries = ref<Dictionaries[]>([
   {
     slug: 'tintuc',
     name: 'Tin tức'
@@ -174,7 +174,7 @@ const getAllCategory = () => {
 
   if (!isAllCategoryLoaded) {
     watch(getCate1.response, () => {
-      const responseData = getCate1.response.value?.data;
+      const responseData = getCate1.response?.value?.data;
       if (responseData && responseData instanceof Array) {
         cate1.value = responseData;
         cate1.value.forEach((item: Cate1) => {
@@ -190,7 +190,7 @@ const getAllCategory = () => {
     });
 
     watch(getCate2.response, () => {
-      const responseData2 = getCate2.response.value?.data;
+      const responseData2 = getCate2.response?.value?.data;
       if (responseData2 && responseData2 instanceof Array) {
         cate2.value = responseData2;
         cate2.value.forEach((item: Cate2) => {
@@ -221,7 +221,7 @@ if (route.path.startsWith('/tintuc')) {
     const news = ref<News[]>([]);
     const getNews = useAxios<DataResponse>('get', '/news?pageSize=1000000', {}, {}, deps.value);
     watch(getNews.response, () => {
-      news.value = getNews.response.value?.data?.data;
+      news.value = getNews.response?.value?.data?.data;
       news.value.forEach((item) => {
         const news = {
           slug: item.slug,
@@ -247,7 +247,7 @@ if (route.path.startsWith('/tintuc')) {
       deps.value
     );
     watch(getProducts.response, () => {
-      products.value = getProducts.response.value?.data?.data;
+      products.value = getProducts.response?.value?.data?.data;
       products.value.forEach((item) => {
         const news = {
           slug: item.slug,
