@@ -42,10 +42,10 @@ const widthMobile = ref(window.innerWidth);
 const getNews = useAxios<DataResponse>('get', '/news', {}, {}, variableChangeNews.value);
 
 watch(getNews.response, () => {
-  dataNews.value = getNews.response.value?.data?.data;
+  dataNews.value = getNews.response?.value?.data?.data;
 
   dataNews.value.forEach((item, idx) => {
-    if (item.slug === dataRender.value.slug) indexNews.value = idx;
+    if (item.slug === dataRender.value?.slug) indexNews.value = idx;
   });
 
   // Xử lí nút button chuyển tin tức
