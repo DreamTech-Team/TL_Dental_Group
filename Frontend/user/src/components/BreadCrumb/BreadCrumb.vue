@@ -20,6 +20,13 @@ interface Dictionaries {
   name: string;
 }
 
+interface Tag {
+  id: string;
+  name: string;
+  slug: string;
+  createAt: string;
+}
+
 interface News {
   id: string;
   title: string;
@@ -30,14 +37,34 @@ interface News {
   detailMobile: string;
   highlight: number;
   createAt: string;
-  tags: [
-    {
-      id: string;
-      name: string;
-      slug: string;
-      createAt: string;
-    }
-  ];
+  tags: Tag[];
+}
+
+interface Company {
+  id: string;
+  name: string;
+  logo: string;
+  description: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+  outstandingProductId: string;
+}
+
+interface Category1 {
+  id: string;
+  title: string;
+  img: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+}
+
+interface Category2 {
+  id: string;
+  title: string;
+  slug: string;
+  createAt: string;
 }
 
 interface Product {
@@ -54,30 +81,9 @@ interface Product {
   createAt: string;
   fkCategory: {
     id: string;
-    companyId: {
-      id: string;
-      name: string;
-      logo: string;
-      description: string;
-      highlight: number;
-      slug: string;
-      createAt: string;
-      outstandingProductId: string;
-    };
-    cate1Id: {
-      id: string;
-      title: string;
-      img: string;
-      highlight: 3;
-      slug: string;
-      createAt: string;
-    };
-    cate2Id: {
-      id: string;
-      title: string;
-      slug: string;
-      createAt: string;
-    };
+    companyId: Company;
+    cate1Id: Category1;
+    cate2Id: Category2;
   };
 }
 
