@@ -1,4 +1,3 @@
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
 import {
   girl1,
@@ -26,7 +25,7 @@ import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 // import RecruitmentPoster from './RecruitmentPoster/RecruitmentPoster.vue';
 // import RecruitmentVision from './RecruitmentVision/RecruitmentVision.vue';
-// import RecruitmentValue from './RecruitmentValue/RecruitmentValue.vue';
+import RecruitmentValue from './RecruitmentValue/RecruitmentValue.vue';
 // import RecruitmentEnviroment from './RecruitmentEnviroment/RecruitmentEnviroment.vue';
 // import RecruitmentNavScroll from './RecruitmentNavScroll/RecruitmentNavScroll.vue';
 // import RecruitmentWork from './RecruitmentWork/RecruitmentWork.vue';
@@ -56,6 +55,9 @@ interface WorkItem {
   time: string;
   location: string;
 }
+
+type ScrollBehavior = 'auto' | 'smooth' | 'instant';
+
 const itemSeleted = ref(0);
 const hiddenElement = ref(false);
 const showMore = ref(false);
@@ -95,7 +97,7 @@ const callApiContentPoster = () => {
   watch(getContentPoster.response, (value) => {
     const tmp = value?.data;
 
-    tmp.forEach((value: { [x: string]: any }, index: number) => {
+    tmp.forEach((value: { [x: string]: never }, index: number) => {
       contentPosterItems.value.push({
         id: value.id,
         icon: {
@@ -187,7 +189,7 @@ const callApiContentValue = () => {
     const tmp = value?.data;
     contentValueItems.value = [];
 
-    tmp.subItem.forEach((value: { [x: string]: any }) => {
+    tmp.subItem.forEach((value: { [x: string]: never }) => {
       contentValueItems.value.push({
         id: value.id,
         icon: {
@@ -234,7 +236,13 @@ const callApiPositionRecruitment = (isShowMore: boolean) => {
     pageItem.value++;
 
     tmp.forEach(
-      (value: { id: any; title: any; position: any; working_form: any; location: any }) => {
+      (value: {
+        id: never;
+        title: never;
+        position: never;
+        working_form: never;
+        location: never;
+      }) => {
         recruitWorkItems.value.push({
           id: value.id,
           title: value.title,
@@ -280,7 +288,13 @@ const callApiSearchWork = (isShowMore: boolean) => {
     pageItem.value++;
 
     tmp.forEach(
-      (value: { id: any; title: any; position: any; working_form: any; location: any }) => {
+      (value: {
+        id: never;
+        title: never;
+        position: never;
+        working_form: never;
+        location: never;
+      }) => {
         recruitWorkItems.value.push({
           id: value.id,
           title: value.title,
@@ -323,9 +337,9 @@ const handleScroll = () => {
   }
 };
 
-const hanldeScrollToVacancies = (behavior: any) => {
+const hanldeScrollToVacancies = (behavior: ScrollBehavior) => {
   const element = document.getElementById('position-rec');
-  element?.scrollIntoView({ behavior: behavior, block: 'nearest', inline: 'nearest' });
+  element?.scrollIntoView({ behavior, block: 'nearest', inline: 'nearest' });
 };
 
 //Hàm loading
@@ -420,27 +434,10 @@ onMounted(() => {
         <recruitment-card :items="contentVisionItems" :style="'type2'" />
       </div>
     </div>
-    <div style="padding: 5rem">
-      <div :class="$style.container__value">
-        <div :class="$style['container__value-heading']">
-          <div :class="$style['container__value-heading-title']">
-            <div :class="$style['container__value-heading-title-main']">
-              <div :class="$style['container__value-heading-title-main-1']">Giá Trị</div>
-              <div :class="$style['container__value-heading-title-main-2']">Cốt Lõi</div>
-            </div>
-            <div :class="$style['container__value-heading-title-3']">Từ TL Dental Group</div>
-          </div>
-          <div :class="$style['container__value-heading-content']">
-            <p>
-              {{ contentValueMainItem }}
-            </p>
-          </div>
-        </div>
-        <div :class="$style['container__value-list']">
-          <recruitment-card :items="contentValueItems" :style="'type3'" />
-        </div>
-      </div>
-    </div>
+    <recruitment-value
+      :contentValueItems="contentValueItems"
+      :contentValueMainItem="contentValueMainItem"
+    />
     <div :class="$style.container__envir">
       <div :class="$style['container__envir-title']">Môi Trường Làm Việc Chuyên Nghiệp</div>
       <div :class="$style['container__envir-block']">
