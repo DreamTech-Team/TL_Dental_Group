@@ -24,14 +24,13 @@ import RecruitmentCardWork from './RecruitmentCardWork/RecruitmentCardWork.vue';
 import { ref, onMounted, type Ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-// import RecruitmentPoster from './RecruitmentPoster/RecruitmentPoster.vue';
+import RecruitmentPoster from './RecruitmentPoster/RecruitmentPoster.vue';
 // import RecruitmentVision from './RecruitmentVision/RecruitmentVision.vue';
 // import RecruitmentValue from './RecruitmentValue/RecruitmentValue.vue';
 // import RecruitmentEnviroment from './RecruitmentEnviroment/RecruitmentEnviroment.vue';
 // import RecruitmentNavScroll from './RecruitmentNavScroll/RecruitmentNavScroll.vue';
 // import RecruitmentWork from './RecruitmentWork/RecruitmentWork.vue';
 
-import TheAnimate from '@/components/TheAnimate/TheAnimate.vue';
 import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 
 interface CardElementItem {
@@ -366,47 +365,10 @@ onMounted(() => {
 <template>
   <LoadingComponent v-if="isLoading[0] || isLoading[1] || isLoading[2]" />
   <div v-else :class="$style.container">
-    <div :class="$style.container__poster">
-      <div :class="$style['container__poster-img']">
-        <div :class="$style['container__poster-img-content']">
-          <div class="">
-            <img :src="girl1" alt="none" />
-          </div>
-          <div class="">
-            <img :src="girl2" alt="none" />
-          </div>
-        </div>
-      </div>
-      <div :class="$style['container__poster-title']">
-        <h4>Với bề dày hơn <span>2 năm</span> kinh doanh và phát triển</h4>
-        <h3>Công ty sở hữu số lượng vật liệu và dụng cụ nha khoa</h3>
-        <h2>LỚN NHẤT VIỆT NAM</h2>
-        <h1>
-          <span style="position: relative"
-            >#TOP1
-            <the-animate />
-          </span>
-        </h1>
-      </div>
-      <div :class="$style['container__poster-value']">
-        <div :class="$style['container__poster-value-item']">
-          Hơn <span>2000</span> vật liệu chỉnh nha
-        </div>
-      </div>
-      <div :class="$style['container__poster-btn']">
-        <div
-          :class="$style['container__poster-btn-item']"
-          @click="hanldeScrollToVacancies('smooth')"
-        >
-          <p>Xem vị trí tuyển dụng</p>
-        </div>
-      </div>
-      <div :class="$style['container__poster-block']">
-        <div :class="$style['container__poster-block-card']">
-          <recruitment-card :items="contentPosterItems" :style="'type1'" />
-        </div>
-      </div>
-    </div>
+    <recruitment-poster
+      :hanldeScrollToVacancies="hanldeScrollToVacancies"
+      :contentPosterItems="contentPosterItems"
+    />
     <div :class="$style.container__vision">
       <div v-if="imageVisionItems.length > 0" :class="$style['container__vision-block']">
         <div :class="$style['container__vision-block-img1']">
@@ -537,7 +499,6 @@ onMounted(() => {
           <recruitment-card-work :infor="item" />
         </div>
       </div>
-      <!-- <div v-if="hiddenShowMore"> -->
       <div>
         <div :id="$style.loader" v-if="showMore"></div>
         <div :class="$style['container__work-btn']" v-else @click="openLoading">
