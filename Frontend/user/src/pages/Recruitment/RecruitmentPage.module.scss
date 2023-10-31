@@ -190,62 +190,6 @@
     }
   }
 
-  &__value {
-    display: flex;
-    margin: auto;
-    max-width: 1200px;
-
-    &-heading {
-      width: 100%;
-      &-title {
-        &-main {
-          display: flex;
-          align-items: center;
-          &-1 {
-            display: block;
-            width: fit-content;
-            padding: 0.8rem 1rem;
-            margin-right: 1rem;
-            background-color: $complimentary_400;
-            color: white;
-            font-size: $text-2xl;
-            border-radius: 0.5rem;
-            font-weight: 500;
-          }
-
-          &-2 {
-            font-size: $text-2xl;
-            font-weight: 550;
-            color: $triadic_900;
-          }
-        }
-
-        &-3 {
-          margin-top: 0.5rem;
-          font-size: $text-3xl;
-          font-weight: 500;
-          word-spacing: 0.2rem;
-          color: $text_900;
-        }
-      }
-
-      &-content {
-        margin-top: 5rem;
-        font-size: $text-base;
-        color: $text_800;
-        width: 90%;
-      }
-    }
-
-    &-list {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-items: stretch;
-      justify-content: space-between;
-    }
-  }
-
   &__envir {
     margin-top: 7rem;
     padding: 4rem 5rem 7rem 5rem;
