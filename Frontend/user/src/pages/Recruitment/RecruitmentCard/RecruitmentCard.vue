@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { ref, onMounted, watch, type Ref, type PropType } from 'vue';
 
 interface CardElementItem {
@@ -48,7 +50,6 @@ watch(
 );
 
 onMounted(() => {
-  // if (props.style === 'type3') console.log(props.items);
   window.addEventListener('resize', checkScreenWidth);
 });
 </script>
@@ -58,11 +59,7 @@ onMounted(() => {
     v-for="(item, index) in listItems"
     :class="
       style !== 'type4'
-        ? [
-            $style[`container__card-${style}`],
-            $style[`${style}-color-background-${index + 1}`],
-            $style[`btn-${style}`]
-          ]
+        ? [$style[`container__card-${style}`], $style[`btn-${style}`]]
         : 'container__card-responsive'
     "
     :key="index"
@@ -70,11 +67,7 @@ onMounted(() => {
   >
     <div
       :id="`${style}-${index}`"
-      :class="
-        style === 'type4'
-          ? [$style[`container__card-${style}`], $style[`${style}-color-background-${index + 1}`]]
-          : $style[`${style}-block`]
-      "
+      :class="style === 'type4' ? $style[`container__card-${style}`] : $style[`${style}-block`]"
     >
       <div :class="$style['container__card-icon']" v-if="item.icon.link !== ''">
         <div
@@ -105,16 +98,7 @@ onMounted(() => {
             ]"
             v-if="props.style === 'type4'"
           >
-            <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" fill="#000000">
-              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-              <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-              <g id="SVGRepo_iconCarrier">
-                <path
-                  fill="#000000"
-                  d="M104.704 338.752a64 64 0 0 1 90.496 0l316.8 316.8 316.8-316.8a64 64 0 0 1 90.496 90.496L557.248 791.296a64 64 0 0 1-90.496 0L104.704 429.248a64 64 0 0 1 0-90.496z"
-                ></path>
-              </g>
-            </svg>
+            <FontAwesomeIcon :icon="faAngleDown" />
           </div>
         </div>
         <div>

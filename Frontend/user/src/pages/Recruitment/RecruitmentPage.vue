@@ -28,7 +28,7 @@ import useAxios, { type DataResponse } from '@/hooks/useAxios';
 // import RecruitmentVision from './RecruitmentVision/RecruitmentVision.vue';
 // import RecruitmentValue from './RecruitmentValue/RecruitmentValue.vue';
 // import RecruitmentEnviroment from './RecruitmentEnviroment/RecruitmentEnviroment.vue';
-// import RecruitmentNavScroll from './RecruitmentNavScroll/RecruitmentNavScroll.vue';
+import RecruitmentNavScroll from './RecruitmentNavScroll/RecruitmentNavScroll.vue';
 // import RecruitmentWork from './RecruitmentWork/RecruitmentWork.vue';
 
 import TheAnimate from '@/components/TheAnimate/TheAnimate.vue';
@@ -56,8 +56,6 @@ interface WorkItem {
   time: string;
   location: string;
 }
-const itemSeleted = ref(0);
-const hiddenElement = ref(false);
 const showMore = ref(false);
 // const hiddenShowMore = ref(false);
 const paramAxios = ref();
@@ -302,27 +300,6 @@ callApiContentVision();
 callApiContentValue();
 callApiPositionRecruitment(false);
 
-//Hàm set animation của element tuyển dụng
-const handleScroll = () => {
-  const element = document.getElementById('page');
-  const rect = element?.getBoundingClientRect();
-  const oneItemHeight = Number(element?.offsetHeight) / recStep.length;
-  const topParent = Number(rect?.top);
-  // console.log(rect?.top, element?.offsetHeight);
-
-  if (topParent < 0 && screen.width > 739) {
-    const index = Math.abs(topParent / oneItemHeight);
-    itemSeleted.value = Number(index.toFixed());
-    // console.log(itemSeleted.value);
-
-    const locationHidden = (recStep.length - 19 / 20) * oneItemHeight;
-
-    if (-topParent > locationHidden) hiddenElement.value = true;
-    else hiddenElement.value = false;
-    // console.log(locationHidden, hiddenElement.value);
-  }
-};
-
 const hanldeScrollToVacancies = (behavior: any) => {
   const element = document.getElementById('position-rec');
   element?.scrollIntoView({ behavior: behavior, block: 'nearest', inline: 'nearest' });
@@ -341,11 +318,6 @@ const checkScreenWidth = () => {
   screenWidth.value = currentWidth > 739;
 };
 
-const handleScrollToTopOfStepRec = () => {
-  const element = document.getElementById(`page`);
-  element?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
-};
-
 watch(
   () => searchWork.value,
   (value) => {
@@ -359,7 +331,6 @@ watch(
 );
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll);
   window.addEventListener('resize', checkScreenWidth);
 });
 </script>
@@ -495,32 +466,7 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div :class="$style.container__recruit">
-      <div
-        :class="[
-          $style['container__recruit-left'],
-          $style['sticky-container'],
-          $style[hiddenElement ? 'display-none' : '']
-        ]"
-      >
-        <div :class="$style['container__recruit-left-title']">
-          <span>Tuyển dụng TL Dental Group</span>
-          <h2>Quy Trình Tuyển Dụng</h2>
-        </div>
-        <div :class="$style['container__recruit-left-nav']">
-          <recruitment-card
-            :items="recStep"
-            :content="recStepItems"
-            :style="'type4'"
-            :on-selected="itemSeleted"
-            :handleScrollToTopOfStepRec="handleScrollToTopOfStepRec"
-          />
-        </div>
-      </div>
-      <div v-if="screenWidth" :class="$style['container__recruit-right']" id="page">
-        <recruitment-card :items="recStepItems" :style="'type5'" />
-      </div>
-    </div>
+    <recruitment-nav-scroll :screenWidth="screenWidth" />
     <div :class="$style.container__work" id="position-rec">
       <div :class="$style['container__work-heading']">
         <div :class="$style['container__work-heading-title']">Các Vị Trí Tuyển Dụng</div>

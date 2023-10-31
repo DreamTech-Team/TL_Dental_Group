@@ -1,8 +1,8 @@
 @import '@/styles/base';
+@import '@/styles/responsive';
 
 .container__recruit {
   position: relative;
-  // display: flex;
 
   &-left {
     width: 90%;
@@ -17,8 +17,6 @@
       }
 
       span {
-        // position: absolute;
-        // top: -2.5rem;
         font-size: $text-lg;
         color: $primary_500;
       }
@@ -28,6 +26,12 @@
       position: absolute;
       top: 18rem;
     }
+  }
+
+  &-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
   }
 
   .sticky-container {
@@ -41,4 +45,48 @@
   transition: all 0.2s ease;
   opacity: 0;
   display: none;
+}
+
+@include responsive_mobile() {
+  .container {
+    &__recruit {
+      margin-bottom: 1.5rem;
+      &-left {
+        position: inherit;
+        width: 100%;
+
+        &-title {
+          position: inherit;
+          top: 0;
+          width: 100%;
+          margin-bottom: 3rem;
+          padding: 2rem;
+
+          h2 {
+            font-size: $text-4xl-mobile;
+          }
+
+          span {
+            font-size: $text-xl-mobile;
+          }
+        }
+
+        &-nav {
+          position: inherit;
+          top: 0;
+        }
+      }
+
+      &-right {
+        height: auto;
+        align-items: center;
+      }
+
+      .sticky-container {
+        top: 0;
+        left: 0;
+        position: inherit;
+      }
+    }
+  }
 }
