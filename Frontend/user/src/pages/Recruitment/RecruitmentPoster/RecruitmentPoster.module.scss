@@ -1,4 +1,5 @@
 @import '@/styles/base';
+@import '@/styles/responsive';
 
 .container__poster {
   position: relative;
@@ -7,18 +8,20 @@
 
   &-img {
     position: absolute;
-    padding-left: 5rem;
+    left: 50%;
+    transform: translateX(-50%);
     width: 90vw;
     padding-top: 10rem;
+    padding-right: 20px;
     z-index: 1;
 
     &-content {
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
 
       img {
-        width: auto;
-        height: 78vh;
+        width: 100%;
+        height: auto;
       }
     }
   }
@@ -50,13 +53,18 @@
 
     h1 {
       margin-top: 1rem;
-      font-size: $text-8xl;
-      color: $complimentary_400;
+
+      span {
+        font-size: $text-8xl;
+        color: $complimentary_400;
+      }
     }
   }
 
   &-value {
     margin-top: 2rem;
+    z-index: 2;
+    position: inherit;
 
     &-item {
       margin: auto;
@@ -108,9 +116,7 @@
     margin-top: 11rem;
     position: inherit;
     z-index: 2;
-
     &-card {
-      position: relative;
       margin: auto;
       padding: 4rem;
       width: 80vw;
@@ -122,37 +128,88 @@
   }
 }
 
-.btn-edit {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 5.2rem;
-  width: 5.2rem;
-  border-radius: 3rem;
-
-  svg {
-    font-size: 2.3rem;
-  }
-
-  &-1 {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background-color: white;
-    color: $primary_900;
-  }
-
-  &-2 {
-    position: absolute;
-    top: 3rem;
-    right: 3rem;
-    background-color: $primary_900;
-    color: white;
+@include responsive_tablet() {
+  .container {
+    &__poster {
+      &-img {
+        padding-top: 12.4rem;
+      }
+    }
   }
 }
 
-.btn-edit:hover {
-  cursor: pointer;
-  opacity: 0.8;
+@include responsive_mobile() {
+  .container {
+    &__poster {
+      &-img {
+        padding-left: 0rem;
+        width: 100vw;
+        &-content {
+          width: 100vw;
+          img {
+            width: auto;
+            height: 20vh;
+          }
+        }
+      }
+
+      &-title {
+        font-size: $text-base-mobile;
+        margin: auto;
+        max-width: 80vw;
+
+        h3 {
+          font-size: $text-2xl-mobile;
+        }
+
+        h2 {
+          font-size: $text-3xl-mobile;
+        }
+
+        h1 {
+          font-size: $text-4xl-mobile;
+        }
+      }
+
+      &-value {
+        display: none;
+
+        &-item {
+          padding: 0.5rem 1rem;
+          font-size: $text-xs-mobile;
+          word-spacing: 0;
+        }
+
+        span {
+          font-size: $text-lg-mobile;
+        }
+      }
+
+      &-btn {
+        margin-top: 2rem;
+
+        &-item {
+          padding: 0.5rem 1rem;
+          border: 0.1rem solid $color_primary;
+          border-radius: 0.5rem;
+
+          p {
+            font-size: $text-sm-mobile;
+          }
+        }
+      }
+
+      &-block {
+        margin-top: 1.5rem;
+
+        &-card {
+          padding: 1rem 2rem;
+          width: 100vw;
+          display: block;
+          text-align: -webkit-center;
+          border-radius: 0rem;
+        }
+      }
+    }
+  }
 }
