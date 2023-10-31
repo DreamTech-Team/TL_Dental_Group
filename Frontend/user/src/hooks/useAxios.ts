@@ -60,7 +60,7 @@ const useAxios = <DataResponse>(
         }
       } catch (err: unknown) {
         if (err instanceof AxiosError) {
-          console.log(err);
+          console.error(err);
           error.value = err;
         }
       } finally {
