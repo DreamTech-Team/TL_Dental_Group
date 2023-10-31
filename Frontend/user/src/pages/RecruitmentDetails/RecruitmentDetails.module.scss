@@ -194,7 +194,6 @@
 
     &__content {
       display: block;
-      // margin: 1rem 2rem;
       margin: 0;
 
       &-left {
@@ -220,6 +219,10 @@
       &-right {
         &-title {
           font-size: $text-xl-mobile;
+        }
+
+        &-content {
+          padding: 0 1rem;
         }
       }
     }

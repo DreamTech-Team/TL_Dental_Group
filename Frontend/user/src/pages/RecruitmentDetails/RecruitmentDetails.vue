@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import logo from '@/assets/imgs/logo.png';
-import RecruitmentDetailsItem from './RecruitmentDetailsItem/RecruitmentDetailsItem.vue';
-import RecruitmentCard from '../Recruitment/RecruitmentCard/RecruitmentCard.vue';
-import { data } from './RecruitmentDetailsHandle';
-import { ic_bag, ic_hourglass, ic_location } from '@/assets/imgs/Recruitment/RecruitmentImgs';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+import RecruitmentCard from '../Recruitment/RecruitmentCard/RecruitmentCard.vue';
 import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
+
+import logo from '@/assets/imgs/logo.png';
+import { ic_bag, ic_hourglass, ic_location } from '@/assets/imgs/Recruitment/RecruitmentImgs';
+import { data } from './RecruitmentDetailsHandle';
 
 const typeRecuit = ref([
   {
