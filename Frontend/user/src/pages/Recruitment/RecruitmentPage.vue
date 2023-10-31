@@ -8,8 +8,6 @@ import {
   img3,
   img4,
   img5,
-  ceo,
-  imgHand,
   ic_clock,
   ic_DaiNgo,
   ic_light
@@ -25,7 +23,7 @@ import { ref, onMounted, type Ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 // import RecruitmentPoster from './RecruitmentPoster/RecruitmentPoster.vue';
-// import RecruitmentVision from './RecruitmentVision/RecruitmentVision.vue';
+import RecruitmentVision from './RecruitmentVision/RecruitmentVision.vue';
 // import RecruitmentValue from './RecruitmentValue/RecruitmentValue.vue';
 // import RecruitmentEnviroment from './RecruitmentEnviroment/RecruitmentEnviroment.vue';
 // import RecruitmentNavScroll from './RecruitmentNavScroll/RecruitmentNavScroll.vue';
@@ -59,7 +57,6 @@ interface WorkItem {
 const itemSeleted = ref(0);
 const hiddenElement = ref(false);
 const showMore = ref(false);
-// const hiddenShowMore = ref(false);
 const paramAxios = ref();
 
 const iconCard = [ic_clock, ic_DaiNgo, ic_light];
@@ -407,19 +404,10 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <div :class="$style.container__vision">
-      <div v-if="imageVisionItems.length > 0" :class="$style['container__vision-block']">
-        <div :class="$style['container__vision-block-img1']">
-          <img :src="imageVisionItems[0].image" alt="none" />
-        </div>
-        <div :class="$style['container__vision-block-img2']">
-          <img :src="imageVisionItems[1].image" alt="none" />
-        </div>
-      </div>
-      <div :class="$style['container__vision-content']">
-        <recruitment-card :items="contentVisionItems" :style="'type2'" />
-      </div>
-    </div>
+    <recruitment-vision
+      :contentVisionItems="contentVisionItems"
+      :imageVisionItems="imageVisionItems"
+    />
     <div style="padding: 5rem">
       <div :class="$style.container__value">
         <div :class="$style['container__value-heading']">
