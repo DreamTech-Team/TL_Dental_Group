@@ -1,7 +1,7 @@
 @import '@/styles/base';
+@import '@/styles/responsive';
 
 .container__envir {
-  position: relative;
   margin-top: 7rem;
   padding: 4rem 5rem 7rem 5rem;
   background-color: rgba($color: $primary_50, $alpha: 0.5);
@@ -17,6 +17,7 @@
     display: flex;
     justify-content: space-between;
     margin-top: 5rem;
+    gap: 10px;
 
     img {
       border-radius: 30rem;
@@ -24,8 +25,8 @@
 
     &-img1 {
       img {
-        width: 25.6rem;
-        height: 41.6rem;
+        width: 100%;
+        height: auto;
       }
 
       &-center {
@@ -46,8 +47,8 @@
 
     &-img2 {
       img {
-        width: 18rem;
-        height: 26rem;
+        width: 100%;
+        height: auto;
       }
 
       &-circle {
@@ -75,125 +76,61 @@
   }
 }
 
-.btn-edit {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 5.2rem;
-  width: 5.2rem;
-  border-radius: 3rem;
+@include responsive_mobile() {
+  .container {
+    &__envir {
+      margin-top: 2rem;
+      padding: 2rem 2rem 3rem 2rem;
 
-  svg {
-    font-size: 2.3rem;
-  }
+      &-title {
+        font-size: $text-2xl-mobile;
+      }
 
-  &-2 {
-    position: absolute;
-    top: 3rem;
-    right: 3rem;
-    background-color: $primary_900;
-    color: white;
-  }
-}
+      &-block {
+        margin-top: 3rem;
+        overflow-x: auto;
 
-.btn-edit:hover {
-  cursor: pointer;
-  opacity: 0.8;
-}
+        &-img1 {
+          margin-right: 2rem;
+          img {
+            width: auto;
+            height: 25vh;
+          }
 
-.block__img {
-  position: relative;
+          &-center {
+            width: auto;
+            height: 30vh;
+          }
+        }
 
-  &-edit {
-    height: 99%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 30rem;
-    opacity: 0;
+        &-img2 {
+          margin-right: 2rem;
 
-    input {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-      border-radius: 30rem;
-      font-size: 0;
-    }
+          img {
+            width: auto;
+            height: 20vh;
+          }
 
-    input:hover {
-      cursor: pointer;
-    }
+          &-circle {
+            margin: auto;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 5rem;
 
-    svg {
-      font-size: 4rem;
-      color: $primary_900;
-      background-color: white;
-      padding: 2rem;
-      border-radius: 5rem;
+            &-1 {
+              margin-top: 4rem;
+            }
+
+            &-2 {
+              margin-bottom: 4rem;
+            }
+          }
+        }
+      }
+
+      &-block::-webkit-scrollbar {
+        height: 0;
+      }
     }
   }
-
-  &-edit:hover {
-    cursor: pointer;
-    opacity: 1;
-  }
-}
-
-.update-btn {
-  position: absolute;
-  top: 1.8rem;
-  right: 3rem;
-  display: flex;
-  justify-content: center;
-  margin-top: 2rem;
-  margin-bottom: 3rem;
-
-  &-submit {
-    width: 13rem;
-    padding: 0.5rem 0;
-    border-radius: 3rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: $text-lg;
-    font-weight: 500;
-  }
-
-  &-cancel {
-    border: 0.2rem solid $primary_700;
-    color: $text_800;
-  }
-
-  &-update {
-    margin-left: 3rem;
-    background: linear-gradient(270deg, #22d1ee 0%, #3d5af1 100%);
-    color: white;
-  }
-
-  &-submit:hover {
-    cursor: pointer;
-    opacity: 0.8;
-  }
-}
-
-.container-popup {
-  width: 50rem;
-  height: 20rem;
-}
-
-.confirm-button {
-  font-size: $text-lg !important;
-}
-
-.deny-button {
-  font-size: $text-lg !important;
 }
