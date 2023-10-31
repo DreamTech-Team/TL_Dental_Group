@@ -1,34 +1,27 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { type PropType, watch, ref } from 'vue';
 
-import { recruitWorkItems } from '../RecruitmentHandle';
 import RecruitmentCardWork from '../RecruitmentCardWork/RecruitmentCardWork.vue';
 
-const props = defineProps({ getElementRec: { type: Function, required: true } });
+interface WorkItem {
+  id: string;
+  title: string;
+  typeWork: string;
+  time: string;
+  location: string;
+}
 
-const moreRecruitWorkItems = ref();
-const showMore = ref(false);
+const props = defineProps({
+  handleEventGetTextInput: { type: Function, required: true },
+  recruitWorkItems: { type: Object as PropType<WorkItem[]>, required: true },
+  openLoading: { type: Function, required: true },
+  showMore: { type: Boolean, required: true }
+});
 
-//Hàm cập nhật item sau khi loading
-const showPageCompleted = () => {
-  showMore.value = false;
+const searchWork = ref('');
 
-  if (!moreRecruitWorkItems.value) {
-    moreRecruitWorkItems.value = [...recruitWorkItems];
-  } else recruitWorkItems.forEach((item) => moreRecruitWorkItems.value.push(item));
-
-  // console.log(moreRecruitWorkItems.value, recruitWorkItems);
-};
-
-//Hàm loading
-const openLoading = () => {
-  showMore.value = true;
-  setTimeout(showPageCompleted, 3000);
-};
-
-onMounted(() => {
-  const element = document.getElementById('position-rec');
-  props.getElementRec(element);
+watch(searchWork, (value) => {
+  props.handleEventGetTextInput(value);
 });
 </script>
 <template>
@@ -36,7 +29,7 @@ onMounted(() => {
     <div :class="$style['container__work-heading']">
       <div :class="$style['container__work-heading-title']">Các Vị Trí Tuyển Dụng</div>
       <div :class="$style['container__work-heading-filter']">
-        <input type="text" name="filter" id="" placeholder="Tìm kiếm" />
+        <input v-model="searchWork" type="text" name="filter" id="" placeholder="Tìm kiếm" />
       </div>
     </div>
     <div :class="$style['container__work-staff']">
@@ -48,18 +41,11 @@ onMounted(() => {
         <recruitment-card-work :infor="item" />
       </div>
     </div>
-    <div :class="[$style['container__work-staff'], $style['animate-bottom']]">
-      <div
-        :class="$style['container__work-staff-item']"
-        v-for="(item, index) in moreRecruitWorkItems"
-        :key="index"
-      >
-        <recruitment-card-work :infor="item" />
+    <div>
+      <div :id="$style.loader" v-if="showMore"></div>
+      <div :class="$style['container__work-btn']" v-else @click="props.openLoading">
+        <p>Xem thêm</p>
       </div>
-    </div>
-    <div :id="$style.loader" v-if="showMore === true"></div>
-    <div :class="$style['container__work-btn']" v-else @click="openLoading">
-      <p>Xem thêm</p>
     </div>
   </div>
 </template>

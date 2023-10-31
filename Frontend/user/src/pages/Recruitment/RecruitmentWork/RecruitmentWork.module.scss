@@ -1,4 +1,5 @@
 @import '@/styles/base';
+@import '@/styles/responsive';
 
 .container__work {
   margin: 5rem 10rem;
@@ -21,19 +22,20 @@
         padding: 1rem 3rem 1rem 1rem;
         width: 35rem;
         border: 0.1rem solid $text_300;
+        border-radius: 0.5rem;
       }
     }
   }
 
   &-staff {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
     justify-content: space-between;
+    gap: 20px;
     margin-top: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(370px, 1fr));
 
     &-item {
-      width: 46%;
-      margin: 2rem;
+      max-width: 100%;
       border: 0.2rem solid $text_100;
       padding: 2rem;
     }
@@ -90,33 +92,55 @@
   }
 }
 
-/* Add animation to "page content" */
-.animate-bottom {
-  position: relative;
-  -webkit-animation-name: animatebottom;
-  -webkit-animation-duration: 1s;
-  animation-name: animatebottom;
-  animation-duration: 1s;
-}
+@include responsive_mobile() {
+  .container {
+    &__work {
+      margin: 3rem 2rem;
+      margin: 0;
 
-@-webkit-keyframes animatebottom {
-  from {
-    bottom: -100px;
-    opacity: 0;
-  }
-  to {
-    bottom: 0px;
-    opacity: 1;
-  }
-}
+      &-heading {
+        display: block;
 
-@keyframes animatebottom {
-  from {
-    bottom: -100px;
-    opacity: 0;
-  }
-  to {
-    bottom: 0;
-    opacity: 1;
+        &-title {
+          font-size: $text-4xl-mobile;
+          margin-left: 1rem;
+        }
+
+        &-filter {
+          margin: 3rem 2rem;
+
+          input {
+            background-size: 2.5rem;
+            font-size: $text-base-mobile;
+            padding: 1rem 1rem 1rem 1rem;
+            width: 100%;
+            border: 0.1rem solid $text_300;
+          }
+        }
+      }
+
+      &-staff {
+        margin-top: 2rem;
+
+        &-item {
+          margin: 0.5rem 2rem;
+          border: 0.2rem solid $text_100;
+          padding: 2rem;
+        }
+      }
+
+      &-btn {
+        text-align: center;
+        margin-top: 3rem;
+        border: 0.1rem solid $primary_700;
+        padding: 1rem 2rem;
+        border-radius: 2rem;
+        font-size: $text-base-mobile;
+
+        p {
+          width: 10rem;
+        }
+      }
+    }
   }
 }
