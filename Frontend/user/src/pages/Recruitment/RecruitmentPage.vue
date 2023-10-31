@@ -29,7 +29,7 @@ import useAxios, { type DataResponse } from '@/hooks/useAxios';
 // import RecruitmentValue from './RecruitmentValue/RecruitmentValue.vue';
 // import RecruitmentEnviroment from './RecruitmentEnviroment/RecruitmentEnviroment.vue';
 // import RecruitmentNavScroll from './RecruitmentNavScroll/RecruitmentNavScroll.vue';
-// import RecruitmentWork from './RecruitmentWork/RecruitmentWork.vue';
+import RecruitmentWork from './RecruitmentWork/RecruitmentWork.vue';
 
 import TheAnimate from '@/components/TheAnimate/TheAnimate.vue';
 import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
@@ -249,6 +249,10 @@ const callApiPositionRecruitment = (isShowMore: boolean) => {
 
     // if (recruitWorkItems.value.length < totalItems.value) hiddenShowMore.value = true;
   });
+};
+
+const handleEventGetTextInput = (str: string) => {
+  searchWork.value = str;
 };
 
 const callApiSearchWork = (isShowMore: boolean) => {
@@ -521,30 +525,12 @@ onMounted(() => {
         <recruitment-card :items="recStepItems" :style="'type5'" />
       </div>
     </div>
-    <div :class="$style.container__work" id="position-rec">
-      <div :class="$style['container__work-heading']">
-        <div :class="$style['container__work-heading-title']">Các Vị Trí Tuyển Dụng</div>
-        <div :class="$style['container__work-heading-filter']">
-          <input v-model="searchWork" type="text" name="filter" id="" placeholder="Tìm kiếm" />
-        </div>
-      </div>
-      <div :class="$style['container__work-staff']">
-        <div
-          :class="$style['container__work-staff-item']"
-          v-for="(item, index) in recruitWorkItems"
-          :key="index"
-        >
-          <recruitment-card-work :infor="item" />
-        </div>
-      </div>
-      <!-- <div v-if="hiddenShowMore"> -->
-      <div>
-        <div :id="$style.loader" v-if="showMore"></div>
-        <div :class="$style['container__work-btn']" v-else @click="openLoading">
-          <p>Xem thêm</p>
-        </div>
-      </div>
-    </div>
+    <recruitment-work
+      :handleEventGetTextInput="handleEventGetTextInput"
+      :recruitWorkItems="recruitWorkItems"
+      :openLoading="openLoading"
+      :showMore="showMore"
+    />
   </div>
 </template>
 
