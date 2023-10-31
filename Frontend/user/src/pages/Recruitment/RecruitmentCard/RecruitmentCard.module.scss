@@ -2,7 +2,6 @@
 @import '@/styles/responsive';
 
 .container__card {
-  // width: 100%;
   &-responsive {
     &-item {
       display: none;
@@ -41,8 +40,6 @@
   }
 
   &-type2 {
-    // width: 80%;
-
     &-title {
       margin-bottom: 2rem;
       margin-top: 3rem;
@@ -198,8 +195,6 @@
   }
 
   &-type6 {
-    // display: flex;
-    // align-items: center;
     .type6-block {
       display: flex;
       align-items: center;
@@ -276,22 +271,6 @@
   background-color: $analogous_500;
 }
 
-.type5-color-background-2 {
-  // background-color: rgba($color: $primary_100, $alpha: 0.2);
-  background-color: white;
-}
-.type5-color-background-1 {
-  background-color: white;
-}
-.type5-color-background-3 {
-  // background-color: rgba($color: $complimentary_100, $alpha: 0.2);
-  background-color: white;
-}
-.type5-color-background-4 {
-  // background-color: rgba($color: $triadic_100, $alpha: 0.2);
-  background-color: white;
-}
-
 .display-none {
   display: none;
 }
@@ -336,7 +315,6 @@
     }
 
     &-type2 {
-      // width: 80%;
       padding-bottom: 1rem;
 
       &-title {
@@ -421,10 +399,7 @@
           transition: transform 1s;
           width: 2rem;
           height: auto;
-
-          path {
-            fill: $text_800;
-          }
+          color: $text_800;
         }
 
         &-active svg {
