@@ -6,6 +6,33 @@ import router from '@/router/index';
 import TheAnimate from '@/components/TheAnimate/TheAnimate.vue';
 
 interface Company {
+  id: string;
+  name: string;
+  logo: string;
+  description: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+  outstandingProductId: string;
+}
+
+interface Category1 {
+  id: string;
+  title: string;
+  img: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+}
+
+interface Category2 {
+  id: string;
+  title: string;
+  slug: string;
+  createAt: string;
+}
+
+interface OutStandingCompany {
   outstandingProduct: {
     id: string;
     name: string;
@@ -20,42 +47,12 @@ interface Company {
     createAt: string;
     fkCategory: {
       id: string;
-      companyId: {
-        id: string;
-        name: string;
-        logo: string;
-        description: string;
-        highlight: number;
-        slug: string;
-        createAt: string;
-        outstandingProductId: string;
-      };
-      cate1Id: {
-        id: string;
-        title: string;
-        img: string;
-        highlight: number;
-        slug: string;
-        createAt: string;
-      };
-      cate2Id: {
-        id: string;
-        title: string;
-        slug: string;
-        createAt: string;
-      };
+      companyId: Company;
+      cate1Id: Category1;
+      cate2Id: Category2;
     };
   };
-  company: {
-    id: string;
-    name: string;
-    logo: string;
-    description: string;
-    highlight: number;
-    slug: string;
-    createAt: string;
-    outstandingProductId: string;
-  };
+  company: Company;
 }
 
 interface Item {
@@ -271,7 +268,7 @@ watch(response, () => {
 });
 
 //Get highlight compaines
-const companies = ref<Company[]>([]);
+const companies = ref<OutStandingCompany[]>([]);
 const deps1 = ref([]);
 const results = useAxios<DataResponse>('get', '/company?highlight=true', {}, {}, deps1.value);
 
@@ -298,7 +295,7 @@ const calculateWidths = () => {
 };
 
 //Random item
-const getRandomItems = (array: Company[], count: number) => {
+const getRandomItems = (array: OutStandingCompany[], count: number) => {
   const shuffled = array.slice();
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -312,13 +309,13 @@ watch(
   results.response,
   async () => {
     if (results.response?.value?.data.length > 0) {
-      const randomHighlightedCompanies: Company[] =
+      const randomHighlightedCompanies: OutStandingCompany[] =
         results.response.value?.data >= 4
           ? getRandomItems(results.response.value?.data, 4)
           : results.response.value?.data;
       companies.value = randomHighlightedCompanies;
 
-      bannerItems.value = companies.value.map((company: Company, idx) => {
+      bannerItems.value = companies.value.map((company: OutStandingCompany, idx) => {
         return {
           src: company.company.logo,
           alt: company.company.name,
