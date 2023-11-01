@@ -17,7 +17,7 @@ const deps = ref([]);
 const { response } = useAxios<DataResponse>('get', '/company', {}, {}, deps.value);
 
 watch(response, () => {
-  companies.value = response.value?.data;
+  companies.value = response?.value?.data;
 
   if (companies.value) {
     const sortedCompanies = [...companies.value];
@@ -38,21 +38,13 @@ watch(response, () => {
     <h3>NHÃN HÀNG HỢP TÁC</h3>
     <div :class="[$style['home__company-ctn'], 'logos']">
       <div :class="[$style['home__company-list'], 'logos-slide']" ref="companyList">
-        <div
-          :class="$style['home__company-item']"
-          v-for="(company, index) in companies"
-          :key="index"
-        >
-          <img :src="company.logo" :alt="company.name" />
+        <div :class="$style['home__company-item']" v-for="company in companies" :key="company.id">
+          <img :src="company?.logo" :alt="company?.name" />
         </div>
       </div>
       <div :class="[$style['home__company-list'], 'logos-slide']" ref="companyList">
-        <div
-          :class="$style['home__company-item']"
-          v-for="(company, index) in companies"
-          :key="index"
-        >
-          <img :src="company.logo" :alt="company.name" />
+        <div :class="$style['home__company-item']" v-for="company in companies" :key="company.id">
+          <img :src="company?.logo" :alt="company?.name" />
         </div>
       </div>
     </div>
