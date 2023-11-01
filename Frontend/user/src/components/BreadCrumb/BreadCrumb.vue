@@ -20,6 +20,13 @@ interface Dictionaries {
   name: string;
 }
 
+interface Tag {
+  id: string;
+  name: string;
+  slug: string;
+  createAt: string;
+}
+
 interface News {
   id: string;
   title: string;
@@ -30,14 +37,34 @@ interface News {
   detailMobile: string;
   highlight: number;
   createAt: string;
-  tags: [
-    {
-      id: string;
-      name: string;
-      slug: string;
-      createAt: string;
-    }
-  ];
+  tags: Tag[];
+}
+
+interface Company {
+  id: string;
+  name: string;
+  logo: string;
+  description: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+  outstandingProductId: string;
+}
+
+interface Category1 {
+  id: string;
+  title: string;
+  img: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+}
+
+interface Category2 {
+  id: string;
+  title: string;
+  slug: string;
+  createAt: string;
 }
 
 interface Product {
@@ -54,30 +81,9 @@ interface Product {
   createAt: string;
   fkCategory: {
     id: string;
-    companyId: {
-      id: string;
-      name: string;
-      logo: string;
-      description: string;
-      highlight: number;
-      slug: string;
-      createAt: string;
-      outstandingProductId: string;
-    };
-    cate1Id: {
-      id: string;
-      title: string;
-      img: string;
-      highlight: 3;
-      slug: string;
-      createAt: string;
-    };
-    cate2Id: {
-      id: string;
-      title: string;
-      slug: string;
-      createAt: string;
-    };
+    companyId: Company;
+    cate1Id: Category1;
+    cate2Id: Category2;
   };
 }
 
@@ -104,7 +110,7 @@ const pathAD = defineProps({
   }
 });
 
-const defaultDictionaries = ref([
+const defaultDictionaries = ref<Dictionaries[]>([
   {
     slug: 'tintuc',
     name: 'Tin tức'
@@ -174,7 +180,7 @@ const getAllCategory = () => {
 
   if (!isAllCategoryLoaded) {
     watch(getCate1.response, () => {
-      const responseData = getCate1.response.value?.data;
+      const responseData = getCate1.response?.value?.data;
       if (responseData && responseData instanceof Array) {
         cate1.value = responseData;
         cate1.value.forEach((item: Cate1) => {
@@ -190,7 +196,7 @@ const getAllCategory = () => {
     });
 
     watch(getCate2.response, () => {
-      const responseData2 = getCate2.response.value?.data;
+      const responseData2 = getCate2.response?.value?.data;
       if (responseData2 && responseData2 instanceof Array) {
         cate2.value = responseData2;
         cate2.value.forEach((item: Cate2) => {
@@ -221,7 +227,7 @@ if (route.path.startsWith('/tintuc')) {
     const news = ref<News[]>([]);
     const getNews = useAxios<DataResponse>('get', '/news?pageSize=1000000', {}, {}, deps.value);
     watch(getNews.response, () => {
-      news.value = getNews.response.value?.data?.data;
+      news.value = getNews.response?.value?.data?.data;
       news.value.forEach((item) => {
         const news = {
           slug: item.slug,
@@ -247,7 +253,7 @@ if (route.path.startsWith('/tintuc')) {
       deps.value
     );
     watch(getProducts.response, () => {
-      products.value = getProducts.response.value?.data?.data;
+      products.value = getProducts.response?.value?.data?.data;
       products.value.forEach((item) => {
         const news = {
           slug: item.slug,
