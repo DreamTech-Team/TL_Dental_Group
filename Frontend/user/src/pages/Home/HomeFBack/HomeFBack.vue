@@ -2,6 +2,7 @@
 import { ref, onMounted, computed, onUnmounted, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faStar, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { roundNumber } from '@/utils/roundNumber';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 interface Feedback {
@@ -99,14 +100,7 @@ watch(response, () => {
   lenght.value = feedbacks?.value?.length;
 });
 
-//Function 4.2 to 4.0
-const roundNumber = (number: number, decimalPlaces: number) => {
-  const factor = Math.pow(10, decimalPlaces);
-  return Math.round(number * factor) / factor;
-};
-
-onMounted(() => {
-  const container = document.getElementById('feedback-wrapper');
+const updateFeedbackContainer = (container: HTMLElement | null) => {
   if (container) {
     if (window.innerWidth < 739) {
       isPhone.value = true;
@@ -117,22 +111,16 @@ onMounted(() => {
     } else {
       wItem.value = container.offsetWidth / 3;
     }
+    tranfX.value = 0;
   }
+};
+
+onMounted(() => {
+  const container = document.getElementById('feedback-wrapper');
+  updateFeedbackContainer(container);
 
   resizeListener = function () {
-    const container = document.getElementById('feedback-wrapper');
-    if (container) {
-      if (window.innerWidth < 739) {
-        isPhone.value = true;
-        wItem.value = container.offsetWidth;
-      } else if (window.innerWidth >= 739 && window.innerWidth <= 1024) {
-        wItem.value = container.offsetWidth / 2;
-        isTablet.value = true;
-      } else {
-        wItem.value = container.offsetWidth / 3;
-      }
-      tranfX.value = 0;
-    }
+    updateFeedbackContainer(container);
   };
 
   if (window.innerWidth >= 739) {
