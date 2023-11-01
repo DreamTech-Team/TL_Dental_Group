@@ -38,20 +38,12 @@ watch(response, () => {
     <h3>NHÃN HÀNG HỢP TÁC</h3>
     <div :class="[$style['home__company-ctn'], 'logos']">
       <div :class="[$style['home__company-list'], 'logos-slide']" ref="companyList">
-        <div
-          :class="$style['home__company-item']"
-          v-for="(company, index) in companies"
-          :key="index"
-        >
+        <div :class="$style['home__company-item']" v-for="company in companies" :key="company.id">
           <img :src="company?.logo" :alt="company?.name" />
         </div>
       </div>
       <div :class="[$style['home__company-list'], 'logos-slide']" ref="companyList">
-        <div
-          :class="$style['home__company-item']"
-          v-for="(company, index) in companies"
-          :key="index"
-        >
+        <div :class="$style['home__company-item']" v-for="company in companies" :key="company.id">
           <img :src="company?.logo" :alt="company?.name" />
         </div>
       </div>
