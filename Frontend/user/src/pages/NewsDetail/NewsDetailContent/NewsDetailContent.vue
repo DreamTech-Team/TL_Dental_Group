@@ -3,7 +3,7 @@ import { onMounted, ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
-import dayjs from 'dayjs';
+import { handleFormatTime } from '@/utils/handleFornatTime';
 import 'dayjs/locale/vi';
 import Time from '@/assets/imgs/NewsDetail/Time.png';
 
@@ -42,10 +42,10 @@ const widthMobile = ref(window.innerWidth);
 const getNews = useAxios<DataResponse>('get', '/news', {}, {}, variableChangeNews.value);
 
 watch(getNews.response, () => {
-  dataNews.value = getNews.response.value?.data?.data;
+  dataNews.value = getNews.response?.value?.data?.data;
 
   dataNews.value.forEach((item, idx) => {
-    if (item.slug === dataRender.value.slug) indexNews.value = idx;
+    if (item.slug === dataRender.value?.slug) indexNews.value = idx;
   });
 
   // Xử lí nút button chuyển tin tức
@@ -64,15 +64,6 @@ watch(getNews.response, () => {
     contentButtonRight.value = dataNews.value[indexNews.value + 1].title;
   }
 });
-
-// Format lại thời gian
-const handleFormatTime = (time: string) => {
-  const inputDate = dayjs(time).locale('vi'); // Đặt ngôn ngữ
-
-  const daysOfWeek = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
-
-  return `${daysOfWeek[inputDate.day()]}, ${inputDate.format('DD/MM/YYYY, HH:mm [GMT]Z')}`;
-};
 
 // Xử lí chuyển bài viết bên trái
 const handleClickLeft = () => {
