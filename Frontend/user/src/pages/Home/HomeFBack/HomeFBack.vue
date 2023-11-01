@@ -6,6 +6,7 @@ import { roundNumber } from '@/utils/roundNumber';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 interface Feedback {
+  id: string;
   title: string;
   image: string;
   content: string;
@@ -17,6 +18,7 @@ interface Feedback {
 //Init data structure
 const feedbacks = ref<Feedback[]>([
   {
+    id: '',
     title: 'DỤNG CỤ CHỈNH NHA ABC',
     image: '',
     content: '',
@@ -148,8 +150,8 @@ onUnmounted(() => {
           @touchend="handleTouchend"
         >
           <div
-            v-for="(feedback, index) in feedbacks"
-            :key="index"
+            v-for="feedback in feedbacks"
+            :key="feedback.id"
             :class="$style['home__feedback-item']"
             :style="{ width: widthItemComputed }"
           >
