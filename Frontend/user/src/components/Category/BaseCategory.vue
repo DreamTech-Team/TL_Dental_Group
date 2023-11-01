@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick, toRefs, watch, watchEffect, onMounted } from 'vue';
-// import { RouteRecordName, useRoute } from 'vue-router';
+import { ref, nextTick, toRefs, watch, onMounted, Ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
@@ -21,33 +20,30 @@ interface DataRender {
 }
 
 const dataCate = useDataRenderStore();
-const { selectedItem, selectedItem2, selectedItem3, typeCate } = toRefs(saveActive());
-const { isAnimationVisible, isAnimationVisible2 } = toRefs(setAnnimation());
 const saveState = saveActive();
-
 const setAnni = setAnnimation();
-const selectedCategory1 = ref('');
-const selectedCategory2 = ref('');
-const selectedCategory3 = ref('');
-const emit = defineEmits(['slug-category1', 'slug-category2', 'slug-category3']);
-const animationContainer = ref<HTMLElement | null>(null);
-
 // Lấy thông tin đang định tuyến từ Vue Router
 const router = useRouter();
-
 const valueChange = ref([]);
 const dataRender = ref<DataRender[]>([]);
 const isLoadingCategory = ref(false);
+
+const { selectedItem, selectedItem2, selectedItem3, typeCate } = toRefs(saveActive());
+const { isAnimationVisible, isAnimationVisible2 } = toRefs(setAnnimation());
+
+const selectedCategory1 = ref('');
+const selectedCategory2 = ref('');
+const selectedCategory3 = ref('');
+const animationContainer = ref<HTMLElement | null>(null);
+const emit = defineEmits(['slug-category1', 'slug-category2', 'slug-category3']);
 
 if (dataCate.dataRender.length === 0) {
   const { response, isLoading } = useAxios<DataResponse>('get', '/cate', {}, {}, valueChange.value);
 
   watch(response, () => {
     isLoadingCategory.value = isLoading.value;
-
     if (response.value?.data) {
       dataRender.value = convertDataCate.handleDataRender(response.value?.data, dataRender.value);
-
       dataCate.setDataRender(dataRender.value);
     }
   });
@@ -55,66 +51,62 @@ if (dataCate.dataRender.length === 0) {
   dataRender.value = dataCate.dataRender;
 }
 
-const toggleAnimation = (index: number) => {
-  if (isAnimationVisible.value && selectedItem.value === index) {
-    isAnimationVisible.value = false;
-    setAnni.setAnnimationCategory(isAnimationVisible.value);
-    saveState.setTypeCategory('notHeader');
-  } else {
-    isAnimationVisible.value = true;
-    setAnni.setAnnimationCategory(isAnimationVisible.value);
-    saveState.setTypeCategory('notHeader');
-  }
-  if (isAnimationVisible.value) {
-    nextTick(() => {
-      const animationContainer = document.getElementById(`id-${index}`);
-      const dropdownContainer = document.getElementById('dropdown-container');
-      if (animationContainer && dropdownContainer) {
-        const dropdownContainerRect = dropdownContainer.getBoundingClientRect();
-        const animationContainerRect = animationContainer.getBoundingClientRect();
+// Hàm chung để xử lý hiển thị và cuộn
+const toggleAnimationCommon = (
+  index: number,
+  idx: number | undefined,
+  containerId: string,
+  isAnimationVisibleValue: Ref<boolean>,
+  setAnimationCategoryFn: (value: boolean) => void
+) => {
+  const isVisible = isAnimationVisibleValue.value;
+  const isSelected =
+    selectedItem.value === index && (idx !== undefined ? selectedItem2.value === idx : true);
 
-        if (
-          animationContainerRect.top < dropdownContainerRect.top ||
-          animationContainerRect.bottom > dropdownContainerRect.bottom
-        ) {
-          const scrollPosition = animationContainer.offsetTop - dropdownContainer.offsetTop;
-          dropdownContainer.scrollTop = scrollPosition;
+  isAnimationVisibleValue.value = isVisible === isSelected ? !isVisible : true;
+  setAnimationCategoryFn(isAnimationVisibleValue.value);
+  saveState.setTypeCategory('notHeader');
+
+  if (isAnimationVisibleValue.value) {
+    nextTick(() => {
+      const animationContainer = document.getElementById(
+        `id-${index}${idx !== undefined ? `-${idx}` : ''}`
+      );
+      const dropdownContainer = document.getElementById(containerId);
+      if (animationContainer && dropdownContainer) {
+        const aRect = animationContainer.getBoundingClientRect();
+        const dRect = dropdownContainer.getBoundingClientRect();
+
+        if (aRect.top < dRect.top || aRect.bottom > dRect.bottom) {
+          const scrollPos = animationContainer.offsetTop - dropdownContainer.offsetTop;
+          dropdownContainer.scrollTop = scrollPos;
         }
       }
     });
   }
 };
 
-const toggleAnimation2 = (index: number, idx: number) => {
-  if (isAnimationVisible2.value && selectedItem.value === index && selectedItem2.value === idx) {
-    isAnimationVisible2.value = false;
-    setAnni.setAnnimationCategory2(isAnimationVisible2.value);
-    saveState.setTypeCategory('notHeader');
-  } else {
-    selectedItem3.value = -1;
-    isAnimationVisible2.value = true;
-    setAnni.setAnnimationCategory2(isAnimationVisible2.value);
-    saveState.setTypeCategory('notHeader');
-  }
-  if (isAnimationVisible2.value) {
-    nextTick(() => {
-      // console.log(index + '----' + idx);
-      const animationContainer = document.getElementById(`id-${index}-${idx}`);
-      const dropdownContainer = document.getElementById('dropdown-container2');
-      if (animationContainer && dropdownContainer) {
-        const dropdownContainerRect = dropdownContainer.getBoundingClientRect();
-        const animationContainerRect = animationContainer.getBoundingClientRect();
+// Sử dụng hàm chung cho cate cấp 1
+const toggleAnimation = (index: number) => {
+  toggleAnimationCommon(
+    index,
+    undefined,
+    'dropdown-container',
+    isAnimationVisible,
+    setAnni.setAnnimationCategory
+  );
+};
 
-        if (
-          animationContainerRect.top < dropdownContainerRect.top ||
-          animationContainerRect.bottom > dropdownContainerRect.bottom
-        ) {
-          const scrollPosition = animationContainer.offsetTop - dropdownContainer.offsetTop;
-          dropdownContainer.scrollTop = scrollPosition;
-        }
-      }
-    });
-  }
+// Sử dụng hàm chung cho cate cấp 2
+const toggleAnimation2 = (index: number, idx: number) => {
+  toggleAnimationCommon(
+    index,
+    idx,
+    'dropdown-container2',
+    isAnimationVisible2,
+    setAnni.setAnnimationCategory2
+  );
+  selectedItem3.value = isAnimationVisible2.value ? -1 : selectedItem3.value;
 };
 
 watch(typeCate, () => {
@@ -135,94 +127,72 @@ const idDefine = (index: number, idx: number | undefined = undefined) => {
   return idx !== undefined ? `id-${index}-${idx}` : `id-${index}`;
 };
 
-const isSelectedCategory2 = (categoryIndex: number, itemIndex: number) => {
-  return (
-    isAnimationVisible.value &&
-    isAnimationVisible2.value &&
-    selectedItem.value === categoryIndex &&
-    selectedItem2.value === itemIndex
-  );
-};
-
-const isSelectedCategory3 = (categoryIndex: number, itemIndex: number, itemIndex3: number) => {
+// Đánh dấu cate được chọn (Hàm chung cho cate2 và cate3)
+const isSelectedCategory = (categoryIndex: number, itemIndex: number, itemIndex3?: number) => {
   return (
     isAnimationVisible.value &&
     isAnimationVisible2.value &&
     selectedItem.value === categoryIndex &&
     selectedItem2.value === itemIndex &&
-    selectedItem3.value === itemIndex3
+    (itemIndex3 === undefined || selectedItem3.value === itemIndex3)
   );
 };
 
-const logAndSelectCategory1 = (categoryIndex: number) => {
-  // Kiểm tra trang hiện tại
-  const newCategory1 = dataRender.value[categoryIndex].slug;
-  // Reset selectedCategory2 only if a new category 1 is selected
-  console.log('Vào 1');
+const emitCategorySlugs = (...slugs: string[]) => {
+  emit('slug-category1', slugs[0]);
+  emit('slug-category2', slugs[1] || '');
+  emit('slug-category3', slugs[2] || '');
+};
 
+const getSelectedSlugs = (...indices: number[]): string[] => {
+  const slugs: string[] = [];
+  for (let i = 0; i < indices.length; i++) {
+    const data = dataRender.value[indices[i]];
+    slugs.push(data ? data.slug : '');
+  }
+  return slugs;
+};
+
+const logAndSelectCategory1 = (categoryIndex: number) => {
+  const newCategory1 = dataRender.value[categoryIndex].slug;
   selectedCategory1.value = newCategory1;
-  emit('slug-category1', selectedCategory1.value);
-  emit('slug-category2', '');
-  emit('slug-category3', '');
-  // Đặt lại giá trị selectedItem để xóa màu category cấp 2 trước đó
+  emitCategorySlugs(newCategory1);
   saveState.setActiveCategory(categoryIndex);
 };
 
-// Hàm chọn category cấp 2
 const logAndSelectCategory2 = (categoryIndex: number, itemIndex: number) => {
-  // Lưu index của category cấp 2 được chọn
   saveState.setActiveCategory(categoryIndex);
   saveState.setTypeCategory('notHeader');
-  const selectedCategory = dataRender.value[categoryIndex].slug;
-  const selectedSubCategory = dataRender.value[categoryIndex].company[itemIndex].slug;
-
-  console.log('Vào 2');
+  const [selectedCategory, selectedSubCategory] = getSelectedSlugs(categoryIndex, itemIndex);
   saveState.setActiveCategory2(itemIndex);
-
-  emit('slug-category1', selectedCategory);
-  emit('slug-category2', selectedSubCategory);
-  emit('slug-category3', '');
+  emitCategorySlugs(selectedCategory, selectedSubCategory);
 };
 
 const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemIndex3: number) => {
-  // saveState.setActiveCategory3(itemIndex3); // Comment dòng này test lỗi đệ quy
   saveState.setTypeCategory('notHeader');
-  const selectedCategory = dataRender.value[categoryIndex].slug; // Giá trị của category cấp 1
-  const selectedSubCategory = dataRender.value[categoryIndex]?.company[itemIndex]?.slug;
-  const selectedSubCategory3 =
-    dataRender.value[categoryIndex]?.company[itemIndex]?.cate2[itemIndex3]?.slug;
-
-  console.log('Vào 3');
   saveState.setActiveCategory3(itemIndex3);
-
+  const [selectedCategory, selectedSubCategory, selectedSubCategory3] = getSelectedSlugs(
+    categoryIndex,
+    itemIndex,
+    itemIndex3
+  );
   selectedCategory1.value = selectedCategory;
   selectedCategory2.value = selectedSubCategory;
   selectedCategory3.value = selectedSubCategory3;
-
-  emit('slug-category1', selectedCategory);
-  emit('slug-category2', selectedSubCategory);
-  emit('slug-category3', selectedSubCategory3);
-
+  emitCategorySlugs(selectedCategory, selectedSubCategory, selectedSubCategory3);
   if (router.currentRoute.value.name !== 'sanpham') {
-    // Chuyển hướng về trang sản phẩm và truyền dữ liệu qua URL
-    router.push(
-      `/sanpham?slug1=${selectedCategory}&slug2=${selectedSubCategory}&slug3=${selectedSubCategory3}`
-    );
+    const [slug1, slug2, slug3] = [selectedCategory, selectedSubCategory, selectedSubCategory3];
+    router.push(`/sanpham?slug1=${slug1}&slug2=${slug2}&slug3=${slug3}`);
   }
 };
-// saveState.setActiveCategory3(itemIndex3); // Comment dòng này test lỗi đệ quy nhưng nó không được
 
 watch([selectedCategory1, selectedCategory2, selectedCategory3], () => {
-  console.log('Watch: ' + selectedCategory1.value);
   selectedItem2.value = -1;
 
   const matchedIndex = dataRender.value.findIndex((item) => item.slug === selectedCategory1.value);
-  if (matchedIndex !== -1) {
-    selectedItem.value = matchedIndex;
-    logAndSelectCategory1(selectedItem.value);
-  } else {
-    console.log(`Category "${selectedCategory1.value}" not found in dataRender`);
-  }
+  matchedIndex !== -1
+    ? ((selectedItem.value = matchedIndex), logAndSelectCategory1(selectedItem.value))
+    : null;
 });
 </script>
 <template>
@@ -290,7 +260,7 @@ watch([selectedCategory1, selectedCategory2, selectedCategory3], () => {
             :class="[
               $style['category__firstX--animation'],
               {
-                [$style['category__firstX--show-animation']]: isSelectedCategory2(index, idx)
+                [$style['category__firstX--show-animation']]: isSelectedCategory(index, idx)
               }
             ]"
             ref="animationContainer2"
@@ -300,7 +270,7 @@ watch([selectedCategory1, selectedCategory2, selectedCategory3], () => {
               :class="[
                 $style['category__third'],
                 {
-                  [$style['category__third--selected']]: isSelectedCategory3(index, idx, idx2)
+                  [$style['category__third--selected']]: isSelectedCategory(index, idx, idx2)
                 }
               ]"
               v-for="(item2, idx2) in item1.cate2"
