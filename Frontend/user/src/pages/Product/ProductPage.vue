@@ -3,18 +3,37 @@ import ProductBanner from './ProductBanner/ProductBanner.vue';
 import ProductCard from '@/components/Card/ProductCard.vue';
 import MobileCard from '@/components/MBCard/MobileCard.vue';
 import BaseCategory from '@/components/Category/BaseCategory.vue';
-import ProductNavigation from './ProductNavigation/ProductNavigation.vue';
 import ServiceQuality from '@/components/ServiceQuality/ServiceQuality.vue';
 import BasePagination from '@/components/Pagination/BasePagination.vue';
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb.vue';
 import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
-import { computed, onMounted, ref, watch, onBeforeUnmount, onUnmounted } from 'vue';
-import useAxios, { type DataResponse } from '@/hooks/useAxios';
+import { onMounted, ref, watch, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { faArrowDownShortWide } from '@fortawesome/free-solid-svg-icons';
 import { saveActive } from '@/stores/counter';
+import useAxios, { type DataResponse } from '@/hooks/useAxios';
+
+interface Company {
+  id: string;
+  name: string;
+  logo: string;
+  description: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+  outstandingProductId: string;
+}
+
+interface Category {
+  id: string;
+  title: string;
+  img: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+}
 
 interface Product {
   id: string;
@@ -25,29 +44,13 @@ interface Product {
   summary: string;
   description: string;
   mainImg: string;
-  imgs: string;
+  imgs: string[];
   highlight: number;
   createAt: string;
   fkCategory: {
     id: string;
-    companyId: {
-      id: string;
-      name: string;
-      logo: string;
-      description: string;
-      highlight: number;
-      slug: string;
-      createAt: string;
-      outstandingProductId: string;
-    };
-    cate1Id: {
-      id: string;
-      title: string;
-      img: string;
-      highlight: 3;
-      slug: string;
-      createAt: string;
-    };
+    companyId: Company;
+    cate1Id: Category;
     cate2Id: {
       id: string;
       title: string;
@@ -74,26 +77,25 @@ const saveState = saveActive();
 //Khởi tạo danh sách sản phẩm để hiển thị ra màn hình
 const products = ref<Item[]>([]);
 
+const pathBC = 'sanpham';
+const isDesktop = ref(true);
+const isActive = ref(false);
 const deps = ref([]);
 const deps1 = ref([]);
 const dataRes = ref([]);
 const filterAllProduct = ref([]);
-const currentPage = ref(0);
-const pageSize = ref(12);
-const pathBC = 'sanpham';
-const isDesktop = ref(true);
-const isActive = ref(false);
 const totalProduct = ref();
-
+const isLoadingProduct = ref(false);
 const router = useRouter();
 const route = useRoute();
 const slugCategory1 = ref(route.query.slug1);
 const slugCategory2 = ref(route.query.slug2);
 const slugCategory3 = ref(route.query.slug3);
-const sortPriceType = ref('asc');
-const isLoadingProduct = ref(false);
+const currentPage = ref(0);
+const pageSize = ref(12);
 
 // Xử lí sort
+const sortPriceType = ref('asc');
 const isDropdownOpen = ref(false);
 const selectedOption = ref('Giá tăng dần');
 const options = ['Giá tăng dần', 'Giá giảm dần'];
@@ -143,36 +145,21 @@ const closeDropdown = () => {
 
 function updateSelectedOption(option: string) {
   selectedOption.value = option;
-  if (selectedOption.value == 'Giá tăng dần') {
-    sortPriceType.value = 'asc';
-  } else {
-    sortPriceType.value = 'desc';
-  }
+  sortPriceType.value = option === 'Giá tăng dần' ? 'asc' : 'desc';
   closeDropdown();
 }
 
 const checkScreenSize = () => {
-  if (window.innerWidth < 739) {
-    isDesktop.value = false;
-  } else {
-    isDesktop.value = true;
-  }
+  isDesktop.value = window.innerWidth >= 739;
 };
 
 const scrollToTop = (top: number) => {
-  window.scrollTo({
-    top: top,
-    behavior: 'smooth' // Tạo hiệu ứng cuộn mượt
-  });
+  window.scrollTo({ top, behavior: 'smooth' });
 };
 
 const handlePageChange = (page: number) => {
   currentPage.value = page - 1;
-  if (window.innerWidth < 739) {
-    scrollToTop(0);
-  } else {
-    scrollToTop(400);
-  }
+  scrollToTop(window.innerWidth < 739 ? 0 : 400);
 };
 
 const handleCategory1Selected = (selectedCategory1: string) => {
@@ -337,16 +324,11 @@ watch(route, () => {
 
 onMounted(() => {
   checkScreenSize();
-  // updateSelectedOption('Giá tăng dần');
-});
 
-// Lấy dữ liệu từ URL query parameters khi trang được tạo
-onMounted(() => {
+  // Lấy dữ liệu từ URL query parameters khi trang được tạo
   const { query } = router.currentRoute.value;
   if (query.slug1) {
     slugCategory1.value = query.slug1.toString();
-    // // Xóa toàn bộ query string và cập nhật URL
-    // router.replace({ query: {} });
   }
 });
 
@@ -494,7 +476,7 @@ window.addEventListener('resize', checkScreenSize);
     </div>
 
     <div>
-      <!-- <ServiceQuality /> -->
+      <ServiceQuality />
     </div>
   </div>
 </template>
