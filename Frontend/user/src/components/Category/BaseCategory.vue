@@ -138,19 +138,10 @@ const isSelectedCategory = (categoryIndex: number, itemIndex: number, itemIndex3
   );
 };
 
-const emitCategorySlugs = (...slugs: string[]) => {
-  emit('slug-category1', slugs[0]);
-  emit('slug-category2', slugs[1] || '');
-  emit('slug-category3', slugs[2] || '');
-};
-
-const getSelectedSlugs = (...indices: number[]): string[] => {
-  const slugs: string[] = [];
-  for (let i = 0; i < indices.length; i++) {
-    const data = dataRender.value[indices[i]];
-    slugs.push(data ? data.slug : '');
-  }
-  return slugs;
+const emitCategorySlugs = (category1: string, category2 = '', category3 = '') => {
+  emit('slug-category1', category1);
+  emit('slug-category2', category2);
+  emit('slug-category3', category3);
 };
 
 const logAndSelectCategory1 = (categoryIndex: number) => {
@@ -163,30 +154,31 @@ const logAndSelectCategory1 = (categoryIndex: number) => {
 const logAndSelectCategory2 = (categoryIndex: number, itemIndex: number) => {
   saveState.setActiveCategory(categoryIndex);
   saveState.setTypeCategory('notHeader');
-  const [selectedCategory, selectedSubCategory] = getSelectedSlugs(categoryIndex, itemIndex);
+  const selectedCategory = dataRender.value[categoryIndex].slug;
+  const selectedSubCategory = dataRender.value[categoryIndex].company[itemIndex].slug;
   saveState.setActiveCategory2(itemIndex);
   emitCategorySlugs(selectedCategory, selectedSubCategory);
 };
 
 const logAndSelectCategory3 = (categoryIndex: number, itemIndex: number, itemIndex3: number) => {
   saveState.setTypeCategory('notHeader');
+  const selectedCategory = dataRender.value[categoryIndex].slug;
+  const selectedSubCategory = dataRender.value[categoryIndex]?.company[itemIndex]?.slug;
+  const selectedSubCategory3 =
+    dataRender.value[categoryIndex]?.company[itemIndex]?.cate2[itemIndex3]?.slug;
   saveState.setActiveCategory3(itemIndex3);
-  const [selectedCategory, selectedSubCategory, selectedSubCategory3] = getSelectedSlugs(
-    categoryIndex,
-    itemIndex,
-    itemIndex3
-  );
   selectedCategory1.value = selectedCategory;
   selectedCategory2.value = selectedSubCategory;
   selectedCategory3.value = selectedSubCategory3;
   emitCategorySlugs(selectedCategory, selectedSubCategory, selectedSubCategory3);
   if (router.currentRoute.value.name !== 'sanpham') {
-    const [slug1, slug2, slug3] = [selectedCategory, selectedSubCategory, selectedSubCategory3];
-    router.push(`/sanpham?slug1=${slug1}&slug2=${slug2}&slug3=${slug3}`);
+    router.push(
+      `/sanpham?slug1=${selectedCategory}&slug2=${selectedSubCategory}&slug3=${selectedSubCategory3}`
+    );
   }
 };
 
-watch([selectedCategory1, selectedCategory2, selectedCategory3], () => {
+watch([selectedCategory1], () => {
   selectedItem2.value = -1;
 
   const matchedIndex = dataRender.value.findIndex((item) => item.slug === selectedCategory1.value);
@@ -227,7 +219,7 @@ watch([selectedCategory1, selectedCategory2, selectedCategory3], () => {
         ref="animationContainer"
       >
         <div
-          @click="logAndSelectCategory2(index, idx)"
+          @click.stop="logAndSelectCategory2(index, idx)"
           :class="[
             $style['category__second'],
             {
@@ -266,7 +258,7 @@ watch([selectedCategory1, selectedCategory2, selectedCategory3], () => {
             ref="animationContainer2"
           >
             <div
-              @click="logAndSelectCategory3(index, idx, idx2)"
+              @click.stop="logAndSelectCategory3(index, idx, idx2)"
               :class="[
                 $style['category__third'],
                 {
