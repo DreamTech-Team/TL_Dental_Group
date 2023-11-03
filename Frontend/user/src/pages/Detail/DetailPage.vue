@@ -14,7 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import ZaloImg from '@/assets/imgs/Contact/Zalo.png';
 import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
-import { ref, watch, onMounted, onUnmounted, computed, toRefs } from 'vue';
+import { ref, watch, onMounted, onUnmounted, computed, toRefs, onBeforeUnmount } from 'vue';
 import { useRoute } from 'vue-router';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import logo from '../../assets/imgs/logo.png';
@@ -60,27 +60,27 @@ export interface Product {
   };
 }
 
+const imgLimit = 3;
 const route = useRoute();
+const { dataContact } = toRefs(saveDataContact());
 const inforProduct = ref<Product>();
-const pathBC = ref();
-const { dataFacility, dataContact } = toRefs(saveDataContact());
-
-// const images = [DetailImage, Product1, Product2, Product3, Product4];
 
 const isDesktop = ref(false);
+const isLoadingDetail = ref(false);
 
+const pathBC = ref();
+const currentImage = ref();
+const displayedImagesCount = ref();
 const wItem = ref(0);
 const tranfX = ref(0);
-let resizeListener: () => void;
-const isDialogOpen = ref(false);
-const currentIndex = ref(0);
 const startIndex = ref(0);
-const displayedImagesCount = ref();
-const currentImage = ref();
-const isLoadingDetail = ref(false);
+const currentIndex = ref(0);
+const isDialogOpen = ref(false);
 const similarSlug = ref('');
+let resizeListener: () => void;
 
 const deps = ref([]);
+const images = ref<string[]>([]);
 const { response, isLoading } = useAxios<DataResponse>(
   'get',
   `/products/${route.params.catchAll[0]}`, //Params slug product
@@ -89,56 +89,43 @@ const { response, isLoading } = useAxios<DataResponse>(
   deps.value
 );
 
-const images = ref<string[]>([]);
-
 watch(response, () => {
-  inforProduct.value = response.value?.data;
+  const { value } = response;
+  const productData = value?.data;
+  inforProduct.value = productData;
   isLoadingDetail.value = isLoading.value;
-  if (inforProduct.value) {
-    const apiResponseImg = inforProduct.value.imgs;
-    similarSlug.value = response.value?.data.fkCategory.cate1Id.slug;
+  if (!productData) return;
 
-    if (apiResponseImg) {
-      const cleanedResponse = apiResponseImg.substring(1, apiResponseImg.length - 1);
-      const imageUrls = cleanedResponse.split(',').map((url: string) => url.trim());
+  const { imgs, fkCategory } = productData;
+  const { mainImg, cate1Id, cate2Id, slug } = fkCategory;
 
-      // Tạo một mảng mới chứa inforProduct.value?.mainImg và imageUrls
-      images.value.splice(0, images.value.length, ...imageUrls);
-      displayedImagesCount.value = 3;
-    }
+  similarSlug.value = cate1Id.slug;
 
-    // eslint-disable-next-line max-len
-    pathBC.value =
-      'sanpham' +
-      '/' +
-      inforProduct.value.fkCategory.cate1Id.slug +
-      '/' +
-      inforProduct.value.fkCategory.cate2Id.slug +
-      '/' +
-      inforProduct.value.slug;
+  if (imgs) {
+    const imageUrls = imgs.split(',').map((url: string) => url.trim());
+    images.value.splice(0, images.value.length, ...imageUrls);
+    displayedImagesCount.value = 3;
   }
+  pathBC.value = `sanpham/${cate1Id.slug}/${cate2Id.slug}/${slug}`;
 
   currentImage.value = images.value[0];
-
   const title = document.querySelector('title');
   const titleMeta = document.querySelector('meta[property="og:title"]');
   const descriptionMeta = document.querySelector('meta[property="og:description"]');
-
   const imageMeta = document.querySelector('meta[property="og:image"]');
+  const productName = productData?.name || 'TL Dental Group - Thiết Bị và Vật Liệu Nha Khoa';
 
   if (title) {
-    title.innerText =
-      inforProduct?.value?.name || 'TL Dental Group - Thiết Bị và Vật Liệu Nha Khoa';
+    title.innerText = productName;
   }
   if (titleMeta) {
-    titleMeta.setAttribute('content', inforProduct?.value?.name || 'TL Dental Group');
+    titleMeta.setAttribute('content', productName);
   }
   if (descriptionMeta) {
-    descriptionMeta.setAttribute('content', inforProduct?.value?.summary || 'TL Dental Group');
+    descriptionMeta.setAttribute('content', productData?.summary || 'TL Dental Group');
   }
   if (imageMeta) {
-    imageMeta.setAttribute('content', inforProduct?.value?.mainImg || logo);
-    // console.log(imageMeta);
+    imageMeta.setAttribute('content', mainImg || logo);
   }
 });
 
@@ -167,8 +154,6 @@ watch(route, () => {
           images.value.splice(0, images.value.length, ...imageUrls);
           displayedImagesCount.value = 3;
         }
-
-        // eslint-disable-next-line max-len
         pathBC.value =
           'sanpham' +
           '/' +
@@ -199,29 +184,31 @@ watch(route, () => {
       }
       if (imageMeta) {
         imageMeta.setAttribute('content', inforProduct?.value?.mainImg || logo);
-        // console.log(imageMeta);
       }
     });
   }
 });
 
+function calculateNewIndex(index: number): number {
+  return (index + images.value.length) % images.value.length;
+}
 const setCurrentImage = (index: number) => {
-  currentIndex.value = index;
+  currentIndex.value = calculateNewIndex(index);
 };
 
-const displayedImages = computed(() =>
-  images.value.slice(startIndex.value, startIndex.value + displayedImagesCount.value)
-);
-
 const nextImage = () => {
-  currentIndex.value = (currentIndex.value + 1) % images.value.length;
+  currentIndex.value = calculateNewIndex(currentIndex.value + 1);
 };
 
 const prevImage = () => {
-  currentIndex.value = (currentIndex.value - 1 + images.value.length) % images.value.length;
+  currentIndex.value = calculateNewIndex(currentIndex.value - 1);
 };
 
-// const currentImage = computed(() => images[currentIndex.value]);
+const displayedImages = computed(() => {
+  const start = startIndex.value;
+  const end = start + displayedImagesCount.value;
+  return images.value.slice(start, end);
+});
 
 const showDialog = () => {
   isDialogOpen.value = true;
@@ -235,36 +222,22 @@ watch(currentIndex, () => {
   currentImage.value = images.value[currentIndex.value];
 });
 
-onMounted(() => {
+function handleResize() {
   const container = document.getElementById('trend-wrapper');
-
   if (container) {
-    if (window.innerWidth < 739) {
-      wItem.value = container.offsetWidth / 2;
-    } else {
-      wItem.value = container.offsetWidth / 4;
-    }
+    isDesktop.value = window.innerWidth < 739 ? false : true;
+    wItem.value = isDesktop.value ? container.offsetWidth / 4 : container.offsetWidth / 2;
+    tranfX.value = 0;
   }
+}
 
-  resizeListener = function () {
-    if (window.innerWidth < 739) {
-      isDesktop.value = false;
-    } else {
-      isDesktop.value = true;
-    }
-    const container = document.getElementById('trend-wrapper');
-    if (container) {
-      if (window.innerWidth < 739) {
-        wItem.value = container.offsetWidth / 2;
-      } else {
-        wItem.value = container.offsetWidth / 4;
-      }
+onMounted(() => {
+  handleResize(); // Gọi ngay khi component được mount
+  window.addEventListener('resize', handleResize);
+});
 
-      tranfX.value = 0;
-    }
-  };
-
-  window.addEventListener('resize', resizeListener);
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize); // Loại bỏ sự kiện khi component sẽ unmount
 });
 
 onUnmounted(() => {
@@ -404,7 +377,7 @@ onUnmounted(() => {
               :class="[
                 $style['detail__image--multi-product'],
                 {
-                  [$style['detail__image--multi-product-active']]: currentIndex === 3
+                  [$style['detail__image--multi-product-active']]: currentIndex >= imgLimit
                 }
               ]"
               :src="images[3]"
@@ -415,7 +388,7 @@ onUnmounted(() => {
               :class="[
                 $style['detail__image--multi-products-count'],
                 {
-                  [$style['detail__image--multi-product-active']]: currentIndex === 3
+                  [$style['detail__image--multi-product-active']]: currentIndex >= imgLimit
                 }
               ]"
             >
@@ -489,7 +462,6 @@ onUnmounted(() => {
         <div id="content_body1" v-html="inforProduct?.description"></div>
       </div>
     </div>
-    <!-- <home-trend /> -->
     <similar-product :similarSlug="similarSlug" />
     <service-quality />
   </div>
