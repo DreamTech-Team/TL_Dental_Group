@@ -61,6 +61,10 @@ export interface Product {
 }
 
 const imgLimit = 3;
+let resizeListener: () => void;
+const DEFAULT_TITLE = 'TL Dental Group - Thiết Bị và Vật Liệu Nha Khoa';
+const DEFAULT_DESCRIPTION = 'TL Dental Group';
+const DEFAULT_IMAGE = logo;
 const route = useRoute();
 const { dataContact } = toRefs(saveDataContact());
 const inforProduct = ref<Product>();
@@ -77,7 +81,6 @@ const startIndex = ref(0);
 const currentIndex = ref(0);
 const isDialogOpen = ref(false);
 const similarSlug = ref('');
-let resizeListener: () => void;
 
 const deps = ref([]);
 const images = ref<string[]>([]);
@@ -113,7 +116,7 @@ watch(response, () => {
   const titleMeta = document.querySelector('meta[property="og:title"]');
   const descriptionMeta = document.querySelector('meta[property="og:description"]');
   const imageMeta = document.querySelector('meta[property="og:image"]');
-  const productName = productData?.name || 'TL Dental Group - Thiết Bị và Vật Liệu Nha Khoa';
+  const productName = productData?.name || DEFAULT_TITLE;
 
   if (title) {
     title.innerText = productName;
@@ -122,10 +125,10 @@ watch(response, () => {
     titleMeta.setAttribute('content', productName);
   }
   if (descriptionMeta) {
-    descriptionMeta.setAttribute('content', productData?.summary || 'TL Dental Group');
+    descriptionMeta.setAttribute('content', productData?.summary || DEFAULT_DESCRIPTION);
   }
   if (imageMeta) {
-    imageMeta.setAttribute('content', mainImg || logo);
+    imageMeta.setAttribute('content', mainImg || DEFAULT_IMAGE);
   }
 });
 
