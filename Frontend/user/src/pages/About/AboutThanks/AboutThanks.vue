@@ -9,6 +9,7 @@ const isLoadingLetter = ref(false);
 const canHover = ref(true);
 const hoverSetHeight = ref(false);
 const heightLetter = ref(0);
+const fetchDataTimeout = ref<number | null>(null);
 
 const { response, isLoading } = useAxios<DataResponse>(
   'get',
@@ -18,30 +19,31 @@ const { response, isLoading } = useAxios<DataResponse>(
   variableChange.value
 );
 
-// Hàm lấy thẻ p ra để chỉnh lại fontSize cho mobile
 const fetchData = async () => {
-  if (!isLoadingLetter.value) {
-    const parent = document.getElementById('content_letter');
+  if (isLoadingLetter.value) return;
 
-    if (parent) {
-      const content = ref<HTMLElement[] | null>(null);
-      const contents = parent.getElementsByTagName('p');
-      const contentArray = Array.from(contents);
+  const parent = document.getElementById('content_letter');
+  if (!parent) return;
 
-      content.value = contentArray;
+  const content = ref<HTMLElement[] | null>(null);
+  const contents = parent.getElementsByTagName('p');
 
-      content.value.forEach((item) => {
-        if (window.innerWidth < 736) {
-          item.style.fontSize = '14px';
-        }
-      });
-    }
+  content.value = Array.from(contents);
+
+  if (window.innerWidth < 736) {
+    content.value?.forEach((item) => (item.style.fontSize = '14px'));
   }
 };
 
 watch(isLoading, () => {
   isLoadingLetter.value = isLoading.value;
-  setTimeout(fetchData, 100);
+
+  // Xóa timeout cũ nếu có
+  if (fetchDataTimeout.value !== null) {
+    clearTimeout(fetchDataTimeout.value);
+  }
+
+  fetchDataTimeout.value = setTimeout(fetchData, 100) as unknown as number;
 });
 
 watch(response, () => {
@@ -77,10 +79,15 @@ const handleLeave = () => {
 
   hoverSetHeight.value = false;
 
+  // Xóa timeout cũ nếu có
+  if (fetchDataTimeout.value !== null) {
+    clearTimeout(fetchDataTimeout.value);
+  }
+
   // Sau 3 giây, kích hoạt lại việc hover
-  setTimeout(() => {
+  fetchDataTimeout.value = setTimeout(() => {
     canHover.value = true;
-  }, 2000);
+  }, 2000) as unknown as number;
 
   if (window.innerWidth > 1100) {
     const mobileElement = document.getElementById('letter');
