@@ -35,13 +35,6 @@ watch(response, () => {
   mottoItems.value = response?.value?.data;
 
   // Xử lí trường hợp có 1 hoặc 2 item
-  // if (mottoItems.value.length === 1) {
-  //   isOneItem.value = true;
-  //   isDisableRight.value = true;
-  //   isDisableLeft.value = true;
-  // } else if (mottoItems.value.length === 2) {
-  //   isDisableRight.value = true;
-  // }
   isOneItem.value = mottoItems.value.length === 1;
   isDisableRight.value = isOneItem.value || mottoItems.value.length === 2;
   isDisableLeft.value = isOneItem.value;
@@ -68,7 +61,8 @@ const handleClickRight = () => {
 
   if (widthItem) {
     isDisableRight.value =
-      move.value === (3 - mottoItems.value.length) * (widthItem.offsetWidth + 150) ? true : false;
+      move.value === (3 - mottoItems.value.length) * (widthItem.offsetWidth + 150);
+
     move.value =
       move.value === (3 - mottoItems.value.length) * (widthItem.offsetWidth + 150)
         ? (move.value -= widthItem.offsetWidth + 150)
