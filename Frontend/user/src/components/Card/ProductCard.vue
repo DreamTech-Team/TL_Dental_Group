@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import { event } from 'vue-gtag';
+import { type PropType, ref, watch, onMounted } from 'vue';
 import OkSticker from '@/assets/imgs/Product/GroupOk.svg';
 import Insurance from '@/assets/imgs/Product/GroupInsurance.svg';
 import SPSticker from '@/assets/imgs/Product/GroupSupport.svg';
-import { type PropType, ref, watch, onMounted } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import router from '@/router/index';
-import { event } from 'vue-gtag';
 
 export interface Product {
   nameProduct: string;
@@ -45,16 +45,11 @@ const linkDetail = (slug: string, productName: string) => {
     event_label: 'Xem sản phẩm',
     value: productName
   });
-
   router.push(`/chitiet/${slug}`);
 };
 
 onMounted(() => {
-  if (window.innerWidth < 739) {
-    isPhone.value = true;
-  } else {
-    isPhone.value = false;
-  }
+  isPhone.value = window.innerWidth < 739;
 });
 </script>
 <template>

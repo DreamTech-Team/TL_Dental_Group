@@ -5,7 +5,33 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
-interface Product {
+interface Company {
+  id: string;
+  name: string;
+  logo: string;
+  description: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+  outstandingProductId: string;
+}
+
+interface Category1 {
+  id: string;
+  title: string;
+  img: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+}
+
+interface Category2 {
+  id: string;
+  title: string;
+  slug: string;
+  createAt: string;
+}
+export interface Product {
   id: string;
   name: string;
   slug: string;
@@ -14,35 +40,14 @@ interface Product {
   summary: string;
   description: string;
   mainImg: string;
-  imgs: string;
+  imgs: string[];
   highlight: number;
   createAt: string;
   fkCategory: {
     id: string;
-    companyId: {
-      id: string;
-      name: string;
-      logo: string;
-      description: string;
-      highlight: number;
-      slug: string;
-      createAt: string;
-      outstandingProductId: string;
-    };
-    cate1Id: {
-      id: string;
-      title: string;
-      img: string;
-      highlight: 3;
-      slug: string;
-      createAt: string;
-    };
-    cate2Id: {
-      id: string;
-      title: string;
-      slug: string;
-      createAt: string;
-    };
+    companyId: Company;
+    cate1Id: Category1;
+    cate2Id: Category2;
   };
 }
 
@@ -65,12 +70,15 @@ const props = defineProps({
 });
 
 //Properties
-const isPhone = ref(false);
-const isTablet = ref(false);
 const MIN_SWIPE_DISTANCE_CM = 3;
 const TOUCH_SENSITIVITY = 20;
+const isPhone = ref(false);
+const isTablet = ref(false);
 const touchstartX = ref(0);
 const touchendX = ref(0);
+//Get product highlight
+const deps = ref([]);
+const lenght = ref(0);
 
 const wItem = ref(0);
 const tranfX = ref(0);
@@ -89,25 +97,15 @@ const scrollLeft = () => {
 };
 
 const scrollRight = () => {
-  if (window.innerWidth < 739) {
-    if (-tranfX.value + wItem.value * 2 < wItem.value * products.value.length) {
-      tranfX.value -= wItem.value;
-    } else {
-      tranfX.value = 0;
-    }
-  } else if (window.innerWidth >= 739 && window.innerWidth <= 1024) {
-    if (-tranfX.value + wItem.value * 3 < wItem.value * products.value.length) {
-      tranfX.value -= wItem.value;
-    } else {
-      tranfX.value = 0;
-    }
-  } else {
-    if (-tranfX.value + wItem.value * 4 < wItem.value * products.value.length) {
-      tranfX.value -= wItem.value;
-    } else {
-      tranfX.value = 0;
-    }
-  }
+  const thresholds = [2, 3, 4]; // Ngưỡng cho số sản phẩm trên mỗi hàng
+  const index = thresholds.findIndex((threshold) => window.innerWidth <= 739 * threshold);
+  const maxItems = wItem.value * products.value.length;
+
+  index >= 0
+    ? -tranfX.value + wItem.value * (index + 2) < maxItems
+      ? (tranfX.value -= wItem.value)
+      : (tranfX.value = 0)
+    : null;
 };
 
 //Handle scroll list
@@ -116,12 +114,7 @@ const checkDirection = () => {
   const distanceInCm = distanceX / TOUCH_SENSITIVITY;
 
   if (distanceInCm >= MIN_SWIPE_DISTANCE_CM) {
-    if (touchendX.value < touchstartX.value) {
-      scrollRight();
-    }
-    if (touchstartX.value < touchendX.value) {
-      scrollLeft();
-    }
+    touchendX.value < touchstartX.value ? scrollRight() : scrollLeft();
   }
 };
 
@@ -134,10 +127,7 @@ const handleTouchend = (e: TouchEvent) => {
   checkDirection();
 };
 
-//Get product highlight
-const deps = ref([]);
-const lenght = ref(0);
-
+// Get products highlight
 const updateShowResults = () => {
   products.value = tempproducts.value.map((item: Product) => {
     return {
