@@ -7,47 +7,6 @@ import { useRouter } from 'vue-router';
 import { type PropType } from 'vue';
 import { event } from 'vue-gtag';
 
-interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  price: number;
-  priceSale: number;
-  summary: string;
-  description: string;
-  mainImg: string;
-  imgs: string;
-  highlight: number;
-  createAt: string;
-  fkCategory: {
-    id: string;
-    companyId: {
-      id: string;
-      name: string;
-      logo: string;
-      description: string;
-      highlight: number;
-      slug: string;
-      createAt: string;
-      outstandingProductId: string;
-    };
-    cate1Id: {
-      id: string;
-      title: string;
-      img: string;
-      highlight: 3;
-      slug: string;
-      createAt: string;
-    };
-    cate2Id: {
-      id: string;
-      title: string;
-      slug: string;
-      createAt: string;
-    };
-  };
-}
-
 interface Item {
   nameProduct: string;
   price: number;
@@ -58,6 +17,12 @@ interface Item {
   brand: string;
   slug: string;
 }
+defineProps({
+  product: {
+    type: Object as PropType<Item>,
+    required: true
+  }
+});
 const router = useRouter();
 
 const goToDetailPage = (slug: string, productName: string) => {
@@ -72,13 +37,6 @@ const goToDetailPage = (slug: string, productName: string) => {
 const formatNumberWithCommas = (num: number) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
-
-defineProps({
-  product: {
-    type: Object as PropType<Item>,
-    required: true
-  }
-});
 </script>
 <template>
   <div :class="$style.mbcard" @click="goToDetailPage(product.slug, product.nameProduct)">

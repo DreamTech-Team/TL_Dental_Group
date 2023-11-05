@@ -23,7 +23,7 @@ const loading = ref(false);
 //Get total
 const getTotal = useAxios<DataResponse>('get', '/news/total', {}, {}, deps.value);
 watch(getTotal.response, () => {
-  totalPage.value = getTotal.response.value?.data;
+  totalPage.value = getTotal.response?.value?.data;
 });
 
 //Get default data
@@ -64,12 +64,12 @@ const onUpdateSlug = (data: { listrs: Item[] }) => {
   );
 
   watch(updateSlug.response, () => {
-    dataContext.value = updateSlug.response.value?.data?.data;
+    dataContext.value = updateSlug.response?.value?.data?.data;
   });
 
   const getTotal = useAxios<DataResponse>('get', `/news/total?${path.value}`, {}, {}, deps.value);
   watch(getTotal.response, () => {
-    totalPage.value = getTotal.response.value?.data;
+    totalPage.value = getTotal.response?.value?.data;
   });
 };
 

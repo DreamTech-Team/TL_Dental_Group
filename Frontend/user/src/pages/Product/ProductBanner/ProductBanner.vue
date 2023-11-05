@@ -2,7 +2,6 @@
 import { ref, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import LoadingComponent from '@/components/LoadingComponent/LoadingComponent.vue';
-// import ImgageBanner from '@/assets/imgs/Product/imageBanner.png';
 
 const variableChange = ref([]);
 const imageBannerProduct = ref('');
@@ -37,6 +36,5 @@ watch(response, () => {
 </template>
 
 <style module scoped lang="scss">
-// @import '../ProductPage.module.scss';
 @import '../ProductBanner/ProductBanner.module.scss';
 </style>

@@ -5,6 +5,13 @@ import { RouterLink } from 'vue-router';
 import { useRoute } from 'vue-router';
 
 //GET DATA
+interface Tag {
+  id: string;
+  name: string;
+  slug: string;
+  createAt: string;
+}
+
 interface Item {
   id: string;
   title: string;
@@ -15,18 +22,23 @@ interface Item {
   detailMobile: string;
   highlight: number;
   createAt: string;
-  tags: [
-    {
-      id: string;
-      name: string;
-      slug: string;
-      createAt: string;
-    }
-  ];
+  tags: Tag[];
+}
+
+interface Activity {
+  id: string;
+  title: string;
+  img: string;
+  slug: string;
+  summary: string;
+  detail: string;
+  detailMobile: string;
+  highlight: number;
+  createAt: string;
 }
 
 //Init data structure
-const activities = ref([
+const activities = ref<Activity[]>([
   {
     id: '',
     title: '',
@@ -39,7 +51,7 @@ const activities = ref([
     createAt: ''
   }
 ]);
-const uniqueTags = ref([
+const uniqueTags = ref<Tag[]>([
   {
     id: '',
     name: '',
@@ -73,7 +85,7 @@ const deps = ref([]);
 const { response } = useAxios<DataResponse>('get', '/news/highlight', {}, {}, deps.value);
 
 watch(response, () => {
-  feedbacks.value = response.value?.data;
+  feedbacks.value = response?.value?.data;
   if (window.innerWidth < 739) {
     activities.value = feedbacks.value.map((item) => item).slice(0, 4);
   } else if (window.innerWidth > 740 && window.innerWidth < 1024) {
@@ -100,28 +112,23 @@ watch(route, () => {
 
 //Function filter tags by news
 const filterTags = (selectedTag: string) => {
-  if (selectedTag === 'all') {
-    if (window.innerWidth < 739) {
-      activities.value = feedbacks.value.map((item) => item).slice(0, 4);
-    } else if (window.innerWidth > 740 && window.innerWidth < 1024) {
-      activities.value = feedbacks.value.map((item) => item).slice(0, 6);
-    } else {
-      activities.value = feedbacks.value.map((item) => item).slice(0, 8);
-    }
+  let numberOfItemsToShow;
+
+  if (window.innerWidth < 739) {
+    numberOfItemsToShow = 4;
+  } else if (window.innerWidth > 740 && window.innerWidth < 1024) {
+    numberOfItemsToShow = 6;
   } else {
-    if (window.innerWidth < 739) {
-      activities.value = feedbacks.value
-        .filter((item) => item.tags.some((tag) => tag.name === selectedTag))
-        .slice(0, 4);
-    } else if (window.innerWidth > 740 && window.innerWidth < 1024) {
-      activities.value = feedbacks.value
-        .filter((item) => item.tags.some((tag) => tag.name === selectedTag))
-        .slice(0, 6);
-    } else {
-      activities.value = feedbacks.value
-        .filter((item) => item.tags.some((tag) => tag.name === selectedTag))
-        .slice(0, 8);
-    }
+    numberOfItemsToShow = 8;
+  }
+
+  if (selectedTag === 'all') {
+    activities.value = feedbacks.value.slice(0, numberOfItemsToShow);
+  } else {
+    const filteredItems = feedbacks.value.filter((item) =>
+      item.tags.some((tag) => tag.name === selectedTag)
+    );
+    activities.value = filteredItems.slice(0, numberOfItemsToShow);
   }
 };
 
@@ -133,11 +140,12 @@ const setTags = (temp: string) => {
 const startHold = (index: number) => {
   selectedItem.value = index;
 };
+
 const endHold = () => {
   selectedItem.value = -1;
 };
 
-onMounted(() => {
+const updateItemWidth = () => {
   const width = sourceElement.value?.clientWidth;
 
   if (width !== undefined) {
@@ -151,20 +159,16 @@ onMounted(() => {
       itemWidth.value = (width - 35) / 2;
     }
   }
+};
 
-  resizeListener = function () {
-    if (width !== undefined) {
-      if (window.innerWidth >= 1024) {
-        itemWidth.value = (width - 200) / 4;
-      } else if (window.innerWidth > 740 && window.innerWidth < 1024) {
-        isTab.value = true;
-        itemWidth.value = (width - 145) / 3;
-      } else {
-        isPhone.value = true;
-        itemWidth.value = (width - 35) / 2;
-      }
-    }
+onMounted(() => {
+  updateItemWidth();
+
+  resizeListener = () => {
+    updateItemWidth();
   };
+
+  window.addEventListener('resize', resizeListener);
 });
 
 onUnmounted(() => {

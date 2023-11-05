@@ -3,7 +3,7 @@ import { onMounted, ref, watch } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
-import dayjs from 'dayjs';
+import { handleFormatTime } from '@/utils/handleFornatTime';
 import 'dayjs/locale/vi';
 import Time from '@/assets/imgs/NewsDetail/Time.png';
 
@@ -42,37 +42,19 @@ const widthMobile = ref(window.innerWidth);
 const getNews = useAxios<DataResponse>('get', '/news', {}, {}, variableChangeNews.value);
 
 watch(getNews.response, () => {
-  dataNews.value = getNews.response.value?.data?.data;
+  dataNews.value = getNews.response?.value?.data?.data;
 
   dataNews.value.forEach((item, idx) => {
-    if (item.slug === dataRender.value.slug) indexNews.value = idx;
+    if (item.slug === dataRender.value?.slug) indexNews.value = idx;
   });
 
   // Xử lí nút button chuyển tin tức
-  if (indexNews.value === 0) {
-    showButtonLeft.value = false;
-    showButtonRight.value = true;
-    contentButtonRight.value = dataNews.value[indexNews.value + 1].title;
-  } else if (indexNews.value === dataNews.value.length - 1) {
-    showButtonLeft.value = true;
-    showButtonRight.value = false;
-    contentButtonLeft.value = dataNews.value[indexNews.value - 1].title;
-  } else {
-    showButtonLeft.value = true;
-    showButtonRight.value = true;
-    contentButtonLeft.value = dataNews.value[indexNews.value - 1].title;
-    contentButtonRight.value = dataNews.value[indexNews.value + 1].title;
-  }
+  showButtonLeft.value = indexNews.value !== 0;
+  showButtonRight.value = indexNews.value !== dataNews.value.length - 1;
+  contentButtonLeft.value = indexNews.value === 0 ? '' : dataNews.value[indexNews.value - 1].title;
+  contentButtonRight.value =
+    indexNews.value === dataNews.value.length - 1 ? '' : dataNews.value[indexNews.value + 1].title;
 });
-
-// Format lại thời gian
-const handleFormatTime = (time: string) => {
-  const inputDate = dayjs(time).locale('vi'); // Đặt ngôn ngữ
-
-  const daysOfWeek = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
-
-  return `${daysOfWeek[inputDate.day()]}, ${inputDate.format('DD/MM/YYYY, HH:mm [GMT]Z')}`;
-};
 
 // Xử lí chuyển bài viết bên trái
 const handleClickLeft = () => {
@@ -91,51 +73,36 @@ const handleClickRight = () => {
 // Xử lí resize lại tấm ảnh, linehight để phù hợp với mobile
 onMounted(() => {
   const parent = document.getElementById('content_body');
+
   if (parent) {
-    const image = ref<HTMLImageElement[] | null>(null);
-    const content = ref<HTMLElement[] | null>(null);
-    const contentdiv = ref<HTMLElement[] | null>(null);
-    const tagli = ref<HTMLElement[] | null>(null);
-    const images = parent.getElementsByTagName('img');
-    const contents = parent.getElementsByTagName('p');
-    const contentsdiv = parent.getElementsByTagName('div');
-    const listli = parent.getElementsByTagName('li');
-    const imageArray = Array.from(images);
-    const contentArray = Array.from(contents);
-    const contentdivArray = Array.from(contentsdiv);
-    const liArray = Array.from(listli);
-    image.value = imageArray;
-    content.value = contentArray;
-    contentdiv.value = contentdivArray;
-    tagli.value = liArray;
+    const widthMobileValue =
+      window.innerWidth < 736
+        ? widthMobile.value - 30
+        : window.innerWidth < 1100
+        ? widthMobile.value - 400
+        : undefined;
 
-    // alert(window.innerWidth + 'px');
+    const imageArray = Array.from(parent.getElementsByTagName('img'));
+    const contentArray = Array.from(parent.getElementsByTagName('p'));
+    const contentdivArray = Array.from(parent.getElementsByTagName('div'));
+    const liArray = Array.from(parent.getElementsByTagName('li'));
 
-    image.value.forEach((item) => {
-      if (window.innerWidth < 736) {
-        if (item.height > 20) {
-          const aspectRatio = item.height / item.width;
-          item.style.width = widthMobile.value - 30 + 'px';
-          item.style.height = item.width * aspectRatio + 'px';
-        }
-      } else if (window.innerWidth < 1100) {
-        if (item.height > 20) {
-          const aspectRatio = item.height / item.width;
-          item.width = widthMobile.value - 400;
-          item.height = item.width * aspectRatio;
-        }
+    const adjustImage = (item: HTMLImageElement) => {
+      if (item.height > 20) {
+        const aspectRatio = item.height / item.width;
+        item.style.width = `${widthMobileValue}px`;
+        item.style.height = `${item.width * aspectRatio}px`;
       }
-    });
+    };
 
-    content.value.forEach((item) => {
+    const applyStyle = (item: HTMLElement) => {
       item.style.lineHeight = '1.8';
-    });
+    };
 
-    contentdiv.value.forEach((item) => {
-      item.style.lineHeight = '1.8';
-    });
-
-    tagli.value.forEach((item) => {
+    imageArray.forEach(adjustImage);
+    contentArray.forEach(applyStyle);
+    contentdivArray.forEach(applyStyle);
+    liArray.forEach((item) => {
       item.style.lineHeight = '1.8';
       item.style.marginLeft = '15px';
       item.style.paddingLeft = '5px';

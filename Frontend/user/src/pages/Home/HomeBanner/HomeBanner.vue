@@ -1,10 +1,38 @@
 <script setup lang="ts">
+import { bannerBackgroundColors, ellipseColors, elipseColorMobile } from './HomeBannerConst';
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import router from '@/router/index';
 import TheAnimate from '@/components/TheAnimate/TheAnimate.vue';
 
 interface Company {
+  id: string;
+  name: string;
+  logo: string;
+  description: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+  outstandingProductId: string;
+}
+
+interface Category1 {
+  id: string;
+  title: string;
+  img: string;
+  highlight: number;
+  slug: string;
+  createAt: string;
+}
+
+interface Category2 {
+  id: string;
+  title: string;
+  slug: string;
+  createAt: string;
+}
+
+interface OutStandingCompany {
   outstandingProduct: {
     id: string;
     name: string;
@@ -19,42 +47,12 @@ interface Company {
     createAt: string;
     fkCategory: {
       id: string;
-      companyId: {
-        id: string;
-        name: string;
-        logo: string;
-        description: string;
-        highlight: number;
-        slug: string;
-        createAt: string;
-        outstandingProductId: string;
-      };
-      cate1Id: {
-        id: string;
-        title: string;
-        img: string;
-        highlight: number;
-        slug: string;
-        createAt: string;
-      };
-      cate2Id: {
-        id: string;
-        title: string;
-        slug: string;
-        createAt: string;
-      };
+      companyId: Company;
+      cate1Id: Category1;
+      cate2Id: Category2;
     };
   };
-  company: {
-    id: string;
-    name: string;
-    logo: string;
-    description: string;
-    highlight: number;
-    slug: string;
-    createAt: string;
-    outstandingProductId: string;
-  };
+  company: Company;
 }
 
 interface Item {
@@ -213,115 +211,17 @@ const oldSelectedItem = computed(() => {
 
 //Set background for banner
 const bannerBgColor = computed(() => {
-  const colors = [
-    `radial-gradient(50% 50% at 50% 50%, rgba(135, 255, 126, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`,
-    `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`,
-    `radial-gradient(50% 50% at 50% 50%, rgba(255, 126, 126, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`,
-    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`
-  ];
-  return colors[activeIndex.value];
+  return bannerBackgroundColors[activeIndex.value];
 });
 
 const oldBannerBgColor = computed(() => {
-  const colors = [
-    `radial-gradient(50% 50% at 50% 50%, rgba(135, 255, 126, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`,
-    `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`,
-    `radial-gradient(50% 50% at 50% 50%, rgba(255, 126, 126, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`,
-    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.8) 0%, rgba(242, 255, 255, 0) 100%)`
-  ];
-  return colors[oldActiveIndex.value];
+  return bannerBackgroundColors[oldActiveIndex.value];
 });
 
 //Set 4 ellipse color for web
 const elipseColor = computed(() => {
-  const elcolors = [
-    [
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
-    ],
-    [
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
-    ],
-    [
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
-    ],
-    [
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-      // eslint-disable-next-line max-len
-      `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`
-    ]
-  ];
-  return elcolors[activeIndex.value];
+  return ellipseColors[activeIndex.value];
 });
-
-//Set 4 ellipse color for mobile
-const elipseColorMB = [
-  [
-    // eslint-disable-next-line max-len
-    `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-    // eslint-disable-next-line max-len
-    `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
-    // eslint-disable-next-line max-len
-    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
-    // eslint-disable-next-line max-len
-    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`
-  ],
-  [
-    // eslint-disable-next-line max-len
-    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-    // eslint-disable-next-line max-len
-    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
-    // eslint-disable-next-line max-len
-    `radial-gradient(50% 50% at 50% 50%, rgba(248, 131, 131, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
-    // eslint-disable-next-line max-len
-    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`
-  ],
-  [
-    // eslint-disable-next-line max-len
-    `radial-gradient(50% 50% at 50% 50%, rgba(183, 255, 126, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-    // eslint-disable-next-line max-len
-    `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
-    // eslint-disable-next-line max-len
-    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
-    // eslint-disable-next-line max-len
-    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`
-  ],
-  [
-    // eslint-disable-next-line max-len
-    `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.9) 0%, rgba(242, 255, 255, 0) 100%)`,
-    // eslint-disable-next-line max-len
-    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
-    // eslint-disable-next-line max-len
-    `radial-gradient(50% 50% at 50% 50%, rgba(252, 126, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`,
-    // eslint-disable-next-line max-len
-    `radial-gradient(50% 50% at 50% 50%, rgba(126, 232, 255, 0.2) 0%, rgba(242, 255, 255, 0) 100%)`
-  ]
-];
 
 //To do when moveline
 const moveLine = (index: number) => {
@@ -363,12 +263,12 @@ const content = ref({
 });
 
 watch(response, () => {
-  content.value.title = response.value?.data?.title;
-  content.value.context = response.value?.data?.content;
+  content.value.title = response?.value?.data?.title;
+  content.value.context = response?.value?.data?.content;
 });
 
 //Get highlight compaines
-const companies = ref<Company[]>([]);
+const companies = ref<OutStandingCompany[]>([]);
 const deps1 = ref([]);
 const results = useAxios<DataResponse>('get', '/company?highlight=true', {}, {}, deps1.value);
 
@@ -395,7 +295,7 @@ const calculateWidths = () => {
 };
 
 //Random item
-const getRandomItems = (array: Company[], count: number) => {
+const getRandomItems = (array: OutStandingCompany[], count: number) => {
   const shuffled = array.slice();
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -408,14 +308,14 @@ const getRandomItems = (array: Company[], count: number) => {
 watch(
   results.response,
   async () => {
-    if (results.response.value?.data.length > 0) {
-      const randomHighlightedCompanies: Company[] =
+    if (results.response?.value?.data.length > 0) {
+      const randomHighlightedCompanies: OutStandingCompany[] =
         results.response.value?.data >= 4
           ? getRandomItems(results.response.value?.data, 4)
           : results.response.value?.data;
       companies.value = randomHighlightedCompanies;
 
-      bannerItems.value = companies.value.map((company: Company, idx) => {
+      bannerItems.value = companies.value.map((company: OutStandingCompany, idx) => {
         return {
           src: company.company.logo,
           alt: company.company.name,
@@ -589,19 +489,19 @@ onUnmounted(() => {
         </div>
         <div
           :class="$style['home__bannerMB-item-elipse5']"
-          :style="{ background: elipseColorMB[index][0] }"
+          :style="{ background: elipseColorMobile[index][0] }"
         ></div>
         <div
           :class="$style['home__bannerMB-item-elipse6']"
-          :style="{ background: elipseColorMB[index][1] }"
+          :style="{ background: elipseColorMobile[index][1] }"
         ></div>
         <div
           :class="$style['home__bannerMB-item-elipse7']"
-          :style="{ background: elipseColorMB[index][2] }"
+          :style="{ background: elipseColorMobile[index][2] }"
         ></div>
         <div
           :class="$style['home__bannerMB-item-elipse8']"
-          :style="{ background: elipseColorMB[index][3] }"
+          :style="{ background: elipseColorMobile[index][3] }"
         ></div>
       </div>
     </div>

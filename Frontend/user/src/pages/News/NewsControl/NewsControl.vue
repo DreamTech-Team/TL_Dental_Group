@@ -27,7 +27,7 @@ const selectedItems = ref<Item[]>([]);
 
 const { response } = useAxios<DataResponse>('get', '/tags', {}, {}, deps.value);
 watch(response, () => {
-  availableItems.value = response.value?.data.map((item: Item) => {
+  availableItems.value = response?.value?.data.map((item: Item) => {
     return {
       name: item.name,
       slug: item.slug
