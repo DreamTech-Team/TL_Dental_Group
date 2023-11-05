@@ -12,11 +12,6 @@ interface DataRender {
   company: { name: string; slug: string; cate2: ListCategory2[] }[];
 }
 
-interface Active {
-  categoryIndex: number;
-  itemIndex: number;
-  cate3Index: number;
-}
 interface Info {
   address: string;
   phoneNumber: string;
@@ -69,8 +64,6 @@ export const saveActive = defineStore('saveActiveCategory', () => {
   };
 
   const setTypeCategory = (type: string) => {
-    console.log(type);
-
     typeCate.value = type;
   };
 

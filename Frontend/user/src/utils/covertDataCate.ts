@@ -28,81 +28,64 @@ interface DataRender {
   company: { name: string; slug: string; cate2: ListCategory2[] }[];
 }
 
+// Hàm khởi tạo danh sách chứa các Cate2
+const createListCategory2 = (cate2: ListCategory2): ListCategory2 => {
+  return {
+    title: cate2?.title || '',
+    slug: cate2?.slug || ''
+  };
+};
+
+const createDataRenderItem = (listCate: ListCategories[]): DataRender => {
+  const dataRenderItem: DataRender = {
+    title: listCate[0].cate1Id.title,
+    slug: listCate[0].cate1Id.slug,
+    company: []
+  };
+
+  const companies: { name: string; slug: string; cate2: ListCategory2[] }[] = [];
+
+  listCate.forEach((item) => {
+    const existingCompany = companies.find((company) => company.name === item.companyId.name);
+
+    if (existingCompany) {
+      const existingCate2 = existingCompany.cate2.find(
+        (cate2) => cate2.title === item.cate2Id.title
+      );
+
+      if (!existingCate2) {
+        existingCompany.cate2.push(createListCategory2(item.cate2Id));
+      }
+    } else {
+      companies.push({
+        name: item.companyId.name,
+        slug: item.companyId.slug,
+        cate2: [createListCategory2(item.cate2Id)]
+      });
+    }
+  });
+
+  dataRenderItem.company = companies;
+  return dataRenderItem;
+};
+
 const coverDataCategory = {
-  handleDataRender(listDataCate: ListCategories[], dataRender: DataRender[]) {
-    // Đối tượng để lưu trữ các phần tử có cate1Id trùng nhau
+  handleDataRender(listDataCate: ListCategories[], dataRender: DataRender[]): DataRender[] {
     const duplicateCate1IdElements: { [id: string]: ListCategories[] } = {};
 
-    // Lặp qua mảng để lọc ra các phần tử có cate1Id trùng nhau
-    if (listDataCate) {
-      for (const item of listDataCate) {
-        const cate1Id = item.cate1Id.id;
-        if (!duplicateCate1IdElements[cate1Id]) {
-          duplicateCate1IdElements[cate1Id] = [];
-        }
-        duplicateCate1IdElements[cate1Id].push(item);
-      }
-    }
+    // Lọc các phần tử có cate1Id trùng nhau
+    listDataCate.forEach((item) => {
+      const cate1Id = item.cate1Id.id;
+      duplicateCate1IdElements[cate1Id] = duplicateCate1IdElements[cate1Id] || [];
+      duplicateCate1IdElements[cate1Id].push(item);
+    });
 
-    for (const item in duplicateCate1IdElements) {
-      if (duplicateCate1IdElements[item].length > 1) {
-        const object = {
-          title: '',
-          slug: '',
-          company: [
-            {
-              name: '',
-              slug: '',
-              cate2: [
-                {
-                  title: '',
-                  slug: ''
-                }
-              ]
-            }
-          ]
-        };
+    for (const cate1Id in duplicateCate1IdElements) {
+      const elements = duplicateCate1IdElements[cate1Id];
 
-        const companys: {
-          name: string;
-          slug: string;
-          cate2: { title: string; slug: string }[];
-        }[] = [];
-
-        duplicateCate1IdElements[item].forEach((item1) => {
-          object.title = item1.cate1Id.title;
-          object.slug = item1.cate1Id.slug;
-
-          const existingCompany = companys.find((company) => company.name === item1.companyId.name);
-
-          if (existingCompany) {
-            const existingCate2 = existingCompany.cate2.find(
-              (cate2) => cate2.title === item1.cate2Id.title
-            );
-
-            if (!existingCate2) {
-              existingCompany.cate2.push({
-                title: item1.cate2Id.title || '',
-                slug: item1.cate2Id.slug || ''
-              });
-            }
-          } else {
-            companys.push({
-              name: item1.companyId.name,
-              slug: item1.companyId.slug,
-              cate2: [
-                {
-                  title: item1.cate2Id && item1.cate2Id.title !== null ? item1.cate2Id.title : '',
-                  slug: item1.cate2Id && item1.cate2Id.slug !== null ? item1.cate2Id.slug : ''
-                }
-              ]
-            });
-          }
-
-          object.company = companys;
-        });
-
-        dataRender.push(object);
+      if (elements.length > 1) {
+        const dataRenderItem = createDataRenderItem(elements);
+        dataRender.push(dataRenderItem);
       }
     }
 
