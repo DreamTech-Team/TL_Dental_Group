@@ -5,6 +5,18 @@
   max-width: 1660px;
   margin: 0 auto;
 
+  .mobile-res {
+    display: none;
+
+    &-title {
+      display: none;
+    }
+  }
+
+  &__black-bg {
+    display: none;
+  }
+
   &__bg {
     img {
       height: 40vh;
@@ -19,11 +31,8 @@
     padding: 0 5rem;
 
     &-nav {
-      position: sticky;
-      position: -webkit-sticky;
       width: 40%;
       min-width: 35rem;
-
       margin-right: 4rem;
 
       ul {
@@ -40,8 +49,6 @@
         font-weight: 410;
 
         &-active {
-          //   border: 0.199rem solid $primary_900;
-          //   border-left: 0.5rem solid $primary_900;
           background-color: $color_primary;
           color: white;
         }
@@ -54,19 +61,17 @@
       &-item:hover {
         cursor: pointer;
         background-color: $color_primary;
-        // border: 0.199rem solid $primary_900;
-        // padding: 1rem 0rem 1rem 3rem;
-        // font-size: $text-base;
         color: white;
         font-weight: 410;
       }
 
       &-title {
+        border: 0.1rem solid $text_200;
+        padding: 1rem 0rem 1rem 2rem;
+
         &-icon {
           display: none;
         }
-        border: 0.1rem solid $text_200;
-        padding: 1rem 0rem 1rem 2rem;
 
         h3 {
           text-transform: uppercase;
@@ -91,6 +96,30 @@
 }
 @include responsive_mobile() {
   .container {
+    position: relative;
+
+    .other-res {
+      display: none;
+    }
+
+    .mobile-res {
+      display: block;
+
+      &-title {
+        display: flex;
+      }
+    }
+
+    &__black-bg {
+      display: block;
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 100%;
+      background-color: rgba($color: #000000, $alpha: 0.6);
+      z-index: 1;
+    }
+
     &__bg {
       img {
         height: 30vh;
@@ -100,46 +129,48 @@
     &__content {
       display: block;
       margin: 0;
+      padding: 0;
 
       &-nav {
         width: 100%;
-        margin-bottom: 2rem;
-        position: relative;
+        position: fixed;
+        top: 69px;
+        z-index: 2;
 
         ul {
-          position: absolute;
           width: 100%;
           background-color: white;
+          overflow: hidden;
 
           .hidden {
-            transition: opacity 1s ease-in-out;
-            opacity: 0;
-            height: 0;
-            overflow: hidden;
+            max-height: 0;
+            visibility: inherit;
+            transition: max-height 0.1s ease;
           }
 
           .active {
-            opacity: 1;
-            height: auto;
+            border-bottom: 1px solid #ccc;
+            max-height: 100vh;
+            transition: all 1s ease-in-out;
           }
         }
 
         &-item {
           font-size: $text-xl-mobile;
-          // border: 0;
         }
 
         &-title {
           width: 100%;
           display: flex;
           border: 0;
-          background-color: $text_200;
+          background-color: $primary_800;
 
           &-icon {
             display: block;
             transition: transform 1s;
             width: 2rem;
             height: auto;
+            color: white;
           }
 
           &-active &-icon {
@@ -153,6 +184,7 @@
             margin-left: 1rem;
             font-size: $text-xl-mobile;
             font-weight: 600;
+            color: white;
           }
         }
       }

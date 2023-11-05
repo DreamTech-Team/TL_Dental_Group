@@ -80,17 +80,65 @@ const handleResizeData = () => {
 
 watch(getPolicies.isLoading, handleResizeData);
 
-const handleSelected = (index: number) => {
-  selectedItem.value = Number(index);
-  setTimeout(handleResizeData, 1);
+// Ngăn chặn cuộn chuột
+const disableScroll = () => {
+  // Lưu trữ vị trí cuộn hiện tại
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+
+  // Lưu trữ vị trí cuộn hiện tại dưới dạng CSS
+  document.body.style.top = `-${scrollTop}px`;
+  document.body.style.left = `-${scrollLeft}px`;
+  document.body.style.position = 'fixed';
+  document.body.style.overflow = 'hidden';
+};
+
+// Cho phép cuộn chuột
+const enableScroll = () => {
+  // Khôi phục vị trí cuộn ban đầu
+  const scrollTop = parseInt(document.body.style.top, 10);
+  const scrollLeft = parseInt(document.body.style.left, 10);
+
+  document.body.style.position = '';
+  document.body.style.overflow = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+
+  // Cuộn lại đến vị trí ban đầu
+  window.scrollTo(-scrollLeft, -scrollTop);
 };
 
 const handleActiveNav = () => {
   showNav.value = !showNav.value;
+  showNav.value ? disableScroll() : enableScroll();
+};
+
+const hanldeScrollToTop = () => {
+  const element = document.getElementById('on-top');
+  element?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'start' });
+};
+
+const handleSelectedResponsive = (index: number) => {
+  selectedItem.value = Number(index);
+  setTimeout(handleResizeData, 1);
+  handleActiveNav();
+  hanldeScrollToTop();
+};
+
+const handleSelected = (index: number) => {
+  selectedItem.value = Number(index);
+  setTimeout(handleResizeData, 1);
+  hanldeScrollToTop();
+};
+
+const handleCancelNav = () => {
+  setTimeout(handleResizeData, 1);
+  handleActiveNav();
 };
 </script>
 <template>
-  <div :class="$style.container">
+  <div id="on-top" :class="$style.container">
+    <div v-if="showNav" :class="$style['container__black-bg']" @click="handleCancelNav"></div>
     <div :class="$style.container__bg">
       <img :src="banner" alt="banner" />
     </div>
@@ -100,19 +148,45 @@ const handleActiveNav = () => {
         <div
           :class="[
             $style['container__content-nav-title'],
-            $style[showNav ? 'container__content-nav-title-active' : '']
+            $style[showNav ? 'container__content-nav-title-active' : ''],
+            $style['other-res']
+          ]"
+        >
+          <font-awesome-icon :icon="faBars" :class="$style['container__content-nav-title-icon']" />
+          <h3>Chính sách</h3>
+        </div>
+        <div
+          :class="[
+            $style['container__content-nav-title'],
+            $style[showNav ? 'container__content-nav-title-active' : ''],
+            $style['mobile-res-title']
           ]"
           @click="handleActiveNav"
         >
           <font-awesome-icon :icon="faBars" :class="$style['container__content-nav-title-icon']" />
           <h3>Chính sách</h3>
         </div>
-        <ul>
+        <ul :class="$style[showNav ? 'max-height-ul' : 'hidden-ul']">
           <li
             v-for="(item, index) in listPolicy"
             :key="index"
             @click="handleSelected(index)"
-            :class="$style[showNav ? 'active' : 'hidden']"
+            :class="[$style[showNav ? 'active' : 'hidden'], $style['other-res']]"
+          >
+            <div
+              :class="[
+                $style[index === selectedItem ? `container__content-nav-item-active` : ''],
+                $style[`container__content-nav-item`]
+              ]"
+            >
+              {{ item?.title }}
+            </div>
+          </li>
+          <li
+            v-for="(item, index) in listPolicy"
+            :key="index"
+            @click="handleSelectedResponsive(index)"
+            :class="[$style[showNav ? 'active' : 'hidden'], $style['mobile-res']]"
           >
             <div
               :class="[
