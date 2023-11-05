@@ -35,13 +35,16 @@ watch(response, () => {
   mottoItems.value = response?.value?.data;
 
   // Xử lí trường hợp có 1 hoặc 2 item
-  if (mottoItems.value.length === 1) {
-    isOneItem.value = true;
-    isDisableRight.value = true;
-    isDisableLeft.value = true;
-  } else if (mottoItems.value.length === 2) {
-    isDisableRight.value = true;
-  }
+  // if (mottoItems.value.length === 1) {
+  //   isOneItem.value = true;
+  //   isDisableRight.value = true;
+  //   isDisableLeft.value = true;
+  // } else if (mottoItems.value.length === 2) {
+  //   isDisableRight.value = true;
+  // }
+  isOneItem.value = mottoItems.value.length === 1;
+  isDisableRight.value = isOneItem.value || mottoItems.value.length === 2;
+  isDisableLeft.value = isOneItem.value;
 });
 
 // Xử lí Click thì các items di chuyển sang trái
@@ -50,10 +53,11 @@ const handleClickLeft = () => {
 
   if (widthItem) {
     isDisableRight.value = false;
-    if (move.value === 0) (move.value = widthItem.offsetWidth + 150), (isDisableLeft.value = true);
-    else {
-      move.value += widthItem.offsetWidth + 150;
-    }
+    isDisableLeft.value = move.value === 0;
+    move.value =
+      move.value === 0
+        ? (move.value = widthItem.offsetWidth + 150)
+        : (move.value += widthItem.offsetWidth + 150);
   }
 };
 
@@ -63,11 +67,12 @@ const handleClickRight = () => {
   const widthItem = document.getElementById('1');
 
   if (widthItem) {
-    if (move.value === (3 - mottoItems.value.length) * (widthItem.offsetWidth + 150))
-      (move.value -= widthItem.offsetWidth + 150), (isDisableRight.value = true);
-    else {
-      move.value -= widthItem.offsetWidth + 150;
-    }
+    isDisableRight.value =
+      move.value === (3 - mottoItems.value.length) * (widthItem.offsetWidth + 150) ? true : false;
+    move.value =
+      move.value === (3 - mottoItems.value.length) * (widthItem.offsetWidth + 150)
+        ? (move.value -= widthItem.offsetWidth + 150)
+        : (move.value -= widthItem.offsetWidth + 150);
   }
 };
 </script>
