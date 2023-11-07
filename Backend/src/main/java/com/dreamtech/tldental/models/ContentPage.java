@@ -1,31 +1,43 @@
 package com.dreamtech.tldental.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Entity
 @Table(name="ContentPage")
 public class ContentPage {
+    @NotNull
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-
-    @Column(length = 10000, unique = false)
+    
+    @Column(length = 1000, unique = false)
     private String title;
 
-    @Column(length = 1000000, unique = false)
+    @Lob
+    @Column(columnDefinition="TEXT")
     private String content;
 
-    @Column(length = 200, unique = false)
+    @Column(columnDefinition="TEXT")
     private String image;
 
     @Column(unique = true)
     private String slug;
 
-    @Column(length = 200, unique = true)
+    @Column(length = 200, unique = false)
     private String type;
-
-    public ContentPage() {
-    }
 
     public ContentPage(String id, String title, String content, String image, String slug, String type) {
         this.id = id;
@@ -33,54 +45,6 @@ public class ContentPage {
         this.content = content;
         this.image = image;
         this.slug = slug;
-        this.type = type;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getSlug() {
-        return slug;
-    }
-
-    public void setSlug(String slug) {
-        this.slug = slug;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
         this.type = type;
     }
 }
