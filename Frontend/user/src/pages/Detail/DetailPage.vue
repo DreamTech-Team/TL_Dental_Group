@@ -18,6 +18,7 @@ import { ref, watch, onMounted, onUnmounted, computed, toRefs, onBeforeUnmount }
 import { useRoute } from 'vue-router';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 import logo from '../../assets/imgs/logo.png';
+import { DEFAULT_TITLE, DEFAULT_DESCRIPTION } from '../../constants/constants';
 
 export interface Product {
   id: string;
@@ -62,8 +63,7 @@ export interface Product {
 
 const imgLimit = 3;
 let resizeListener: () => void;
-const DEFAULT_TITLE = 'TL Dental Group - Thiết Bị và Vật Liệu Nha Khoa';
-const DEFAULT_DESCRIPTION = 'TL Dental Group';
+
 const DEFAULT_IMAGE = logo;
 const route = useRoute();
 const { dataContact } = toRefs(saveDataContact());
