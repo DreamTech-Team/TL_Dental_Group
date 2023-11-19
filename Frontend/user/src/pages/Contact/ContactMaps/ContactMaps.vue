@@ -7,15 +7,10 @@ const { dataFacility } = toRefs(saveDataContact());
 
 // Hàm lấy src từ iframe được call về
 const getSrc = () => {
-  // Sử dụng biểu thức chính quy để tìm phần src
   const srcPattern = /src="([^"]*)"/;
   const matches = dataFacility.value.mapIframe.match(srcPattern);
 
-  if (matches && matches.length > 1) {
-    const srcValue = matches[1];
-
-    return srcValue;
-  }
+  return matches?.[1] || '';
 };
 </script>
 

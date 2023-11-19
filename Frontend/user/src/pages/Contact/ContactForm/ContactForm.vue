@@ -9,6 +9,7 @@ import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import { saveDataContact } from '@/stores/counter';
 import styles from './ContactForm.module.scss';
 import Swal from 'sweetalert2';
+import type { SweetAlertOptions, SweetAlertIcon } from 'sweetalert2';
 import useAxios, { type DataResponse } from '@/hooks/useAxios';
 
 // Lấy dữ liệu được lưu ở store về
@@ -48,30 +49,59 @@ const updateContent = (e: Event) => {
   const target = e.target as HTMLInputElement;
 
   content.value = target.value;
-  console.log(content.value);
 };
 
 // Hàm xử lí khi bấm vào tiêu đề để cái line chạy qua chạy lại ở mobile
 const handleClick = () => {
   isCLick.value = !isCLick.value;
 
-  if (isCLick.value) move.value = -100;
-  else move.value = 0;
+  move.value = isCLick.value ? -100 : 0;
 };
 
 // Hàm check tab ở Mobile
 const handleSocialForm = (e: Event) => {
-  const target = e.target as HTMLElement; // Ép kiểu 'e.target' thành 'HTMLElement'
+  const target = e.target as HTMLElement;
 
-  if (target) {
-    if (target.textContent && target.textContent.trim() === 'Mạng xã hội') {
-      isSocial.value = true;
-      widthLine.value = target.offsetWidth;
-    } else if (target.textContent === 'Biểu mẫu') {
-      isSocial.value = false;
-      widthLine.value = target.offsetWidth;
+  if (!target) return;
+
+  isSocial.value = target.textContent?.trim() === 'Mạng xã hội';
+  widthLine.value = target.offsetWidth;
+};
+
+// Hàm hiển thị modal thông báo gửi thành công/thất bại
+const showMessage = (message: string, type: string) => {
+  const options: SweetAlertOptions = {
+    title: message,
+    icon: type as SweetAlertIcon,
+    confirmButtonText: 'Đóng',
+    width: window.innerWidth < 738 ? '25rem' : '50rem',
+    padding: '0 2rem 2rem 2rem',
+    customClass: {
+      confirmButton: styles[window.innerWidth < 738 ? 'confirm-buttonMB' : 'confirm-button'],
+      cancelButton: styles[window.innerWidth < 738 ? 'cancel-buttonMB' : 'cancel-button'],
+      title: styles[window.innerWidth < 738 ? 'titleMB' : 'title']
     }
-  }
+  };
+
+  Swal.fire(options);
+};
+
+// Hàm hiển thị thông báo gửi thất bại
+const showErrorMessage = (message: string) => {
+  showMessage(message, 'error');
+};
+
+// Hàm hiển thị thông báo gửi thành công
+const showSuccessMessage = (message: string) => {
+  showMessage(message, 'success');
+};
+
+// Hàm reset lại dữ liệu
+const resetFormFields = () => {
+  name.value = '';
+  email.value = '';
+  phone.value = '';
+  content.value = '';
 };
 
 // Hàm gửi dữ liệu liên hệ đi
@@ -82,18 +112,8 @@ const submitForm = () => {
     email.value.length < 8 ||
     content.value.length < 4
   ) {
-    Swal.fire({
-      title: 'Vui lòng điền đủ thông tin',
-      icon: 'error',
-      confirmButtonText: 'Đóng',
-      width: window.innerWidth < 738 ? '25rem' : '50rem',
-      padding: '0 2rem 2rem 2rem',
-      customClass: {
-        confirmButton: styles[window.innerWidth < 738 ? 'confirm-buttonMB' : 'confirm-button'],
-        cancelButton: styles[window.innerWidth < 738 ? 'cancel-buttonMB' : 'cancel-button'],
-        title: styles[window.innerWidth < 738 ? 'titleMB' : 'title']
-      }
-    });
+    const errorMessage = 'Vui lòng điền đủ thông tin';
+    showErrorMessage(errorMessage);
   } else {
     const object = {
       fullname: name.value,
@@ -112,23 +132,11 @@ const submitForm = () => {
 
     watch(response, () => {
       isLoadingSuccess.value = isLoading.value;
-      if (response.value?.status === 'ok')
-        Swal.fire({
-          title: 'Gửi thành công',
-          icon: 'success',
-          confirmButtonText: 'Đóng',
-          width: window.innerWidth < 738 ? '25rem' : '50rem',
-          padding: '0 2rem 2rem 2rem',
-          customClass: {
-            confirmButton: styles[window.innerWidth < 738 ? 'confirm-buttonMB' : 'confirm-button'],
-            cancelButton: styles[window.innerWidth < 738 ? 'cancel-buttonMB' : 'cancel-button'],
-            title: styles[window.innerWidth < 738 ? 'titleMB' : 'title']
-          }
-        });
-      name.value = '';
-      email.value = '';
-      phone.value = '';
-      content.value = '';
+      if (response.value?.status === 'ok') {
+        const successMessage = 'Gửi thành công';
+        showSuccessMessage(successMessage);
+      }
+      resetFormFields();
     });
   }
 };
