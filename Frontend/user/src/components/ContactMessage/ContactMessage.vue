@@ -46,11 +46,8 @@ const handleMessage = () => {
   const circle1 = document.getElementById('circle1');
   if (circleWidth && circle1) {
     isOpen.value = !isOpen.value;
-
-    if (isOpen.value)
-      (move1.value = -circleWidth.offsetHeight),
-        (move2.value = -circleWidth.offsetHeight - circle1.offsetHeight - 6);
-    else (move1.value = 0), (move2.value = 0);
+    move1.value = isOpen.value ? -circleWidth.offsetHeight : 0;
+    move2.value = isOpen.value ? -circleWidth.offsetHeight - circle1.offsetHeight - 6 : 0;
   }
 };
 </script>
