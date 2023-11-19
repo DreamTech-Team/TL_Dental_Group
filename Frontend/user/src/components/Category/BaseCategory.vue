@@ -124,7 +124,7 @@ onMounted(() => {
 });
 
 const idDefine = (index: number, idx: number | undefined = undefined) => {
-  return !idx ? `id-${index}-${idx}` : `id-${index}`;
+  return idx ? `id-${index}-${idx}` : `id-${index}`;
 };
 
 // Đánh dấu cate được chọn (Hàm chung cho cate2 và cate3)
